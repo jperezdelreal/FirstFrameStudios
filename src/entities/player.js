@@ -53,6 +53,7 @@ export class Player {
         this.grabPummelCooldown = 0;
         this.pummelRequest = false;
         this.throwRequest = null;
+        this.throwTimer = 0;
 
         // Dodge roll state
         this.dodgeCooldown = 0;
@@ -190,6 +191,11 @@ export class Player {
 
         // Handle input when not in hitstun
         if (this.hitstunTime <= 0) {
+            // Recover from hit state once hitstun expires
+            if (this.state === 'hit') {
+                this.state = 'idle';
+            }
+
             if (this.state === 'dodging') {
                 this.dodgeElapsed += dt;
                 this.vx = this.dodgeDirection * dodgeSpeed;
@@ -316,6 +322,16 @@ export class Player {
                         const grabTarget = findClosestEnemy(40, false, true);
                         const attackPressed = wantsPunch || wantsKick;
 
+                        if (input.isGrab() && grabTarget) {
+                            this.state = 'grabbing';
+                            this.grabbedEnemy = grabTarget;
+                            this.grabTimer = 0;
+                            this.pummelCount = 0;
+                            this.grabPummelCooldown = 0;
+                            syncGrabbedEnemy();
+                            return null;
+                        }
+
                         if (backAttackTarget && attackPressed) {
                             this.state = 'back_attack';
                             this.attackCooldown = 0.25;
@@ -326,16 +342,6 @@ export class Player {
                             this.backAttackFacing = this.facing;
                             this.facing *= -1;
                             return { type: 'back_attack', combo: this.comboCount };
-                        }
-
-                        if (grabTarget && (input.isGrab() || attackPressed)) {
-                            this.state = 'grabbing';
-                            this.grabbedEnemy = grabTarget;
-                            this.grabTimer = 0;
-                            this.pummelCount = 0;
-                            this.grabPummelCooldown = 0;
-                            syncGrabbedEnemy();
-                            return null;
                         }
 
                         // Belly bump — forward + punch during combo (3+ hits)
@@ -350,6 +356,15 @@ export class Player {
                             this.styleTypes.add('special');
                             this.comboTimer = 0;
                             return { type: 'belly_bump', combo: this.comboCount };
+                        }
+                        if (grabTarget && attackPressed) {
+                            this.state = 'grabbing';
+                            this.grabbedEnemy = grabTarget;
+                            this.grabTimer = 0;
+                            this.pummelCount = 0;
+                            this.grabPummelCooldown = 0;
+                            syncGrabbedEnemy();
+                            return null;
                         }
                         if (wantsPunch) {
                             this.state = 'punch';
@@ -439,6 +454,21 @@ export class Player {
             this.state = 'hit';
             this.vx = 0;
             this.vy = 0;
+            this.dodgeElapsed = 0;
+            if (this.grabbedEnemy) {
+                this.grabbedEnemy.isGrabbed = false;
+                this.grabbedEnemy.grabbedBy = null;
+                if (this.grabbedEnemy.state !== 'dead') {
+                    this.grabbedEnemy.state = 'idle';
+                }
+                this.grabbedEnemy = null;
+                this.grabTimer = 0;
+                this.pummelCount = 0;
+            }
+            if (this.backAttackFacing !== null) {
+                this.facing = this.backAttackFacing;
+                this.backAttackFacing = null;
+            }
             input.clearBuffer();
         }
         
@@ -454,6 +484,7 @@ export class Player {
 
     takeDamage(damage, knockbackX, knockbackY) {
         if (this.invulnTime > 0) return;
+        if (this.state === 'dodging' && this.dodgeElapsed >= 0.05 && this.dodgeElapsed <= 0.25) return;
         
         this.health -= damage;
         this.hitstunTime = 0.2;
@@ -492,6 +523,14 @@ export class Player {
                 x: this.x + (this.facing > 0 ? this.width : -60),
                 y: this.y + 30,
                 width: 60,
+                height: 30
+            };
+        }
+        if (this.state === 'back_attack' && this.attackCooldown > 0.05) {
+            return {
+                x: this.x + (this.facing > 0 ? this.width : -40),
+                y: this.y + 25,
+                width: 40,
                 height: 30
             };
         }
@@ -553,7 +592,13 @@ export class Player {
         const isJumpKick = this.state === 'jump_kick';
         const isBelly = this.state === 'belly_bump';
         const isSlam = this.state === 'ground_slam';
+        const isBackAttack = this.state === 'back_attack';
+        const isGrab = this.state === 'grabbing';
+        const isThrow = this.state === 'throwing';
+        const isDodge = this.state === 'dodging';
+        const isDodgeRecovery = this.state === 'dodge_recovery';
         const isHit = this.state === 'hit';
+        const isRolling = isDodge || isDodgeRecovery;
         const walkFrame = isWalk ? Math.floor(this.animTime / 0.15) % 4 : 0;
         const walkBob = isWalk ? (walkFrame % 2 === 0 ? 1 : -1) : 0;
         const drawY = this.y - this.jumpHeight + walkBob;
@@ -587,6 +632,14 @@ export class Player {
         const sx = this.width / 64;
         const sy = this.height / 80;
         ctx.scale(sx, sy);
+
+        if (isRolling) {
+            const rollSquash = 0.85 + Math.sin(this.animTime * 20) * 0.05;
+            const rollStretch = 1.15;
+            ctx.translate(32, 50);
+            ctx.scale(rollStretch, rollSquash);
+            ctx.translate(-32, -50);
+        }
         
         // Consistent outline style (art-direction: 2px #222222, round caps)
         ctx.strokeStyle = '#222222';
@@ -600,7 +653,7 @@ export class Player {
         const shoes = '#8B4513';
         const lips = '#F4A6A6';
         const breath = isIdle ? 1 + Math.sin(this.animTime * 2) * 0.015 : 1;
-        const legLift = (isJump || isJumpPunch || isJumpKick || isSlam) ? -6 : 0;
+        const legLift = (isJump || isJumpPunch || isJumpKick || isSlam) ? -6 : (isRolling ? -2 : 0);
         const legBack = isBelly ? -4 : 0;
 
         const drawShoe = (x, y, width, height) => {
@@ -650,7 +703,8 @@ export class Player {
             const isFaceIdle = state === 'idle';
             const isFaceWalk = state === 'walk';
             const isFacePunch = state === 'punch' || state === 'kick' || state === 'jump_punch' ||
-                state === 'jump_kick' || state === 'belly_bump' || state === 'ground_slam';
+                state === 'jump_kick' || state === 'belly_bump' || state === 'ground_slam' ||
+                state === 'back_attack' || state === 'throwing';
             const isFaceHit = state === 'hit';
             const isFaceJump = state === 'jump';
             const isFaceGrabbing = state === 'grabbing';
@@ -943,6 +997,12 @@ export class Player {
             leftArmLen = 16;
             rightArmLen = 16;
         }
+        if (isRolling) {
+            leftArmAngle = 1.6;
+            rightArmAngle = -1.6;
+            leftArmLen = 12;
+            rightArmLen = 12;
+        }
         if (isPunch) {
             rightArmAngle = 0;
             rightArmLen = 24;
@@ -951,6 +1011,12 @@ export class Player {
             rightArmAngle = -0.2;
             rightArmLen = 22;
             leftArmAngle = -1.1;
+        }
+        if (isBackAttack) {
+            rightArmAngle = 0.4;
+            rightArmLen = 20;
+            leftArmAngle = -0.8;
+            leftArmLen = 16;
         }
         if (isKick) {
             leftArmAngle = 0.2;
@@ -961,6 +1027,18 @@ export class Player {
             rightArmAngle = -2.6;
             leftArmLen = 14;
             rightArmLen = 14;
+        }
+        if (isGrab) {
+            leftArmAngle = 1.4;
+            rightArmAngle = -1.4;
+            leftArmLen = 14;
+            rightArmLen = 14;
+        }
+        if (isThrow) {
+            rightArmAngle = 0.2;
+            rightArmLen = 22;
+            leftArmAngle = 1.6;
+            leftArmLen = 14;
         }
         drawArm(18, 40, leftArmLen, leftArmAngle, 0.9);
         drawArm(46, 40, rightArmLen, rightArmAngle, 0.9);

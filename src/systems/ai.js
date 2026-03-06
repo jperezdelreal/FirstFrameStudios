@@ -1,5 +1,6 @@
 // Lightweight behavior tree AI with attack throttling.
 // Max 2 enemies attack simultaneously; others circle and wait.
+// Variant-specific behaviors: fast (hit-and-run), heavy (relentless approach + wind-up).
 
 const MAX_ATTACKERS = 2;
 
@@ -21,8 +22,7 @@ export class AI {
     // ----------------------------------------------------------------
 
     static _inAttackRange(enemy, dx, dy, distance) {
-        const range = enemy.variant === 'tough' ? 90 : 80;
-        return distance < range && Math.abs(dy) < 30;
+        return distance < enemy.attackRange && Math.abs(dy) < 30;
     }
 
     static _tooClose(distance) {
@@ -34,6 +34,10 @@ export class AI {
     }
 
     static _hasAttackSlot(enemy) {
+        if (enemy.variant === 'boss') {
+            enemy.hasAttackSlot = true;
+            return true;
+        }
         if (enemy.hasAttackSlot) return true;
         if (AI.activeAttackers < MAX_ATTACKERS) {
             AI.activeAttackers++;
@@ -56,10 +60,66 @@ export class AI {
 
     static _attackPlayer(enemy, dt) {
         if (enemy.attackCooldown > 0) return false;
+
+        // Heavy: telegraph wind-up before attack
+        if (enemy.variant === 'heavy') {
+            const attackDur = 0.5;
+            enemy.windupTime = 0.5;
+            enemy.state = 'windup';
+            enemy.attackCooldown = enemy.configAttackCooldown;
+            enemy.attackAnimDuration = attackDur;
+            // C1+C3: aiCooldown covers windup + attack + post-attack pause
+            enemy.aiCooldown = 0.5 + attackDur + enemy.configAiCooldown;
+            return true;
+        }
+
+        if (enemy.variant === 'boss') {
+            const attackDur = 0.5;
+            enemy.state = 'attack';
+            enemy.attackAnimTime = attackDur;
+            enemy.attackAnimDuration = attackDur;
+            enemy.attackCooldown = enemy.configAttackCooldown;
+            enemy.aiCooldown = attackDur + enemy.configAiCooldown;
+            enemy.attackDamage = enemy.damage;
+            return true;
+        }
+
+        const attackDur = enemy.variant === 'fast' ? 0.25 : 0.4;
         enemy.state = 'attack';
-        const cooldown = enemy.variant === 'tough' ? 1.0 : 1.5;
-        enemy.attackCooldown = cooldown;
-        enemy.aiCooldown = enemy.variant === 'tough' ? 0.3 : 0.5;
+        enemy.attackAnimTime = attackDur;
+        enemy.attackAnimDuration = attackDur;
+        enemy.attackCooldown = enemy.configAttackCooldown;
+        // C1 fix: aiCooldown includes attack duration so state isn't reset mid-punch
+        enemy.aiCooldown = attackDur + enemy.configAiCooldown;
+        return true;
+    }
+
+    static _startBossCharge(enemy, dx, dy) {
+        if (enemy.attackCooldown > 0 || enemy.chargeCooldown > 0) return false;
+
+        enemy.state = 'charge_windup';
+        enemy.chargeWindup = 0.5;
+        enemy.chargeAngle = Math.atan2(dy * 0.6, dx);
+        enemy.vx = 0;
+        enemy.vy = 0;
+        enemy.attackCooldown = enemy.configAttackCooldown + 0.4;
+        enemy.aiCooldown = 0.5 + 0.5 + enemy.configAiCooldown;
+        enemy.chargeCooldown = 2.5;
+        enemy.attackDamage = 20;
+        return true;
+    }
+
+    static _startBossSlam(enemy) {
+        if (enemy.attackCooldown > 0 || enemy.slamCooldown > 0) return false;
+
+        enemy.state = 'slam_windup';
+        enemy.slamWindup = 0.3;
+        enemy.vx = 0;
+        enemy.vy = 0;
+        enemy.attackCooldown = enemy.configAttackCooldown + 0.6;
+        enemy.aiCooldown = 0.3 + 0.4 + enemy.configAiCooldown;
+        enemy.slamCooldown = 3.2;
+        enemy.attackDamage = 15;
         return true;
     }
 
@@ -114,33 +174,10 @@ export class AI {
     }
 
     // ----------------------------------------------------------------
-    // Main update — called per-enemy from gameplay.js for-loop
+    // Variant-specific behavior trees
     // ----------------------------------------------------------------
 
-    static updateEnemy(enemy, player, dt) {
-        AI._resetFrameIfNeeded();
-
-        if (enemy.state === 'dead' || enemy.hitstunTime > 0) {
-            AI._releaseSlot(enemy);
-            return;
-        }
-
-        if (enemy.aiCooldown > 0) {
-            enemy.state = 'idle';
-            AI._releaseSlot(enemy);
-            return;
-        }
-
-        const dx = player.x - enemy.x;
-        const dy = player.y - enemy.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        // Face the player
-        if (dx < 0) enemy.facing = -1;
-        else if (dx > 0) enemy.facing = 1;
-
-        // --- Behavior tree selector (first success wins) ---
-
+    static _behaveDefault(enemy, player, dx, dy, distance, dt) {
         // 1. sequence(inRange, hasSlot, attack)
         if (AI._inAttackRange(enemy, dx, dy, distance)) {
             if (AI._hasAttackSlot(enemy)) {
@@ -160,13 +197,150 @@ export class AI {
             return;
         }
 
-        // 3. sequence(farAway, approach)
-        if (AI._farAway(distance)) {
-            AI._approachPlayer(enemy, dx, dy, dt);
+        // 3. Approach player to enter attack range
+        AI._approachPlayer(enemy, dx, dy, dt);
+    }
+
+    static _behaveFast(enemy, player, dx, dy, distance, dt) {
+        // Hit-and-run: after attacking, retreat to 200px before re-engaging
+        if (enemy.retreating) {
+            if (distance > 200) {
+                enemy.retreating = false;
+                enemy.aiCooldown = 0.3;
+                enemy.state = 'idle';
+                AI._releaseSlot(enemy);
+            } else {
+                AI._retreatFromPlayer(enemy, dx, dy, dt);
+            }
             return;
         }
 
-        // 4. fallback — circle player
-        AI._circlePlayer(enemy, player, dx, dy, distance, dt);
+        if (AI._inAttackRange(enemy, dx, dy, distance)) {
+            if (AI._hasAttackSlot(enemy)) {
+                if (AI._attackPlayer(enemy, dt)) {
+                    enemy.retreating = true;
+                    return;
+                }
+            }
+            AI._waitForSlot(enemy, player, dx, dy, distance, dt);
+            return;
+        }
+
+        AI._releaseSlot(enemy);
+
+        // Fast enemies dash straight in — no circling, no retreat
+        AI._approachPlayer(enemy, dx, dy, dt);
+    }
+
+    static _behaveHeavy(enemy, player, dx, dy, distance, dt) {
+        // Heavy: relentless approach, no retreat, no circling
+        if (AI._inAttackRange(enemy, dx, dy, distance)) {
+            if (AI._hasAttackSlot(enemy)) {
+                if (AI._attackPlayer(enemy, dt)) return;
+            }
+            // Heavy stands ground when waiting for slot
+            enemy.state = 'idle';
+            return;
+        }
+
+        AI._releaseSlot(enemy);
+
+        // Always approach — heavy never retreats or circles
+        AI._approachPlayer(enemy, dx, dy, dt);
+    }
+
+    static _behaveBoss(enemy, player, dx, dy, distance, dt) {
+        const inRange = AI._inAttackRange(enemy, dx, dy, distance);
+        const midRange = distance < 220 && Math.abs(dy) < 40;
+
+        if (enemy.phase === 3) {
+            if (enemy.bossAttackToggle === 'charge' && midRange) {
+                if (AI._startBossCharge(enemy, dx, dy)) {
+                    enemy.bossAttackToggle = 'punch';
+                    return;
+                }
+            }
+            if (inRange && AI._hasAttackSlot(enemy)) {
+                if (AI._attackPlayer(enemy, dt)) {
+                    enemy.bossAttackToggle = 'charge';
+                    return;
+                }
+            }
+            if (enemy.bossAttackToggle === 'charge' && midRange) {
+                if (AI._startBossCharge(enemy, dx, dy)) {
+                    enemy.bossAttackToggle = 'punch';
+                    return;
+                }
+            }
+        } else if (enemy.phase === 2) {
+            if (distance < 140 && Math.abs(dy) < 35) {
+                if (AI._startBossSlam(enemy)) return;
+            }
+            if (inRange && AI._hasAttackSlot(enemy)) {
+                if (AI._attackPlayer(enemy, dt)) return;
+            }
+            if (midRange && Math.random() < 0.7 * dt) {
+                if (AI._startBossCharge(enemy, dx, dy)) return;
+            }
+        } else {
+            if (inRange && AI._hasAttackSlot(enemy)) {
+                if (AI._attackPlayer(enemy, dt)) return;
+            }
+            if (midRange && Math.random() < 0.6 * dt) {
+                if (AI._startBossCharge(enemy, dx, dy)) return;
+            }
+        }
+
+        AI._approachPlayer(enemy, dx, dy, dt);
+    }
+
+    // ----------------------------------------------------------------
+    // Main update — called per-enemy from gameplay.js for-loop
+    // ----------------------------------------------------------------
+
+    static updateEnemy(enemy, player, dt) {
+        AI._resetFrameIfNeeded();
+
+        if (enemy.state === 'dead' || enemy.hitstunTime > 0) {
+            AI._releaseSlot(enemy);
+            return;
+        }
+
+        if (enemy.aiCooldown > 0) {
+            // C1+C3: preserve windup/attack state for ALL enemies during AI cooldown
+            if (enemy.state === 'windup' || enemy.state === 'attack' ||
+                enemy.state === 'charge_windup' || enemy.state === 'charging' ||
+                enemy.state === 'slam_windup' || enemy.state === 'slamming') {
+                // Don't override — let attack/windup animate to completion
+            } else {
+                enemy.state = 'idle';
+            }
+            AI._releaseSlot(enemy);
+            return;
+        }
+
+        const dx = player.x - enemy.x;
+        const dy = player.y - enemy.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Face the player
+        if (dx < 0) enemy.facing = -1;
+        else if (dx > 0) enemy.facing = 1;
+
+        // --- Variant-specific behavior dispatch ---
+        switch (enemy.variant) {
+            case 'fast':
+                AI._behaveFast(enemy, player, dx, dy, distance, dt);
+                break;
+            case 'heavy':
+                AI._behaveHeavy(enemy, player, dx, dy, distance, dt);
+                break;
+            case 'boss':
+                AI._behaveBoss(enemy, player, dx, dy, distance, dt);
+                break;
+            default:
+                AI._behaveDefault(enemy, player, dx, dy, distance, dt);
+                break;
+        }
     }
 }
