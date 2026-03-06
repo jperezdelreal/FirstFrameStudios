@@ -1,4 +1,5 @@
 import { Player } from '../entities/player.js';
+import { Enemy } from '../entities/enemy.js';
 import { Combat } from '../systems/combat.js';
 import { AI } from '../systems/ai.js';
 import { VFX } from '../systems/vfx.js';
@@ -29,6 +30,9 @@ const WAVE_DATA = [
         { x: 3100, y: 520, variant: 'fast' },
         { x: 3150, y: 450, variant: 'fast' },
         { x: 3200, y: 500, variant: 'heavy' }
+    ]},
+    { x: 3500, enemies: [
+        { x: 3800, y: 500, variant: 'boss' }
     ]}
 ];
 
@@ -46,10 +50,17 @@ export class GameplayScene {
     }
 
     onEnter() {
+        // Resume from options without reinitializing
+        if (this.game._resumeScene) {
+            this.game._resumeScene = false;
+            this.paused = true;
+            return;
+        }
+
         this.player = new Player(200, 500);
         this.enemies = [];
         this.score = 0;
-        this.levelWidth = 4000;
+        this.levelWidth = 5000;
         this.gameOver = false;
         this.gameOverTimer = 0;
         this.paused = false;
@@ -82,6 +93,11 @@ export class GameplayScene {
     }
 
     onExit() {
+        // Suspend without cleanup when navigating to options
+        if (this.game._suspendScene) {
+            this.game._suspendScene = false;
+            return;
+        }
         try { if (this.music) this.music.stop(); } catch (e) { /* ignore */ }
         this.debug.destroy();
     }
@@ -96,6 +112,7 @@ export class GameplayScene {
         this.renderer.updateShake(dt);
         this.vfx.update(dt);
         this.particles.update(dt);
+        this.input.updateBuffer(dt);
 
         // P2-17: Level intro countdown — skip entity updates
         if (this.introActive) {
@@ -132,10 +149,15 @@ export class GameplayScene {
             return;
         }
 
-        // While paused: only accept Q to quit
+        // While paused: accept Q to quit, O for options
         if (this.paused) {
             if (this.input.isQuit()) {
                 this.game.switchScene('title');
+            }
+            if (this.input.isOptions()) {
+                this.game._suspendScene = true;
+                this.game._optionsReturn = 'gameplay';
+                this.game.switchScene('options');
             }
             this.input.clearFrameState();
             return;
@@ -148,6 +170,41 @@ export class GameplayScene {
                 this.audio.playKick();
             } else {
                 this.audio.playPunch();
+            }
+
+            // Motion trails on attack start
+            if (typeof VFX.createMotionTrail === 'function') {
+                const hitbox = this.player.getAttackHitbox();
+                if (hitbox) {
+                    const tx = hitbox.x + hitbox.width / 2;
+                    const ty = hitbox.y + hitbox.height / 2;
+                    const f = this.player.facing;
+                    switch (attackResult.type) {
+                        case 'punch':
+                        case 'jump_punch':
+                            VFX.createMotionTrail(this.vfx, tx, ty, 40, 20, f * Math.PI * 0.3, '#FFFFCC');
+                            break;
+                        case 'kick':
+                        case 'jump_kick':
+                            VFX.createMotionTrail(this.vfx, tx, ty, 55, 25, -f * Math.PI * 0.2, '#FFFFCC');
+                            break;
+                        case 'belly_bump':
+                            VFX.createMotionTrail(this.vfx, tx, ty, 70, 35, f * Math.PI * 0.15, '#FFFFCC');
+                            break;
+                        case 'ground_slam':
+                            VFX.createMotionTrail(this.vfx, tx, ty, 80, 40, Math.PI * 0.5, '#FFFFCC');
+                            break;
+                    }
+                }
+            }
+
+            // Vocal sounds on attack
+            if (attackResult.type === 'belly_bump' || attackResult.type === 'ground_slam') {
+                this.audio.playExertion();
+                // AAA-V1: Zoom on power hits
+                this.game.triggerZoom(1.15, 0.2);
+            } else if (Math.random() < 0.3) {
+                this.audio.playGrunt();
             }
         }
 
@@ -184,6 +241,10 @@ export class GameplayScene {
             this.vfx.addEffect(VFX.createHitEffect(hit.x, hit.y, hit.intensity));
             VFX.createDamageNumber(this.vfx, hit.x, hit.y, hit.damage, this.player.comboCount > 2);
             this.particles.emit(hit.x, hit.y, HIT_SPARKS);
+            // AAA-V1: Zoom on combo finishers (5+ combo)
+            if (hit.intensity === 'heavy') {
+                this.game.triggerZoom(1.15, 0.2);
+            }
         }
         
         // Update enemies
@@ -191,12 +252,38 @@ export class GameplayScene {
             enemy.update(dt);
             AI.updateEnemy(enemy, this.player, dt);
         }
+
+        // Boss phase add spawns
+        const addSpawns = [];
+        for (const enemy of this.enemies) {
+            if (enemy.variant === 'boss' && enemy.pendingAdds > 0) {
+                const count = enemy.pendingAdds;
+                enemy.pendingAdds = 0;
+                for (let i = 0; i < count; i++) {
+                    const offsetX = i % 2 === 0 ? -140 : 140;
+                    const offsetY = i === 0 ? -30 : 30;
+                    addSpawns.push(new Enemy(enemy.x + offsetX, enemy.y + offsetY, 'normal'));
+                }
+            }
+        }
+        if (addSpawns.length > 0) {
+            this.enemies.push(...addSpawns);
+            this.audio.playWaveStart();
+            if (typeof VFX.createSpawnEffect === 'function') {
+                for (const enemy of addSpawns) {
+                    VFX.createSpawnEffect(this.vfx, enemy.x + enemy.width / 2, enemy.y + enemy.height);
+                }
+            }
+        }
         
         // Enemy attacks
         const healthBeforeEnemyAttacks = this.player.health;
         Combat.handleEnemyAttacks(this.enemies, this.player, this.audio);
         if (this.player.health < healthBeforeEnemyAttacks) {
             this.game.addHitlag(2);
+            this.audio.playOof();
+            // Reset style meter on damage
+            this.player.styleTypes.clear();
         }
         
         // KO effects for enemies about to be removed
@@ -215,6 +302,15 @@ export class GameplayScene {
         this.enemies = Combat.cleanupDeadEnemies(this.enemies);
         const killedCount = enemiesBeforeCleanup - this.enemies.length;
         this.score += killedCount * 50;
+
+        // AAA-V2: Slow-mo on last enemy kill in active wave
+        if (killedCount > 0 && this.enemies.length === 0 && this.camera.isLocked) {
+            this.game.triggerSlowMo(0.3, 0.5);
+            this.game.triggerZoom(1.15, 0.3);
+            if (this.music) {
+                try { this.music.setTimeScale(0.3); } catch (e) { /* ignore */ }
+            }
+        }
         
         // Wave spawning
         const newEnemies = this.waveManager.check(this.player.x, this.enemies);
@@ -222,12 +318,21 @@ export class GameplayScene {
             this.enemies.push(...newEnemies);
             this.camera.lock(this.waveManager.getLockX());
             this.audio.playWaveStart();
+            if (typeof VFX.createSpawnEffect === 'function') {
+                for (const enemy of newEnemies) {
+                    VFX.createSpawnEffect(this.vfx, enemy.x + enemy.width / 2, enemy.y + enemy.height);
+                }
+            }
         }
 
         // Unlock camera when wave is cleared
         if (this.camera.isLocked && this.enemies.length === 0) {
             this.camera.unlock();
             this.audio.playWaveClear();
+            // Restore music pitch after slow-mo wave clear
+            if (this.music) {
+                try { this.music.setTimeScale(1.0); } catch (e) { /* ignore */ }
+            }
         }
 
         // Update camera
@@ -260,6 +365,12 @@ export class GameplayScene {
         if (this.waveManager.allComplete && this.enemies.length === 0 && !this.levelComplete) {
             this.levelComplete = true;
             this.audio.playLevelComplete();
+            // AAA-V2: Slow-mo on final boss kill
+            this.game.triggerSlowMo(0.3, 0.5);
+            this.game.triggerZoom(1.15, 0.3);
+            if (this.music) {
+                try { this.music.setTimeScale(0.3); } catch (e) { /* ignore */ }
+            }
             if (!this.highScoreSaved) {
                 this.highScoreSaved = true;
                 this.newHighScore = saveHighScore(this.score);
@@ -300,14 +411,29 @@ export class GameplayScene {
             entity.render(this.renderer.ctx);
         }
         
-        // VFX layer (after entities, before HUD)
+        // Foreground parallax layer (in front of entities for depth)
+        this.background.renderForeground(this.renderer.ctx, this.renderer.cameraX, this.renderer.width);
+
+        // VFX layer (after entities + foreground, before HUD)
         this.vfx.render(this.renderer.ctx);
         this.particles.render(this.renderer.ctx);
         
         this.renderer.restore();
         
+        // Compute wave progress for HUD
+        const waves = this.waveManager.waves;
+        let lastSpawned = -1;
+        for (let i = 0; i < waves.length; i++) {
+            if (waves[i].spawned) lastSpawned = i;
+        }
+        const waveInfo = {
+            total: waves.length,
+            completed: this.enemies.length === 0 && lastSpawned >= 0 ? lastSpawned + 1 : Math.max(0, lastSpawned),
+            current: lastSpawned
+        };
+
         // Render HUD
-        this.hud.render(this.player, this.score, this.enemies, this.renderer.cameraX);
+        this.hud.render(this.player, this.score, this.enemies, this.renderer.cameraX, waveInfo);
         
         // P2-17: Stage intro overlay
         if (this.introActive) {
@@ -457,6 +583,11 @@ export class GameplayScene {
             this.renderer.fillTextCentered(
                 'Press Q to Quit',
                 w / 2, h / 2 + 65,
+                '#FFFFFF', '22px Arial'
+            );
+            this.renderer.fillTextCentered(
+                'Press O for Options',
+                w / 2, h / 2 + 100,
                 '#FFFFFF', '22px Arial'
             );
         }

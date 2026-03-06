@@ -7,6 +7,7 @@ export class Renderer {
         this.cameraX = 0;
         this.cameraY = 0;
         this.shake = { x: 0, y: 0, duration: 0 };
+        this.zoomLevel = 1.0;
     }
 
     clear() {
@@ -37,6 +38,14 @@ export class Renderer {
 
     save() {
         this.ctx.save();
+        // AAA-V1: Apply zoom centered on canvas center
+        if (this.zoomLevel !== 1.0) {
+            const cx = this.canvas.width / 2;
+            const cy = this.canvas.height / 2;
+            this.ctx.translate(cx, cy);
+            this.ctx.scale(this.zoomLevel, this.zoomLevel);
+            this.ctx.translate(-cx, -cy);
+        }
         this.ctx.translate(-this.cameraX + this.shake.x, -this.cameraY + this.shake.y);
     }
 
