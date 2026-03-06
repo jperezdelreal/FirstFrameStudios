@@ -1,0 +1,72 @@
+{
+  "agents": {
+    "solo": {
+      "persistent_name": "Solo",
+      "universe": "Star Wars",
+      "role": "Lead",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "active",
+      "previous_name": "Keaton"
+    },
+    "chewie": {
+      "persistent_name": "Chewie",
+      "universe": "Star Wars",
+      "role": "Engine Dev",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "active",
+      "previous_name": "Fenster"
+    },
+    "lando": {
+      "persistent_name": "Lando",
+      "universe": "Star Wars",
+      "role": "Gameplay Dev",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "active",
+      "previous_name": "McManus"
+    },
+    "wedge": {
+      "persistent_name": "Wedge",
+      "universe": "Star Wars",
+      "role": "UI Dev",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "active",
+      "previous_name": "Hockney"
+    },
+    "boba": {
+      "persistent_name": "Boba",
+      "universe": "Star Wars",
+      "role": "VFX/Art Specialist",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "greedo": {
+      "persistent_name": "Greedo",
+      "universe": "Star Wars",
+      "role": "Sound Designer",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "tarkin": {
+      "persistent_name": "Tarkin",
+      "universe": "Star Wars",
+      "role": "Enemy/Content Dev",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "ackbar": {
+      "persistent_name": "Ackbar",
+      "universe": "Star Wars",
+      "role": "QA/Playtester",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "active"
+    }
+  }
+}
