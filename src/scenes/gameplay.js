@@ -9,25 +9,26 @@ import { HUD } from '../ui/hud.js';
 import { DebugOverlay } from '../debug/debug-overlay.js';
 import { saveHighScore, getHighScore, isNewHighScore } from '../ui/highscore.js';
 import { Music } from '../engine/music.js';
+import { ParticleSystem, DUST_CLOUD, HIT_SPARKS, DEATH_DEBRIS } from '../engine/particles.js';
 
 const WAVE_DATA = [
     { x: 800, enemies: [
         { x: 1000, y: 500, variant: 'normal' },
-        { x: 1100, y: 450, variant: 'normal' },
-        { x: 1050, y: 550, variant: 'normal' }
+        { x: 1100, y: 470, variant: 'normal' }
     ]},
     { x: 1600, enemies: [
         { x: 1800, y: 480, variant: 'normal' },
         { x: 1850, y: 530, variant: 'normal' },
         { x: 1400, y: 500, variant: 'normal' },
-        { x: 1450, y: 450, variant: 'normal' }
+        { x: 1900, y: 460, variant: 'fast' }
     ]},
     { x: 2800, enemies: [
         { x: 3000, y: 500, variant: 'normal' },
         { x: 3050, y: 460, variant: 'normal' },
-        { x: 3100, y: 520, variant: 'normal' },
         { x: 2600, y: 480, variant: 'normal' },
-        { x: 3150, y: 500, variant: 'tough' }
+        { x: 3100, y: 520, variant: 'fast' },
+        { x: 3150, y: 450, variant: 'fast' },
+        { x: 3200, y: 500, variant: 'heavy' }
     ]}
 ];
 
@@ -39,6 +40,7 @@ export class GameplayScene {
         this.audio = audio;
         this.hud = new HUD(renderer);
         this.vfx = new VFX();
+        this.particles = new ParticleSystem();
         this.debug = new DebugOverlay();
         this.background = new Background();
     }
@@ -65,26 +67,35 @@ export class GameplayScene {
         this.waveManager = new WaveManager(WAVE_DATA);
 
         // P1-12: Start procedural background music
-        if (!this.music) {
-            this.music = new Music(this.audio.context, this.audio.musicBus);
+        try {
+            if (!this.music && this.audio.context && this.audio.musicBus) {
+                this.music = new Music(this.audio.context, this.audio.musicBus);
+            }
+            if (this.music) {
+                this.music.setIntensity(0);
+                this.music.start();
+            }
+        } catch (e) {
+            console.warn('Music init failed:', e);
+            this.music = null;
         }
-        this.music.setIntensity(0);
-        this.music.start();
     }
 
     onExit() {
-        if (this.music) this.music.stop();
+        try { if (this.music) this.music.stop(); } catch (e) { /* ignore */ }
         this.debug.destroy();
     }
 
     updateDuringHitlag(dt) {
         this.renderer.updateShake(dt);
         this.vfx.update(dt);
+        this.particles.update(dt);
     }
 
     update(dt) {
         this.renderer.updateShake(dt);
         this.vfx.update(dt);
+        this.particles.update(dt);
 
         // P2-17: Level intro countdown — skip entity updates
         if (this.introActive) {
@@ -147,6 +158,15 @@ export class GameplayScene {
         if (this.prevJumpHeight === 0 && this.player.jumpHeight > 0) {
             this.audio.playJump();
         }
+        // Detect landing — play sound + dust particles
+        if (this.prevJumpHeight > 0 && this.player.jumpHeight === 0) {
+            this.audio.playLanding();
+            this.particles.emit(
+                this.player.x + this.player.width / 2,
+                this.player.y + this.player.height,
+                DUST_CLOUD
+            );
+        }
         this.prevJumpHeight = this.player.jumpHeight;
         
         // Handle player attacks every frame
@@ -163,6 +183,7 @@ export class GameplayScene {
         for (const hit of combatResult.hits) {
             this.vfx.addEffect(VFX.createHitEffect(hit.x, hit.y, hit.intensity));
             VFX.createDamageNumber(this.vfx, hit.x, hit.y, hit.damage, this.player.comboCount > 2);
+            this.particles.emit(hit.x, hit.y, HIT_SPARKS);
         }
         
         // Update enemies
@@ -181,10 +202,11 @@ export class GameplayScene {
         // KO effects for enemies about to be removed
         for (const enemy of this.enemies) {
             if (enemy.state === 'dead' && enemy.deathTime > 0.5) {
-                this.vfx.addEffect(VFX.createKOEffect(
-                    enemy.x + enemy.width / 2,
-                    enemy.y + enemy.height / 2
-                ));
+                const cx = enemy.x + enemy.width / 2;
+                const cy = enemy.y + enemy.height / 2;
+                this.vfx.addEffect(VFX.createKOEffect(cx, cy));
+                VFX.createKOText(this.vfx, cx, cy - 30);
+                this.particles.emit(cx, cy, DEATH_DEBRIS);
             }
         }
         
@@ -199,11 +221,13 @@ export class GameplayScene {
         if (newEnemies.length > 0) {
             this.enemies.push(...newEnemies);
             this.camera.lock(this.waveManager.getLockX());
+            this.audio.playWaveStart();
         }
 
         // Unlock camera when wave is cleared
         if (this.camera.isLocked && this.enemies.length === 0) {
             this.camera.unlock();
+            this.audio.playWaveClear();
         }
 
         // Update camera
@@ -235,6 +259,7 @@ export class GameplayScene {
         // Check level complete
         if (this.waveManager.allComplete && this.enemies.length === 0 && !this.levelComplete) {
             this.levelComplete = true;
+            this.audio.playLevelComplete();
             if (!this.highScoreSaved) {
                 this.highScoreSaved = true;
                 this.newHighScore = saveHighScore(this.score);
@@ -243,13 +268,15 @@ export class GameplayScene {
         
         // P1-12: Update music intensity based on game state
         if (this.music) {
-            if (this.enemies.length === 0 && !this.camera.isLocked) {
-                this.music.setIntensity(0);
-            } else if (this.enemies.some(e => e.state === 'attack')) {
-                this.music.setIntensity(2);
-            } else {
-                this.music.setIntensity(1);
-            }
+            try {
+                if (this.enemies.length === 0 && !this.camera.isLocked) {
+                    this.music.setIntensity(0);
+                } else if (this.enemies.some(e => e.state === 'attack')) {
+                    this.music.setIntensity(2);
+                } else {
+                    this.music.setIntensity(1);
+                }
+            } catch (e) { /* music context lost — ignore */ }
         }
 
         this.debug.update(dt, this.player, this.enemies, this.vfx);
@@ -275,6 +302,7 @@ export class GameplayScene {
         
         // VFX layer (after entities, before HUD)
         this.vfx.render(this.renderer.ctx);
+        this.particles.render(this.renderer.ctx);
         
         this.renderer.restore();
         
