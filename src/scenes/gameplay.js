@@ -56,6 +56,11 @@ export class GameplayScene {
         this.prevJumpHeight = 0;
         this.highScoreSaved = false;
 
+        // P2-17: Level intro state
+        this.introActive = true;
+        this.introTimer = 2.0;
+        this.introElapsed = 0;
+
         this.camera = new Camera();
         this.waveManager = new WaveManager(WAVE_DATA);
 
@@ -80,6 +85,16 @@ export class GameplayScene {
     update(dt) {
         this.renderer.updateShake(dt);
         this.vfx.update(dt);
+
+        // P2-17: Level intro countdown — skip entity updates
+        if (this.introActive) {
+            this.introElapsed += dt;
+            if (this.introElapsed >= this.introTimer) {
+                this.introActive = false;
+            }
+            this.input.clearFrameState();
+            return;
+        }
         
         if (this.levelComplete) {
             this.completeTimer += dt;
@@ -147,6 +162,7 @@ export class GameplayScene {
         }
         for (const hit of combatResult.hits) {
             this.vfx.addEffect(VFX.createHitEffect(hit.x, hit.y, hit.intensity));
+            VFX.createDamageNumber(this.vfx, hit.x, hit.y, hit.damage, this.player.comboCount > 2);
         }
         
         // Update enemies
@@ -265,6 +281,48 @@ export class GameplayScene {
         // Render HUD
         this.hud.render(this.player, this.score, this.enemies, this.renderer.cameraX);
         
+        // P2-17: Stage intro overlay
+        if (this.introActive) {
+            const ctx = this.renderer.ctx;
+            const w = this.renderer.width;
+            const h = this.renderer.height;
+            const fadeIn = 0.3;
+            const fadeOut = 0.3;
+            const t = this.introElapsed;
+            const total = this.introTimer;
+            let alpha = 1;
+            if (t < fadeIn) {
+                alpha = t / fadeIn;
+            } else if (t > total - fadeOut) {
+                alpha = Math.max(0, (total - t) / fadeOut);
+            }
+
+            ctx.save();
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(0, 0, w, h);
+
+            ctx.globalAlpha = alpha;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            ctx.font = 'bold 72px Arial';
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 5;
+            ctx.strokeText('STAGE 1', w / 2, h / 2 - 30);
+            ctx.fillStyle = '#FED90F';
+            ctx.fillText('STAGE 1', w / 2, h / 2 - 30);
+
+            ctx.font = 'bold 28px Arial';
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 3;
+            ctx.strokeText('SPRINGFIELD DOWNTOWN', w / 2, h / 2 + 30);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText('SPRINGFIELD DOWNTOWN', w / 2, h / 2 + 30);
+
+            ctx.restore();
+        }
+
         // Game over overlay
         if (this.gameOver) {
             const ctx = this.renderer.ctx;

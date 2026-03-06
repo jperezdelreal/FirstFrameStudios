@@ -71,7 +71,7 @@ export class Combat {
                 const hitY = (player.y + player.height / 2 + enemy.y + enemy.height / 2) / 2;
                 const intensity = isFinisher ? 'heavy' :
                     (player.state === 'kick' || player.state === 'jump_kick') ? 'medium' : 'light';
-                hits.push({ x: hitX, y: hitY, intensity });
+                hits.push({ x: hitX, y: hitY, intensity, damage });
             }
         }
         
