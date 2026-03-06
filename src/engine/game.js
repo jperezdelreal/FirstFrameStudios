@@ -125,7 +125,7 @@ export class Game {
         this.ctx.save();
         this.ctx.globalAlpha = this.transitionAlpha;
         this.ctx.fillStyle = '#000';
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillRect(0, 0, this.canvas.logicalWidth || 1280, this.canvas.logicalHeight || 720);
         this.ctx.restore();
     }
 

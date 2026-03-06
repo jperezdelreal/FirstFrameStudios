@@ -2,8 +2,22 @@ export class Renderer {
     constructor(canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.width = canvas.width;
-        this.height = canvas.height;
+
+        // HiDPI: scale backing buffer by devicePixelRatio
+        const dpr = window.devicePixelRatio || 1;
+        this.dpr = dpr;
+        this.width = 1280;  // logical width — all game code uses this
+        this.height = 720;  // logical height
+        canvas.width = this.width * dpr;
+        canvas.height = this.height * dpr;
+        canvas.style.width = this.width + 'px';
+        canvas.style.height = this.height + 'px';
+        this.ctx.scale(dpr, dpr);
+
+        // Store logical dimensions on canvas for code that only has ctx reference
+        canvas.logicalWidth = this.width;
+        canvas.logicalHeight = this.height;
+
         this.cameraX = 0;
         this.cameraY = 0;
         this.shake = { x: 0, y: 0, duration: 0 };
@@ -38,10 +52,10 @@ export class Renderer {
 
     save() {
         this.ctx.save();
-        // AAA-V1: Apply zoom centered on canvas center
+        // AAA-V1: Apply zoom centered on logical canvas center
         if (this.zoomLevel !== 1.0) {
-            const cx = this.canvas.width / 2;
-            const cy = this.canvas.height / 2;
+            const cx = this.width / 2;
+            const cy = this.height / 2;
             this.ctx.translate(cx, cy);
             this.ctx.scale(this.zoomLevel, this.zoomLevel);
             this.ctx.translate(-cx, -cy);

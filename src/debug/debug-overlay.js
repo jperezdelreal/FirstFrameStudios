@@ -1,8 +1,8 @@
 // INTEGRATION: In gameplay.js:
 // import { DebugOverlay } from '../debug/debug-overlay.js';
 // constructor: this.debug = new DebugOverlay();
-// update(): this.debug.update(dt, this.player, this.enemies);
-// render() at END: this.debug.render(this.renderer.ctx, this.renderer.cameraX, this.player, this.enemies);
+// update(): this.debug.update(dt, this.player, this.enemies, this.vfx);
+// render() at END: this.debug.render(this.renderer.ctx, this.renderer.cameraX, this.player, this.enemies, this.vfx);
 
 export class DebugOverlay {
     constructor() {
@@ -11,6 +11,10 @@ export class DebugOverlay {
         this.frameCount = 0;
         this.fpsTimer = 0;
         this.entityCount = 0;
+        this.lastDt = 0;
+        this.frameTime = 0;
+        this.vfxCount = 0;
+        this.collisionChecksPerFrame = 0;
 
         this._onKeyDown = (e) => {
             if (e.key === '`') {
@@ -24,11 +28,14 @@ export class DebugOverlay {
         window.removeEventListener('keydown', this._onKeyDown);
     }
 
-    update(dt, player, enemies) {
+    update(dt, player, enemies, vfx) {
         if (!this.enabled) return;
 
         this.frameCount++;
         this.fpsTimer += dt;
+        this.lastDt = dt;
+        this.frameTime = dt * 1000; // Convert to milliseconds
+        
         if (this.fpsTimer >= 1.0) {
             this.fps = this.frameCount;
             this.frameCount = 0;
@@ -36,9 +43,14 @@ export class DebugOverlay {
         }
 
         this.entityCount = 1 + (enemies ? enemies.filter(e => e.state !== 'dead').length : 0);
+        this.vfxCount = vfx ? vfx.effects.length : 0;
+        
+        // Estimate collision checks: player checks all living enemies
+        const livingEnemies = enemies ? enemies.filter(e => e.state !== 'dead').length : 0;
+        this.collisionChecksPerFrame = Math.max(0, livingEnemies);
     }
 
-    render(ctx, cameraX, player, enemies) {
+    render(ctx, cameraX, player, enemies, vfx) {
         if (!this.enabled) return;
 
         ctx.save();
@@ -48,7 +60,7 @@ export class DebugOverlay {
         if (enemies) {
             for (const enemy of enemies) {
                 if (enemy.state === 'dead') continue;
-                const label = enemy.variant === 'tough' ? 'ENEMY (tough)' : 'ENEMY';
+                const label = enemy.variant === 'normal' ? 'ENEMY' : `ENEMY (${enemy.variant})`;
                 this._drawEntityOverlay(ctx, enemy, label);
             }
         }
@@ -57,20 +69,40 @@ export class DebugOverlay {
         ctx.restore();
         ctx.save();
 
-        // FPS counter — top-right
+        // Performance metrics — top-right
         ctx.font = 'bold 14px monospace';
         ctx.textAlign = 'right';
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-        ctx.fillRect(ctx.canvas.width - 160, 4, 156, 56);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        
+        // Calculate panel height based on content
+        const panelHeight = 110;
+        const cw = ctx.canvas.logicalWidth || ctx.canvas.width;
+        ctx.fillRect(cw - 200, 4, 196, panelHeight);
+        
+        // FPS counter (color coded)
         ctx.fillStyle = this.fps < 50 ? '#FF4444' : '#44FF44';
-        ctx.fillText(`FPS: ${this.fps}`, ctx.canvas.width - 12, 20);
+        ctx.fillText(`FPS: ${this.fps}`, cw - 12, 20);
+        
+        // Frame time in ms
+        ctx.fillStyle = '#FFFF44';
+        ctx.fillText(`Frame: ${this.frameTime.toFixed(1)}ms`, cw - 12, 38);
+        
+        // Entity count
         ctx.fillStyle = '#FFFFFF';
-        ctx.fillText(`Entities: ${this.entityCount}`, ctx.canvas.width - 12, 38);
+        ctx.fillText(`Entities: ${this.entityCount}`, cw - 12, 56);
+        
+        // VFX count
+        ctx.fillStyle = '#FF88FF';
+        ctx.fillText(`VFX: ${this.vfxCount}`, cw - 12, 74);
+        
+        // Collision checks estimate
+        ctx.fillStyle = '#88CCFF';
+        ctx.fillText(`Collisions: ${this.collisionChecksPerFrame}`, cw - 12, 92);
 
         // Combo count (if exists on player)
         if (player && typeof player.comboCount === 'number') {
             ctx.fillStyle = '#FFD700';
-            ctx.fillText(`Combo: ${player.comboCount}`, ctx.canvas.width - 12, 56);
+            ctx.fillText(`Combo: ${player.comboCount}`, cw - 12, 110);
         }
 
         ctx.restore();
