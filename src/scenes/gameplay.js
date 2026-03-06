@@ -8,6 +8,7 @@ import { Background } from '../systems/background.js';
 import { HUD } from '../ui/hud.js';
 import { DebugOverlay } from '../debug/debug-overlay.js';
 import { saveHighScore, getHighScore, isNewHighScore } from '../ui/highscore.js';
+import { Music } from '../engine/music.js';
 
 const WAVE_DATA = [
     { x: 800, enemies: [
@@ -48,6 +49,8 @@ export class GameplayScene {
         this.score = 0;
         this.levelWidth = 4000;
         this.gameOver = false;
+        this.gameOverTimer = 0;
+        this.paused = false;
         this.levelComplete = false;
         this.completeTimer = 0;
         this.prevJumpHeight = 0;
@@ -55,9 +58,17 @@ export class GameplayScene {
 
         this.camera = new Camera();
         this.waveManager = new WaveManager(WAVE_DATA);
+
+        // P1-12: Start procedural background music
+        if (!this.music) {
+            this.music = new Music(this.audio.context, this.audio.musicBus);
+        }
+        this.music.setIntensity(0);
+        this.music.start();
     }
 
     onExit() {
+        if (this.music) this.music.stop();
         this.debug.destroy();
     }
 
@@ -80,7 +91,24 @@ export class GameplayScene {
         }
         
         if (this.gameOver) {
-            if (this.input.isStart()) {
+            this.gameOverTimer += dt;
+            if (this.gameOverTimer > 0.5 && this.input.isStart()) {
+                this.game.switchScene('title');
+            }
+            this.input.clearFrameState();
+            return;
+        }
+
+        // Pause toggle (before consuming other input)
+        if (this.input.isPause()) {
+            this.paused = !this.paused;
+            this.input.clearFrameState();
+            return;
+        }
+
+        // While paused: only accept Q to quit
+        if (this.paused) {
+            if (this.input.isQuit()) {
                 this.game.switchScene('title');
             }
             this.input.clearFrameState();
@@ -197,6 +225,17 @@ export class GameplayScene {
             }
         }
         
+        // P1-12: Update music intensity based on game state
+        if (this.music) {
+            if (this.enemies.length === 0 && !this.camera.isLocked) {
+                this.music.setIntensity(0);
+            } else if (this.enemies.some(e => e.state === 'attack')) {
+                this.music.setIntensity(2);
+            } else {
+                this.music.setIntensity(1);
+            }
+        }
+
         this.debug.update(dt, this.player, this.enemies, this.vfx);
         this.input.clearFrameState();
     }
@@ -224,40 +263,52 @@ export class GameplayScene {
         this.renderer.restore();
         
         // Render HUD
-        this.hud.render(this.player, this.score);
+        this.hud.render(this.player, this.score, this.enemies, this.renderer.cameraX);
         
-        // Game over message
+        // Game over overlay
         if (this.gameOver) {
+            const ctx = this.renderer.ctx;
+            const w = this.renderer.width;
+            const h = this.renderer.height;
+            const cy = h / 2;
+
+            // Dark overlay
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(0, 0, w, h);
+
             this.renderer.strokeText(
                 'GAME OVER',
-                this.renderer.width / 2,
-                this.renderer.height / 2,
-                '#FF0000',
-                '#000000',
-                'bold 64px Arial',
-                4
+                w / 2, cy - 40,
+                '#FF0000', '#000000',
+                'bold 64px Arial', 4
             );
+
+            if (this.newHighScore) {
+                this.renderer.fillTextCentered(
+                    'NEW HIGH SCORE!',
+                    w / 2, cy + 20,
+                    '#FED90F', 'bold 28px Arial'
+                );
+            }
+
             this.renderer.fillTextCentered(
                 `Score: ${this.score}`,
-                this.renderer.width / 2,
-                this.renderer.height / 2 + 50,
-                '#FFFFFF',
-                'bold 28px Arial'
+                w / 2, cy + 55,
+                '#FFFFFF', 'bold 28px Arial'
             );
             this.renderer.fillTextCentered(
                 `HIGH SCORE: ${getHighScore()}`,
-                this.renderer.width / 2,
-                this.renderer.height / 2 + 85,
-                '#FED90F',
-                'bold 22px Arial'
+                w / 2, cy + 90,
+                '#FED90F', 'bold 22px Arial'
             );
-            this.renderer.fillTextCentered(
-                'Press ENTER to return to title',
-                this.renderer.width / 2,
-                this.renderer.height / 2 + 120,
-                '#FFFFFF',
-                '24px Arial'
-            );
+
+            if (this.gameOverTimer > 0.5) {
+                this.renderer.fillTextCentered(
+                    'Press ENTER to return to title',
+                    w / 2, cy + 130,
+                    '#FFFFFF', '24px Arial'
+                );
+            }
         }
         
         // Level complete message
@@ -295,6 +346,33 @@ export class GameplayScene {
                     'bold 22px Arial'
                 );
             }
+        }
+
+        // Pause overlay
+        if (this.paused) {
+            const ctx = this.renderer.ctx;
+            const w = this.renderer.width;
+            const h = this.renderer.height;
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.fillRect(0, 0, w, h);
+
+            this.renderer.strokeText(
+                'PAUSED',
+                w / 2, h / 2 - 30,
+                '#FED90F', '#000000',
+                'bold 64px Arial', 4
+            );
+            this.renderer.fillTextCentered(
+                'Press ESC to Resume',
+                w / 2, h / 2 + 30,
+                '#FFFFFF', 'bold 24px Arial'
+            );
+            this.renderer.fillTextCentered(
+                'Press Q to Quit',
+                w / 2, h / 2 + 65,
+                '#FFFFFF', '22px Arial'
+            );
         }
         
         // Debug overlay (renders last, on top of everything)

@@ -66,4 +66,12 @@ export class Input {
     isStart() {
         return this.isPressed('Enter');
     }
+
+    isPause() {
+        return this.isPressed('Escape');
+    }
+
+    isQuit() {
+        return this.isPressed('KeyQ');
+    }
 }

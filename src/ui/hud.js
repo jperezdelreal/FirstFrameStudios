@@ -46,7 +46,7 @@ export class HUD {
         this.prevComboCount = current;
     }
 
-    render(player, score) {
+    render(player, score, enemies = [], cameraX = 0) {
         const ctx = this.renderer.ctx;
         
         // Player health bar (top-left)
@@ -143,6 +143,31 @@ export class HUD {
             // Reset alignment for other draw calls
             ctx.textAlign = 'left';
             ctx.textBaseline = 'alphabetic';
+        }
+
+        // Enemy health bars (only for damaged enemies)
+        for (const enemy of enemies) {
+            if (!enemy || enemy.state === 'dead') continue;
+            if (enemy.health >= enemy.maxHealth) continue;
+
+            const healthPct = Math.max(0, enemy.health / enemy.maxHealth);
+            const barW = 30;
+            const barH = 4;
+            const bx = enemy.x + enemy.width / 2 - barW / 2 - cameraX;
+            const by = enemy.y - 10;
+
+            // Red background
+            ctx.fillStyle = '#8B0000';
+            ctx.fillRect(bx, by, barW, barH);
+
+            // Green fill
+            ctx.fillStyle = '#00FF00';
+            ctx.fillRect(bx, by, barW * healthPct, barH);
+
+            // Thin border
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(bx, by, barW, barH);
         }
     }
 }
