@@ -7,6 +7,23 @@ export class Audio {
         this.context = new (window.AudioContext || window.webkitAudioContext)();
         this._resumed = false;
 
+        // EX-G2: Mix bus architecture — SFX, Music, UI → Master → destination
+        this.masterBus = this.context.createGain();
+        this.sfxBus = this.context.createGain();
+        this.musicBus = this.context.createGain();
+        this.uiBus = this.context.createGain();
+
+        this.sfxBus.connect(this.masterBus);
+        this.musicBus.connect(this.masterBus);
+        this.uiBus.connect(this.masterBus);
+        this.masterBus.connect(this.context.destination);
+
+        // Default volumes
+        this.masterBus.gain.value = 1.0;
+        this.sfxBus.gain.value = 0.7;
+        this.musicBus.gain.value = 0.5;
+        this.uiBus.gain.value = 1.0;
+
         // EX-G4: Sound priority & deduplication tracking
         this.activeSounds = 0;
         this._typeCounts = {};   // { 'hit': 2, 'punch': 1, ... }
@@ -71,7 +88,7 @@ export class Audio {
         const bassOsc = this.context.createOscillator();
         const bassGain = this.context.createGain();
         bassOsc.connect(bassGain);
-        bassGain.connect(this.context.destination);
+        bassGain.connect(this.sfxBus);
         bassOsc.type = 'sine';
         bassOsc.frequency.setValueAtTime(bassFreq, now);
         bassGain.gain.setValueAtTime(0.3 * intensity, now);
@@ -95,7 +112,7 @@ export class Audio {
         bandpass.Q.value = 1.5;
         noise.connect(bandpass);
         bandpass.connect(noiseGain);
-        noiseGain.connect(this.context.destination);
+        noiseGain.connect(this.sfxBus);
         noiseGain.gain.setValueAtTime(0.2 * intensity, now);
         noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
         noise.start(now);
@@ -107,7 +124,7 @@ export class Audio {
             const sparkleOsc = this.context.createOscillator();
             const sparkleGain = this.context.createGain();
             sparkleOsc.connect(sparkleGain);
-            sparkleGain.connect(this.context.destination);
+            sparkleGain.connect(this.sfxBus);
             sparkleOsc.type = 'sine';
             sparkleOsc.frequency.setValueAtTime(sparkleFreq, now);
             sparkleGain.gain.setValueAtTime(0.05 * intensity, now);
@@ -163,7 +180,7 @@ export class Audio {
         const osc = this.context.createOscillator();
         const gain = this.context.createGain();
         osc.connect(gain);
-        gain.connect(this.context.destination);
+        gain.connect(this.sfxBus);
         osc.type = 'sine';
         osc.frequency.setValueAtTime(baseFreq, now);
         osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.5, now + 0.1);
@@ -187,7 +204,7 @@ export class Audio {
         filter.frequency.value = 500;
         noise.connect(filter);
         filter.connect(noiseGain);
-        noiseGain.connect(this.context.destination);
+        noiseGain.connect(this.sfxBus);
         noiseGain.gain.setValueAtTime(0.25, now);
         noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
         noise.start(now);
@@ -204,7 +221,7 @@ export class Audio {
         const osc = this.context.createOscillator();
         const gain = this.context.createGain();
         osc.connect(gain);
-        gain.connect(this.context.destination);
+        gain.connect(this.sfxBus);
         osc.type = 'sine';
         osc.frequency.setValueAtTime(baseFreq, now);
         osc.frequency.exponentialRampToValueAtTime(baseFreq * 2, now + 0.08);
@@ -223,7 +240,7 @@ export class Audio {
         const gain = this.context.createGain();
 
         osc.connect(gain);
-        gain.connect(this.context.destination);
+        gain.connect(this.sfxBus);
 
         osc.type = 'sine';
         osc.frequency.setValueAtTime(this.randomPitch(300, 0.1), now);
@@ -243,7 +260,7 @@ export class Audio {
         const gain = this.context.createGain();
 
         osc.connect(gain);
-        gain.connect(this.context.destination);
+        gain.connect(this.sfxBus);
 
         osc.type = type;
         osc.frequency.value = frequency;
@@ -253,5 +270,39 @@ export class Audio {
 
         osc.start(now);
         osc.stop(now + duration);
+    }
+
+    // --- EX-G2: Volume control methods ---
+
+    setSFXVolume(v) {
+        this.sfxBus.gain.value = Math.max(0, Math.min(1, v));
+    }
+
+    setMusicVolume(v) {
+        this.musicBus.gain.value = Math.max(0, Math.min(1, v));
+    }
+
+    setUIVolume(v) {
+        this.uiBus.gain.value = Math.max(0, Math.min(1, v));
+    }
+
+    setMasterVolume(v) {
+        this.masterBus.gain.value = Math.max(0, Math.min(1, v));
+    }
+
+    getSFXVolume() {
+        return this.sfxBus.gain.value;
+    }
+
+    getMusicVolume() {
+        return this.musicBus.gain.value;
+    }
+
+    getUIVolume() {
+        return this.uiBus.gain.value;
+    }
+
+    getMasterVolume() {
+        return this.masterBus.gain.value;
     }
 }
