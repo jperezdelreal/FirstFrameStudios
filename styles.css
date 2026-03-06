@@ -11,6 +11,7 @@ body {
     align-items: center;
     min-height: 100vh;
     overflow: hidden;
+    cursor: none;
 }
 
 #gameCanvas {
@@ -20,6 +21,7 @@ body {
     width: auto;
     height: auto;
     aspect-ratio: 16 / 9;
-    image-rendering: crisp-edges;
-    image-rendering: pixelated;
+    image-rendering: auto;
+    box-shadow: inset 0 0 80px 30px rgba(0, 0, 0, 0.5);
+    cursor: none;
 }
