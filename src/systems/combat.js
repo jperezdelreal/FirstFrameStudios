@@ -20,7 +20,9 @@ export class Combat {
             'punch':      { damage: 10, knockback: 150, score: 10 },
             'kick':       { damage: 15, knockback: 250, score: 20 },
             'jump_punch': { damage: 10, knockback: 150, score: 10 },
-            'jump_kick':  { damage: 20, knockback: 300, score: 25 }
+            'jump_kick':   { damage: 20, knockback: 300, score: 25 },
+            'belly_bump':  { damage: 25, knockback: 300, score: 30 },
+            'ground_slam': { damage: 20, knockback: 200, score: 25 }
         };
         const stats = attackStats[player.state] || attackStats['punch'];
         
@@ -45,12 +47,17 @@ export class Combat {
             
             const hurtbox = enemy.getHurtbox();
             if (this.checkCollision(attackBox, hurtbox)) {
-                const knockbackX = player.facing * knockbackForce;
+                let knockbackX = player.facing * knockbackForce;
                 let knockbackY = (enemy.y - player.y) * 2;
                 
                 // Dive kick pushes enemies downward
                 if (player.state === 'jump_kick') {
                     knockbackY = 100;
+                }
+                
+                // Ground slam pushes enemies away from player center
+                if (player.state === 'ground_slam') {
+                    knockbackX = (enemy.x > player.x) ? knockbackForce : -knockbackForce;
                 }
                 
                 enemy.takeDamage(damage, knockbackX, knockbackY);
@@ -65,11 +72,12 @@ export class Combat {
                     audio.playHit();
                 }
                 
-                renderer.screenShake(isFinisher ? 6 : 3, isFinisher ? 0.15 : 0.1);
+                const isSpecialMove = player.state === 'belly_bump' || player.state === 'ground_slam';
+                renderer.screenShake((isFinisher || isSpecialMove) ? 6 : 3, (isFinisher || isSpecialMove) ? 0.15 : 0.1);
                 
                 const hitX = (player.x + player.width / 2 + enemy.x + enemy.width / 2) / 2;
                 const hitY = (player.y + player.height / 2 + enemy.y + enemy.height / 2) / 2;
-                const intensity = isFinisher ? 'heavy' :
+                const intensity = (isFinisher || isSpecialMove) ? 'heavy' :
                     (player.state === 'kick' || player.state === 'jump_kick') ? 'medium' : 'light';
                 hits.push({ x: hitX, y: hitY, intensity, damage });
             }
