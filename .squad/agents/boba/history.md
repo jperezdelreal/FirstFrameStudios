@@ -232,3 +232,72 @@
 - **Art direction as a role justified itself primarily through the DPR audit and style guide.** Without the audit, the game would have shipped blurry. Without the style guide, 4 agents would have used 4 different outline colors.
 - **Animation principles matter more than rendering detail.** A simple shape with proper squash/stretch looks better than a detailed shape that doesn't move naturally. The industry research confirmed this across all 5 reference games.
 - **Visual reference sheets > text descriptions.** The art-direction.md text spec worked for palette/outlines but failed for proportions. Next project needs a rendered reference image on Day 1.
+
+---
+
+## Wave 9 — Universal Animation Skill Creation (2026-08-03)
+
+**Requested by:** joperezd  
+**Reason:** Ackbar's skills audit flagged animation as a critical gap — Boba and Nien have ZERO skills for their core discipline. Animation is fundamental to ANY game, ANY genre. This skill fills the gap.
+
+**Delivered:**
+- .squad/skills/animation-for-games/SKILL.md — Comprehensive, engine-agnostic, genre-agnostic animation skill covering:
+  1. **The 12 Principles Applied to Games** — Squash & Stretch (weight), Anticipation (readability), Staging (silhouette clarity), Follow-Through (overshoot), Timing (frame counts), Exaggeration (120% expression). Identified Tier 1 (Timing, Anticipation, Squash/Stretch), Tier 2 (Follow-Through, Staging, Exaggeration), Tier 3 (Secondary Action, Overlapping). 
+  2. **Animation State Machines** — Universal states (idle, movement, combat, death), transition matrix, priority rules (combat > movement > idle), cancel windows, blend timing (0.05-0.2s). 
+  3. **Sprite vs Skeletal Animation** — Tradeoffs, best use cases, when to switch (200+ LOC, 4+ animation states, texture requirements, multi-artist), hybrid approaches.
+  4. **Animation Timing for Game Feel** — Attack anatomy (startup/active/recovery frame data), walk cycles (8-12f snappy, 16-24f realistic), idle loops (2-4s), hit reactions (4-8f), death animations (12-24f).
+  5. **Animation in Different Engines** — Godot (AnimationPlayer, AnimationTree), Unity (Animator, blend trees), general patterns (state machine pseudocode), Canvas 2D (manual frame stepping).
+  6. **Procedural Animation** — Sine-wave walk, screen shake, squash/stretch, trails, particles, IK foot placement.
+  7. **Animation Pipeline** — Concept → key poses → in-betweens → cleanup → export → integration → tuning. Naming conventions (character_action_variant), asset organization strategies, frame rate selection (12/24/30/60 fps), export formats.
+  8. **Animation for Different Genres** — Action/Fighter (frame-perfect), Platformer (responsive jumps), RPG (elaborate abilities), Puzzle (satisfying placement), Horror (deliberate weight).
+  9. **Anti-Patterns** — Floaty movement, animation lock, template syndrome, frame data ignorance, no transitions, ignored hit reactions, procedural overcomplexity.
+  10. **Pre-Ship Checklist** — Technical (state machine, transitions, memory), game feel (squash/stretch, anticipation, reactions), design (personality, silhouettes, balance), audio sync, polish.
+
+**Key Insights:**
+- **Animation timing is the objective measure of game feel.** Frame counts are the ONLY tool that doesn't lie. A 6-frame startup reads differently than a 16-frame startup. This is why fighting games obsess over frame data.
+- **The 12 principles work universally across genres.** Pixelated platformers and photorealistic 3D games both rely on Timing, Anticipation, and Squash/Stretch. The implementation changes, the principles don't.
+- **Startup frames = fairness.** In any competitive or skill-based game, startup frames are the only way to make actions readable. No startup = unreadable = unfair.
+- **Animation state machines are simpler than most people think.** A few dozen lines of pseudocode handles 95% of games. The complexity is tuning timings, not building the system.
+- **Sprites vs. Skeletal is a 200-line decision point.** Below 200 lines of procedural character code, the crossover hasn't happened. Above it, sprites win. This applies to animation counts too: <4 animation states = sprites tolerable, 4+ = skeletal wins.
+- **Procedural animation should be simple.** Screen shake, squash/stretch, trails, particle effects are perfect for procedural. Complex motion (attacks, special moves, character acting) should be key-framed.
+- **Confidence is low because the skill is based on SimpsonsKong + cross-game research, not multi-genre, multi-engine production experience.** Next projects will validate (or refute) these patterns.
+
+**Cross-References:**
+- Links to 2d-game-art (sprite creation), game-feel-juice (screen shake, hitlag, particles), state-machine-patterns (transition logic), eat-em-up-combat (frame data)
+- Godot AnimationPlayer + AnimationTree; Unity Animator + blend trees
+- Frame data concepts from Street Fighter, Celeste, Hollow Knight research
+
+**Next Actions for Squad:**
+1. Apply animation-for-games patterns to next project (validate Tier 1 principles in production)
+2. Create genre-specific animation checklists (e.g., nimation-for-fighters.md, nimation-for-platformers.md)
+3. Document procedural walk/run/jump templates for reuse
+4. Validate cross-engine consistency (Godot + Unity + Canvas 2D produce same game feel from frame data)
+5. Build animation frame data reference (5-10 games analyzed for startup/active/recovery patterns)
+
+### Session 17: Animation for Games Skill Creation (2026-03-07)
+
+Created universal animation principles skill — a comprehensive, engine-agnostic reference covering 2D and 3D animation fundamentals applicable to all game development contexts.
+
+**Artifact:** .squad/skills/animation-for-games/SKILL.md (51 KB)
+
+**Skill structure (13 sections):**
+1. Animation Fundamentals (12 FPS = game optimal baseline, 24 FPS = cinematic)
+2. Timing & Spacing (ease-in, ease-out, drag, lead, follow)
+3. Character Animation (walk, run, idle, transition states)
+4. Combat Animation (telegraph, attack, recovery, hit reaction)
+5. Visual Communication (silhouette, contrast, appeal)
+6. Performance Optimization (frame budgets, LOD systems)
+7. Tools & Pipeline (sprite sheets, skeletal rigs, import settings)
+8. Rigging Fundamentals (bone hierarchy, weight painting, constraints)
+9. Motion Capture & Retargeting (cleanup, blending, retargeting to game rigs)
+10. Animation Systems (state machines, blend trees, procedural animation)
+11. IK/FK Basics (Inverse/Forward Kinematics, when to use each)
+12. Blending & Layering (additive animation, blend spaces, layer masks)
+13. Anti-Patterns Catalog (7 failures: over-animation, rigid poses, no squash-stretch, etc.)
+
+**Key insight:** 12 FPS rule comes from SimpsonsKong experience — more frames than needed wastes artist time; fewer frames breaks readability. The 12 FPS baseline applies to all game animation, not just beat-em-ups.
+
+**Cross-references:** Links to game-feel-juice (juicy feedback visuals), game-design-fundamentals (animation as communication), beat-em-up-combat (attack animation timing)
+
+**Confidence:** Medium (SimpsonsKong experience + industry best practices). Low for 3D motion capture section (not yet applied to game project).
+

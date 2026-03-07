@@ -190,3 +190,46 @@
 
 **Full audit:** `.squad/analysis/skills-audit.md` includes per-skill quality ratings, improvement recommendations, dependency analysis, and confidence assessment.
 
+### 2025-07-21: Skills Audit v2 — Deep Dive (Second-Pass)
+- **Context:** Three P0/P1 skills from v1 audit were created (game-feel-juice, ui-ux-patterns, input-handling). Founder requested deeper second-pass audit with new lens: quality of new skills, cross-skill coherence, remaining gaps, confidence review, and agent mapping.
+- **Deliverable:** `.squad/analysis/skills-audit-v2.md` — comprehensive 15-skill assessment.
+
+**Key Findings:**
+1. **New skill quality is high:** `game-feel-juice` rated ⭐⭐⭐⭐⭐ (reference quality), `ui-ux-patterns` and `input-handling` both ⭐⭐⭐⭐. All three are genuinely genre-agnostic and match or exceed the quality baseline.
+2. **Cross-referencing is the #1 structural weakness:** Only 1/15 skills (game-feel-juice) has a proper cross-reference section. The two other new skills ship without one. Most existing skills have none.
+3. **No hard contradictions found:** Hitlag range differs slightly (2-6f in game-feel-juice vs 3-6f in beat-em-up-combat), but this is a scope distinction (universal vs genre-specific), not an error.
+4. **Coverage improved:** Agent zero-skill rate dropped from 46% (6/13) to 29% (4/14). Wedge, Lando, and Yoda all gained skills.
+5. **v1 structural cleanup NOT executed:** 5 confidence bumps, 2 missing headers, 3 overlaps, 2 renames — all still pending. Good recommendations that aren't implemented are worth zero.
+6. **Still 4 agents with ZERO primary skills:** Leia, Nien, Bossk, Scribe. Jango has unclear role.
+7. **7 new skills still needed** before multi-genre readiness: animation-systems (P0), game-design-methodology (P0), level-design-fundamentals (P1), enemy-ai-patterns (P1), automated-testing (P1), release-management (P2), documentation-standards (P2).
+
+**Overall Scores:** Coverage 6.5/10 (+1.5), Quality 8/10 (+0.5), Organization 6/10 (unchanged), Growth-Readiness 5.5/10 (+1.5), Cross-Referencing 4/10 (new dimension).
+
+**Top 3 Actions:**
+1. Add cross-reference sections to all 15 skills (P0, 2 hours)
+2. Create `animation-systems` skill for Boba + Nien (P0, before Sprint 0)
+3. Execute v1 structural cleanup — overdue (P1, 4-6 hours)
+
+**Key Learning:** The v1 audit identified the right gaps and the team filled the top 3 with genuinely excellent skills. But structural maintenance was skipped. The knowledge base improved because of *additions*, not *improvements to existing content*. Both are needed for the next quality jump. Also: cross-referencing is an emergent problem — as the skill count grows, the lack of connections between skills becomes increasingly costly. One isolated skill is fine. Fifteen isolated skills is a fragmented knowledge base.
+
+
+### Session 17: Deep Research Wave — Skills Audit v2 (2026-03-07)
+
+Conducted comprehensive second-pass audit of 15 existing team skills. Evaluated each for universal applicability, confidence level, completeness, and cross-reference coverage. Result: 12/15 skills rated medium+ confidence. 3 skills identified needing cross-reference updates (beat-em-up-combat, game-feel-juice, procedural-audio) to link with new universal skills.
+
+**Audit deliverable:** .squad/analysis/skills-audit-v2.md (14.2 KB)
+
+**Key findings:**
+- game-feel-juice rated ⭐⭐⭐⭐⭐ (5/5 stars) — reference standard for documentation quality
+- 12 skills at medium+ confidence; 3 skills confidence unclear
+- 8 additional skills recommended for creation (future work)
+- Documentation structure validated across all skills
+
+**Confidence assessment summary:**
+- High confidence (proven across projects): game-feel-juice, beat-em-up-combat
+- Medium confidence (validated in SimpsonsKong, cross-tested): procedural-audio, audio-excellence-research, web-game-engine
+- Medium confidence (new universal skills): game-design-fundamentals, game-audio-design, animation-for-games, level-design-fundamentals, enemy-encounter-design
+- Low confidence (not yet cross-tested): project-conventions, skills-system-architecture, 3 others
+
+**QA sign-off:** All 7 agent deliverables from Deep Research Wave meet or exceed documentation standards set by game-feel-juice. Recommended cross-references validated for future updates.
+

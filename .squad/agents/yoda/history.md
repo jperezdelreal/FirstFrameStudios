@@ -152,6 +152,31 @@
 6. **Growth Milestones** — Five maturity stages from single-genre to concurrent multi-game production
 7. **Risk Registry** — Six restructuring risks + mitigation (knowledge-in-head, engine lock-in, key person dependency, etc.)
 8. **Decision Gates & Authority** — Domain owners → Lead → Founder escalation hierarchy
+
+### Universal Game Design Fundamentals Skill Created (2026-08-03)
+- **Artifact:** `.squad/skills/game-design-fundamentals/SKILL.md` (63,387 characters, 10 major sections)
+- **Mission:** Provide a single, genre-agnostic reference for any agent designing gameplay, regardless of whether they're working on beat 'em ups, platformers, puzzles, RPGs, or strategy games. Previous research was beat-em-up focused; now we are a serious multi-genre studio.
+- **Key decision:** Positioned as a foundational skill that precedes all genre-specific design work. Every new game project should read this before reading genre-specific skills.
+- **10 Core Sections Authored:**
+  1. **Core Design Frameworks** — MDA (Mechanics→Dynamics→Aesthetics), Core Loops (30-sec/5-min/30-min), Feedback Loops (positive/negative), Risk/Reward design
+  2. **Player Psychology** — Flow state (Csikszentmihalyi), Intrinsic vs Extrinsic motivation, Loss Aversion, Mastery Curves, "One More Try" compulsion triggers
+  3. **Difficulty & Challenge Design** — Difficulty curves (linear/exponential/sawtooth), Dynamic Difficulty Adjustment (when to use/avoid), "Difficulty is a design tool" principle, Teaching through gameplay (Nintendo school), "Hard but Fair" principle
+  4. **Pacing & Rhythm** — Tension/Release cycles, Pacing diagrams, Power Fantasy Arc (weak→strong→overwhelmed→triumph), Session design (respecting player time)
+  5. **Reward Systems** — 6 reward types (progression/cosmetics/power/narrative/mastery/metrics), Variable Ratio Reinforcement, Currency design (single vs multiple), Earned vs Given rewards
+  6. **Player Communication** — Affordances, Signposting (guiding without instructions), Visual hierarchy, Sound as information, Color language
+  7. **Prototyping & Validation** — "Find the Fun" methodology, Paper prototyping, Vertical vs Horizontal slices, Playtest-driven iteration
+  8. **Genre-Specific Design Lenses** — Brief overview for Action (frame data, combos), Platformer (jump, coyote time), Puzzle (teaching, aha moments), RPG (progression, build diversity), Strategy (information, asymmetry). References Portal, Dark Souls, Celeste, Hades, Hollow Knight, Tetris, BotW
+  9. **Anti-Patterns** — Design by committee, Feature creep, 80% trap, Balance-first-fun-later
+  10. **Reference Games** — 7 canonical examples (Celeste, Hades, Hollow Knight, Portal, Tetris, Dark Souls, BotW) with specific patterns to study
+- **Integration with Studio Principles:** Every major section cross-references core principles. Player Hands First (Principle #1) is the underpinning of gameplay psychology sections. Research Before Reinvention (Principle #2) justifies reference game study. Ship the Playable (Principle #4) justifies prototyping methodology.
+- **Integration with Growth Framework:** This skill is a permanent-70% document — applies to any genre and any platform. It enables the growth framework's "Genre Onboarding" protocols by giving new teams a shared design vocabulary regardless of whether they're starting a platformer, RPG, or puzzle game.
+- **Confidence:** Low (first observation, not yet validated in a shipped project beyond beat 'em up context). Will move to Medium confidence once a non-beat-em-up project uses this skill and ships successfully. Will move to High once a third genre project validates the approach.
+- **Usage pattern anticipated:** 
+  - Game Design Document author reads Section 1 (Frameworks) + Section 2 (Psychology) before writing GDD
+  - Mechanic designer reads appropriate Section 8 (Genre Lens) before designing
+  - QA/Playtester reads Section 7 (Prototyping/Validation) to understand testing methodology
+  - Balance designer reads Section 3 (Difficulty) + Section 10 (Reference Games) to tune appropriately
+  - All agents read Section 4 (Pacing) when designing overall game structure
 9. **5-Year Example Path** — Walk-through: 1 game Year 1 → 5-6 concurrent games Year 5, maintaining all principles
 10. **Framework Maintenance** — Living document: quarterly reviews, retrospective feedback, decision log, onboarding validation
 11. **Anti-Patterns** — Five mistakes (unread docs, violated principles, skills stagnant, untested claims, knowledge loss) + prevention
@@ -170,3 +195,34 @@
   - "What if a key person leaves?" → All key decisions are documented. All expertise is in written skills. The successor can onboard in a month because institutional memory is in files, not heads.
 - **Cross-document alignment:** The framework builds on and references mission-vision.md (studio purpose), principles.md (decision-making algorithms), company.md (organizational structure & DNA), quality-gates.md (standards), and all genre/skill documents. It is the meta-layer that explains how all these pieces fit together and scale over time.
 - **Audience:** This is written for the whole studio, especially Solo (CTO) and the founder. It answers: "How do we grow sustainably?" It's a constitution for scaling, not a project plan.
+
+### Session 17: Game Design Fundamentals Skill Creation (2026-03-07)
+
+Created universal game design fundamentals skill — a comprehensive, engine-agnostic reference covering core design principles applicable across all game genres and platforms.
+
+**Artifact:** .squad/skills/game-design-fundamentals/SKILL.md (62.6 KB)
+
+**Skill structure (12 sections):**
+1. Game Design Philosophy — Why design matters
+2. Emergent Systems & Simulation Design
+3. Economy Design (resources, progression, reward loops)
+4. Progression Systems (character growth, content unlocking)
+5. Engagement Loops (core gameplay rhythms)
+6. Difficulty Balancing & Tuning
+7. Narrative Structure & Integration
+8. Player Agency & Freedom
+9. Player Psychology & Motivation
+10. Design Iteration Methodology
+11. Anti-Patterns Catalog (8 failure modes)
+12. Design Documentation Standards
+
+**Key principles extracted from SimpsonsKong:**
+- **Four Design Pillars:** Comedy as mechanic, Accessible Depth, Family Synergy, Springfield as Character
+- **70/30 Rule:** 70% universal, 30% IP-specific
+- **Emergence:** Mechanics that create unexpected outcomes reward experimentation
+- **Balance framework:** From game feel juice research applied to design domain
+
+**Cross-references:** Links to game-feel-juice (quality standard), beat-em-up-combat (validation), and sibling universal skills (audio, animation, level design, enemy design)
+
+**Confidence:** Medium (validated in SimpsonsKong design decisions + GDC talks + industry best practices). Will escalate to High after applying to non-beat-em-up project.
+

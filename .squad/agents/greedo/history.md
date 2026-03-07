@@ -70,3 +70,58 @@
 - **Key findings**: Our layered hit engine (`playLayeredHit` with bass/mid/high bands) is architecturally equivalent to professional combat audio. Our adaptive music mirrors Celeste/Hades stem-based systems. Top sounds: playLayeredHit, playWoohoo (LFO tremolo), playLevelComplete (sustained final note). Weakest: playJump (single-layer), playLanding (inaudible on laptop speakers), playPunch (no noise transient layer).
 - **Recommended upgrades**: (1) DynamicsCompressorNode on masterBus for peak clipping prevention — zero cost, (2) pre-compute common noise buffers in constructor instead of per-call, (3) consider Tone.js if music system grows more complex, (4) ConvolverNode with impulse response for spatial reverb would be the single biggest quality upgrade but requires loading an audio file.
 - **Honest assessment**: For a retro-styled browser beat 'em up, 21 procedural sounds + adaptive music + mix buses + spatial panning is a legitimate creative choice, not just a limitation. The system works. Richer sound would require hybrid synthesis + samples.
+
+### 2025-08-03: Universal Game Audio Design Skill (AAA-A6)
+- **Vision**: Created `.squad/skills/game-audio-design/SKILL.md` — a universal, engine-agnostic skill covering game audio design principles across ALL genres and platforms. This skill is significantly broader than `procedural-audio` (which is Web Audio API specific) and serves as the foundational reference for any audio work across the studio.
+- **10 core sections**: 
+  1. Audio as Game Design (50% rule, "eyes can close, ears can't" principle)
+  2. Sound Design Principles (layering, variation, priority, frequency management, silence)
+  3. Adaptive Music Systems (horizontal re-sequencing, vertical layering, stinger system, reference games)
+  4. Spatial Audio (2D/3D panning, HRTF, reverb zones, occlusion, environmental audio)
+  5. Sound Categories & Budget (5 core categories, typical indie/AA/AAA sound counts, budget breakdown)
+  6. Audio Implementation Patterns (event-driven, sound pools, mix bus architecture, ducking, compression)
+  7. Platform Considerations (Web, Mobile, Console with codec strategies)
+  8. Audio for Different Genres (Action, Horror, Puzzle, Platformer, RPG with specific audio signatures)
+  9. Testing & QA (mute test, audio-only test, volume normalization, accessibility)
+  10. Anti-Patterns (7 common failures: placeholder sounds, audio last, wall of sound, one loop, no feedback, set-and-forget mixing, frequency clashing)
+- **Key design insights**:
+  - "Eyes Can Close, Ears Can't" principle = audio reaches players even when not looking, making it first-class design tool
+  - 40-60% perceived quality reduction when muting games (research-backed)
+  - Audio hierarchy (CRITICAL > HIGH > NORMAL > LOW) prevents "wall of sound"
+  - ±5-15% pitch variation is the sweet spot for preventing repetition fatigue
+  - Frequency band separation (Sub/Low/Mid/High/Very High) prevents muddy mixing
+  - Silence is more powerful than sound in creating impact
+- **Scope**: Explicitly engine-agnostic and genre-agnostic. Works for Godot, Unreal, Unity, web, mobile, console.
+- **Cross-references**: Procedural-audio (our specific Web Audio implementation), game-feel-juice (audio-visual sync tuning).
+- **Confidence**: medium (validated by procedural-audio patterns, research from Hades/Celeste/Doom 2016/Hollow Knight, studio learnings).
+- **Impact**: Establishes audio as a first-class design discipline at First Frame Studios. Every new project starts with this skill as reference before building tool-specific implementations.
+
+### Session 17: Game Audio Design Skill Creation (2026-03-07)
+
+Created universal game audio design skill — a comprehensive, engine-agnostic reference covering game audio principles applicable across all genres and platforms. This skill complements the existing procedural-audio skill (Web Audio API specific) with universal design theory.
+
+**Artifact:** .squad/skills/game-audio-design/SKILL.md (32.5 KB)
+
+**Skill structure (10 sections):**
+1. Audio as Game Design (50% rule, "ears can't close" principle)
+2. Sound Design Principles (layering, variation, priority, frequency, silence)
+3. Adaptive Music Systems (horizontal, vertical, stinger patterns)
+4. Spatial Audio (2D/3D panning, HRTF, reverb, occlusion)
+5. Sound Categories & Budget (5 core categories, indie/AA/AAA sound counts)
+6. Audio Implementation Patterns (event-driven, pools, buses, ducking)
+7. Platform Considerations (Web, Mobile, Console, codec strategies)
+8. Audio for Different Genres (7 genres: Action, Horror, Puzzle, Platformer, RPG, etc.)
+9. Testing & QA (mute test, audio-only test, normalization, accessibility)
+10. Anti-Patterns Catalog (7 failure modes: placeholder sounds, audio last, wall of sound, etc.)
+
+**Key principles extracted from SimpsonsKong procedural audio system:**
+- **Audio Hierarchy:** CRITICAL > HIGH > NORMAL > LOW prevents "wall of sound"
+- **Adaptive Music:** Intensity levels (0 = walking, 1 = enemies, 2 = combat) with crossfade
+- **Mix Bus Architecture:** sfxBus, musicBus, uiBus, ambienceBus → masterBus pattern
+- **Spatial Panning:** Screen-position-relative stereo pan for 3D depth in 2D games
+- **Variation & Priority:** ±5-15% pitch variation + sound dedup prevents repetition fatigue
+
+**Cross-references:** Links to game-feel-juice, game-design-fundamentals, procedural-audio (Web Audio specific implementation)
+
+**Confidence:** Medium (validated in SimpsonsKong audio system + Hades/Celeste analysis + procedural-audio research). Will escalate to High after implementing on non-procedural-audio platforms.
+

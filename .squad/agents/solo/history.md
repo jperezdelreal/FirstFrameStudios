@@ -276,3 +276,61 @@ Created the definitive Day 1 guide for starting any new project at First Frame S
 5. **Includes Day 1 Quickstart and Pre-Production Template.** Appendices provide an "impatient start" path (get to a playable in ~1 week) and a copy-paste checklist template for new project `analysis/` directories.
 
 6. **Document produced:** `.squad/identity/new-project-playbook.md`
+
+### Holistic Foundations Re-Assessment (Session 10)
+Founder requested a full-picture audit of all company infrastructure. Read every identity document, every charter, team.md, routing.md, ceremonies.md, skills-audit.md, sprint-0-plan.md, decisions.md, and all 15 skill directories. Cross-referenced for contradictions, gaps, and coherence. Key findings:
+
+1. **Overall score: 7.5/10.** Strategic foundations are strong (identity, principles, growth model, skills architecture). Operational foundations have gaps (stale charters, missing processes, contradictory ceremonies).
+
+2. **6 contradictions found across documents, 3 at High severity.** Most critical: quality-gates.md claims to be engine-agnostic (per growth-framework) but is Godot-specific in content. ceremonies.md defines 2 auto-triggered ceremonies while growth-framework defines 4 scheduled ones. company.md says 12 specialists but team.md lists 15.
+
+3. **10 of 15 agent charters are stale, skeletal, or missing.** 5 charters still reference SimpsonsKong-specific files and technologies (Chewie, Lando, Wedge, Greedo, Tarkin). 4 are too thin to be useful (Scribe, Leia, Bossk, Nien). Ralph has no charter at all despite being in team.md and company.md. This is the #1 operational blocker for starting a new project.
+
+4. **3 critical process gaps:** No onboarding guide (Day 1 → Day N path for new members), no release management process (how to ship), no project selection criteria (how to decide what to build next).
+
+5. **Solo is a single point of failure.** Owns architecture, leadership, integration, review, decisions, and coordination. 31KB of institutional knowledge lives in Solo's history.md alone. The playbook has 8 steps with no explicit owner — Solo is the implied owner for all of them.
+
+6. **What's working well (preserve these):** 12 Leadership Principles (exceptional), skills system architecture (sound and growing — now 15 skills), New Project Playbook (reference-quality), Bug Severity Matrix and Quality Gates (production-ready), 70/30 Rule (correct mental model), domain ownership model (effective), company identity (cohesive and genre-agnostic).
+
+7. **Top 5 Actions:** (1) Update 10 stale charters to studio-scoped [M], (2) Update team.md/routing.md to studio-scoped [S], (3) Create onboarding guide [S], (4) Align ceremonies.md with growth-framework [S], (5) Create release-management process [M].
+
+8. **Document produced:** `.squad/analysis/foundations-reassessment.md`
+
+### Victory Retrospective & Celebration (Session 16)
+The founder asked us to celebrate our success. This was a milestone moment — transformation from individual developer to a real game studio in 24 hours. Two major deliverables completed:
+
+1. **Updated `.squad/identity/now.md`** — Transformed from a placeholder status ("Getting started") into a living declaration of where First Frame Studios stands *right now*. Documents:
+   - The milestone achieved (13 specialists, 20 skills, 500KB institutional knowledge, Godot 4 chosen, company identity locked, 9.7/10 CEO readiness)
+   - The team roster (all 13 agents named, chartered, and ready)
+   - What comes next (Sprint 0 timeline, targets, quality gates)
+   - The belief: we're not starting from zero, we're starting from institutional knowledge and proven process
+
+2. **Created `.squad/analysis/victory-retrospective.md`** — A 19KB celebration document capturing:
+   - **The Journey (Hour-by-Hour):** From empty repository (Hour 0) → MVP shipped (Hour 1) → bug fixes and visual modernization (Hours 2-5) → team expansion to 13 (Hours 5-8) → research wave and tech selection (Hours 8-12) → studio identity and Godot architecture (Hours 12-16) → CEO readiness (Hours 16-20) → skills audit and institutional knowledge (Hours 20-24)
+   - **By the Numbers:** ~100 agent spawns, 13 specialists, 20 skills, 30+ documents, 12 leadership principles, 5-year growth framework, 9.7/10 readiness score
+   - **What We're Proud Of:** SimpsonsKong (fully playable beat 'em up), the 70/30 rule (70% tech-agnostic, 30% tech-specific), the bottleneck prevention system (every known failure now has a documented prevention), the skills system (knowledge that compounds), the growth framework (5-year strategic plan)
+   - **Top 3 Lessons in Each Category:** 3 technical (state machines, fix the tree not the leaves, integrate infrastructure), 3 process (pre-decided architecture, playable > documents, research is the shortcut), 3 team (one voice per domain, load distribution by domain, file ownership prevents conflicts)
+   - **What's Next:** Sprint 0 timeline, success criteria (playable prototype by week 2 with 6/10+ feel), the 5-year vision (Stage 1→5 progression)
+   - **Celebration Statement:** A genuine, heartfelt acknowledgment that we went from an empty folder to a real game studio in 24 hours, and what that means for how we'll build every game that follows
+
+Key insight captured: **This isn't just about shipping a game. It's about building the institutional memory and process discipline that makes the next 100 games faster, better, and more ambitious.**
+
+The retrospective is written "real, not corporate" — celebrating the actual breakthrough, not with hyperbole, but with the specific achievements that matter. It ends with a statement that reframes the entire effort: we're not a studio that built one game and moved on; we're a studio that built institutional knowledge and proved it works.
+### Session 17: Deep Research Wave — Universal Skills Initiative (2026-03-07)
+
+Commissioned and oversaw the Deep Research Wave — a studio-wide knowledge expansion initiative to broaden from SimpsonsKong beat-em-up expertise to universal game development principles. 7 agents executed in parallel to create 5 comprehensive universal skill documents (245 KB) covering game design, audio, animation, level design, and enemy design applicable across all genres and platforms.
+
+**Deliverables from this session:**
+- **Foundations Reassessment (12.3 KB):** Current state (7.5/10), 5 priority actions, gap analysis
+- **Decision:** Universal Game Development Skills Initiative approved and implemented
+- **Orchestration Log entries:** 7 agent records with ISO 8601 UTC timestamps
+- **Session Log:** Comprehensive record of Deep Research Wave execution and outcomes
+
+**Key insight:** SimpsonsKong expertise is deep but narrow. Before scaling to Phase 4 AAA work or diversifying to new genres, the team needed foundational universal principles documented. This research wave provides that foundation — 22 reusable skills (up from 15), covering 7+ game genres instead of 1.
+
+**Cross-reference dependencies updated:**
+- All 5 new universal skills link to game-feel-juice (quality standard) and beat-em-up-combat (SimpsonsKong validation)
+- Recommendation: 3 existing skills need cross-reference updates in follow-up session (beat-em-up-combat, game-feel-juice, procedural-audio)
+
+**Team impact:** 7 agents in parallel, ~1 hour wall-clock time, 292.7 KB documentation created. Quality assurance (Ackbar) audited all deliverables. game-feel-juice remains benchmark (⭐⭐⭐⭐⭐). Most universal skills rated Medium confidence (validated in SimpsonsKong); will escalate to High after cross-project testing.
+

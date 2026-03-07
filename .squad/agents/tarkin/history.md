@@ -60,3 +60,49 @@
 - **Integration boundary:** Both files include detailed integration comments for gameplay.js (Solo's territory) — import paths, update/render call order, hitbox overlap checks, and throw bonus logic. No gameplay.js modifications made.
 - **Level data expansion:** `LEVEL_1` now exports `destructibles[]` and `hazards[]` arrays alongside existing `waves[]`, keeping the flat JSON-serializable format established in Wave 2 learnings.
 - **Key insight:** Per-entity cooldown via Map with object references as keys avoids needing unique IDs on entities — works because JS Map uses reference equality for object keys.
+
+### SKILL: Universal Enemy & Encounter Design (2026-08-03)
+- **Objective:** Created `.squad/skills/enemy-encounter-design/SKILL.md` — a universal, genre-agnostic enemy design framework that generalizes beat 'em up knowledge to all action game genres.
+- **Core philosophy:** Enemies are "gameplay verbs" — each type teaches a mechanic and forces a specific player response. Visual design communicates role (big=slow+strong, small=fast+weak, glowing=ranged). Never introduce 3+ new types simultaneously; escalate gradually.
+- **10 universal archetypes:** Fodder (weak, numerous), Bruiser (slow, tanky, high damage), Agile (fast, evasive, hit-and-run), Ranged (distance management), Shield/Defender (requires positioning), Swarm (crowd control), Explosive (forces repositioning), Support (changes win condition), Mini-boss (elevated archetype), Boss (comprehensive exam).
+- **Archetype combinations:** Ranged+Agile=Sniper, Bruiser+Shield=Fortress, Bruiser+Support=Paladin. Creates rock-paper-scissors tactical depth.
+- **Boss design (Mega Man principle):** Patterns are learnable (not random), tested within 2-3 minutes. Multi-phase design escalates: Phase 1 teaches basics, Phase 2 adds mechanic + speed, Phase 3 adds pressure + desperation. Vulnerability windows are obvious (not frame-data-dependent).
+- **Wave composition & escalation:** Intro wave = 1 isolated new type + safe space. Pattern: Type A solo → B solo → A+B mixed → C solo → A+B+C. Never blend >1 new type in first encounter.
+- **Spawning fairness rules:** (1) Players always see spawns coming (camera-relative positions), (2) spawns trigger-based not random, (3) stagger spawn arrival 0.5s apart, (4) initial spawn position is safe (at edge, not in attack range).
+- **Difficulty scaling knobs:** Stat scaling (boring, for lazy tuning), Behavioral scaling (new moves, better AI, most interesting), Composition scaling (harder enemy combos), Environmental scaling (arena changes), Adaptive scaling (Director AI watching player performance).
+- **AI patterns:** State machines (simple, common), Behavior trees (flexible, complex), Attack throttling (max 2-3 simultaneous), Group coordination (flanking, surrounding, morale), Telegraphing (most important: visual+audio+spatial+clear).
+- **DPS budget framework:** Calculate max safe DPS from player HP ÷ safe TTK (4-6s). Normal enemy ≈ 5 dps, Bruiser ≈ 12 dps, capped by throttling. Time-to-kill targets: Fodder 2-3s, Normal 3-5s, Bruiser 8-10s, Mini-boss 20-30s, Boss 60-90s.
+- **8 anti-patterns to avoid:** (1) Bullet sponge (huge HP, boring behavior), (2) Unfair ambush (spawn behind player), (3) Palette swap army (all same behavior, diff colors), (4) Passive crowd (stand idle waiting), (5) Instant death no telegraph, (6) Distance dead zones (ranges don't overlap), (7) Arrow spam (too many ranged), (8) No boss recovery window.
+- **Genre-specific guidance:** Beat 'em up (grabs, back attacks, hitstun), Platformer (patrol routes, jump threats), Shooter (cover, suppression, formations), RPG (stat-based, elemental weaknesses), Stealth (patrol routes, detection cones, alert states).
+- **Confidence: Medium.** Patterns validated in SimpsonsKong beat 'em up context; archetypes and principles generalize well across action games. Not tested in actual platformer/shooter/RPG projects yet, but foundational theory is sound.
+- **Cross-references:** Links to game-feel-juice, beat-em-up-combat (foundational), state-machine-patterns, game-design-fundamentals, camera-systems.
+
+### Session 17: Enemy & Encounter Design Skill Creation (2026-03-07)
+
+Created universal enemy and encounter design skill — a comprehensive framework covering enemy archetypes, AI patterns, boss design, wave composition, and difficulty scaling applicable across all action game genres.
+
+**Artifact:** .squad/skills/enemy-encounter-design/SKILL.md (49.5 KB)
+
+**Skill structure (11 sections):**
+1. Core Philosophy (enemies as "gameplay verbs", visual design communicates role)
+2. 10 Universal Archetypes (Fodder, Bruiser, Agile, Ranged, Shield, Swarm, Explosive, Support, Mini-boss, Boss)
+3. Archetype Combinations (Ranged+Agile=Sniper, Bruiser+Shield=Fortress, etc.)
+4. Boss Design (Mega Man principle: learnable patterns, 2-3 min test window, multi-phase escalation)
+5. Wave Composition & Escalation (intro = 1 isolated new type, pattern: A solo → B solo → A+B mixed)
+6. Spawning Fairness Rules (visible, trigger-based, staggered 0.5s, safe initial position)
+7. Difficulty Scaling Knobs (stat, behavioral, composition, environmental, adaptive)
+8. AI Patterns (state machines, behavior trees, attack throttling, group coordination)
+9. DPS Budget Framework (max safe DPS from player HP ÷ safe TTK, e.g. Normal 5 dps, Bruiser 12 dps)
+10. Anti-Patterns Catalog (8 failures: bullet sponge, unfair ambush, palette swap, etc.)
+11. Genre-Specific Guidance (Beat 'em up, Platformer, Shooter, RPG, Stealth with audio/visual specifics)
+
+**Key principles extracted from SimpsonsKong:**
+- **10 Universal Archetypes:** Covers all SimpsonsKong enemy types (Normal, Tough, Fast, Heavy, Boss) plus generalized patterns
+- **Mega Man Principle:** Patterns are learnable, telegraph clear, phase progression teaches new mechanics
+- **DPS Budget Framework:** Calculated from SimpsonsKong balance tuning (player HP 80 ÷ safe 4-6s TTK = 13-20 dps safe threshold)
+- **Wave Composition Rules:** From Encounter Pacing document — intro new types solo, mix only after player learns
+
+**Cross-references:** Links to game-feel-juice, beat-em-up-combat (validation), game-design-fundamentals, level-design-fundamentals
+
+**Confidence:** Medium (beat-em-up encounter design deeply validated; archetype system and boss design framework generalized from industry patterns). Will escalate to High after applying to platformer/RPG enemy design.
+
