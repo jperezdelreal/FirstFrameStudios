@@ -36,6 +36,92 @@ Revised load distribution eliminates McManus bottleneck, enables parallel workst
 
 **Why:** Gap analysis on 52-item backlog revealed structural overload: Lando carrying 50%, Chewie juggling audio + engine. Three new roles distribute work, enable parallelism, and build compounding cross-game expertise.
 
+### Phaser 3 & Future Tech (2026-03-06T20:05)
+**By:** joperezd (via Copilot)  
+**Status:** Pending — Future Project Planning
+
+Phaser 3 and other "too late to implement" improvements should be captured as learnings for future projects, not implemented in SimpsonsKong. The squad should conduct deep research across all game development disciplines, document everything, analyze the current game for what's easily implementable vs needs major refactoring, and work autonomously for 4 hours with excellence as the standard.
+
+**Why:** Strategic learning capture for the game dev squad's growth across projects. Protects SimpsonsKong from scope creep while building institutional knowledge for next project.
+
+### Full Codebase Analysis & Learnings (Solo)
+**Date:** 2026-03-06  
+**Status:** Completed
+
+Read all 28 source files (370KB) and categorized every remaining backlog item into 3 buckets:
+
+**Key Findings:**
+1. **13 AAA backlog items already shipped** (grab/throw, dodge roll, back attack, attack buffering, screen zoom, slow-mo kills, scene transitions, destructibles, hazards, boss intros, ambience, hit sound scaling, options menu, hitbox visualization). Active backlog should be ~85 items, not 101.
+
+2. **3 complete infrastructure systems exist but unused**: EventBus (49 LOC), AnimationController (85 LOC), SpriteCache (35 LOC). Also CONFIG (45 LOC). Total: 214 LOC of working code gathering dust. Wiring these is highest-priority action.
+
+3. **Bucket classification:**
+   - **Quick Wins (< 1h):** 10 remaining actionable items
+   - **Medium Effort (1-4h):** 30 actionable items
+   - **Future/Migration:** 14 items requiring Phaser 3 or WebGL
+
+4. **gameplay.js (695 LOC) = #1 technical debt** — touches every system, 40+ direct calls. EventBus wiring is the single most impactful refactor.
+
+5. **Procedural art ceiling reached** — each character needs ~400 LOC Canvas code. Adding Bart/Marge/Lisa = 1200+ LOC. Strongest argument for Phaser 3 + sprite sheets.
+
+6. **Phaser 3 migration impact:** Replaces ~800 LOC infrastructure (game loop, renderer, input, camera, particles, animation) with GPU-accelerated equivalents. Keeps ~3500 LOC game-specific logic.
+
+**Recommended Priority:** Wire unused infrastructure (CONFIG, EventBus, AnimationController, SpriteCache) → Quick Wins → Combat polish → Content/Visual quality → System polish → Phaser 3 migration.
+
+### New Project Playbook Created (Solo)
+**Author:** Solo (Lead / Chief Architect)  
+**Date:** 2025-07-21  
+**Status:** Proposed  
+**Scope:** Studio-wide — affects how every future project starts
+
+Created `.squad/identity/new-project-playbook.md` — the definitive, repeatable process for starting any new project at First Frame Studios, regardless of genre, tech stack, IP, or platform.
+
+**What It Contains:**
+1. **Pre-Production Phase** — Genre research protocol (7-12 reference games, analytical play, skill extraction), IP assessment (original vs licensed), 9-dimension tech selection framework, team skill transfer audit, competitive analysis
+2. **Sprint 0 Foundation** — Engine-agnostic repo checklist, squad adaptation guide, genre skill creation, architecture proposal requirements, minimum playable formula per genre, quality gates adaptation
+3. **Production Phases** — P0-P3 priority system, parallel lane planning, skill capture rhythm, cross-project knowledge transfer
+4. **Technology Transition Checklist** — What transfers/rewrites/needs evaluation, migration mapping (Canvas→Godot as template), repeatable training protocol
+5. **Language/Stack Flexibility Matrix** — 12 tech stacks compared, T-shirt migration sizing, the 70/30 rule (70% of our effectiveness is tech-agnostic)
+6. **Anti-Bottleneck Patterns** — 7 SimpsonsKong bottlenecks with preventions, 6 common studio patterns, serialize/parallelize guide, add-role vs add-skill decision matrix
+
+**Key Decisions Within:**
+- **8-point migration threshold:** Require 8+ point lead in 9-dimension matrix to justify engine migration
+- **20% load cap:** No agent carries more than 20% of any phase's items
+- **Module boundaries in Sprint 0:** Architecture proposal required before Phase 2 code begins
+- **Wiring requirement:** Every infrastructure PR must include connection to at least one consumer
+
+**Why:** The founder wants solid foundations so starting any new project is clear, repeatable, and bottleneck-free. SimpsonsKong taught us everything in this playbook through real bugs, real bottlenecks, and real breakthroughs. Documenting it ensures we never repeat the investigation.
+
+**Impact:**
+- Every future project follows this playbook from Day 1
+- Pre-production becomes a structured process, not ad-hoc discovery
+- Technology transitions follow a proven 4-phase pattern
+- Bottleneck patterns are identified and mitigated proactively
+- New team members can read this document and understand how we start projects
+
+### Skills System Needs Structural Investment Before Next Project (Ackbar)
+**Author:** Ackbar (QA Lead)  
+**Date:** 2025-07-21  
+**Status:** Proposed
+
+Conducted comprehensive audit of all 12 skills in `.squad/skills/`. Quality of individual skills is strong (7/12 rated ⭐⭐⭐⭐+), but coverage (5/10) and growth-readiness (4/10) are the weaknesses.
+
+**Decision:**
+Three actions should be taken before the next project kicks off:
+
+1. **Create `game-feel-juice` skill (P0)** — Our #1 principle ("Player Hands First") has no dedicated skill. Game feel patterns are scattered across 3 skills. A unified, engine-agnostic game feel reference should be the first skill any new agent reads. Assign to Yoda + Lando.
+
+2. **Create `ui-ux-patterns` skill (P1)** — Wedge is a domain owner with zero skills. Every game needs UI. This is the largest single-agent gap on the team. Assign to Wedge.
+
+3. **Structural cleanup (P1)** — Split `godot-beat-em-up-patterns` (39KB, too large). Resolve overlaps: merge `canvas-2d-optimization` into `web-game-engine`, deduplicate `godot-tooling` vs `project-conventions`. Assign to Solo + Chewie.
+
+**Impact:**
+- **Yoda, Lando:** Create `game-feel-juice` skill
+- **Wedge:** Create `ui-ux-patterns` skill  
+- **Solo, Chewie:** Structural cleanup of overlapping skills
+- **All agents:** 6 skills should have confidence bumped from `low` to `medium`
+- **Full audit:** `.squad/analysis/skills-audit.md` contains per-skill ratings, gap analysis, and improvement recommendations
+
 ## Governance
 
 - All meaningful changes require team consensus
