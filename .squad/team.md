@@ -16,10 +16,15 @@
 | Chewie | Engine Dev | `.squad/agents/chewie/charter.md` | 🔧 Active |
 | Lando | Gameplay Dev | `.squad/agents/lando/charter.md` | ⚔️ Active |
 | Wedge | UI Dev | `.squad/agents/wedge/charter.md` | ⚛️ Active |
-| Boba | VFX/Art Specialist | `.squad/agents/boba/charter.md` | 🎨 Active |
+| Boba | Art Director | `.squad/agents/boba/charter.md` | 🎨 Active |
 | Greedo | Sound Designer | `.squad/agents/greedo/charter.md` | 🔊 Active |
 | Tarkin | Enemy/Content Dev | `.squad/agents/tarkin/charter.md` | 👾 Active |
 | Ackbar | QA/Playtester | `.squad/agents/ackbar/charter.md` | 🧪 Active |
+| Yoda | Game Designer | `.squad/agents/yoda/charter.md` | 🎯 Active |
+| Leia | Environment Artist | `.squad/agents/leia/charter.md` | 🏞️ Active |
+| Bossk | VFX Artist | `.squad/agents/bossk/charter.md` | ✨ Active |
+| Nien | Character Artist | `.squad/agents/nien/charter.md` | 👤 Active |
+| Jango | Tool Engineer | `.squad/agents/jango/charter.md` | 🔧 Active |
 | Scribe | Session Logger | `.squad/agents/scribe/charter.md` | 📋 Active |
 | Ralph | Work Monitor | — | 🔄 Monitor |
 

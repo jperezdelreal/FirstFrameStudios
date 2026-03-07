@@ -33,3 +33,202 @@
 - Integration into gameplay.js update/render loop (Chewie's domain)
 - Migration of player.js/enemy.js inline shadows to VFX.drawShadow() (Lando/Tarkin's domain)
 - Combat hit callbacks to trigger createHitEffect/createKOEffect (Chewie + combat.js owner)
+
+### Wave 2 — EX-B7 (Consistent Entity Rendering Style)
+
+**Delivered:**
+- `src/entities/player.js` render() — Full visual overhaul of Homer:
+  - 2px `#222222` outlines (round join/cap) on all body parts for readability
+  - Belly now uses quadraticCurveTo path that bulges outward (x=12–52 at peak vs 18–46 at top/bottom)
+  - M-shaped hair: 3 brown (#8B4513) triangle spikes on crown
+  - Proper eyes with outlined white sclera + black pupils (separate beginPath per eye for clean outlines)
+  - Mouth arc + overbite bump below chin
+  - Off-white shirt (#F5F5F5) with rgba highlight on upper area
+  - Royal blue pants (#4169E1) per art-direction palette
+  - Brown shoes (#8B4513) at bottom of pants
+  - Kick/jump-kick shoe color updated from grey to brown for consistency
+- `src/entities/enemy.js` render() — Matching visual overhaul:
+  - Same 2px `#222222` outline system on all body parts
+  - Upgraded eyes: white sclera ellipses with outlined stroke + black pupils (were flat black rects)
+  - Angry V-shaped eyebrows (2.5px stroke, angled down toward nose)
+  - Tough variant gets red bandana (#CC0000) with triangular tail — immediately distinguishable
+  - Fists: 4px-radius circles at end of arms, bob with arm animation
+  - Extended attack fist (5px circle at x=50) for punch readability
+  - Body and head highlights (rgba white overlays) for subtle depth
+  - All legs individually outlined
+
+**Key decisions:**
+- Used `#222222` (art-direction.md canonical value) instead of `#333` mentioned in task brief — softer, more cartoon-like per established guide.
+- Separated each eye into its own beginPath/fill/stroke cycle — sharing a single path caused outline to connect across both eyes.
+- Made belly shape via quadraticCurveTo instead of overlapping ellipse — single clean outline path, no z-fighting.
+- Chose bandana over scar for tough variant — more readable at small sizes, clearer silhouette differentiation.
+- Kept all attack animation shapes (punch, kick, jump_punch, jump_kick) and added outlines to those too — ensures visual consistency during combat poses.
+- Did NOT touch any gameplay logic, movement, hitboxes, or state code — render-only changes as scoped.
+
+### Wave 3 — P1-17 (Floating Damage Numbers)
+
+**Delivered:**
+- `src/systems/vfx.js` — New `VFX.createDamageNumber(vfxInstance, x, y, damage, isCombo)` static method:
+  - Three visual tiers: normal (white, 20px), combo (yellow #FED90F, 28px), finisher (red #FF3333, 36px + "!" suffix)
+  - Finisher tier triggers when `isCombo && damage >= 25`
+  - Drifts upward at 80px/s over 0.8s lifetime
+  - Scales from 1.5x → 1.0x, alpha fades 1.0 → 0.0 (linear)
+  - Dark #222222 text outline (3px, round join) for readability against any background
+  - Position computed from progress in render callback — no mutation needed in update loop
+  - Effect object carries `type: 'damage_number'`, `value`, `color`, `scale` metadata
+- Updated file header integration instructions with section 6 for damage number usage
+- Added comment noting gameplay.js should call `createDamageNumber()` — Wedge owns gameplay.js this wave
+
+**Key decisions:**
+- Used `sans-serif` font rather than a specific typeface — keeps it clean and avoids font-loading complexity for a Canvas-only project.
+- Computed y-drift from `progress * maxLifetime * speed` in render rather than mutating `effect.y` in the update loop — avoids coupling with the generic update method.
+- Set finisher threshold at 25 damage — reasonable for beat 'em up combo finishers; easy to tune via constant.
+- Applied same #222222 outline convention from art-direction.md to text stroke for visual consistency with entity outlines.
+
+**Blocked on:**
+- gameplay.js wiring to call `VFX.createDamageNumber()` when hits land (Wedge/Chewie's domain)
+
+### Wave 5 — Visual Modernization Assessment (2026-06-03)
+
+**Delivered:**
+- `.squad/analysis/visual-modernization-plan.md` — Comprehensive 63k-character assessment of visual upgrade path:
+  - Gap analysis: current 60% modern → target 95% modern (recognizable Springfield, expressive characters, arcade-quality UI)
+  - 36 specific upgrade items across 8 categories: Homer (8 items), Enemies (6 items), Background (5 items), VFX (6 items), UI/HUD (7 items), Title Screen (5 items), Animation System (1 item), Consistency (3 items)
+  - 4-tier priority matrix: P0 (6 items, 2.5hr — core polish), P1 (10 items, 6.5hr — modern standard), P2 (15 items, 6.5hr — advanced polish), P3 (5 items, 7.5hr — future enhancements)
+  - Total effort estimate: 23 hours for complete visual modernization
+  - Detailed Canvas 2D implementation plans for each item: bezier curves for organic shapes (belly bulge, hair), gradients for depth (health bar, sky), composite operations for effects (glows, additive blending), transform matrices for animation (walk cycles, squash/stretch)
+  - Canvas techniques reference: bezier curves, gradients, composite ops, transforms, clipping paths, path operations
+  - Implementation roadmap: 4 waves focused on progressive polish (core feel → recognizable characters → micro-details → infrastructure)
+
+**Key insights:**
+- **Visual modernization ≠ external assets:** Gap is not lack of images/sprites — it's applying modern Canvas 2D techniques to existing procedural art. Current work already has solid foundations (consistent outlines, proper shapes, Springfield background).
+- **The 60% → 95% gap is detail + expressiveness + juice:**
+  - Detail: stubble, ears, hands, clothing folds, ground texture, building variety
+  - Expressiveness: facial expressions tied to state, breathing animation, posture variations
+  - Juice: dust clouds, screen shake, hitstop, speed lines, combo bursts, score popups
+- **Recognizability is king:** Power Plant must be pink/purple (not grey), enemies must be Springfield archetypes (not "purple guy"), Homer must have M-hair + overbite + stubble (not just a yellow circle).
+- **P0 items deliver 80% of perceived improvement:** 6 items totaling 2.5 hours (facial expressions, walk cycle, dust clouds, screen shake, lives display, score popup) transform the game from "functional" to "polished" — highest ROI.
+- **Animation is currently ad-hoc:** Walk cycles are manual sine waves, attacks are hard-coded state checks. Structured animation system (keyframes, easing) is P3 (infrastructure) but manual animations are sufficient for modern feel — don't block on system rewrite.
+- **Lighting direction inconsistency:** Highlights are placed arbitrarily — need top-left 45° light source rule for visual unity.
+- **Saturation hierarchy missing:** Foreground/mid-ground/background all have similar saturation — need 100%/70%/40% rule for depth perception.
+
+**Canvas 2D power tools identified:**
+1. `ctx.quadraticCurveTo()` — organic shapes (belly, hair, clouds) look 10× better than rect/ellipse primitives
+2. `ctx.createLinearGradient()` / `ctx.createRadialGradient()` — cheap depth cues (health bar bevel, sky gradient, spotlight effects)
+3. `ctx.globalCompositeOperation = 'lighter'` — additive blending for glows/starbursts without alpha math
+4. `ctx.save()`/`ctx.translate()`/`ctx.rotate()`/`ctx.restore()` — animation transforms (walk cycles, breathing, squash/stretch) without coordinate mutation
+5. `ctx.clip()` — complex masks (character outlines, UI panels) with clean edges
+6. `ctx.setLineDash([3, 5])` — ground cracks, dotted lines, comic-book speed lines
+
+**Next actions (not blocking other agents):**
+- P0 wave (2.5hr): Homer expressions + walk cycle + dust/shake/lives/score — transforms core feel
+- P1 wave (6.5hr): Character detail + Springfield landmarks + combat juice + UI polish — achieves "modern" target
+- Blocked on: None — all visual work can proceed independently of gameplay/engine changes
+
+### Wave 4 — P2-5 (Springfield Background Overhaul), P2-9 (KO Text Effects)
+
+**Delivered:**
+- `src/systems/background.js` — Complete rewrite with three-layer parallax Springfield scene:
+  - Sky gradient (#87CEEB → #B0E0E6), 3 drifting puffy clouds (overlapping circles, tiling)
+  - Far layer (0.2× parallax): Power Plant cooling towers — dual trapezoid towers, steam circles, smokestack with red warning stripes, main building block
+  - Mid layer (0.5× parallax): Repeating Springfield building pattern — Kwik-E-Mart (teal, red awning, "KWIK-E-MART" text, door, windows), Moe's Tavern (dark brown, neon "MOE'S" sign, grimy window), 3 colored houses (triangle roofs, cross-bar windows, doors)
+  - Ground: green sidewalk strip, grey sidewalk, dark road with yellow center dashes, curb line, fire hydrants every 600px
+  - All buildings use #222222 outlines consistent with art-direction.md
+- `src/systems/vfx.js` — New `VFX.createKOText(vfxInstance, x, y)` static method:
+  - Random phrase from ["POW!", "WHAM!", "BAM!", "BONK!", "D'OH!"]
+  - 40px bold yellow (#FED90F) text with 4px dark outline
+  - Random rotation ±15° for comic energy
+  - Scale 0→1.5× over 0.1s (pop-in), then 1.5→1.0× (settle), fade 1→0 over 0.5s
+  - Drifts upward at 60px/s, 0.6s total lifetime
+- `src/scenes/gameplay.js` — Wired `VFX.createKOText()` call alongside existing `createKOEffect()` on enemy death (30px above center for visual separation from starburst)
+
+**Key decisions:**
+- Used `performance.now()` for cloud drift timing instead of requiring an `update(dt)` method — keeps the render-only API that gameplay.js expects.
+- Tiling system for both clouds and buildings ensures they repeat infinitely as camera scrolls — no gaps no matter how far the player walks.
+- Power Plant placed on far layer with large spacing (2200px) so it reads as distant landmark, not clutter.
+- KO text positioned 30px above enemy center so it floats above the starburst, not on top of it.
+- ±15° rotation computed once at creation (not per-frame random) for stable visual during animation.
+
+### Wave 6 — P0 Character Redesigns (2026-06-03)
+
+**Delivered:**
+- `src/entities/player.js` render() — full Homer Simpson rebuild with M-hair, ears, stubble, overbite, highlight shading, and state-driven body poses (idle breathing, walk leg swaps, punch/kick/jump/ground slam variations), all with 2px #222 outlines.
+- `src/entities/enemy.js` render() — Springfield thug variants with distinct silhouettes (purple suit, blue hoodie, green tank + bandana, red tough w/ scar), angry/wild expressions, fighting stances, and 2px outlines.
+
+**Key decisions:**
+- Preserved existing gameplay state checks, shadows, hit flashes, facing flips, and death fade while swapping in new organic shapes.
+- Used transform-based posing and base-dimension scaling (64x80 player, 48x76 enemies) to keep visuals inside hitboxes.
+
+### Wave 7 — EX-B4 Motion Trails, EX-B5 Spawn Effects, EX-B6 Foreground Parallax, Background Polish
+
+**Delivered:**
+- `src/systems/vfx.js` — `VFX.createMotionTrail(vfxInstance, x, y, width, height, angle, color)`:
+  - 4 afterimage frames, each slightly larger (1.0×→1.45×) and more transparent (0.4→0 alpha)
+  - Swoosh arc shape using dual bezier curves (outer arc + thinner inner return path)
+  - White edge highlight stroke on outer arc for readability
+  - Ease-out alpha fade per frame (`1 - t²`), 150ms total lifetime
+  - Default warm white-yellow (#FFFFCC) for player attacks
+- `src/systems/vfx.js` — `VFX.createSpawnEffect(vfxInstance, x, y)`:
+  - Phase 1 (0–0.3s): Warning shadow on ground — dark oval that pulses (3× sine oscillation)
+  - Phase 2 (0.15s onward): Dust cloud ring — 12 particles expanding outward from spawn center
+  - Particles use dusty tan (#C8B89A) with double-puff (main + smaller offset) for volume
+  - Ring flattened vertically (0.4× y-scale) for ground-plane perspective
+  - 0.5s total lifetime, particles shrink as they expand
+  - Integration instructions in header for gameplay.js scale-up animation (0.5×→1.0× over 0.2s)
+- `src/systems/background.js` — `renderForeground(ctx, cameraX, screenWidth)`:
+  - 1.3× parallax speed (scrolls faster than camera) for foreground depth
+  - Lampposts: thin dark poles (#333) with circular yellow light (#FFE87C) + warm glow halo, base plate
+  - Chain-link fence sections: vertical posts + horizontal rails + diamond mesh pattern
+  - Foreground fire hydrants: slightly larger than background ones for depth cue
+  - All drawn at 0.3 alpha so they don't obscure gameplay
+  - Integration note in file header: call AFTER entity rendering
+- `src/systems/background.js` — Background polish enhancements:
+  - Sky gradient now 4-stop: deep blue (#5BADE2) → sky blue → powder blue → very light (#E0EEF0) at horizon
+  - House windows randomly "lit" (warm yellow #FFE566 + #FFD700 glow halo) using seeded position-based random for frame stability
+  - Moe's Tavern grimy window also gets lit state (40% chance — bar is often open)
+  - Sidewalk detail: vertical joint lines every 60px + horizontal edge line for texture
+  - Clouds already had 3 puffy shapes with drift — no changes needed
+
+**Key decisions:**
+- Used seeded random (`sin(seed * 127.1 + 311.7) * 43758.5453` fractional part) for lit windows instead of `Math.random()` — ensures same windows stay lit across frames without per-frame flicker.
+- Motion trail creates 4 separate effect objects (one per afterimage frame) with staggered lifetimes rather than a single effect with internal frame tracking — simpler, leverages existing VFX update/render loop.
+- Foreground parallax offset computed as `cameraX * (1.3 - 1.0)` for the extra scroll beyond the camera, keeping element world positions stable.
+- Spawn effect overlaps phases (shadow starts at 0s, dust starts at 0.15s) for smooth visual transition rather than hard phase cutover.
+- Did NOT modify gameplay.js — all integration instructions are in file header comments only.
+
+### Visual Quality Audit V2 — "Why Does It Look Cutre?" (2026-06-03)
+
+**Delivered:**
+- `.squad/analysis/visual-quality-audit-v2.md` — Brutal 10-issue audit covering every visual quality problem.
+
+**Key learnings:**
+- **The #1 "cutre" cause is a missing `devicePixelRatio` canvas scaling.** The canvas is 1280×720 physical pixels but displayed at 2560×1440 on Retina. Zero DPR references in the entire codebase. This single omission makes ALL art look blurry/low-res. 30-minute fix for 60%+ perceived improvement.
+- **CSS `image-rendering: pixelated` is poison for procedural Canvas art.** It forces nearest-neighbor upscaling, turning smooth curves and gradients into chunky blocks. This is correct for pixel art but catastrophically wrong for our bezier-curve characters and gradient skies.
+- **Tiny font sizes are invisible on HiDPI.** Found 5px text (Jebediah plaque, I&S poster) that is literally sub-pixel on Retina. Minimum viable font size for background signs should be 12px.
+- **Good art ≠ good rendering.** The procedural art is genuinely solid — Homer is recognizable, buildings are charming, outlines are consistent. The rendering pipeline (DPR + CSS) is what destroys it. It's like printing a poster on a fax machine.
+- **Scale hierarchy breaks depth perception.** Far-layer Power Plant cooling towers (180px at 0.2× parallax) should visually dwarf Homer (80px at 1×) but are barely 2× his height. Mid-layer buildings compete with player for attention due to matching saturation levels.
+- **P0 fix path is only ~35 minutes** for DPR scaling + CSS removal, which would resolve the majority of user complaints about quality.
+
+### Wave 8 — Visual Excellence Research & Art Direction Learnings (2026-06-03)
+
+**Delivered:**
+- `.squad/analysis/visual-excellence-research.md` — Comprehensive research document covering:
+  - Industry analysis of award-winning 2D games (Cuphead, Hollow Knight, Celeste, Dead Cells, SoR4): five common excellence traits identified (style commitment, silhouette-first, color restraint, animation > detail, atmospheric perspective)
+  - Canvas 2D art ceiling assessment: flat-shaded cartoon is the sweet spot, ceiling is approximately SoR4 clarity with Adventure Time rendering
+  - Honest procedural vs. sprite comparison with crossover threshold (>200 lines / >3 animation states = switch to sprites)
+  - Disney's 12 animation principles applied to game art — Big 4 (squash/stretch, anticipation, follow-through, timing) with Canvas implementation patterns
+  - Color theory: 60-30-10 rule, saturation depth rule, readability hierarchy, game state color language
+  - Visual hierarchy priority order (player → threats → UI → interactables → background) with squint test
+  - Full art pipeline: concept → style guide → prototype → production → integration → polish → QA
+  - Resolution-independent design: DPR scaling, responsive layout, aspect ratio locking
+  - SimpsonsKong retrospective: DPR disaster, procedural limitations, multi-artist coordination, scale consistency, art direction role evaluation
+  - Future project guidelines: Day 1 checklist, sprite pipeline triggers, art review process
+- `.squad/skills/2d-game-art/SKILL.md` — Reusable skill with 10 patterns, code examples, and 12 anti-patterns covering display pipeline, style guides, Canvas techniques, color theory, animation, VFX systems, visual hierarchy, parallax, resolution-independent UI, and procedural-to-sprite transition criteria.
+
+**Key insights:**
+- **Display pipeline is the #1 art decision.** DPR scaling + correct CSS should be the very first thing set up in any Canvas project. SimpsonsKong's hours of art work were invisible because the rendering pipeline was broken.
+- **Canvas 2D's ceiling is higher than expected.** The flat-shaded cartoon style (our chosen approach) is literally Canvas 2D's sweet spot. The art wasn't limited by the technology — it was limited by rendering pipeline bugs and missing animation principles.
+- **The procedural crossover point is ~200 lines / 2 hours per entity.** Below that, procedural is faster (zero pipeline setup). Above that, sprites win on speed and quality. Homer at ~300 lines crossed this threshold.
+- **Art direction as a role justified itself primarily through the DPR audit and style guide.** Without the audit, the game would have shipped blurry. Without the style guide, 4 agents would have used 4 different outline colors.
+- **Animation principles matter more than rendering detail.** A simple shape with proper squash/stretch looks better than a detailed shape that doesn't move naturally. The industry research confirmed this across all 5 reference games.
+- **Visual reference sheets > text descriptions.** The art-direction.md text spec worked for palette/outlines but failed for proportions. Next project needs a rendered reference image on Day 1.

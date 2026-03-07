@@ -67,6 +67,15 @@
       "created_at": "2026-03-06T14:21:00Z",
       "legacy_named": false,
       "status": "active"
+    },
+    "jango": {
+      "persistent_name": "Jango",
+      "universe": "Star Wars (Prequel — Diegetic Expansion)",
+      "role": "Tool Engineer",
+      "created_at": "2025-07-22T00:00:00Z",
+      "legacy_named": false,
+      "status": "active",
+      "notes": "First prequel character. OT roster at 12/12 capacity. Jango Fett — the clone template, fitting for a Tool Engineer who creates templates others instantiate."
     }
   }
 }

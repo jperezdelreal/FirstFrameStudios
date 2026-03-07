@@ -40,4 +40,24 @@ Initial setup complete.
 
 5. **Status:** All tasks complete. Decisions.md at 23.8 KB (archive not needed yet, ~20KB threshold).
 
+### 2026-03-07T12:57: Skills Gap Remediation — P0/P1 Skills Created (Session 2)
+- **Role:** Post-spawn orchestration for Lando (Gameplay Dev), Wedge (UI Dev), Chewie (Engine Dev)
+- **Tasks Completed:**
 
+1. **Orchestration Logging** — Created `.squad/orchestration-log/2026-03-07T12-57-skills-creation.md`
+   - Documented spawn manifest: Lando (game-feel-juice), Wedge (ui-ux-patterns), Chewie (input-handling)
+   - Captured deliverables: 46KB + 42KB + 40.5KB = ~128.5KB total, ~3,151 lines
+   - Recorded key sections, confidence levels, cross-references for all three skills
+
+2. **Session Logging** — Created `.squad/log/2026-03-07T12-57-skills-creation.md`
+   - Brief session summary: topic, agents, outcomes, P0/P1 gap coverage
+
+3. **Decision Merging** — Inbox was empty (no new decisions from spawn)
+   - No action needed; no merges or deletions
+
+4. **Agent History Updates** — Appended context to three agents' history.md
+   - **Lando:** Updated "Game Feel / Juice Skill (P0)" entry with 2026-03-07 date and session tag
+   - **Wedge:** Updated "Domain Skill: ui-ux-patterns (P1)" entry with 2026-03-07 date and session tag
+   - **Chewie:** Updated "Input Handling Skill Creation (P1)" entry with full content structure, confidence, cross-refs, and session tag
+
+5. **Status:** All tasks complete. Inbox empty. Decisions.md still ~48KB (may archive old entries next session if growth continues).

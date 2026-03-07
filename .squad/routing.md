@@ -13,7 +13,8 @@ How to decide who handles what.
 | VFX, art, characters, backgrounds | Boba | Character art, backgrounds, impact VFX, animations, particles |
 | Audio, SFX, music, sound design | Greedo | Sound effects, procedural music, audio events, Web Audio API |
 | QA, playtesting, balance, feel | Ackbar | Playtesting, combat feel, balance tuning, regression, edge cases |
-| Architecture, integration, review | Solo | Project structure, code review, integration, decisions |
+| Tooling, scaffolding, templates, conventions | Jango | EditorPlugins, scene templates, GDScript style guide, build/export automation, project.godot config, linting, asset pipelines |
+| Architecture, integration, review | Solo | Project structure, code review, integration, decisions, scene tree conventions, architecture reviews |
 | Scope & priorities | Solo | What to build next, trade-offs, backlog prioritization |
 | Async issue work (bugs, tests, small features) | @copilot 🤖 | Well-defined tasks matching capability profile |
 | Session logging | Scribe | Automatic — never needs routing |
