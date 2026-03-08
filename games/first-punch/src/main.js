@@ -2,6 +2,7 @@ import { Game } from './engine/game.js';
 import { Renderer } from './engine/renderer.js';
 import { Input } from './engine/input.js';
 import { Audio } from './engine/audio.js';
+import { SplashScene } from './scenes/splash.js';
 import { TitleScene } from './scenes/title.js';
 import { GameplayScene } from './scenes/gameplay.js';
 import { OptionsScene } from './scenes/options.js';
@@ -14,10 +15,12 @@ const input = new Input();
 const audio = new Audio();
 
 // Register scenes
+const splashScene = new SplashScene(game, renderer, input, audio);
 const titleScene = new TitleScene(game, renderer, input, audio);
 const gameplayScene = new GameplayScene(game, renderer, input, audio);
 const optionsScene = new OptionsScene(game, renderer, input, audio);
 
+game.registerScene('splash', splashScene);
 game.registerScene('title', titleScene);
 game.registerScene('gameplay', gameplayScene);
 game.registerScene('options', optionsScene);
@@ -31,6 +34,6 @@ const resumeAudio = () => {
 window.addEventListener('keydown', resumeAudio);
 window.addEventListener('click', resumeAudio);
 
-// Start with title scene
-game.switchScene('title');
+// Start with studio splash, then title
+game.switchScene('splash');
 game.start();
