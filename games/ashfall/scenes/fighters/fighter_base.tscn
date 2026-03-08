@@ -1,0 +1,69 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://scripts/fighters/fighter_base.gd" id="1_fighter"]
+[ext_resource type="Script" path="res://scripts/states/state_machine.gd" id="2_sm"]
+[ext_resource type="Script" path="res://scripts/fighters/states/idle_state.gd" id="3_idle"]
+[ext_resource type="Script" path="res://scripts/fighters/states/walk_state.gd" id="4_walk"]
+[ext_resource type="Script" path="res://scripts/fighters/states/crouch_state.gd" id="5_crouch"]
+[ext_resource type="Script" path="res://scripts/fighters/states/jump_state.gd" id="6_jump"]
+[ext_resource type="Script" path="res://scripts/fighters/states/attack_state.gd" id="7_attack"]
+[ext_resource type="Script" path="res://scripts/fighters/states/block_state.gd" id="8_block"]
+[ext_resource type="Script" path="res://scripts/fighters/states/hit_state.gd" id="9_hit"]
+[ext_resource type="Script" path="res://scripts/fighters/states/ko_state.gd" id="10_ko"]
+
+[sub_resource type="RectangleShape2D" id="SubResource_body"]
+size = Vector2(30, 60)
+
+[sub_resource type="RectangleShape2D" id="SubResource_hurtbox"]
+size = Vector2(26, 56)
+
+[node name="FighterBase" type="CharacterBody2D"]
+script = ExtResource("1_fighter")
+
+[node name="CollisionShape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -30)
+shape = SubResource("SubResource_body")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(0, -30)
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 2
+
+[node name="HurtboxShape" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -28)
+shape = SubResource("SubResource_hurtbox")
+
+[node name="AttackOrigin" type="Marker2D" parent="."]
+position = Vector2(30, -30)
+
+[node name="Hitboxes" type="Node2D" parent="."]
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("2_sm")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("3_idle")
+
+[node name="Walk" type="Node" parent="StateMachine"]
+script = ExtResource("4_walk")
+
+[node name="Crouch" type="Node" parent="StateMachine"]
+script = ExtResource("5_crouch")
+
+[node name="Jump" type="Node" parent="StateMachine"]
+script = ExtResource("6_jump")
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("7_attack")
+
+[node name="Block" type="Node" parent="StateMachine"]
+script = ExtResource("8_block")
+
+[node name="Hit" type="Node" parent="StateMachine"]
+script = ExtResource("9_hit")
+
+[node name="KO" type="Node" parent="StateMachine"]
+script = ExtResource("10_ko")
