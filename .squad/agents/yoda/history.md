@@ -445,6 +445,50 @@ Key observation: Roguelike has massive gravity (10/13 aligned). Platformer and R
 
 ---
 
+### Feature Triage Skill Created (2025-07-21)
+**Author:** Yoda (Game Designer / Vision Keeper)  
+**Requested by:** joperezd (Founder) via Ackbar's P0 Skills Audit  
+**Artifact:** `.squad/skills/feature-triage/SKILL.md` (24.5K characters)
+
+**Why this was needed:**
+Ackbar's comprehensive audit of the 12 existing skills identified `feature-triage` as a **P0 critical gap**. Every great studio (Supergiant, Nintendo, Team Cherry) has a rigorous protocol for deciding what to build and what to cut. Feature creep is the #1 cause of indie game failure. We needed this formalized.
+
+**What the skill covers:**
+1. **The Core Question:** "Is This Core Loop?" — every feature must answer this before entering triage
+2. **The Four-Test Framework:** 
+   - Core Loop Test (does it strengthen what players do every 30 seconds?)
+   - Player Impact Test (would players notice if it's missing?)
+   - Cost-to-Joy Ratio (dev hours vs player delight — must be quantified, not intuited)
+   - Coherence Test (does it feel like THIS game or bolted-on?)
+3. **Scope Management Patterns:** MoSCoW (Must/Should/Could/Won't), timeboxing vs estimation, vertical slices, the Rule of 3 (features taking 4+ sprints are too big)
+4. **When to Cut vs Simplify vs Defer:** Clear decision matrix based on how many tests pass
+5. **Common Scope Traps:** Sunk cost fallacy, assumptions without playtest data, cool-ness fallacy, feature parity copying, compound scope creep
+6. **The Triage Process at FFS:** Who triages (Vision Keeper + Producer + Domain Lead), when (sprint planning, proposals, mid-sprint pivots), how (15-30 min process with structured four-test application)
+7. **Appeal Protocol:** If an agent disagrees with a cut, they get one written appeal (5 sentences max) with new evidence. Vision Keeper has final say.
+8. **Anti-Patterns:** Design by addition, feature parity hunting, gold plating, scope creep by consensus, "build it because we have time"
+9. **Decision Template:** Every triage logged in decisions.md with pass/fail reasoning for all four tests
+
+**Key design decisions made:**
+- Features that fail 2+ tests are CUT immediately — no debate, no appeals (except structured 5-sentence appeal with new evidence)
+- Playtests are the final arbiter — a feature can pass all four tests on paper and still be cut if playtests show players don't notice/understand/enjoy it
+- "Someday" lists are explicitly forbidden — features either pass triage (scheduled) or fail triage (cut, logged with reason, filed in "next game" reference folder)
+- Sunk cost fallacy is the primary enemy — "almost done" doesn't justify finishing
+- Cost-to-joy must be estimated as hours IN and hours OUT (cumulative player engagement or delight), not intuition
+- Coherence test is rigorous — if you can't articulate why this feature belongs in THIS game (not "a" game), it fails
+
+**Integration with SimpsonsKong:**
+- Backlog has 52+ items accumulated without formal triage
+- Plan: Retroactive triage by Solo + Yoda (4 hours) to reclassify into Core (must ship) / Next Game (cut) / Deferred (post-launch)
+- Expected result: 52 items → ~25 core + ~15 next-game reference + ~12 deferred
+- This clarifies scope and creates the gating mechanism that SimpsonsKong lacked
+
+**Why this skill matters for the studio:**
+Features that pass triage are features that strengthen the core loop, that players will notice, that deliver sufficient joy for dev time, and that feel coherent with the game's identity. This kills feature creep before it starts. It's the mechanism by which a 9-person studio ships focused, polished games instead of bloated, unfocused ones.
+
+**Confidence:** `low` — First documentation of a framework drawn from Principle #14 and industry meta-analysis. Will bump to `medium` after applying to first feature cycle in next project, and to `high` after second project validates the process improves backlog quality and clarity.
+
+---
+
 **Selection Criteria Ranking:**
 
 | Criterion | ASHFALL (Roguelike) | CINDER (Platformer) | PULSE (Rhythm-Action) |

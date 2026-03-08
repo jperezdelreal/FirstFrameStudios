@@ -3,3 +3,6 @@
 .squad/agents/*/history.md merge=union
 .squad/log/** merge=union
 .squad/orchestration-log/** merge=union
+
+# NOTE: When Git LFS is initialized, add binary asset filters here:
+# *.png, *.jpg, *.wav, *.ogg, *.mp3, *.ttf, *.otf

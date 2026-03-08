@@ -1,3 +1,31 @@
+# Godot
+.godot/
+*.import
+*.uid
+export_presets.cfg
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Node (for Canvas games)
+node_modules/
+
+# Build artifacts
+*.exe
+*.x86_64
+*.pck
+*.apk
+
+# Temp
+*.tmp
+*.bak
+
 # Squad: ignore generated logs
 .squad/orchestration-log/
 .squad/log/

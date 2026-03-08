@@ -269,6 +269,94 @@ Created the definitive Day 1 guide for starting any new project at First Frame S
 
 2. **Key insight codified: the 70/30 rule.** ~70% of what makes First Frame Studios effective is tech-agnostic (principles, processes, team coordination, design methodology). Only ~30% is tech-specific (engine skills, code patterns, build pipeline). This means every project start is mostly about adapting the 30%, not rebuilding from scratch.
 
+### Monorepo Structure Validation (Session 15)
+
+Delivered comprehensive validation and correction of the proposed GitHub monorepo structure. Founder requested validation before committing to the architecture.
+
+**Deliverable:** `.squad/analysis/monorepo-structure.md` — 47KB document covering:
+
+1. **Validated Structure (Section 1):** Confirmed the proposed organization (games/, shared/, .squad/) is fundamentally correct but identified critical gaps:
+   - ✅ Correct game-per-folder, shared assets, squad infrastructure separation
+   - ❌ Missing: Documentation scaffolding (LICENSE, CONTRIBUTING, CHANGELOG, onboarding)
+   - ❌ Missing: Git infrastructure (.editorconfig, comprehensive .gitignore for Godot/Canvas, .gitattributes expansion)
+   - ❌ Missing: Root configuration (copilot-instructions.md, manifesto)
+   - ❌ Unclear: Shared asset reference strategy
+
+2. **Complete Directory Tree (Section 1):** Provided full validated structure with every directory explained, including:
+   - `.github/` with workflows (ci-game-build.yml, ci-tests.yml) and issue templates
+   - `.squad/` preservation (team brain, no game code)
+   - `shared/` with Godot-specific, Canvas-2D-specific, and binary assets
+   - `games/` with self-contained projects (simpsons-kong + ashfall placeholder)
+   - `docs/` with 8+ documentation files for different audiences
+   - `tools/` for build/dev infrastructure
+
+3. **Configuration Files (Section 3-5):** 
+   - Root `.gitignore` covering Godot (*.import, .godot/), Canvas 2D (node_modules/), IDEs, OS files
+   - `.gitattributes` expansion for binary assets, union merge strategy for .tres files
+   - `.editorconfig` providing defaults for all languages (JS, GDScript, Python, Markdown)
+   - Root `.editorconfig` for consistency; games can override
+
+4. **GitHub Infrastructure (Section 4):**
+   - CI/CD workflows for per-game builds with matrix strategy
+   - Issue templates (bug_report, game_feature, tech_spike, documentation)
+   - PR template with Co-authored-by trailer requirement
+   - Dependabot config stub
+
+5. **Documentation System (Section 5, Appendix B):**
+   - Root README as repository manifest (links, quick-start per game)
+   - CONTRIBUTING.md with commit format, branch naming, code review checklist
+   - LICENSE (MIT recommended, with per-game override for licensed IP)
+   - SECURITY.md for vulnerability reporting
+   - CHANGELOG.md (studio-level version history)
+   - copilot-instructions.md (agent guidance)
+   - docs/GETTING_STARTED.md as comprehensive onboarding (11 sections)
+   - docs/ARCHITECTURE.md explaining monorepo design decisions
+   - docs/DEVELOPMENT_SETUP.md, BUILDING.md, FAQ.md
+
+6. **Shared Asset Architecture (Section 2 & 6):**
+   - Shared Godot addons (game-feel-tuner, debug-overlay, framerate-monitor)
+   - Shared GDScript libraries (state-machines, data-structures, physics-helpers, autoload singletons)
+   - Shared Canvas 2D utilities (input-systems, physics-utils, animation-utils, state-machines)
+   - Asset categories: audio (SFX library, not full tracks), fonts, UI components, visual effects
+   - Decision: Use symlinks (not submodules) for code; copy or symlink for binary assets
+   - Each game's .gitignore excludes shared/, then setup script creates symlinks
+
+7. **Migration Plan (Section 7):**
+   - Phase 1: Create directories and root configuration files
+   - Phase 2: Move SimpsonsKong code to games/simpsons-kong/
+   - Phase 3: Set up CI/CD workflows
+   - Phase 4: Create root README and final validation
+   - Complete checklist of 50+ files to create or move
+
+8. **Trade-Offs (Section 9):**
+   - **Monorepo vs Multi-Repo:** Chose monorepo because shared knowledge + single push to GitHub is founder's goal
+   - **Symlinks vs Submodules vs Copy:** Chose symlinks for simplicity; copies for assets
+   - **Shared Asset Scope:** Only assets used by 2+ games; game-specific assets stay in games/{game}/
+   - **Documentation Strategy:** Multi-level (root README, game READMEs, skill docs) for different audiences
+
+9. **Risk Mitigation (Section 10):**
+   - Asset dependencies: Versions pinned; breaking changes require discussion
+   - Godot symlinks: Test on all platforms; fallback to copy script if Windows fails
+   - CI/CD scalability: Use config file instead of hardcoding; add .gitignore "skip CI" signal
+   - Asset size: Prepare Git LFS strategy for future growth
+   - Team understanding: Multiple onboarding levels (README → GETTING_STARTED → skills)
+
+10. **Validation Checklist (Section 11):** 41 items covering structure, configuration, documentation, CI/CD, functionality
+
+**Key Architectural Decisions Documented:**
+- Games are self-contained (each has its own README, ARCHITECTURE.md, .gitignore)
+- Shared/ is backwards-compatible only (add, never remove)
+- .squad/ contains only studio-wide knowledge (no game-specific content)
+- CI/CD discovers games dynamically from directory structure
+- Documentation is multi-level: root README (what is this?) → GETTING_STARTED (how do I work?) → skill docs (how do I master X?)
+- Co-authored-by trailer required in all commits (CONTRIBUTING.md requirement)
+
+**Most Important Finding:** The proposed structure was fundamentally sound but operationally incomplete. The gaps weren't architectural but infrastructural: missing documentation, missing Git configuration, missing CI/CD, missing onboarding guidance. The validated structure solves all of these while preserving the original game/shared/.squad separation.
+
+**Why This Matters:** This monorepo is the **physical instantiation of First Frame Studios.** How it's organized tells the next developer (or founder review) everything about who we are: research-driven (skills/), team-oriented (squad/), multi-project (games/), knowledge-sharing (.squad/). The structure itself teaches the studio's values.
+
+**Next Step:** Execute the Migration Plan (Section 7) over 2-3 days to transform the current single-game root structure into a multi-project-ready monorepo.
+
 3. **Bottleneck prevention patterns from real experience.** Every bottleneck pattern in Section 6 traces to a real SimpsonsKong incident: Lando's 50% overload → 20% load cap rule; gameplay.js god-scene → module boundaries in Sprint 0; 214 LOC unwired infrastructure → every PR must include wiring; missing state exits → transition table required before implementation.
 
 4. **Migration threshold rule established:** Require an 8+ point lead in the 9-dimension scoring matrix to justify a technology migration. Below that, the productivity cost of switching likely exceeds the capability gain. (Godot beat Phaser by 8 points — that justified our switch.)
@@ -381,3 +469,47 @@ Commissioned and oversaw the Deep Research Wave — a studio-wide knowledge expa
 **Key Insight:** Company identity is now explicit in documented principles. Team clarity prevents invisible hierarchy problems. Studio-craft skill encodes how we live out these principles in daily work.
 
 **Status:** COMPLETE. All artifacts ready for team alignment.
+
+### 2026-03-08: Charter Update for Team Readiness — Vision Keeper Role + Studio Generalization (Session 18)
+
+**Scope:** Foundation audit identified 10 stale charters. This session addresses 2 critical updates:
+1. Expand Yoda's charter with Vision Keeper responsibilities 
+2. Generalize 6 SimpsonsKong-specific charters to studio-scoped
+
+**Work Completed:**
+
+1. **Yoda (Game Designer) → Game Designer / Vision Keeper** — Expanded charter with 3 new responsibilities:
+   - Creative vision protection — "Ask 'does this feel like THIS game?' across all domains"
+   - Final authority on creative coherence — Domain owners execute excellence; Vision Keeper unifies
+   - Feature triage authority — Apply four-test framework (Principle #14) to every proposed feature
+   - Added references to Principle #13 (Creative Vision Has a Keeper) and Principle #14 (Four-Test Framework)
+   - Preserved all existing responsibilities — this is expansion, not replacement
+
+2. **Generalized 6 Stale Charters** — Removed SimpsonsKong-specific references, made universal for any project:
+   - **Chewie:** "Canvas renderer" → "Engine developer for First Frame Studios projects" (any engine: Canvas, Godot, Phaser, etc.)
+   - **Lando:** "Homer Simpson player" → "Gameplay developer for First Frame Studios projects" (any genre, any platform)
+   - **Wedge:** "16:9 letterboxing" → "UI/UX developer for any project and platform" (responsive across all resolutions)
+   - **Greedo:** "Web Audio API exclusively" → "Sound designer using appropriate audio tools per project" (tool selection per tech stack)
+   - **Leia:** "Springfield backgrounds" → "Environment/Asset artist for any game world" (any world, any platform)
+   - **Tarkin:** "SimpsonsKong enemy types" → "Enemy/content designer for any action game" (any action game genre)
+
+3. **Added to All 7 Updated Charters (Yoda + the 6 above):**
+   - Removed specific file path ownership (src/engine/, src/entities/, etc.) — these are project-specific
+   - Added "Skills" section listing which .squad/skills/ they should reference
+   - Added references to studio principles where relevant (e.g., Game Designer references Principle #13)
+   - Kept boundaries clear and comprehensive
+   - Added **Self-Improvement section** to all charters enabling agents to request tools/skills and create draft skills
+
+4. **Self-Improvement Section Added:**
+   ```
+   ## Self-Improvement
+   - If during a task you identify a missing skill, tool, or process that would improve your work, you may:
+     1. Request it by writing to .squad/decisions/inbox/{name}-tool-request.md
+     2. Create a draft skill at .squad/skills/{skill-name}/SKILL.md if you can document the pattern
+   - This is encouraged. The team grows when agents identify their own gaps.
+   ```
+
+**Key Insight:** Charter generalization decouples agent identity from specific projects. Yoda's Vision Keeper expansion provides explicit authority over creative coherence — the "one voice" that prevents design drift and ensures games feel like themselves. Self-Improvement sections acknowledge that agents are the best source of feedback for their own tool gaps and skill needs.
+
+**Charters Updated:** 7 total (Yoda, Chewie, Lando, Wedge, Greedo, Leia, Tarkin)
+**Status:** COMPLETE. All charters are now studio-scoped and ready for next project launch.

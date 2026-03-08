@@ -16,6 +16,8 @@ How to decide who handles what.
 | Tooling, scaffolding, templates, conventions | Jango | EditorPlugins, scene templates, GDScript style guide, build/export automation, project.godot config, linting, asset pipelines |
 | Architecture, integration, review | Solo | Project structure, code review, integration, decisions, scene tree conventions, architecture reviews |
 | Scope & priorities | Solo | What to build next, trade-offs, backlog prioritization |
+| Sprint planning, timelines, workload | Mace | Sprint planning, milestone tracking, scope management, developer joy, release planning |
+| Feature triage, scope decisions | Yoda + Mace | Vision Keeper (Yoda) + Producer (Mace) evaluate features against four-test framework |
 | Async issue work (bugs, tests, small features) | @copilot 🤖 | Well-defined tasks matching capability profile |
 | Session logging | Scribe | Automatic — never needs routing |
 

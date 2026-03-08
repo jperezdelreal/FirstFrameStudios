@@ -20,11 +20,12 @@
 | Greedo | Sound Designer | `.squad/agents/greedo/charter.md` | 🔊 Active |
 | Tarkin | Enemy/Content Dev | `.squad/agents/tarkin/charter.md` | 👾 Active |
 | Ackbar | QA/Playtester | `.squad/agents/ackbar/charter.md` | 🧪 Active |
-| Yoda | Game Designer | `.squad/agents/yoda/charter.md` | 🎯 Active |
+| Yoda | Game Designer / Vision Keeper | `.squad/agents/yoda/charter.md` | 🎯 Active |
 | Leia | Environment Artist | `.squad/agents/leia/charter.md` | 🏞️ Active |
 | Bossk | VFX Artist | `.squad/agents/bossk/charter.md` | ✨ Active |
 | Nien | Character Artist | `.squad/agents/nien/charter.md` | 👤 Active |
-| Jango | Tool Engineer | `.squad/agents/jango/charter.md` | 🔧 Active |
+| Jango | Tool Engineer | `.squad/agents/jango/charter.md` | ⚙️ Active |
+| Mace | Producer | `.squad/agents/mace/charter.md` | 📊 Active |
 | Scribe | Session Logger | `.squad/agents/scribe/charter.md` | 📋 Active |
 | Ralph | Work Monitor | — | 🔄 Monitor |
 

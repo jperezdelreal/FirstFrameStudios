@@ -670,19 +670,31 @@ export class Player {
             ctx.closePath();
             ctx.fill();
             ctx.stroke();
+            // Shoe sole — darker brown line at bottom
+            ctx.fillStyle = '#5C3310';
+            ctx.beginPath();
+            ctx.rect(x + 1, y + height - 2, width - 2, 2);
+            ctx.fill();
         };
 
         const drawFist = (x, y, scale = 1) => {
-            const fingerR = 2 * scale;
-            const offsets = [-3, -1, 1, 3];
-            offsets.forEach((offset) => {
+            const s = scale;
+            // Simpsons 4-finger fist: palm base
+            ctx.beginPath();
+            ctx.ellipse(x, y + 1.5 * s, 4.5 * s, 3 * s, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            // 4 curled fingers across the knuckles
+            for (let i = 0; i < 4; i++) {
+                const fx = x + (i - 1.5) * 2.2 * s;
                 ctx.beginPath();
-                ctx.arc(x + offset * scale, y, fingerR, 0, Math.PI * 2);
+                ctx.ellipse(fx, y - 1.5 * s, 1.6 * s, 2.2 * s, 0, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.stroke();
-            });
+            }
+            // Thumb tucked on the side
             ctx.beginPath();
-            ctx.arc(x, y + 2.5 * scale, 2.5 * scale, 0, Math.PI * 2);
+            ctx.ellipse(x + 5 * s, y + 0.5 * s, 1.3 * s, 2.2 * s, 0.3, 0, Math.PI * 2);
             ctx.fill();
             ctx.stroke();
         };
@@ -982,6 +994,18 @@ export class Player {
         ctx.lineTo(32, 40);
         ctx.lineTo(36, 34);
         ctx.stroke();
+        // Belt at shirt-pants transition
+        ctx.fillStyle = '#5C3310';
+        ctx.beginPath();
+        ctx.rect(16, 58, 32, 3);
+        ctx.fill();
+        ctx.stroke();
+        // Belt buckle
+        ctx.fillStyle = '#C0C0C0';
+        ctx.beginPath();
+        ctx.rect(29, 57, 5, 5);
+        ctx.fill();
+        ctx.stroke();
         ctx.restore();
 
         // Arms (yellow skin)
@@ -1055,23 +1079,27 @@ export class Player {
         ctx.ellipse(26, 10, 8, 5, -0.3, 0, Math.PI * 2);
         ctx.fill();
 
-        // Ears
+        // Ears — defined C-shape with inner ear detail
         ctx.fillStyle = skin;
         ctx.beginPath();
-        ctx.arc(14, 20, 4, -0.6, 1.6);
-        ctx.fill();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(50, 20, 4, Math.PI - 1.6, Math.PI + 0.6);
+        ctx.ellipse(14, 20, 4.5, 5, 0, -0.5, 1.5);
         ctx.fill();
         ctx.stroke();
         ctx.fillStyle = '#E8C000';
         ctx.beginPath();
-        ctx.arc(14, 21, 1.5, 0, Math.PI * 2);
+        ctx.ellipse(14, 21, 2.5, 3, 0, -0.3, 1.3);
         ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = skin;
         ctx.beginPath();
-        ctx.arc(50, 21, 1.5, 0, Math.PI * 2);
+        ctx.ellipse(50, 20, 4.5, 5, 0, Math.PI - 1.5, Math.PI + 0.5);
         ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#E8C000';
+        ctx.beginPath();
+        ctx.ellipse(50, 21, 2.5, 3, 0, Math.PI - 1.3, Math.PI + 0.3);
+        ctx.fill();
+        ctx.stroke();
 
         // Hair spikes (M-shaped zigzag)
         ctx.fillStyle = '#8B4513';

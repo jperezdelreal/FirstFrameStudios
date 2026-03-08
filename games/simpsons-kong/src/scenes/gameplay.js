@@ -11,6 +11,9 @@ import { DebugOverlay } from '../debug/debug-overlay.js';
 import { saveHighScore, getHighScore, isNewHighScore } from '../ui/highscore.js';
 import { Music } from '../engine/music.js';
 import { ParticleSystem, DUST_CLOUD, HIT_SPARKS, DEATH_DEBRIS } from '../engine/particles.js';
+import { Destructible } from '../entities/destructible.js';
+import { Hazard } from '../entities/hazard.js';
+import { LEVEL_1 } from '../data/levels.js';
 
 const WAVE_DATA = [
     { x: 800, enemies: [
@@ -77,6 +80,12 @@ export class GameplayScene {
         this.camera = new Camera();
         this.waveManager = new WaveManager(WAVE_DATA);
 
+        // AAA-L1: Create destructible objects from level data
+        this.destructibles = LEVEL_1.destructibles.map(d => new Destructible(d.x, d.y, d.type));
+
+        // AAA-L3: Create environmental hazards from level data
+        this.hazards = LEVEL_1.hazards.map(h => new Hazard(h.x, h.y, h.type));
+
         // P1-12: Start procedural background music
         try {
             if (!this.music && this.audio.context && this.audio.musicBus) {
@@ -90,6 +99,9 @@ export class GameplayScene {
             console.warn('Music init failed:', e);
             this.music = null;
         }
+
+        // AAA-A2: Start environmental ambience
+        try { this.audio.startAmbience(1); } catch (e) { /* ignore */ }
     }
 
     onExit() {
@@ -98,6 +110,8 @@ export class GameplayScene {
             this.game._suspendScene = false;
             return;
         }
+        // AAA-A2: Stop environmental ambience
+        try { this.audio.stopAmbience(); } catch (e) { /* ignore */ }
         try { if (this.music) this.music.stop(); } catch (e) { /* ignore */ }
         this.debug.destroy();
     }
@@ -225,6 +239,14 @@ export class GameplayScene {
             );
         }
         this.prevJumpHeight = this.player.jumpHeight;
+
+        // AAA-L1: Update destructibles
+        this.destructibles.forEach(d => d.update(dt));
+        // AAA-L3: Update hazards
+        this.hazards.forEach(h => h.update(dt));
+
+        // Track combo count before combat for Woohoo trigger
+        const comboCountBefore = this.player.comboCount;
         
         // Handle player attacks every frame
         const combatResult = Combat.handlePlayerAttack(
@@ -246,11 +268,49 @@ export class GameplayScene {
                 this.game.triggerZoom(1.15, 0.2);
             }
         }
+
+        // AAA-V5: Screen flash on heavy hits
+        if (typeof VFX.createScreenFlash === 'function') {
+            if (combatResult.hits.some(h => h.intensity === 'heavy')) {
+                VFX.createScreenFlash(this.vfx, '#FFFFFF', 0.15);
+            }
+        }
+
+        // AAA-L1: Player attacks vs destructibles
+        const playerAttackBox = this.player.getAttackHitbox();
+        if (playerAttackBox) {
+            const atkDmgTable = { punch: 10, kick: 15, jump_punch: 10, jump_kick: 20, belly_bump: 25, ground_slam: 20, back_attack: 12 };
+            const atkDmg = atkDmgTable[this.player.state] || 10;
+            for (const d of this.destructibles) {
+                if (!d.broken && Combat.checkCollision(playerAttackBox, d.getHurtbox()) && !this.player.attackHitList.has(d)) {
+                    const drop = d.takeDamage(atkDmg);
+                    this.player.attackHitList.add(d);
+                    if (drop) {
+                        if (drop.type === 'health') this.player.health = Math.min(this.player.maxHealth, this.player.health + 10);
+                        if (drop.type === 'score') this.score += 100;
+                    }
+                }
+            }
+        }
+
+        // AAA-A3: Woohoo on reaching 5+ combo
+        if (comboCountBefore < 5 && this.player.comboCount >= 5) {
+            try { this.audio.playWoohoo(); } catch (e) { /* ignore */ }
+        }
         
         // Update enemies
         for (const enemy of this.enemies) {
+            const prevState = enemy.state;
             enemy.update(dt);
             AI.updateEnemy(enemy, this.player, dt);
+            // AAA-V3: Telegraph VFX when enemy enters windup
+            if (typeof VFX.createTelegraph === 'function') {
+                const isWindup = enemy.state === 'windup' || enemy.state === 'charge_windup' || enemy.state === 'slam_windup';
+                const wasWindup = prevState === 'windup' || prevState === 'charge_windup' || prevState === 'slam_windup';
+                if (isWindup && !wasWindup) {
+                    VFX.createTelegraph(this.vfx, enemy.x + enemy.width / 2, enemy.y, 0.3);
+                }
+            }
         }
 
         // Boss phase add spawns
@@ -284,6 +344,29 @@ export class GameplayScene {
             this.audio.playOof();
             // Reset style meter on damage
             this.player.styleTypes.clear();
+            // AAA-A3: Voice bark on player damage (30% chance)
+            if (Math.random() < 0.3) {
+                try { this.audio.playDoh(); } catch (e) { /* ignore */ }
+            }
+        }
+
+        // AAA-L3: Hazard damage zones
+        for (const h of this.hazards) {
+            const playerResult = h.checkDamage(this.player);
+            if (playerResult) {
+                const kbx = playerResult.knockback ? playerResult.knockback.vx : 0;
+                const kby = playerResult.knockback ? playerResult.knockback.vy : 0;
+                this.player.takeDamage(playerResult.damage, kbx, kby);
+            }
+            for (const enemy of this.enemies) {
+                if (enemy.state === 'dead') continue;
+                const enemyResult = h.checkDamage(enemy);
+                if (enemyResult) {
+                    const kbx = enemyResult.knockback ? enemyResult.knockback.vx : 0;
+                    const kby = enemyResult.knockback ? enemyResult.knockback.vy : 0;
+                    enemy.takeDamage(enemyResult.damage, kbx, kby);
+                }
+            }
         }
         
         // KO effects for enemies about to be removed
@@ -321,6 +404,14 @@ export class GameplayScene {
             if (typeof VFX.createSpawnEffect === 'function') {
                 for (const enemy of newEnemies) {
                     VFX.createSpawnEffect(this.vfx, enemy.x + enemy.width / 2, enemy.y + enemy.height);
+                }
+            }
+            // AAA-V4: Boss intro VFX when boss spawns
+            if (typeof VFX.createBossIntro === 'function') {
+                for (const enemy of newEnemies) {
+                    if (enemy.variant === 'boss') {
+                        VFX.createBossIntro(this.vfx, 'NELSON', 'Ha-Ha!', 3.0);
+                    }
                 }
             }
         }
@@ -401,6 +492,11 @@ export class GameplayScene {
         
         // Render background
         this.background.render(this.renderer.ctx, this.renderer.cameraX, this.renderer.width);
+        
+        // AAA-L3: Render hazards (before entities for depth)
+        this.hazards.forEach(h => h.render(this.renderer.ctx, this.renderer.cameraX));
+        // AAA-L1: Render destructibles (before entities for depth)
+        this.destructibles.forEach(d => d.render(this.renderer.ctx, this.renderer.cameraX));
         
         // Sort entities by Y position for depth
         const allEntities = [this.player, ...this.enemies];
