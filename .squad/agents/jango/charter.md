@@ -12,6 +12,7 @@ Tool Engineer for firstPunch (Godot 4 transition and future projects).
 - **Resource templates:** Custom resource types, `.tres` presets, material templates, theme resources for UI consistency
 - **Pipeline automation:** Asset import configuration (sprite atlases, audio presets, texture settings), build scripts, export presets, CI/CD pipeline for Godot builds
 - **Quality gates:** GDScript linting configuration, scene validation (required nodes, signal connections, naming enforcement), pre-commit checks, architectural conformance testing
+- **GDD spec compliance in PR review:** Before approving any PR that implements a GDD-specified system, verify the implementation matches the GDD specification. Compare button counts, feature lists, behavior specs. Flag any deviations — even intentional ones must be documented as decisions in `.squad/decisions/inbox/`. Block PRs with unintentional spec drift until resolved.
 - **Integration scaffolding:** Ensuring agent work arrives pre-wired — template scripts include connection points, signal hookups, and integration contracts so new code connects on first commit
 
 ## Boundaries

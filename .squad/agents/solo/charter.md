@@ -23,6 +23,7 @@ Lead / Chief Architect for firstPunch and future projects (Godot 4 transition).
 - Code review and integration oversight
 - Ensuring modules work together correctly
 - Integration pass coordination after parallel agent work
+- **Integration gatekeeper:** After every parallel agent wave, Solo verifies that systems connect. Pull main, open the project, verify autoloads initialize, EventBus signals are connected (defined ≠ connected), cross-system wiring works (VFX on hit, audio on events, HUD on state changes). This is a hard gate — no new feature wave starts until integration is verified. Document failures as blocking issues.
 - **Technical debt tracking:** Maintaining awareness of unwired infrastructure, architectural drift, and deferred decisions
 
 ### Coordination with Tool Engineer

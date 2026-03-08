@@ -48,6 +48,23 @@ When triaging, the Lead should ask:
 4. **Is it security-sensitive?** Auth, encryption, access control → always 🔴
 5. **Is it medium complexity with specs?** Feature with clear requirements, refactoring with tests → likely 🟡
 
+## Integration & Quality Gates
+
+| Work Type | Route To | Trigger |
+|-----------|----------|---------|
+| Integration verification (post-wave) | Solo (Architect) | After every parallel agent wave — verify systems connect, signals wired, project loads |
+| GDD spec compliance in PR reviews | Jango (Tool Engineer) | Every PR that implements a GDD-specified system — compare code against GDD before approving |
+| Post-merge smoke test | Ackbar (QA/Playtester) | After milestone PRs merge — open Godot, run full game flow, verify end-to-end |
+| Branch management & base validation | Mace (Producer) | Before spawning parallel agents — verify all branches target main, base branch is current |
+
+### Why These Exist
+
+These gates were added after M1+M2 retrospective revealed that:
+- **Integration was nobody's job.** 5 blockers (RoundManager not instantiated, signals not wired, state machine won't start) reached code review undetected because no agent owned "do systems work together?"
+- **Spec validation didn't happen.** GDD specified 6 buttons, only 4 were implemented. Nobody compared code against the GDD before merging.
+- **Nobody tested the game.** 8 PRs merged across two milestones without anyone opening Godot. The project was never verified to run.
+- **Branch management was unowned.** AI controller (298 LOC) was stranded on a dead branch because nobody validated the PR target branch.
+
 ## Rules
 
 1. **Eager by default** — spawn all agents who could usefully start work, including anticipatory downstream work.

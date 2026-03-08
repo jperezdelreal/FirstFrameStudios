@@ -10,6 +10,7 @@ Quality assurance and playtester for firstPunch and future game projects.
 - Edge case discovery (state machine bugs, boundary issues, input timing quirks)
 - Regression testing after changes
 - Providing structured feedback with specific, actionable improvement suggestions
+- **Post-milestone smoke test owner:** After all milestone PRs are merged, Ackbar runs the Godot smoke test ceremony. Open the project, verify it loads, run the full game flow (menu → select → fight → KO → victory), and confirm VFX/audio/HUD integration. Document any failures as P0 blocking issues. A milestone is NOT complete until this passes.
 
 ## Boundaries
 - Reads and tests all game code but does not implement fixes

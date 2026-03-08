@@ -39,3 +39,85 @@
 2. Root cause analysis
 3. What should change?
 4. Action items for next iteration
+
+---
+
+## Integration Gate
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | auto |
+| **When** | after |
+| **Condition** | parallel agent wave completes (2+ PRs merged from same wave) |
+| **Facilitator** | Solo (Architect) |
+| **Participants** | Solo + Ackbar |
+| **Time budget** | focused |
+| **Enabled** | ✅ yes |
+
+**Purpose:** After every parallel work wave, verify that systems connect before the next wave starts. This is a hard gate — no new feature work begins until integration is verified.
+
+**Checklist:**
+1. Pull latest main
+2. Open the project in Godot — verify it loads without errors
+3. Check Output console for null references, missing autoloads, broken scene references
+4. Verify all autoloads initialize in correct dependency order
+5. Verify EventBus signals are connected (defined ≠ connected)
+6. Run through the primary game flow (menu → select → fight → KO → victory)
+7. Confirm cross-system wiring: VFX triggers on hit, audio plays on events, HUD updates on state changes
+8. Document any integration failures as blocking issues before next wave starts
+
+**Root cause (M1+M2):** 5 blockers reached code review because nobody verified systems worked together after parallel waves. RoundManager was never instantiated, signals were never wired, and the game couldn't run — but no ceremony existed to catch this.
+
+---
+
+## Spec Validation
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | manual |
+| **When** | before |
+| **Condition** | any PR that implements a GDD-specified system (combat, input, UI, game flow) |
+| **Facilitator** | Jango (Tool Engineer / PR Reviewer) |
+| **Participants** | PR author + Jango |
+| **Time budget** | focused |
+| **Enabled** | ✅ yes |
+
+**Purpose:** Before merging any implementation PR, verify that the code matches the GDD specification. Catch spec drift at review time, not after milestone completion.
+
+**Checklist:**
+1. Identify the GDD section(s) relevant to this PR
+2. Compare implementation against GDD requirements (button count, feature list, behavior spec)
+3. Flag any deviations — even deliberate ones must be documented as decisions
+4. If deviation is intentional, author must add a decision file to `.squad/decisions/inbox/` explaining why
+5. If deviation is unintentional, PR is blocked until implementation matches spec or GDD is updated
+
+**Root cause (M1+M2):** GDD specified 6-button layout (LP/MP/HP/LK/MK/HK) but only 4 buttons were implemented. Nobody compared the implementation against the GDD before merging. The deviation compounded silently across movesets, frame data, and combo routes.
+
+---
+
+## Godot Smoke Test
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | auto |
+| **When** | after |
+| **Condition** | milestone declared complete (all milestone PRs merged) |
+| **Facilitator** | Ackbar (QA/Playtester) |
+| **Participants** | Ackbar |
+| **Time budget** | focused |
+| **Enabled** | ✅ yes |
+
+**Purpose:** After merging a milestone, verify the project opens in Godot and the basic game flow works end-to-end. A milestone is NOT complete until this passes.
+
+**Checklist:**
+1. `git checkout main && git pull` — clean working tree
+2. Open project in Godot 4.x — no import errors, no missing autoloads
+3. Press Play — main scene loads without crash
+4. Navigate: Main Menu → Character Select → Fight Scene
+5. Verify: both fighters spawn, HUD displays, timer counts, input works
+6. Land a hit — verify VFX sparks, audio plays, health bar updates
+7. Complete a round — verify KO sequence, round transition, score update
+8. Complete a match — verify victory screen, rematch/menu navigation
+9. Document any failures as P0 blocking issues
+
+**Root cause (M1+M2):** Nobody opened Godot after merging 8 PRs across two milestones. The project was never verified to load or run. Integration failures were invisible until Jango's pre-M3 code review found 5 blockers that prevented the game from running at all.
