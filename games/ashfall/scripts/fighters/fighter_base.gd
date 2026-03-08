@@ -1,5 +1,5 @@
 ## Base class for all playable fighters. Owns health, facing, movement
-## constants, and the state-machine ↔ hitbox/hurtbox wiring.
+## constants, input buffer, fighter controller, and state-machine wiring.
 ## Character-specific scripts extend this to override constants or add moves.
 class_name Fighter
 extends CharacterBody2D
@@ -7,14 +7,15 @@ extends CharacterBody2D
 signal took_damage(fighter: Fighter, amount: int, remaining_hp: int)
 signal knocked_out(fighter: Fighter)
 
-# --- Exported tunables ---
+# --- Exported tunables (GDD 2.4) ---
 @export var player_id: int = 1
 @export var max_health: int = 1000
-@export var walk_speed: float = 200.0
-@export var walk_back_speed: float = 150.0
-@export var jump_force: float = 500.0
-@export var gravity: float = 1200.0
+@export var walk_speed: float = 200.0       # px/sec forward
+@export var walk_back_speed: float = 170.0  # px/sec backward (retreat penalty)
+@export var jump_force: float = 520.0       # initial upward velocity
+@export var gravity: float = 900.0          # px/sec²
 @export var crouch_hurtbox_scale: float = 0.6
+@export var moveset: FighterMoveset
 
 # --- Runtime state ---
 var health: int = 1000
@@ -23,24 +24,33 @@ var facing_direction: int = 1  # 1 = right, -1 = left
 var is_grounded: bool = true
 var opponent: Fighter
 
+var facing_right: bool:
+	get: return facing_direction > 0
+
 # --- Node references ---
 @onready var state_machine: StateMachine = $StateMachine
 @onready var sprite: Sprite2D = $Sprite
 @onready var hurtbox: Area2D = $Hurtbox
 @onready var hitboxes: Node2D = $Hitboxes
 @onready var attack_origin: Marker2D = $AttackOrigin
-
-# --- Input helper ---
-var _input_prefix: String = "p1_"
+@onready var input_buffer: InputBuffer = $InputBuffer
+@onready var controller: FighterController = $FighterController
 
 
 func _ready() -> void:
 	health = max_health
-	_input_prefix = "p%d_" % player_id
+	# Wire input buffer
+	input_buffer.player_id = player_id
+	input_buffer.facing_right = facing_right
 	# Wire fighter reference into every state before the first physics tick
 	for state_node in state_machine.get_children():
 		if state_node is FighterState:
 			state_node.fighter = self
+	# Wire controller
+	if controller:
+		controller.fighter = self
+		controller.input_buffer = input_buffer
+		controller.moveset = moveset
 	# Ensure state machine starts in idle (safety fallback if
 	# initial_state export wasn't resolved from the scene file)
 	if not state_machine.current_state:
@@ -49,6 +59,8 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	_update_facing()
+	input_buffer.update()
+	input_buffer.facing_right = facing_right
 	is_grounded = is_on_floor()
 
 
@@ -92,23 +104,34 @@ func reset_for_round(spawn_position: Vector2) -> void:
 	state_machine.transition_to("idle", {})
 
 
-# --- Input helpers (thin wrappers — Lando will replace with InputBuffer) ---
+# --- Input helpers (routed through InputBuffer for buffering + consume) ---
 
 func is_input_pressed(action: String) -> bool:
-	return Input.is_action_pressed(_input_prefix + action)
+	match action:
+		"up": return input_buffer.is_held("up")
+		"down": return input_buffer.is_held("down")
+		"left": return input_buffer.is_held("left")
+		"right": return input_buffer.is_held("right")
+		"block": return input_buffer.is_held("block")
+	return false
 
 
 func is_input_just_pressed(action: String) -> bool:
-	return Input.is_action_just_pressed(_input_prefix + action)
+	match action:
+		"up": return input_buffer.check_button("just_up")
+		"down": return input_buffer.check_button("just_down")
+		"left": return input_buffer.check_button("just_left")
+		"right": return input_buffer.check_button("just_right")
+		"light_punch": return input_buffer.check_button("lp")
+		"heavy_punch": return input_buffer.check_button("hp")
+		"light_kick": return input_buffer.check_button("lk")
+		"heavy_kick": return input_buffer.check_button("hk")
+	return false
 
 
 func is_holding_back() -> bool:
-	if facing_direction > 0:
-		return is_input_pressed("left")
-	return is_input_pressed("right")
+	return input_buffer.is_holding_back()
 
 
 func is_holding_forward() -> bool:
-	if facing_direction > 0:
-		return is_input_pressed("right")
-	return is_input_pressed("left")
+	return input_buffer.is_holding_forward()

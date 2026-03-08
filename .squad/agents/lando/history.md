@@ -79,3 +79,36 @@
 - **Addresses Ackbar's audit (P0 gap):** Game feel had no dedicated skill; patterns were scattered across 3 skills. This unified reference aligns with Principle #1 (Player Hands First) — now the first skill new agents should read when implementing ANY feature with impact.
 - **Cross-referenced:** state-machine-patterns (state triggers), beat-em-up-combat (frame data), 2d-game-art (particles), game-qa-testing (juice toggle test), godot-beat-em-up-patterns (GDScript examples)
 - **Session tag:** Skills Gap Remediation (2026-03-07T12:57:00Z) — Orchestration log: `.squad/orchestration-log/2026-03-07T12-57-skills-creation.md`
+
+### Fighter Controller + Input Buffer (Issue #3) (2025-07-21)
+- **Context:** Ashfall pivot — building the gameplay layer for a 1v1 fighting game in Godot 4
+- **Delivered:** InputBuffer, MotionDetector, FighterController, MoveData resource, FighterMoveset resource, Kael + Rhena movesets, fight scene
+- **Key Files Created:**
+  - `scripts/systems/input_buffer.gd` — 30-frame ring buffer, 8-frame leniency, SOCD resolution, motion check, button consume
+  - `scripts/systems/motion_detector.gd` — QCF/QCB/DP/HCF/HCB/double-QCF with facing-aware auto-flip, 15-frame window
+  - `scripts/fighters/fighter_controller.gd` — Priority chain (throw > special > heavy > light), MoveData passthrough to AttackState
+  - `scripts/data/move_data.gd` — Frame data resource (startup/active/recovery, damage, hitstun, blockstun, knockback, hit type)
+  - `scripts/data/fighter_moveset.gd` — Organizes normals/specials with stance-aware lookup
+  - `resources/movesets/kael_moveset.tres` — 4 normals + Ember Shot (QCF+LP) + Rising Cinder (DP+LP)
+  - `resources/movesets/rhena_moveset.tres` — 4 normals + Blaze Rush (QCF+LK) + Flashpoint (DP+LP)
+  - `scenes/main/fight_scene.tscn` — Two fighters, flat stage, walls, camera, EventBus wiring
+  - `scripts/fight_scene.gd` — Scene controller with camera tracking and signal wiring
+- **Key Files Modified:**
+  - `scripts/fighters/fighter_base.gd` — Replaced thin Input wrappers with InputBuffer routing; added moveset export, controller wiring, facing_right computed property
+  - `scenes/fighters/fighter_base.tscn` — Added InputBuffer + FighterController nodes, Visual ColorRect
+  - `project.godot` — Set fight_scene as main scene, tuned GDD movement constants
+- **Architecture Integration:**
+  - InputBuffer runs in Fighter._physics_process → FighterController processes attacks → StateMachine runs state. Node ordering in scene tree ensures correct execution sequence.
+  - FighterController consumes buttons from buffer via consume_button(), preventing states from double-transitioning on the same frame.
+  - States handle movement transitions (idle↔walk↔crouch↔jump), controller handles attack transitions (with MoveData).
+  - AI can inject synthetic inputs via inject_direction()/inject_button() — same code path as human input (per architecture spec).
+- **Tuning Values:**
+  - Buffer: 30 frames history, 8-frame leniency (133ms), 3-frame simultaneous window, 15-frame motion window
+  - Movement: walk 200/170 px/sec, jump -520 px/sec, gravity 900 px/sec² (gives ~150px jump height in ~35 frames)
+  - Kael LP: 4+2+6f = 12f total, 30 dmg; Kael HP: 12+4+16f = 32f total, 100 dmg
+  - Rhena LP: 4+2+6f = 12f total, 30 dmg; Rhena Blaze Rush: 14+5+12f = 31f total, 80 dmg
+- **Coordination Notes:**
+  - Built on top of Chewie's state machine scaffold (squad/2-fighter-state-machine)
+  - FighterController is the "Lando will replace with InputBuffer" integration Chewie left as TODO
+  - Combat system (hit detection, damage application) and round manager are NOT wired in this PR — those are separate tickets
+  - MoveData resources are pure data; AnimationPlayer-driven hitbox activation will come from Tarkin's frame data work
