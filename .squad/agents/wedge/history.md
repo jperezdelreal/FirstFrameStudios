@@ -1,8 +1,37 @@
 # Wedge — History (formerly Hockney)
 
 ## Project Context
-- **Project:** firstPunch — Browser-based game beat 'em up
+- **Project:** Ashfall (1v1 fighting game, Godot 4) + firstPunch (browser beat 'em up)
 - **User:** joperezd
+
+## Ashfall — Fight HUD (Issue #5, PR #19)
+**Date:** 2025-07-22  
+**Branch:** `squad/5-hud`  
+**Files:** `scenes/ui/fight_hud.tscn`, `scripts/ui/fight_hud.gd`
+
+Built the complete fight HUD for Ashfall. Key deliverables:
+
+- **Health bars (P1 left, P2 right):** Smooth lerp drain animation + ghost damage trail (white bar behind green, 0.5s delay then 400px/s drain). Dynamic colour shift: green → yellow → red as HP drops. P2 bar fills right-to-left (mirrored). Both use overlapping ProgressBars — ghost bar behind with dark background, health bar on top with transparent background.
+
+- **Round timer:** 99-second countdown in a dark rounded panel at top-center between health bars. Red pulse warning animation when under 10 seconds (sine-wave lerp between warm white and red).
+
+- **Round counter:** Dot indicators (● filled, ○ empty) below timer. P1 dots in blue, P2 dots in red. Synced from GameState.scores on round_ended signal.
+
+- **Ember meter:** Per-player bars below health bars (max 100, per GDD Ember System). Fill direction mirrors health bars. Glow pulse animation at 75+ ember (sine-wave between orange and bright amber). Darkened fill below 50.
+
+- **Announcer:** "ROUND X" / "FIGHT!" / "K.O." centered on screen at 72px with 8pt black outline. Three-phase animation: punch-in scale (2.5x → 1x over 0.15s with ease curve), hold for ~1s, fade-out over 0.3s.
+
+- **Signal wiring:** All updates flow through EventBus autoload — zero direct coupling to fighters or round manager. Connects to: fighter_damaged, fighter_ko, round_started, round_ended, match_ended, timer_updated, announce, ember_changed.
+
+**Learnings:**
+- StyleBoxFlat sub-resources in .tscn are shared between nodes — must duplicate before per-bar colour mutation (used `_ensure_own_fill()` pattern with meta flag)
+- Ghost damage trail = two stacked ProgressBars: ghost behind with dark background + health on top with StyleBoxEmpty background. Clean visual separation without custom draw calls.
+- CanvasLayer layer=10 for HUD. mouse_filter=IGNORE on all elements to prevent input interception.
+- Building .tscn files by hand requires careful attention to layout_mode (1=anchors for Control children, 2=container for Container children) and anchors_preset values.
+
+---
+
+## firstPunch Context
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Goal:** Ship playable beat 'em up level in 30 minutes
 
