@@ -1,5 +1,32 @@
 # Wedge — History (formerly Hockney)
 
+## Ashfall — Game Flow Screens (Issue #12, PR TBD)
+**Date:** 2025-07-23
+**Branch:** `squad/12-menus`
+**Files:** `scenes/ui/main_menu.tscn`, `scripts/ui/main_menu.gd`, `scenes/ui/character_select.tscn`, `scripts/ui/character_select.gd`, `scenes/ui/victory_screen.tscn`, `scripts/ui/victory_screen.gd`, `scripts/systems/scene_manager.gd`, `project.godot`
+
+Built the complete game flow UI for Ashfall. Key deliverables:
+
+- **Main Menu:** "ASHFALL" title with sine-wave ember glow pulse (warm white ↔ orange outline), 4 buttons (VS CPU, VS Player, Options, Quit) with dark volcanic panel styling + ember-orange borders. Options panel overlays with Master/SFX/Music volume sliders (placeholder — no audio bus wired yet). First Frame Studios credit at bottom. Full keyboard/gamepad navigation via focus neighbors. ESC closes options.
+
+- **Character Select:** Two-panel layout (P1 left, P2 right) with VS in center. Colored rectangles as portrait placeholders (Kael = blue, Rhena = red). P1 navigates with A/D (p1_left/p1_right), confirms with U (p1_light_punch), cancels with L (p1_block). P2 uses arrow keys and numpad. In VS CPU mode, P2 auto-picks the opposite character. Shows character name + archetype ("Balanced" / "Rushdown"). 0.5s delay after both confirm before fade transition. ESC backs out or deconfirms.
+
+- **Victory Screen:** "[NAME] WINS!" in gold with glow pulse. Dynamic stat rows (rounds, total damage, longest combo, ember spent) built from SceneManager.match_stats dictionary. Rematch and Main Menu buttons with focus neighbors.
+
+- **Scene Manager (autoload):** CanvasLayer at layer 100 with ColorRect overlay for fade-to-black transitions (0.4s each direction via Tween). Stores game_mode ("vs_cpu"/"vs_player"), p1/p2 character selections, and match_stats across scene changes. Methods: `goto_main_menu()`, `goto_character_select(mode)`, `goto_fight()`, `goto_victory(winner, stats)`, `rematch()`. Listens to EventBus.scene_change_requested for decoupled scene transitions.
+
+- **project.godot updates:** Set `run/main_scene` to `res://scenes/ui/main_menu.tscn`. Added `SceneManager` to autoload list.
+
+**Learnings:**
+- Scene manager as CanvasLayer autoload at layer 100 keeps fade overlay above all game content including the fight HUD (layer 10).
+- Tween chain (fade in → swap scene → fade out → re-enable input) prevents input during transitions without manual state tracking.
+- Character select uses `wrapi()` for index cycling — cleaner than modulo with boundary checks.
+- VS CPU mode auto-mirrors character selection (picks opposite of P1) — no P2 input handling needed.
+- All buttons use unique_name_in_owner for `%Name` access pattern, matching fight_hud.tscn conventions.
+- Dark volcanic palette (bg: 0.04/0.03/0.06, panels: 0.06-0.12 with ember-orange borders) carries the Ashfall art direction from GDD into menus.
+
+---
+
 ## Project Context
 - **Project:** Ashfall (1v1 fighting game, Godot 4) + firstPunch (browser beat 'em up)
 - **User:** joperezd
