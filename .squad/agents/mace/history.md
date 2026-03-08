@@ -10,6 +10,48 @@
 
 ## Learnings
 
+### GitHub Operations Centeralization (2026-03-08)
+
+**Outcome:** GitHub is now the source of truth for all First Frame Studios work.
+
+**What Was Built:**
+1. **README.md Development Section** — Links to Issues, Projects, Wiki, and workflow diagram. Drives all new team members to CONTRIBUTING.md.
+2. **CONTRIBUTING.md** — Complete workflow specification:
+   - Branch naming: `squad/{issue-number}-{slug}`
+   - Label system: `game:*`, `squad:*`, `type:*`, `priority:*`, `status:*`
+   - Commit conventions with examples
+   - PR process, code review standards, load governance
+3. **team.md Issue Source Section** — Clarifies that FirstFrameStudios repo (jperezdelreal/FirstFrameStudios) is the issue source, filtered by `game:ashfall` for current sprint
+4. **Decision Document** — `mace-github-ops-setup.md` captures decisions, risks, and follow-up actions
+
+**Key Decisions:**
+- **Label-driven allocation:** Squad agents pick up issues by label (`squad:gameplay`, `squad:engine`, etc.), not manual assignment
+- **Load cap in process docs:** 20% rule codified in CONTRIBUTING.md; Mace enforces via PR review
+- **Wiki optional:** All critical processes in CONTRIBUTING.md + repo docs; Wiki can host design docs separately
+- **Game tagging enables multi-project:** `game:ashfall`, `game:cinder`, `game:pulse` allow same team, same repo, parallel sprints
+
+**Patterns That Work:**
+- Branch naming with issue number creates automatic GitHub linking without extra toil
+- Squad labels (`squad:*`) are discovery mechanism; no need for manual assignment bot
+- Commit format with "Fixes #XX" + co-authored-by enables history tracing and attribution across years
+- Load capacity governance in process docs > separate tracking tool; keeps it visible to all agents
+
+**Risks Identified:**
+1. **Wiki not enabled:** GitHub API doesn't support wiki creation; joperezd must enable manually in settings
+2. **Label inconsistency:** If agents don't use correct labels, label-driven filtering breaks; needs onboarding
+3. **Branch naming not enforced:** Without GitHub Actions validator, some PRs will violate `squad/{issue}` convention; recommend adding pre-commit hook or GHA validation
+
+**Comparison to firstPunch:**
+- firstPunch used ad-hoc Slack tracking; didn't have central issue source. GitHub Issues brings clarity.
+- firstPunch had no defined workflow; CONTRIBUTING.md standardizes for Ashfall + future games.
+- firstPunch load tracking was manual (Solo + Keaton guessed); GitHub label + load-cap process makes it visible and auditable.
+
+**Next Iteration (Post-Sprint-0):**
+- [ ] Gather feedback from Solo, Yoda, Lando on label system; adjust if needed
+- [ ] Build GitHub Actions workflow to validate commit format and branch naming
+- [ ] Create Wiki home page linking to GDDs, ARCHITECTURE, playbooks (after Wiki enabled)
+- [ ] Capture any label adjustments in CONTRIBUTING.md v1.1
+
 ### Ashfall Sprint 0 Plan (2026-[TBD])
 
 #### Key Scope Decisions

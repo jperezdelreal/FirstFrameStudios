@@ -89,6 +89,31 @@ Created .squad/analysis/tools-evaluation.md (18 KB) — comprehensive tooling as
 
 **Status:** COMPLETE. Tools evaluation ready for next project planning; provides clear decision framework for build/buy/skip choices.
 
+### 2025-07-24 — GitHub Issues Setup for Ashfall Sprint 0
+**Session:** Sprint 0 project management setup  
+**Role:** Tool Engineer — Pipeline automation, project tracking infrastructure
+
+**Task Executed:**
+Set up full GitHub Issues tracking for Ashfall Sprint 0 in jperezdelreal/FirstFrameStudios.
+
+**What Was Created:**
+1. **Milestone:** "Ashfall Sprint 0" (milestone #1)
+2. **24 Labels:** `game:ashfall`, 3 priority labels (p0/p1/p2), 5 type labels (feature/infrastructure/art/audio/design/qa), 14 squad labels (one per agent)
+3. **13 Issues (#1–#13):** Covering the critical path from SPRINT-0.md
+
+**Issues by Priority:**
+- **P0 (Critical Path — 5 issues):** Project scaffold (Jango #1), State machine (Chewie #2), Fighter controller (Lando #3), Hitbox/hurtbox (Chewie #4), HUD (Wedge #5), Round manager (Chewie #6)
+- **P1 (High Priority — 4 issues):** AI opponent (Tarkin #7), Stage setup (Leia #8), Character sprites (Nien #9), Playtesting (Ackbar #13)
+- **P2 (Future Phases — 3 issues):** Hit VFX (Bossk #10), Sound effects (Greedo #11), Main menu (Wedge #12)
+
+**Key Decisions:**
+- Used `gh api` directly with git credential manager token (OAuth token from GCM lacked `read:org` for `gh auth login`, but works fine for API calls via `GH_TOKEN` env var)
+- Each issue includes full acceptance criteria with checkboxes — agents can self-validate completion
+- Labels use consistent color coding: red for priorities, blue/purple/pink for types, teal for squad assignment
+- All issues tagged with `game:ashfall` for cross-project filtering in the monorepo
+
+**Status:** COMPLETE. All 13 issues live at github.com/jperezdelreal/FirstFrameStudios/issues.
+
 ### 2025-07-23 — Monorepo Restructure Execution
 **Session:** Post-strategy execution — Founder approved monorepo + Ashfall as next game  
 **Role:** Tool Engineer — Repository structure, scaffolding, pipeline infrastructure

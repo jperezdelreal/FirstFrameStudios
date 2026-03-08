@@ -1,7 +1,0 @@
-feat(ashfall): Sprint 0 kickoff — GDD, architecture, and sprint plan
-
-- Yoda: Game Design Document (43K) with Ember System mechanic
-- Solo: Godot 4 architecture with fighter state machines and input buffer
-- Mace: Sprint 0 plan with 4 milestones and 14-agent work breakdown
-
-Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>

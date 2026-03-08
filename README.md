@@ -57,6 +57,32 @@ This monorepo is our workshop — games, tools, shared assets, and the decisions
 
 ---
 
+## 🔧 Development
+
+### Work Coordination
+
+All work is tracked and coordinated through GitHub:
+
+- **[Issues Board](https://github.com/jperezdelreal/FirstFrameStudios/issues)** — Feature requests, bugs, and tasks live here
+- **[Project Board](https://github.com/jperezdelreal/FirstFrameStudios/projects)** — Create and manage sprints in GitHub Projects; filter by game tag and priority
+- **[Wiki](https://github.com/jperezdelreal/FirstFrameStudios/wiki)** — Design docs, architecture, and studio playbooks
+
+### How Squad Agents Work
+
+All work follows this flow:
+
+```
+Issue (game:*, squad:*, priority:*) 
+  → Branch (squad/{issue-number}-{slug})
+  → Pull Request (with checks)
+  → Review (squad agents verify)
+  → Merge to main
+```
+
+See [**CONTRIBUTING.md**](CONTRIBUTING.md) for full workflow, label system, and commit conventions.
+
+---
+
 <div align="center">
 
 > *"The game tells you what it wants to be if you listen."*

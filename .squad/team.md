@@ -37,3 +37,9 @@
 - **Stack:** HTML + CSS + JavaScript (ES modules), HTML5 Canvas, Web Audio API
 - **Description:** Browser-based beat 'em up inspired by classic arcade beat 'em ups, Final Fight, Streets of Rage. Modern 2D visuals, side-scrolling with 2.5D plane, combat with hitstun/knockback. No build step, no frameworks.
 - **Universe:** Star Wars
+
+## Issue Source
+
+- **Repository:** jperezdelreal/FirstFrameStudios
+- **Connected:** 2026-03-08
+- **Filters:** game:ashfall (current sprint)
