@@ -88,3 +88,31 @@ Created .squad/analysis/tools-evaluation.md (18 KB) — comprehensive tooling as
 4. Tools amplify our strength (clear process, domain ownership), not replace it
 
 **Status:** COMPLETE. Tools evaluation ready for next project planning; provides clear decision framework for build/buy/skip choices.
+
+### 2025-07-23 — Monorepo Restructure Execution
+**Session:** Post-strategy execution — Founder approved monorepo + Ashfall as next game  
+**Role:** Tool Engineer — Repository structure, scaffolding, pipeline infrastructure
+
+**Task Executed:**
+Restructured the SimpsonsKong repository into a multi-game monorepo layout.
+
+**Changes Made:**
+1. **Created directory structure:** `games/simpsons-kong/`, `games/ashfall/`, `shared/{shaders,ui-components,audio,fonts,addons}/`, `docs/`
+2. **Moved all SimpsonsKong source files** into `games/simpsons-kong/` using `git mv` (preserves history):
+   - `src/` → `games/simpsons-kong/src/`
+   - `assets/` → `games/simpsons-kong/assets/`
+   - `index.html`, `styles.css`, `README.md` → `games/simpsons-kong/`
+3. **Created `games/ashfall/.gitkeep`** — placeholder for founder's Godot project
+4. **Created root-level files:**
+   - `README.md` — Studio-level README with structure table, games list, team link
+   - `.editorconfig` — Consistent formatting across GDScript, JS, Markdown, JSON/YAML
+   - `.gitignore` — Expanded to cover Godot (.godot/, *.import, *.pck), OS files, IDE dirs, Node, build artifacts
+   - `docs/GETTING_STARTED.md` — Quick setup guide for both SimpsonsKong and Ashfall
+5. **Updated `.gitattributes`** — Added LFS comment noting future configuration needed
+6. **Preserved at root:** `.squad/`, `.gitattributes`, `squad.config.ts`, `.copilot/`, `.github/`
+
+**Files Moved (all via `git mv`):** 28 files across `src/`, `assets/`, `index.html`, `styles.css`, `README.md`  
+**Files That Couldn't Be Moved:** None — all moves succeeded  
+**Commit:** `613a8e5` — "Restructure to monorepo layout"
+
+**Status:** COMPLETE. Repository is now a monorepo. Ready for Ashfall project creation in `games/ashfall/`.
