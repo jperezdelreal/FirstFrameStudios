@@ -37,8 +37,41 @@ Rulesets can be created via gh api repos/{owner}/{repo}/rulesets --method POST. 
 ### 6. Cherry-pick as conflict resolution fallback
 When a PR branch has too many diverged commits (e.g., it includes commits from other unmerged branches), cherry-picking the unique commit(s) onto main is cleaner than rebasing. Close the original PR with a comment explaining the merge method.
 
+### 7. GitHub Discussions: ALWAYS check before creating (idempotency guard)
+🔴 **CRITICAL — brand-facing content.** The Dev Diary is public marketing for the studio. Duplicates look unprofessional.
+
+Agents MUST check if a Discussion with the same title already exists before creating one. The `gh discussion create` command does NOT check for duplicates — it will happily create 3 identical posts.
+
+**Guard pattern (mandatory before any `gh discussion create`):**
+```powershell
+# Check if discussion already exists
+$existing = gh api graphql -f query='{ repository(owner: "jperezdelreal", name: "FirstFrameStudios") { discussions(first: 10, orderBy: {field: CREATED_AT, direction: DESC}) { nodes { title } } } }' | ConvertFrom-Json
+$title = "🔥 Dev Diary #2: ..."
+$alreadyExists = $existing.data.repository.discussions.nodes | Where-Object { $_.title -eq $title }
+if ($alreadyExists) { Write-Host "Discussion already exists — skipping"; return }
+# Only then create
+gh discussion create --repo jperezdelreal/FirstFrameStudios --category "General" --title $title --body "..."
+```
+
+**Rule:** Never retry a `gh discussion create` on failure without checking if the first attempt actually succeeded silently. API calls can return errors but still create the resource.
+
+**Cleanup:** If duplicates are found, delete via GraphQL mutation:
+```powershell
+gh api graphql -f query='mutation { deleteDiscussion(input: {id: "DISCUSSION_NODE_ID"}) { discussion { id } } }'
+```
+
+### 8. Idempotency applies to ALL GitHub resource creation
+The same guard-before-create pattern from #7 applies to:
+- **Issues:** Check by title before `gh issue create`
+- **Labels:** Check existing labels before `gh label create`
+- **PRs:** Check by head branch before `gh pr create`
+- **Discussions:** Check by title before `gh discussion create`
+
+API calls can silently succeed on retry. Always verify state before creating.
+
 ## When to Apply
 - Any time agents create parallel feature branches
-- Any time agents create PRs via gh pr create
-- Any time gh CLI is needed in spawned agent sessions
+- Any time agents create PRs via `gh pr create`
+- Any time `gh` CLI is needed in spawned agent sessions
 - When setting up branch protection or GitHub infrastructure
+- **ALWAYS before creating Discussions, issues, or any public-facing content**
