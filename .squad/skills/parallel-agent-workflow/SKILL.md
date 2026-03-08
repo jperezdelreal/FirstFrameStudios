@@ -1,10 +1,10 @@
 # Parallel Agent Workflow
 
 ## Metadata
-- **Confidence:** medium
+- **Confidence:** high
 - **Domain:** DevOps, Git, Multi-Agent Coordination
 - **Last validated:** 2026-03-08
-- **Source:** Ashfall M1+M2 parallel execution + github-pr-workflow SKILL
+- **Source:** Ashfall M1+M2 parallel execution + github-pr-workflow SKILL + Solo integration audit (validates necessity)
 
 ## Pattern
 
@@ -268,7 +268,38 @@ Implements procedural sound generation: 14 sounds, 3 mix buses, pitch jitter.
 Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
 ```
 
----
+### 8. Integration Gate After Every Wave — REQUIRED
+
+**Critical pattern (validated by Solo integration audit):** After merging a parallel wave of PRs, an integration agent (architect or tech lead) MUST verify the systems connect. This is NOT optional — it gates the next wave of work.
+
+**Evidence from M1+M2:** Multiple systems were built in parallel (RoundManager, EventBus, GameState, AudioManager, VFXManager), merged to main, and then discovered to have integration gaps:
+- RoundManager was never instantiated → round system non-functional
+- Signals defined but not emitted in all necessary places
+- Autoload order dependencies not tested
+- Collision layers documented incorrectly vs implemented
+- Scene references broken after script refactors
+
+**Post-wave integration checklist (required gate):**
+
+Before approving any work on the next milestone:
+
+- [ ] **Signals connected**: Every EventBus signal emitted in one system is connected and consumed in at least one other system. No orphaned signals.
+- [ ] **Autoloads ordered**: All systems are in correct dependency order in `project.godot` [autoloads]. EventBus first, flow managers (RoundManager) early, consumers late.
+- [ ] **Autoloads instantiated**: Game-critical autoloads (RoundManager, GameState) are registered in `project.godot` AND initialized (e.g., `RoundManager.start_match(fighter1, fighter2)` is called).
+- [ ] **Scenes reference valid scripts**: All `ext_resource` paths in `.tscn` and `.tres` files resolve to existing files. No red "broken reference" icons in Godot editor.
+- [ ] **Input map complete**: All inputs defined in GDD are registered in `project.godot` [input_map]. Controller code doesn't reference non-existent inputs.
+- [ ] **Collision layers match docs**: Documentation accurately describes the collision scheme used in `project.godot` and scene files. All physics nodes have explicit collision_layer and collision_mask set.
+- [ ] **State machines initialized**: Every state machine has an explicit `initial_state` set in the scene or transitions to it in `_ready()`. Fighters don't freeze on spawn.
+- [ ] **Project opens in Godot**: Load the project in Godot 4.6, play a test round, verify all systems initialize without errors and game runs end-to-end.
+
+**Workflow:**
+1. All PRs in wave merge to main
+2. Integration agent (Solo) checks out main and runs the integration checklist
+3. If any item fails, file issues and block next wave until fixed
+4. If all items pass, document the pass in `.squad/decisions/` and clear the gate
+5. Only then can the next wave of parallel work begin
+
+**Time investment:** 20–30 minutes per integration gate. Prevents shipping broken systems post-merge and keeps velocity high.
 
 ## Parallel Execution Checklist
 
@@ -277,10 +308,12 @@ Before starting parallel work on a milestone:
 - [ ] Latest main has been pulled by all agents
 - [ ] File ownership is documented (who owns what)
 - [ ] Designated agent for project.godot edits is chosen
+- [ ] Integration architect is assigned to run post-wave gate
 - [ ] Each agent knows their issue number and feature scope
 - [ ] All agents will use the PR template with `Closes #N`
 - [ ] All agents will refresh `$env:Path` before using gh CLI
-- [ ] After first wave merges, remaining branches will rebase before merging
+- [ ] After first wave merges, integration gate runs BEFORE next wave starts
+- [ ] Remaining branches will rebase before merging (if rebase conflicts occur)
 
 ## When to Apply
 
