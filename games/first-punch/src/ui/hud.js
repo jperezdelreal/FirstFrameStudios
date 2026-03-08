@@ -335,12 +335,15 @@ export class HUD {
         // ── Wave Progress (top center) ──
         this._renderWaveProgress(ctx, W, waveInfo);
 
-        // ── HUD Panel (semi-transparent dark backdrop) ──
+        // ── HUD Panel (semi-transparent dark backdrop with subtle border glow) ──
         ctx.save();
         this._roundRect(ctx, 42, 6, 250, 68, 10);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+        const panelGrad = ctx.createLinearGradient(42, 6, 42, 74);
+        panelGrad.addColorStop(0, 'rgba(10, 10, 20, 0.65)');
+        panelGrad.addColorStop(1, 'rgba(0, 0, 0, 0.55)');
+        ctx.fillStyle = panelGrad;
         ctx.fill();
-        ctx.strokeStyle = 'rgba(254, 217, 15, 0.25)';
+        ctx.strokeStyle = 'rgba(254, 217, 15, 0.3)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
         ctx.restore();
@@ -382,8 +385,10 @@ export class HUD {
             ctx.clip();
 
             const grad = ctx.createLinearGradient(barX, barY, barX + barW, barY);
-            grad.addColorStop(0, '#00e040');
+            grad.addColorStop(0, '#00e850');
+            grad.addColorStop(0.35, '#44ff44');
             grad.addColorStop(0.5, '#c8e000');
+            grad.addColorStop(0.75, '#ff6600');
             grad.addColorStop(1, '#ff2020');
             ctx.fillStyle = grad;
             ctx.fillRect(barX, barY, barW, barH);
@@ -435,12 +440,15 @@ export class HUD {
             this._drawPlayerIcon(ctx, 132 + i * 24, livesY, 8);
         }
 
-        // ── Score Panel (top-right) ──
+        // ── Score Panel (top-right, with gradient backdrop) ──
         ctx.save();
         this._roundRect(ctx, W - 168, 6, 160, 56, 10);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+        const scorePanelGrad = ctx.createLinearGradient(W - 168, 6, W - 168, 62);
+        scorePanelGrad.addColorStop(0, 'rgba(10, 10, 20, 0.65)');
+        scorePanelGrad.addColorStop(1, 'rgba(0, 0, 0, 0.55)');
+        ctx.fillStyle = scorePanelGrad;
         ctx.fill();
-        ctx.strokeStyle = 'rgba(254, 217, 15, 0.25)';
+        ctx.strokeStyle = 'rgba(254, 217, 15, 0.3)';
         ctx.lineWidth = 1.5;
         ctx.stroke();
         ctx.restore();

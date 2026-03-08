@@ -105,12 +105,12 @@ const HIT_YELLOW = '#FFD700';
 const KO_STARS   = '#FFEC8B';
 
 const INTENSITY_RADIUS = {
-    light:  20,   // punch
-    medium: 30,   // kick
-    heavy:  40,   // combo finisher
+    light:  28,   // punch — bigger for more impact
+    medium: 38,   // kick
+    heavy:  52,   // combo finisher
 };
 
-const HIT_LIFETIME   = 0.1;   // 100ms (~6 frames at 60fps)
+const HIT_LIFETIME   = 0.15;   // 150ms (~9 frames at 60fps) — slightly longer for readability
 const KO_LIFETIME    = 0.25;  // 250ms — larger, more dramatic
 const RAY_COUNT      = 6;     // starburst ray count
 const KO_STAR_COUNT  = 5;     // orbiting star particles
@@ -234,6 +234,17 @@ export class VFX {
             angles.push((Math.PI * 2 * i) / RAY_COUNT + (Math.random() - 0.5) * 0.3);
         }
 
+        // Pre-compute scatter particles
+        const scatterCount = intensity === 'heavy' ? 10 : (intensity === 'medium' ? 7 : 5);
+        const scatters = [];
+        for (let i = 0; i < scatterCount; i++) {
+            scatters.push({
+                angle: Math.random() * Math.PI * 2,
+                speed: 0.5 + Math.random() * 1.0,
+                size: 1.5 + Math.random() * 2.5,
+            });
+        }
+
         return {
             x,
             y,
@@ -249,17 +260,23 @@ export class VFX {
                 ctx.globalAlpha = alpha;
                 ctx.lineCap = 'round';
 
-                // Center flash circle
-                ctx.fillStyle = HIT_WHITE;
+                // Center flash circle (bigger, brighter)
+                ctx.fillStyle = '#FFFFFF';
                 ctx.beginPath();
-                ctx.arc(x, y, r * 0.25, 0, Math.PI * 2);
+                ctx.arc(x, y, r * 0.35, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Radiating rays
+                // Secondary warm glow
+                ctx.fillStyle = HIT_WHITE;
+                ctx.beginPath();
+                ctx.arc(x, y, r * 0.2, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Radiating rays (thicker for impact)
                 ctx.strokeStyle = HIT_YELLOW;
-                ctx.lineWidth = 2;
+                ctx.lineWidth = intensity === 'heavy' ? 3.5 : (intensity === 'medium' ? 2.5 : 2);
                 for (const angle of angles) {
-                    const innerR = r * 0.3;
+                    const innerR = r * 0.25;
                     const outerR = r;
                     ctx.beginPath();
                     ctx.moveTo(
@@ -271,6 +288,29 @@ export class VFX {
                         y + Math.sin(angle) * outerR
                     );
                     ctx.stroke();
+                }
+
+                // Ring shockwave expanding outward
+                const ringR = r * (0.5 + progress * 0.8);
+                const ringAlpha = alpha * 0.6;
+                ctx.globalAlpha = ringAlpha;
+                ctx.strokeStyle = HIT_WHITE;
+                ctx.lineWidth = 2 * (1 - progress);
+                ctx.beginPath();
+                ctx.arc(x, y, ringR, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Scatter particles flying outward
+                ctx.globalAlpha = alpha * 0.8;
+                ctx.fillStyle = HIT_YELLOW;
+                for (const sp of scatters) {
+                    const dist = r * progress * sp.speed * 1.5;
+                    const px = x + Math.cos(sp.angle) * dist;
+                    const py = y + Math.sin(sp.angle) * dist;
+                    const pSize = sp.size * (1 - progress * 0.7);
+                    ctx.beginPath();
+                    ctx.arc(px, py, pSize, 0, Math.PI * 2);
+                    ctx.fill();
                 }
 
                 ctx.restore();
@@ -287,22 +327,22 @@ export class VFX {
      */
     static createKOEffect(x, y) {
         const maxLifetime = KO_LIFETIME;
-        const radius = 50;
+        const radius = 60;
 
         // Pre-compute ray angles
         const angles = [];
-        for (let i = 0; i < RAY_COUNT + 2; i++) {
-            angles.push((Math.PI * 2 * i) / (RAY_COUNT + 2));
+        for (let i = 0; i < RAY_COUNT + 4; i++) {
+            angles.push((Math.PI * 2 * i) / (RAY_COUNT + 4));
         }
 
         // Pre-compute star starting angles and radii
         const stars = [];
-        for (let i = 0; i < KO_STAR_COUNT; i++) {
+        for (let i = 0; i < KO_STAR_COUNT + 2; i++) {
             stars.push({
-                angle: (Math.PI * 2 * i) / KO_STAR_COUNT,
-                speed: 1.5 + Math.random() * 1.5,   // radians per second
-                dist: 0.5 + Math.random() * 0.3,     // fraction of radius
-                size: 3 + Math.random() * 2,
+                angle: (Math.PI * 2 * i) / (KO_STAR_COUNT + 2),
+                speed: 1.5 + Math.random() * 1.5,
+                dist: 0.5 + Math.random() * 0.3,
+                size: 3 + Math.random() * 3,
             });
         }
 

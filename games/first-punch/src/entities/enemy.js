@@ -335,12 +335,23 @@ export class Enemy {
 
         const drawY = this.y - (this.jumpHeight || 0);
         
-        // Shadow
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        // Shadow (gradient for natural look)
+        ctx.save();
+        const jumpH = this.jumpHeight || 0;
+        const shadowScale = Math.max(0.4, 1 - (jumpH / 200) * 0.3);
+        const shadowAlpha = 0.3 * shadowScale;
+        const shadowGrad = ctx.createRadialGradient(
+            this.x + this.width / 2, this.y + this.height - 5, 0,
+            this.x + this.width / 2, this.y + this.height - 5, this.width * 0.42 * shadowScale
+        );
+        shadowGrad.addColorStop(0, `rgba(0, 0, 0, ${shadowAlpha})`);
+        shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = shadowGrad;
         ctx.beginPath();
         ctx.ellipse(this.x + this.width / 2, this.y + this.height - 5,
-                     this.width * 0.42, 8, 0, 0, Math.PI * 2);
+                     this.width * 0.45 * shadowScale, 8 * shadowScale, 0, 0, Math.PI * 2);
         ctx.fill();
+        ctx.restore();
         
         // Flash white when hit
         if (this.flashTime > 0) {
@@ -384,14 +395,14 @@ export class Enemy {
         const skin = '#FFB6C1';
         const bodyColors = {
             normal: '#663399',
-            tough: '#8B0000',
-            fast: '#2196F3',
+            tough: '#B22222',
+            fast: '#1E88E5',
             heavy: '#2E7D32',
             boss: '#F57C00'
         };
         const outfit = bodyColors[variant] || bodyColors.normal;
-        const pants = isBoss ? '#1E88E5' : (variant === 'heavy' ? '#1E1E1E' : (isFast ? '#1B2735' : '#333333'));
-        const accent = isBoss ? '#BF360C' : (isFast ? '#1565C0' : (variant === 'heavy' ? '#1B5E20' : '#4B2A6F'));
+        const pants = isBoss ? '#1E88E5' : (variant === 'heavy' ? '#1E1E1E' : (isFast ? '#1B2735' : (variant === 'tough' ? '#4A0000' : '#333333')));
+        const accent = isBoss ? '#BF360C' : (isFast ? '#1565C0' : (variant === 'heavy' ? '#1B5E20' : (variant === 'tough' ? '#8B0000' : '#4B2A6F')));
         const shoe = isBoss ? '#F5F5F5' : (isFast ? '#F5F5F5' : '#2B2B2B');
         const lean = isFast ? -0.12 : (this.state === 'hit' ? 0.1 : 0);
 
@@ -470,7 +481,13 @@ export class Enemy {
         const torsoH = isHeavy ? 34 : (isFast ? 30 : 32);
         const torsoX = 24 - torsoW / 2;
         const torsoY = 26;
-        ctx.fillStyle = outfit;
+
+        // Gradient torso fill for depth
+        const torsoGrad = ctx.createLinearGradient(torsoX, torsoY, torsoX + torsoW, torsoY + torsoH);
+        torsoGrad.addColorStop(0, outfit);
+        const darkerOutfit = this._darkenColor(outfit, 0.7);
+        torsoGrad.addColorStop(1, darkerOutfit);
+        ctx.fillStyle = torsoGrad;
         ctx.beginPath();
         if (isHeavy) {
             ctx.moveTo(torsoX, torsoY);
@@ -598,9 +615,13 @@ export class Enemy {
             ctx.stroke();
         }
 
-        // Head
+        // Head with gradient for roundness
         const headR = isHeavy ? 11 : (isFast ? 9 : 10);
-        ctx.fillStyle = skin;
+        const headGrad = ctx.createRadialGradient(21, 14, 2, 24, 17, headR);
+        headGrad.addColorStop(0, '#FFD0D8');
+        headGrad.addColorStop(0.6, skin);
+        headGrad.addColorStop(1, '#E8A0AA');
+        ctx.fillStyle = headGrad;
         ctx.beginPath();
         ctx.arc(24, 17, headR, 0, Math.PI * 2);
         ctx.fill();
@@ -795,9 +816,30 @@ export class Enemy {
         ctx.restore();
         
         ctx.restore();
+
+        // ── Health indicator above enemy (not for boss — boss has HUD bar) ──
+        if (this.state !== 'dead' && !isBoss && this.health < this.maxHealth) {
+            const hpPct = Math.max(0, this.health / this.maxHealth);
+            const barW = this.width * 0.7;
+            const barH = 3;
+            const barX = this.x + (this.width - barW) / 2;
+            const barY = drawY - 6;
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.fillRect(barX - 1, barY - 1, barW + 2, barH + 2);
+            ctx.fillStyle = hpPct > 0.5 ? '#44DD44' : (hpPct > 0.25 ? '#DDAA00' : '#DD3333');
+            ctx.fillRect(barX, barY, barW * hpPct, barH);
+        }
         
         if (this.state === 'dead') {
             ctx.globalAlpha = 1;
         }
+    }
+
+    _darkenColor(hex, factor) {
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgb(${Math.floor(r * factor)}, ${Math.floor(g * factor)}, ${Math.floor(b * factor)})`;
     }
 }

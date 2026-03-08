@@ -99,10 +99,12 @@ export class Background {
 
     _sky(ctx, left, w) {
         const grad = ctx.createLinearGradient(0, 0, 0, HORIZON);
-        grad.addColorStop(0, '#5BADE2');     // deeper blue at top
-        grad.addColorStop(0.5, '#87CEEB');   // classic sky blue
-        grad.addColorStop(0.85, '#B0E0E6'); // powder blue near horizon
-        grad.addColorStop(1, '#E0EEF0');     // very light at horizon line
+        grad.addColorStop(0, '#4A8FD4');     // rich blue at top
+        grad.addColorStop(0.3, '#6BB3E8');   // bright sky blue
+        grad.addColorStop(0.6, '#87CEEB');   // classic sky blue
+        grad.addColorStop(0.8, '#B8D8E8');   // faded near horizon
+        grad.addColorStop(0.92, '#E8D8C0');  // warm haze
+        grad.addColorStop(1, '#F0DCC0');     // golden haze at horizon
         ctx.fillStyle = grad;
         ctx.fillRect(left, 0, w, HORIZON);
     }
@@ -1167,9 +1169,27 @@ export class Background {
     _ground(ctx, left, w) {
         const right = left + w;
 
-        // Green sidewalk strip
-        ctx.fillStyle = '#6DBE45';
+        // Green sidewalk strip with subtle gradient
+        const grassGrad = ctx.createLinearGradient(0, HORIZON, 0, HORIZON + 22);
+        grassGrad.addColorStop(0, '#5DAE35');
+        grassGrad.addColorStop(1, '#6DBE45');
+        ctx.fillStyle = grassGrad;
         ctx.fillRect(left, HORIZON, w, 22);
+
+        // Grass blade texture
+        ctx.save();
+        ctx.globalAlpha = 0.15;
+        ctx.strokeStyle = '#4A9A2A';
+        ctx.lineWidth = 1;
+        const bladeStart = left - (left % 8);
+        for (let bx = bladeStart; bx < right; bx += 8) {
+            const bladeH = 4 + seededRandom(bx * 0.71 + 3) * 6;
+            ctx.beginPath();
+            ctx.moveTo(bx, HORIZON + 20);
+            ctx.lineTo(bx + 1.5, HORIZON + 20 - bladeH);
+            ctx.stroke();
+        }
+        ctx.restore();
 
         // Grey sidewalk with slight color variation
         ctx.fillStyle = '#B0B0A8';
@@ -1216,9 +1236,43 @@ export class Background {
         ctx.fillStyle = '#707068';
         ctx.fillRect(left, HORIZON + 45, w, 2);
 
-        // Road
-        ctx.fillStyle = '#606060';
+        // Road with gradient for depth
+        const roadGrad = ctx.createLinearGradient(0, HORIZON + 47, 0, HORIZON + 147);
+        roadGrad.addColorStop(0, '#585858');
+        roadGrad.addColorStop(0.3, '#606060');
+        roadGrad.addColorStop(0.7, '#555555');
+        roadGrad.addColorStop(1, '#505050');
+        ctx.fillStyle = roadGrad;
         ctx.fillRect(left, HORIZON + 47, w, 100);
+
+        // Road surface texture (subtle cracks and patches)
+        ctx.save();
+        ctx.globalAlpha = 0.06;
+        ctx.strokeStyle = '#333333';
+        ctx.lineWidth = 1;
+        const crackStart = left - (left % 200);
+        for (let cx = crackStart; cx < right; cx += 200) {
+            const crackSeed = seededRandom(cx * 0.43 + 17);
+            if (crackSeed > 0.4) {
+                const crackX = cx + crackSeed * 80;
+                const crackLen = 20 + crackSeed * 40;
+                ctx.beginPath();
+                ctx.moveTo(crackX, HORIZON + 60 + crackSeed * 30);
+                ctx.lineTo(crackX + crackLen * 0.6, HORIZON + 65 + crackSeed * 25);
+                ctx.lineTo(crackX + crackLen, HORIZON + 55 + crackSeed * 35);
+                ctx.stroke();
+            }
+        }
+        // Asphalt patches
+        ctx.globalAlpha = 0.04;
+        ctx.fillStyle = '#4A4A4A';
+        const patchStart = left - (left % 350);
+        for (let px = patchStart; px < right; px += 350) {
+            if (seededRandom(px * 0.67 + 29) > 0.5) {
+                ctx.fillRect(px + 50, HORIZON + 70, 60 + seededRandom(px * 0.33) * 40, 25);
+            }
+        }
+        ctx.restore();
 
         // Road white edge lines
         ctx.fillStyle = '#DDDDDD';

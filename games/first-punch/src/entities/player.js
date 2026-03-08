@@ -603,11 +603,21 @@ export class Player {
         const walkBob = isWalk ? (walkFrame % 2 === 0 ? 1 : -1) : 0;
         const drawY = this.y - this.jumpHeight + walkBob;
         
-        // Shadow
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        // Shadow (gradient for more natural look)
+        ctx.save();
+        const shadowScale = Math.max(0.5, 1 - (this.jumpHeight / 200) * 0.3);
+        const shadowAlpha = 0.3 * shadowScale;
+        const shadowGrad = ctx.createRadialGradient(
+            this.x + this.width / 2, this.y + this.height - 5, 0,
+            this.x + this.width / 2, this.y + this.height - 5, 25 * shadowScale
+        );
+        shadowGrad.addColorStop(0, `rgba(0, 0, 0, ${shadowAlpha})`);
+        shadowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = shadowGrad;
         ctx.beginPath();
-        ctx.ellipse(this.x + this.width / 2, this.y + this.height - 5, 25, 10, 0, 0, Math.PI * 2);
+        ctx.ellipse(this.x + this.width / 2, this.y + this.height - 5, 28 * shadowScale, 10 * shadowScale, 0, 0, Math.PI * 2);
         ctx.fill();
+        ctx.restore();
         
         // Blink during invulnerability
         if (this.invulnTime > 0 && Math.floor(this.invulnTime * 10) % 2 === 0) {
@@ -648,6 +658,7 @@ export class Player {
         ctx.lineCap = 'round';
         
         const skin = '#FED90F';
+        const skinDark = '#E8C000';
         const shirt = '#F5F5DC';
         const pants = '#4169E1';
         const shoes = '#8B4513';
@@ -655,6 +666,13 @@ export class Player {
         const breath = isIdle ? 1 + Math.sin(this.animTime * 2) * 0.015 : 1;
         const legLift = (isJump || isJumpPunch || isJumpKick || isSlam) ? -6 : (isRolling ? -2 : 0);
         const legBack = isBelly ? -4 : 0;
+
+        // Attack glow effect — subtle colored outline when attacking
+        const isAttacking = isPunch || isKick || isJumpPunch || isJumpKick || isBelly || isSlam || isBackAttack || isThrow;
+        if (isAttacking) {
+            ctx.shadowColor = '#FED90F';
+            ctx.shadowBlur = 8;
+        }
 
         const drawShoe = (x, y, width, height) => {
             ctx.beginPath();
@@ -971,7 +989,13 @@ export class Player {
         ctx.translate(32, 50);
         ctx.scale(1, breath);
         ctx.translate(-32, -50);
-        ctx.fillStyle = shirt;
+
+        // Shirt gradient for depth
+        const shirtGrad = ctx.createLinearGradient(18, 34, 46, 66);
+        shirtGrad.addColorStop(0, '#FAFAF0');
+        shirtGrad.addColorStop(0.4, shirt);
+        shirtGrad.addColorStop(1, '#E0DEC8');
+        ctx.fillStyle = shirtGrad;
         ctx.beginPath();
         ctx.moveTo(18, 34);
         ctx.lineTo(46, 34);
@@ -1067,8 +1091,12 @@ export class Player {
         drawArm(18, 40, leftArmLen, leftArmAngle, 0.9);
         drawArm(46, 40, rightArmLen, rightArmAngle, 0.9);
 
-        // Head (yellow)
-        ctx.fillStyle = skin;
+        // Head (yellow with gradient for roundness)
+        const headGrad = ctx.createRadialGradient(28, 12, 2, 32, 18, 18);
+        headGrad.addColorStop(0, '#FFE84D');
+        headGrad.addColorStop(0.6, skin);
+        headGrad.addColorStop(1, skinDark);
+        ctx.fillStyle = headGrad;
         ctx.beginPath();
         ctx.arc(32, 18, 17, 0, Math.PI * 2);
         ctx.fill();
