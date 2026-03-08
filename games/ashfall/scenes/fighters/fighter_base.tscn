@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scripts/fighters/fighter_base.gd" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/states/state_machine.gd" id="2_sm"]
@@ -10,6 +10,8 @@
 [ext_resource type="Script" path="res://scripts/fighters/states/block_state.gd" id="8_block"]
 [ext_resource type="Script" path="res://scripts/fighters/states/hit_state.gd" id="9_hit"]
 [ext_resource type="Script" path="res://scripts/fighters/states/ko_state.gd" id="10_ko"]
+[ext_resource type="Script" path="res://scripts/systems/input_buffer.gd" id="11_input"]
+[ext_resource type="Script" path="res://scripts/fighters/fighter_controller.gd" id="12_ctrl"]
 
 [sub_resource type="RectangleShape2D" id="SubResource_body"]
 size = Vector2(30, 60)
@@ -19,6 +21,13 @@ size = Vector2(26, 56)
 
 [node name="FighterBase" type="CharacterBody2D"]
 script = ExtResource("1_fighter")
+
+[node name="Visual" type="ColorRect" parent="."]
+offset_left = -15.0
+offset_top = -60.0
+offset_right = 15.0
+offset_bottom = 0.0
+color = Color(0.7, 0.3, 0.2, 1)
 
 [node name="CollisionShape" type="CollisionShape2D" parent="."]
 position = Vector2(0, -30)
@@ -39,6 +48,12 @@ shape = SubResource("SubResource_hurtbox")
 position = Vector2(30, -30)
 
 [node name="Hitboxes" type="Node2D" parent="."]
+
+[node name="InputBuffer" type="Node" parent="."]
+script = ExtResource("11_input")
+
+[node name="FighterController" type="Node" parent="."]
+script = ExtResource("12_ctrl")
 
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("2_sm")
