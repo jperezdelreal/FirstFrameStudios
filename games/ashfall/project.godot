@@ -20,6 +20,7 @@ run/max_fps=60
 
 EventBus="*res://scripts/systems/event_bus.gd"
 GameState="*res://scripts/systems/game_state.gd"
+AudioManager="*res://scripts/systems/audio_manager.gd"
 SceneManager="*res://scripts/systems/scene_manager.gd"
 
 [display]
