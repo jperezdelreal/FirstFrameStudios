@@ -1,7 +1,7 @@
 import type { SquadConfig } from '@bradygaster/squad';
 
 /**
- * Squad Configuration for SimpsonsKong
+ * Squad Configuration for First Punch
  * 
  */
 const config: SquadConfig = {

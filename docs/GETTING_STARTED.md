@@ -3,15 +3,15 @@
 ## Prerequisites
 - Git
 - Godot 4.x (for Ashfall and future projects)
-- A modern browser (for SimpsonsKong)
+- A modern browser (for First Punch)
 
 ## Repository Layout
 This is a monorepo. Each game lives in `games/{game-name}/`.
 Studio knowledge lives in `.squad/`.
 
-## Running SimpsonsKong
+## Running First Punch
 ```bash
-cd games/simpsons-kong
+cd games/first-punch
 # Open index.html in a browser, or:
 npx serve .
 ```
