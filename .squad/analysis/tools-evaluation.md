@@ -10,7 +10,7 @@
 
 **The Bottom Line:** First Frame Studios should NOT build generic tools right now. We should build two mission-critical tools and adopt or defer everything else. Here's why:
 
-1. **We're Pre-scale.** With one shipped game (SimpsonsKong) and one game in production (Godot transition), we don't yet have enough institutional knowledge to know what's truly reusable vs. what's project-specific.
+1. **We're Pre-scale.** With one shipped game (firstPunch) and one game in production (Godot transition), we don't yet have enough institutional knowledge to know what's truly reusable vs. what's project-specific.
 
 2. **Our real bottleneck isn't tools—it's team bandwidth.** Our 20% load-cap principle means every agent is already fully allocated. Building tools without trimming scope elsewhere forces crunch.
 
@@ -59,10 +59,10 @@
 | Criterion | Assessment |
 |-----------|-----------|
 | **Problem Statement** | Current: Designers build levels in the scene editor manually, placing enemies and props one by one. Tedious, error-prone, hard to iterate on wave composition. |
-| **Payoff** | High for content-heavy games (RPGs, roguelikes with 50+ levels). **Low for our current scope** (SimpsonsKong has 5 waves, next project TBD). |
+| **Payoff** | High for content-heavy games (RPGs, roguelikes with 50+ levels). **Low for our current scope** (firstPunch has 5 waves, next project TBD). |
 | **Effort to Build** | Large (XL) — A proper encounter designer requires: UI for spawning rules, wave composition, difficulty scaling, balance presets. This is 3-5 days of work. |
 | **Godot Solution** | Godot's scene editor IS the level editor. For encounter design, a custom EditorPlugin with a dockable UI panel is viable (1-2 days). Not a full "Game Maker-style" level editor, but good enough. |
-| **Risk of NOT Building** | Medium if the next project is content-heavy (50+ encounters). Low if it's a focused, short game like SimpsonsKong. |
+| **Risk of NOT Building** | Medium if the next project is content-heavy (50+ encounters). Low if it's a focused, short game like firstPunch. |
 | **Recommendation** | **SKIP (for now).** Only build this if the next project is explicitly content-heavy AND is past Sprint 0 architecture. For game feel games (our current strength), level iteration happens in the editor. If next project needs this, raise it as a P1 Sprint 0 tooling task and Jango evaluates whether to build or recommend a third-party solution. |
 
 ---
@@ -78,7 +78,7 @@
 | **Effort to Build** | Medium (1-2 days) — EditorPlugin with a dockable mixer UI, connected to Godot's AudioBusLayout system. |
 | **Godot Solution** | Godot 4 has a built-in Audio Mixer in the editor. It's functional but not real-time during gameplay. For in-game audio testing, use `@export` variables on an AudioManager autoload. |
 | **Third-party** | FMOD Studio (free indie tier, $200 if exceeded limits) or Wwise (free for indie < $200k revenue). Both are overkill for current scope. |
-| **Risk of NOT Building** | Low to Medium — Audio is not a bottleneck yet. Greedo has SimpsonsKong's Web Audio API experience; Godot's audio system is adequate. |
+| **Risk of NOT Building** | Low to Medium — Audio is not a bottleneck yet. Greedo has firstPunch's Web Audio API experience; Godot's audio system is adequate. |
 | **Recommendation** | **BUY/ADOPT if Greedo requests it; otherwise SKIP.** If Godot's built-in mixer proves too limited, evaluate FMOD/Wwise. But don't build custom audio tooling yet — the problem isn't big enough. If a future project has complex interactive audio (dynamic music, branching sequences), revisit this decision. |
 
 ---
@@ -140,7 +140,7 @@
 | **Payoff** | High for QA efficiency — **Ackbar could record, then review bug replays in isolation.** Saves time chasing "I can't reproduce it." Enables slow-mo analysis of timing bugs. |
 | **Effort to Build** | Large (2-3 days) — Requires hooking into input system, saving state snapshots, replay playback. Non-trivial. |
 | **Godot Solution** | Godot's GDScript can record `Input` events, but state snapshot/replay is custom work. Possible but not a first-weekend project. |
-| **Risk of NOT Building** | Medium — QA cycle is slower without this. But SimpsonsKong shipped without it. |
+| **Risk of NOT Building** | Medium — QA cycle is slower without this. But firstPunch shipped without it. |
 | **Recommendation** | **SKIP (for now).** Only build if Ackbar identifies that bug reproduction is a consistent bottleneck in Phase 2+. For Sprint 0 and early production, manual testing and "try to reproduce" is acceptable. Revisit if playtest feedback velocity slows. |
 
 ---
@@ -422,7 +422,7 @@ If we build tools, they should follow these principles:
 
 **Example Directory Structure:**
 ```
-SimpsonsKong/
+firstPunch/
 ├── addons/squad_tools/      # EditorPlugins (copied to next project)
 │   ├── game_feel_tuner/
 │   ├── balance_validator/
@@ -432,7 +432,7 @@ SimpsonsKong/
 │   └── README.md
 
 [Next Project]
-├── addons/squad_tools/      # Copy from SimpsonsKong
+├── addons/squad_tools/      # Copy from firstPunch
 └── scripts/tools/           # Git submodule or copy
 ```
 
@@ -506,7 +506,7 @@ SimpsonsKong/
 **The bottleneck isn't tools. It's team bandwidth.**
 
 Evidence:
-- SimpsonsKong shipped without any custom tools (used Godot's built-in features + minimal infrastructure)
+- firstPunch shipped without any custom tools (used Godot's built-in features + minimal infrastructure)
 - Our 20% load cap means every agent is fully allocated
 - The things that hurt our velocity most aren't missing tools — they're architectural decisions made in first 30 minutes (unwired infrastructure, god-scene, missing conventions)
 
@@ -550,7 +550,7 @@ But don't speculate. Build what hurts.
 - Wastes bandwidth that should go to shipping
 
 **What we do instead:**
-- Ship SimpsonsKong
+- Ship firstPunch
 - Ship next Godot game
 - After game #2, examine what code was truly reused → extract it and formalize as tools
 

@@ -167,7 +167,7 @@ export class TitleScene {
         ctx.fillStyle = '#444';
         ctx.fillRect(0, h - 122, w, 3);
 
-        // ── Homer silhouette ──
+        // ── Player silhouette ──
         ctx.save();
         const hx = w * 0.78;
         const hy = h - 125;
@@ -202,21 +202,21 @@ export class TitleScene {
 
         // Drop shadow
         ctx.fillStyle = 'rgba(0,0,0,0.45)';
-        ctx.fillText('SIMPSONS KONG', hw + 4, titleY + 5);
+        ctx.fillText('FIRST PUNCH', hw + 4, titleY + 5);
 
         // Thick dark outline (double-stroke for thickness)
         ctx.lineWidth = 8;
         ctx.strokeStyle = '#1a1a1a';
         ctx.lineJoin = 'round';
-        ctx.strokeText('SIMPSONS KONG', hw, titleY);
+        ctx.strokeText('FIRST PUNCH', hw, titleY);
 
         ctx.lineWidth = 4;
         ctx.strokeStyle = '#4a3000';
-        ctx.strokeText('SIMPSONS KONG', hw, titleY);
+        ctx.strokeText('FIRST PUNCH', hw, titleY);
 
         // Yellow fill
         ctx.fillStyle = '#FED90F';
-        ctx.fillText('SIMPSONS KONG', hw, titleY);
+        ctx.fillText('FIRST PUNCH', hw, titleY);
 
         // ── Subtitle ──
         const subY = titleY + 55;
@@ -334,7 +334,7 @@ export class TitleScene {
         ctx.font = '13px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.fillText('A SimpsonsKong Production', hw, h - 10);
+        ctx.fillText('A First Punch Production', hw, h - 10);
         ctx.restore();
     }
 }

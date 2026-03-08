@@ -353,4 +353,4 @@ Works because Web Audio node connections are synchronous. Any sound function cal
 
 ---
 
-*Skill derived from SimpsonsKong's 21-sound procedural audio system + adaptive music engine, June 2025.*
+*Skill derived from firstPunch's 21-sound procedural audio system + adaptive music engine, June 2025.*

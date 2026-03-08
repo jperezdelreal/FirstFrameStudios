@@ -1,8 +1,8 @@
 # Game Development Knowledge Base — Part 1
 
-> **Purpose:** Institutional knowledge across 10 game dev disciplines, built from SimpsonsKong experience and industry research.
+> **Purpose:** Institutional knowledge across 10 game dev disciplines, built from firstPunch experience and industry research.
 > **Scope:** Part 1 covers disciplines 1–5. Part 2 covers disciplines 6–10.
-> **Project:** SimpsonsKong — Browser-based Simpsons beat 'em up (HTML5 Canvas, ES modules, Web Audio API)
+> **Project:** firstPunch — Browser-based game beat 'em up (HTML5 Canvas, ES modules, Web Audio API)
 
 ---
 
@@ -27,9 +27,9 @@ SoR4's 12 difficulty levels let every player find their flow channel. Castle Cra
 - Confusing difficulty with unfairness. Cheap hits and unclear tells aren't "hard," they're broken.
 - Over-relying on extrinsic motivation. If the core loop isn't satisfying, no amount of unlockables will save it.
 
-### Application to SimpsonsKong
+### Application to firstPunch
 
-Our PPK combo (42 dmg/1.1s) is the core loop foundation. All balance flows from it. The Donut Rage Mode and health-cost specials create the risk/reward layer. Comedy as a mechanic (D'oh! Moments, funny failure states) provides intrinsic motivation unique to our IP. Our difficulty curve must account for browser-game session lengths (5–15 minutes).
+Our PPK combo (42 dmg/1.1s) is the core loop foundation. All balance flows from it. The Rage Mode and health-cost specials create the risk/reward layer. Comedy as a mechanic (Ugh! Moments, funny failure states) provides intrinsic motivation unique to our IP. Our difficulty curve must account for browser-game session lengths (5–15 minutes).
 
 ### Learnings for Future Projects
 
@@ -58,7 +58,7 @@ SoR4's variable hitstop (light = 2f, heavy = 4f+) communicates weight through ti
 - No invulnerability frames after taking damage, creating inescapable damage loops.
 - Identical hit reactions regardless of attack strength. A jab and a heavy should produce visibly different reactions.
 
-### Application to SimpsonsKong
+### Application to firstPunch
 
 Rectangle collision detection works for our scope. Our combat uses knockback physics, hitstun, and screen shake already. Biggest gaps: grab/throw depth, special move variety, and hit SFX variation. The 2-attacker throttle is a design principle we've committed to. Each character must feel different within 10 seconds — this is a binding constraint validated by Final Fight's archetype trinity.
 
@@ -74,13 +74,13 @@ Build a frame data spreadsheet before coding combat. Implement hitlag from day o
 
 - **Pacing is rhythm, not monotony.** Levels follow an intensity wave: walk-in (mood) → easy encounter → scroll → new element → spike → mix → boss. Every peak needs a valley. SoR4's elevator level is a masterclass in escalating tension precisely because it alternates pressure with brief respites.
 - **Camera locks create arenas.** The screen stops scrolling, enemies spawn, and the player must clear them to progress. Frequency matters — too many feels like a gauntlet, too few makes traversal boring. 3–5 locks per level is the genre standard.
-- **Environmental storytelling replaces cutscenes.** In beat 'em ups, narrative lives in the environment: destructible objects tell you "a fight happened here," hazards tell you "this place is dangerous," and set pieces tell you "something extraordinary is happening." Springfield locations (Moe's Tavern, the power plant, Krustyland) should feel like the show.
+- **Environmental storytelling replaces cutscenes.** In beat 'em ups, narrative lives in the environment: destructible objects tell you "a fight happened here," hazards tell you "this place is dangerous," and set pieces tell you "something extraordinary is happening." Downtown locations (Joe's Bar, the factory, the amusement park) should feel authentic.
 - **Spawn placement is invisible difficulty tuning.** Where enemies appear, from which direction, and in what combinations is the primary difficulty lever. Flanking spawns are harder than frontal. Mixed types (grunt + ranged + shield) are harder than homogeneous groups. Never introduce more than one new enemy type per encounter.
 - **Set pieces break monotony.** Unique moments — riding a vehicle, a chase sequence, a scrolling hazard — prevent formula fatigue. Turtles in Time's surfboard level and SoR2's pirate ship work because they're rare and memorable.
 
 ### Best Practices from Reference Games
 
-The original Simpsons Arcade turned Springfield locations into combat arenas, making fans feel *inside* the show. Scott Pilgrim's world map gave players agency over level order. Shredder's Revenge layered per-level challenges (no-hit, find collectibles) onto standard progression for replay incentive.
+The original classic arcade beat 'em ups turned Downtown locations into combat arenas, making fans feel *inside* the show. Scott Pilgrim's world map gave players agency over level order. Shredder's Revenge layered per-level challenges (no-hit, find collectibles) onto standard progression for replay incentive.
 
 ### Common Mistakes
 
@@ -89,9 +89,9 @@ The original Simpsons Arcade turned Springfield locations into combat arenas, ma
 - Levels that are visually distinct but mechanically identical. Theme changes must bring new encounter designs.
 - Forgetting that camera boundaries *are* level design. A badly placed camera lock can make an easy fight frustrating.
 
-### Application to SimpsonsKong
+### Application to firstPunch
 
-Wave-based progression with camera locks is already implemented. Our biggest level design opportunities: environmental hazards that affect enemies too (throwing goons into Springfield landmarks), destructible objects for health/weapons, and pacing variation between encounters. Springfield's iconic locations are our strongest asset — each should feel like an episode set.
+Wave-based progression with camera locks is already implemented. Our biggest level design opportunities: environmental hazards that affect enemies too (throwing goons into Downtown landmarks), destructible objects for health/weapons, and pacing variation between encounters. Downtown's iconic locations are our strongest asset — each should feel like an episode set.
 
 ### Learnings for Future Projects
 
@@ -103,10 +103,10 @@ Paper-map levels before building them. Mark intensity on a 1–10 scale per enco
 
 ### Core Principles
 
-- **Silhouette theory: identify at a glance.** Every character must be recognizable from silhouette alone. Homer (round, large), Bart (spiky head, small), Marge (tall hair tower), Lisa (star-shaped hair) — the Simpsons IP gives us this for free. In gameplay, silhouette communicates character class: wide = power, narrow = speed.
-- **Archetype differentiation is felt, not explained.** Final Fight established the trinity: slow/powerful (Haggar/Homer), balanced (Cody), fast/technical (Guy/Bart). The difference must be apparent within 10 seconds of play — not through stats screens, but through animation speed, attack range, and screen impact. This is a binding constraint.
+- **Silhouette theory: identify at a glance.** Every character must be recognizable from silhouette alone. Brawler (round, large), Kid (spiky head, small), Defender (tall hair tower), Prodigy (star-shaped hair) — the game IP gives us this for free. In gameplay, silhouette communicates character class: wide = power, narrow = speed.
+- **Archetype differentiation is felt, not explained.** Final Fight established the trinity: slow/powerful (Haggar/Brawler), balanced (Cody), fast/technical (Guy/Kid). The difference must be apparent within 10 seconds of play — not through stats screens, but through animation speed, attack range, and screen impact. This is a binding constraint.
 - **Animation principles sell character.** Squash-and-stretch on attacks, anticipation frames before heavy moves, follow-through after swings. These 12 Disney principles apply directly to game animation. Even with procedural Canvas art (~400 LOC per character), these principles differentiate "moves" from "animations."
-- **Expression through states defines personality.** Idle animations, hit reactions, victory poses, and especially *failure states* reveal character. Homer's D'oh! on taking damage, Bart's "Eat my shorts" taunt, Lisa's exasperated sigh — the Simpsons' comedic personality lives in their reactions, not their attacks.
+- **Expression through states defines personality.** Idle animations, hit reactions, victory poses, and especially *failure states* reveal character. Brawler's Ugh! on taking damage, Kid's "Take that!" taunt, Prodigy's exasperated sigh — the source IP' comedic personality lives in their reactions, not their attacks.
 
 ### Best Practices from Reference Games
 
@@ -119,9 +119,9 @@ Castle Crashers gave each of 30+ characters a unique elemental identity through 
 - Neglecting hit reactions and failure states. Players see these more than victory poses — they *are* the character's personality during gameplay.
 - Over-animating idle and under-animating combat. Combat frames are where players spend 90% of their attention.
 
-### Application to SimpsonsKong
+### Application to firstPunch
 
-Procedural Canvas art is our current approach (~400 LOC per character). The Simpsons IP provides perfect silhouette differentiation. Our biggest character design challenge: adding Bart/Marge/Lisa means ~1200 LOC of Canvas drawing code — this is the strongest argument for eventual Phaser 3 + sprite sheet migration. D'oh! Moments (funny failure states) are prioritized over victory celebrations, which is the comedy pillar in action. Donut Rage Mode is Homer's signature mechanic and must ship with his "complete" build.
+Procedural Canvas art is our current approach (~400 LOC per character). The game IP provides perfect silhouette differentiation. Our biggest character design challenge: adding Kid/Defender/Prodigy means ~1200 LOC of Canvas drawing code — this is the strongest argument for eventual Phaser 3 + sprite sheet migration. Ugh! Moments (funny failure states) are prioritized over victory celebrations, which is the comedy pillar in action. Rage Mode is Brawler's signature mechanic and must ship with his "complete" build.
 
 ### Learnings for Future Projects
 
@@ -141,7 +141,7 @@ Design characters from silhouette outward, not detail inward. Prototype the feel
 
 ### Best Practices from Reference Games
 
-SoR2's Yuzo Koshiro soundtrack set the bar for genre audio — electronic music that matched the urban aesthetic and varied by stage mood. SoR4 uses variable hit sounds that scale with combo count, making long combos sound increasingly impactful. Shredder's Revenge's audio punctuates super moves with brief silence before the hit, maximizing impact through contrast. The original Simpsons Arcade used voice samples sparingly but memorably — Homer's "D'oh!" became iconic through restraint.
+SoR2's Yuzo Koshiro soundtrack set the bar for genre audio — electronic music that matched the urban aesthetic and varied by stage mood. SoR4 uses variable hit sounds that scale with combo count, making long combos sound increasingly impactful. Shredder's Revenge's audio punctuates super moves with brief silence before the hit, maximizing impact through contrast. The original classic arcade beat 'em ups used voice samples sparingly but memorably — Brawler's "Ugh!" became iconic through restraint.
 
 ### Common Mistakes
 
@@ -150,9 +150,9 @@ SoR2's Yuzo Koshiro soundtrack set the bar for genre audio — electronic music 
 - Music that doesn't respond to gameplay state. Static loops disconnect the player from the action's emotional arc.
 - Audio mix that drowns out feedback sounds with music. Player-action SFX must always cut through the mix.
 
-### Application to SimpsonsKong
+### Application to firstPunch
 
-Web Audio API is our audio foundation, enabling procedural SFX generation — lightweight and infinitely variable. Greedo (Sound Designer) owns this domain with 7 backlog items including procedural SFX library and music generation. Our procedural approach is ideal for hit sound variation (pitch shift, layering). Simpsons voice lines ("D'oh!", "Eat my shorts!") should be rare and impactful — restraint makes them memorable. Current gap: hit SFX variation is the highest-impact audio work remaining.
+Web Audio API is our audio foundation, enabling procedural SFX generation — lightweight and infinitely variable. Greedo (Sound Designer) owns this domain with 7 backlog items including procedural SFX library and music generation. Our procedural approach is ideal for hit sound variation (pitch shift, layering). game voice lines ("Ugh!", "Take that!") should be rare and impactful — restraint makes them memorable. Current gap: hit SFX variation is the highest-impact audio work remaining.
 
 ### Learnings for Future Projects
 

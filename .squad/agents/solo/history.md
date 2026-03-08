@@ -1,14 +1,14 @@
 # Solo — History (formerly Keaton)
 
 ## Project Context
-- **Project:** SimpsonsKong — Browser-based Simpsons beat 'em up
+- **Project:** firstPunch — Browser-based game beat 'em up
 - **User:** joperezd
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Goal:** Ship playable beat 'em up level in 30 minutes
 
 ## Core Context
 
-**SimpsonsKong Key Learnings (Sessions 1-7):**
+**firstPunch Key Learnings (Sessions 1-7):**
 - Session 1: Fixed 5 critical bugs (infinite recursion, hit detection, invulnerability frames, parallax, boundary constraints)
 - Session 2: Gap analysis revealed 75% MVP completion; quality gates designed based on real failures; 52-item backlog created
 - Session 3: Team expansion recommended (3 new roles: Sound, Enemy/Content, QA) to eliminate McManus bottleneck
@@ -128,7 +128,7 @@ Read all 28 source files (370KB) and categorized every backlog item into Quick W
 ### Quality Gates & Sprint 0 Planning (Session 9)
 Closed readiness gaps #2 and #3 from the CEO Readiness Evaluation. Two major deliverables produced:
 
-1. **Quality Gates & Definition of Done** (`.squad/identity/quality-gates.md`) — Defined 5 quality gates (Code, Art, Audio, Design, Integration) with specific pass/fail criteria per gate. Each gate traces back to a real SimpsonsKong failure: Code gate C2 (state machine audit) prevents the player-frozen bug, C5 (no unused infrastructure) prevents the 214-LOC dead code problem. Includes Definition of Done checklist (8 items), bug severity matrix, cross-review assignments (Chewie↔Lando), and playtest protocols (smoke, full, adversarial). Performance budgets adapted for Godot 4 (node count, draw calls, physics bodies replace Canvas-specific metrics).
+1. **Quality Gates & Definition of Done** (`.squad/identity/quality-gates.md`) — Defined 5 quality gates (Code, Art, Audio, Design, Integration) with specific pass/fail criteria per gate. Each gate traces back to a real firstPunch failure: Code gate C2 (state machine audit) prevents the player-frozen bug, C5 (no unused infrastructure) prevents the 214-LOC dead code problem. Includes Definition of Done checklist (8 items), bug severity matrix, cross-review assignments (Chewie↔Lando), and playtest protocols (smoke, full, adversarial). Performance budgets adapted for Godot 4 (node count, draw calls, physics bodies replace Canvas-specific metrics).
 
 2. **Sprint 0 Plan** (`.squad/analysis/sprint-0-plan.md`) — Converted the migration strategy into an executable sprint with a razor-sharp goal: "move, punch, damage." 13 agents assigned across 4 phases with explicit dependency graph. Pre-decided 7 technical architecture choices (CharacterBody2D, enum state machines, Area2D hitbox/hurtbox, EventBus autoload, collision layer assignments) to eliminate Sprint 0 debates. Risk register identifies scope creep as highest-likelihood risk.
 
@@ -140,7 +140,7 @@ Closed readiness gaps #2 and #3 from the CEO Readiness Evaluation. Two major del
    - Leia and Bossk on standby — no art production until art direction exists and gameplay is playable
 
 4. **Learnings:**
-   - Quality gates must trace to real failures, not theoretical best practices. Every gate item in this document has a SimpsonsKong lesson behind it.
+   - Quality gates must trace to real failures, not theoretical best practices. Every gate item in this document has a firstPunch lesson behind it.
    - The Definition of Done's most important line is "playtested for feel, not just correctness" — Ackbar's quality proposal proved that "works" ≠ "done."
    - Pre-deciding architecture choices before Sprint 0 starts eliminates the most common multi-agent coordination failure: two agents making incompatible assumptions about shared systems.
 
@@ -157,7 +157,7 @@ Closed readiness gaps #2 and #3 from the CEO Readiness Evaluation. Two major del
 3. **Production Phases** — P0-P3 priority system, parallel lane planning, skill capture rhythm, cross-project knowledge transfer
 4. **Technology Transition Checklist** — Migration mapping (Canvas→Godot as template), reusable 4-phase transition strategy, training protocols
 5. **Language/Stack Flexibility Matrix** — 12 tech stacks compared, T-shirt migration sizing, 70/30 rule (70% effectiveness is tech-agnostic)
-6. **Anti-Bottleneck Patterns** — 7 SimpsonsKong bottlenecks analyzed with prevention strategies, serialize/parallelize decision guide, role vs skill matrix
+6. **Anti-Bottleneck Patterns** — 7 firstPunch bottlenecks analyzed with prevention strategies, serialize/parallelize decision guide, role vs skill matrix
 
 **Key Decisions Documented:**
 - **8-point migration threshold:** Engine change requires 8+ point advantage in 9-dimension matrix
@@ -219,7 +219,7 @@ Evaluated 2 proposed new roles (Chief Architect, Tool Engineer) for the Godot 4 
 
 1. **Chief Architect: REJECTED.** Solo's charter already covers ~80% of this role (architecture decisions, integration oversight, architectural trade-offs). The remaining ~20% (Godot scene tree conventions, style guide, formal review gates) is a charter expansion, not a new person. Splitting architectural authority creates a worse coordination problem than it solves — one voice on architecture is better than two that might disagree.
 
-2. **Tool Engineer: APPROVED.** Only ~40% overlap with Chewie, and critically the wrong 40%. Chewie builds runtime systems (game engine); Tool Engineer builds development-time systems (templates, EditorPlugins, pipelines, scaffolding). Godot introduces 5 entire systems needing tooling attention (scene tree, EditorPlugin API, resource system, signal system, export/build) — estimated 15-25 tooling items in the first project. The SimpsonsKong lesson (214 LOC of unused infrastructure) proves that when nobody owns tooling, it doesn't get done.
+2. **Tool Engineer: APPROVED.** Only ~40% overlap with Chewie, and critically the wrong 40%. Chewie builds runtime systems (game engine); Tool Engineer builds development-time systems (templates, EditorPlugins, pipelines, scaffolding). Godot introduces 5 entire systems needing tooling attention (scene tree, EditorPlugin API, resource system, signal system, export/build) — estimated 15-25 tooling items in the first project. the source IPKong lesson (214 LOC of unused infrastructure) proves that when nobody owns tooling, it doesn't get done.
 
 3. **Team size:** Goes from 12 → 13. Suggested names: Lobot (Lando's aide, pure OT) or K-2SO (Rogue One, OT-era). One overflow character doesn't break the Star Wars theme.
 
@@ -265,7 +265,7 @@ Performed autonomous evaluation of squad readiness for Godot 4 project launch. R
 ### New Project Playbook (Session 14)
 Created the definitive Day 1 guide for starting any new project at First Frame Studios. Key deliverables:
 
-1. **`.squad/identity/new-project-playbook.md`** — 6-section playbook covering: Pre-Production (genre research protocol, IP assessment, 9-dimension tech selection, team assessment, competitive analysis), Sprint 0 Foundation (engine-agnostic repo checklist, squad adaptation, genre skill creation, architecture proposal, minimum playable definition, quality gates adaptation), Production Phases (P0-P3 planning, skill capture rhythm, cross-project knowledge transfer), Technology Transition Checklist (what transfers/rewrites/needs evaluation, our Canvas→Godot migration as the template, repeatable training protocol), Language/Stack Flexibility Matrix (12 tech stacks with T-shirt migration sizing, the 70/30 rule), and Anti-Bottleneck Patterns (7 SimpsonsKong bottlenecks with root causes and preventions, 6 common studio patterns, serialize/parallelize decision guide, add-role vs add-skill matrix).
+1. **`.squad/identity/new-project-playbook.md`** — 6-section playbook covering: Pre-Production (genre research protocol, IP assessment, 9-dimension tech selection, team assessment, competitive analysis), Sprint 0 Foundation (engine-agnostic repo checklist, squad adaptation, genre skill creation, architecture proposal, minimum playable definition, quality gates adaptation), Production Phases (P0-P3 planning, skill capture rhythm, cross-project knowledge transfer), Technology Transition Checklist (what transfers/rewrites/needs evaluation, our Canvas→Godot migration as the template, repeatable training protocol), Language/Stack Flexibility Matrix (12 tech stacks with T-shirt migration sizing, the 70/30 rule), and Anti-Bottleneck Patterns (7 firstPunch bottlenecks with root causes and preventions, 6 common studio patterns, serialize/parallelize decision guide, add-role vs add-skill matrix).
 
 2. **Key insight codified: the 70/30 rule.** ~70% of what makes First Frame Studios effective is tech-agnostic (principles, processes, team coordination, design methodology). Only ~30% is tech-specific (engine skills, code patterns, build pipeline). This means every project start is mostly about adapting the 30%, not rebuilding from scratch.
 
@@ -286,7 +286,7 @@ Delivered comprehensive validation and correction of the proposed GitHub monorep
    - `.github/` with workflows (ci-game-build.yml, ci-tests.yml) and issue templates
    - `.squad/` preservation (team brain, no game code)
    - `shared/` with Godot-specific, Canvas-2D-specific, and binary assets
-   - `games/` with self-contained projects (simpsons-kong + ashfall placeholder)
+   - `games/` with self-contained projects (game-kong + ashfall placeholder)
    - `docs/` with 8+ documentation files for different audiences
    - `tools/` for build/dev infrastructure
 
@@ -323,7 +323,7 @@ Delivered comprehensive validation and correction of the proposed GitHub monorep
 
 7. **Migration Plan (Section 7):**
    - Phase 1: Create directories and root configuration files
-   - Phase 2: Move SimpsonsKong code to games/simpsons-kong/
+   - Phase 2: Move firstPunch code to games/game-kong/
    - Phase 3: Set up CI/CD workflows
    - Phase 4: Create root README and final validation
    - Complete checklist of 50+ files to create or move
@@ -357,7 +357,7 @@ Delivered comprehensive validation and correction of the proposed GitHub monorep
 
 **Next Step:** Execute the Migration Plan (Section 7) over 2-3 days to transform the current single-game root structure into a multi-project-ready monorepo.
 
-3. **Bottleneck prevention patterns from real experience.** Every bottleneck pattern in Section 6 traces to a real SimpsonsKong incident: Lando's 50% overload → 20% load cap rule; gameplay.js god-scene → module boundaries in Sprint 0; 214 LOC unwired infrastructure → every PR must include wiring; missing state exits → transition table required before implementation.
+3. **Bottleneck prevention patterns from real experience.** Every bottleneck pattern in Section 6 traces to a real firstPunch incident: Lando's 50% overload → 20% load cap rule; gameplay.js god-scene → module boundaries in Sprint 0; 214 LOC unwired infrastructure → every PR must include wiring; missing state exits → transition table required before implementation.
 
 4. **Migration threshold rule established:** Require an 8+ point lead in the 9-dimension scoring matrix to justify a technology migration. Below that, the productivity cost of switching likely exceeds the capability gain. (Godot beat Phaser by 8 points — that justified our switch.)
 
@@ -372,7 +372,7 @@ Founder requested a full-picture audit of all company infrastructure. Read every
 
 2. **6 contradictions found across documents, 3 at High severity.** Most critical: quality-gates.md claims to be engine-agnostic (per growth-framework) but is Godot-specific in content. ceremonies.md defines 2 auto-triggered ceremonies while growth-framework defines 4 scheduled ones. company.md says 12 specialists but team.md lists 15.
 
-3. **10 of 15 agent charters are stale, skeletal, or missing.** 5 charters still reference SimpsonsKong-specific files and technologies (Chewie, Lando, Wedge, Greedo, Tarkin). 4 are too thin to be useful (Scribe, Leia, Bossk, Nien). Ralph has no charter at all despite being in team.md and company.md. This is the #1 operational blocker for starting a new project.
+3. **10 of 15 agent charters are stale, skeletal, or missing.** 5 charters still reference firstPunch-specific files and technologies (Chewie, Lando, Wedge, Greedo, Tarkin). 4 are too thin to be useful (Scribe, Leia, Bossk, Nien). Ralph has no charter at all despite being in team.md and company.md. This is the #1 operational blocker for starting a new project.
 
 4. **3 critical process gaps:** No onboarding guide (Day 1 → Day N path for new members), no release management process (how to ship), no project selection criteria (how to decide what to build next).
 
@@ -396,7 +396,7 @@ The founder asked us to celebrate our success. This was a milestone moment — t
 2. **Created `.squad/analysis/victory-retrospective.md`** — A 19KB celebration document capturing:
    - **The Journey (Hour-by-Hour):** From empty repository (Hour 0) → MVP shipped (Hour 1) → bug fixes and visual modernization (Hours 2-5) → team expansion to 13 (Hours 5-8) → research wave and tech selection (Hours 8-12) → studio identity and Godot architecture (Hours 12-16) → CEO readiness (Hours 16-20) → skills audit and institutional knowledge (Hours 20-24)
    - **By the Numbers:** ~100 agent spawns, 13 specialists, 20 skills, 30+ documents, 12 leadership principles, 5-year growth framework, 9.7/10 readiness score
-   - **What We're Proud Of:** SimpsonsKong (fully playable beat 'em up), the 70/30 rule (70% tech-agnostic, 30% tech-specific), the bottleneck prevention system (every known failure now has a documented prevention), the skills system (knowledge that compounds), the growth framework (5-year strategic plan)
+   - **What We're Proud Of:** firstPunch (fully playable beat 'em up), the 70/30 rule (70% tech-agnostic, 30% tech-specific), the bottleneck prevention system (every known failure now has a documented prevention), the skills system (knowledge that compounds), the growth framework (5-year strategic plan)
    - **Top 3 Lessons in Each Category:** 3 technical (state machines, fix the tree not the leaves, integrate infrastructure), 3 process (pre-decided architecture, playable > documents, research is the shortcut), 3 team (one voice per domain, load distribution by domain, file ownership prevents conflicts)
    - **What's Next:** Sprint 0 timeline, success criteria (playable prototype by week 2 with 6/10+ feel), the 5-year vision (Stage 1→5 progression)
    - **Celebration Statement:** A genuine, heartfelt acknowledgment that we went from an empty folder to a real game studio in 24 hours, and what that means for how we'll build every game that follows
@@ -406,7 +406,7 @@ Key insight captured: **This isn't just about shipping a game. It's about buildi
 The retrospective is written "real, not corporate" — celebrating the actual breakthrough, not with hyperbole, but with the specific achievements that matter. It ends with a statement that reframes the entire effort: we're not a studio that built one game and moved on; we're a studio that built institutional knowledge and proved it works.
 ### Session 17: Deep Research Wave — Universal Skills Initiative (2026-03-07)
 
-Commissioned and oversaw the Deep Research Wave — a studio-wide knowledge expansion initiative to broaden from SimpsonsKong beat-em-up expertise to universal game development principles. 7 agents executed in parallel to create 5 comprehensive universal skill documents (245 KB) covering game design, audio, animation, level design, and enemy design applicable across all genres and platforms.
+Commissioned and oversaw the Deep Research Wave — a studio-wide knowledge expansion initiative to broaden from firstPunch beat-em-up expertise to universal game development principles. 7 agents executed in parallel to create 5 comprehensive universal skill documents (245 KB) covering game design, audio, animation, level design, and enemy design applicable across all genres and platforms.
 
 **Deliverables from this session:**
 - **Foundations Reassessment (12.3 KB):** Current state (7.5/10), 5 priority actions, gap analysis
@@ -414,13 +414,13 @@ Commissioned and oversaw the Deep Research Wave — a studio-wide knowledge expa
 - **Orchestration Log entries:** 7 agent records with ISO 8601 UTC timestamps
 - **Session Log:** Comprehensive record of Deep Research Wave execution and outcomes
 
-**Key insight:** SimpsonsKong expertise is deep but narrow. Before scaling to Phase 4 AAA work or diversifying to new genres, the team needed foundational universal principles documented. This research wave provides that foundation — 22 reusable skills (up from 15), covering 7+ game genres instead of 1.
+**Key insight:** firstPunch expertise is deep but narrow. Before scaling to Phase 4 AAA work or diversifying to new genres, the team needed foundational universal principles documented. This research wave provides that foundation — 22 reusable skills (up from 15), covering 7+ game genres instead of 1.
 
 **Cross-reference dependencies updated:**
-- All 5 new universal skills link to game-feel-juice (quality standard) and beat-em-up-combat (SimpsonsKong validation)
+- All 5 new universal skills link to game-feel-juice (quality standard) and beat-em-up-combat (firstPunch validation)
 - Recommendation: 3 existing skills need cross-reference updates in follow-up session (beat-em-up-combat, game-feel-juice, procedural-audio)
 
-**Team impact:** 7 agents in parallel, ~1 hour wall-clock time, 292.7 KB documentation created. Quality assurance (Ackbar) audited all deliverables. game-feel-juice remains benchmark (⭐⭐⭐⭐⭐). Most universal skills rated Medium confidence (validated in SimpsonsKong); will escalate to High after cross-project testing.
+**Team impact:** 7 agents in parallel, ~1 hour wall-clock time, 292.7 KB documentation created. Quality assurance (Ackbar) audited all deliverables. game-feel-juice remains benchmark (⭐⭐⭐⭐⭐). Most universal skills rated Medium confidence (validated in firstPunch); will escalate to High after cross-project testing.
 
 
 ### Studio Operations Research (Session 11)
@@ -447,7 +447,7 @@ Commissioned and oversaw the Deep Research Wave — a studio-wide knowledge expa
 - Portfolio strategy recommendation: 2-3 games in 5 years (12-18 month scopes), never bet studio on single title
 - Immediate P0 actions: document decision rights matrix, adopt Scrumban methodology
 
-**Key insight:** The research validates what SimpsonsKong taught through experience — small teams win through clarity (who decides what), discipline (structured iteration), and compounding knowledge (every project makes the next one better). FFS's existing knowledge management is already a competitive advantage; the gap is operationalizing it into processes and reusable tools.
+**Key insight:** The research validates what firstPunch taught through experience — small teams win through clarity (who decides what), discipline (structured iteration), and compounding knowledge (every project makes the next one better). FFS's existing knowledge management is already a competitive advantage; the gap is operationalizing it into processes and reusable tools.
 
 
 ### 2026-03-08T00:10 — Phase 2: Company Incorporation & Skill Creation
@@ -474,7 +474,7 @@ Commissioned and oversaw the Deep Research Wave — a studio-wide knowledge expa
 
 **Scope:** Foundation audit identified 10 stale charters. This session addresses 2 critical updates:
 1. Expand Yoda's charter with Vision Keeper responsibilities 
-2. Generalize 6 SimpsonsKong-specific charters to studio-scoped
+2. Generalize 6 firstPunch-specific charters to studio-scoped
 
 **Work Completed:**
 
@@ -485,13 +485,13 @@ Commissioned and oversaw the Deep Research Wave — a studio-wide knowledge expa
    - Added references to Principle #13 (Creative Vision Has a Keeper) and Principle #14 (Four-Test Framework)
    - Preserved all existing responsibilities — this is expansion, not replacement
 
-2. **Generalized 6 Stale Charters** — Removed SimpsonsKong-specific references, made universal for any project:
+2. **Generalized 6 Stale Charters** — Removed firstPunch-specific references, made universal for any project:
    - **Chewie:** "Canvas renderer" → "Engine developer for First Frame Studios projects" (any engine: Canvas, Godot, Phaser, etc.)
-   - **Lando:** "Homer Simpson player" → "Gameplay developer for First Frame Studios projects" (any genre, any platform)
+   - **Lando:** "the Brawler player" → "Gameplay developer for First Frame Studios projects" (any genre, any platform)
    - **Wedge:** "16:9 letterboxing" → "UI/UX developer for any project and platform" (responsive across all resolutions)
    - **Greedo:** "Web Audio API exclusively" → "Sound designer using appropriate audio tools per project" (tool selection per tech stack)
-   - **Leia:** "Springfield backgrounds" → "Environment/Asset artist for any game world" (any world, any platform)
-   - **Tarkin:** "SimpsonsKong enemy types" → "Enemy/content designer for any action game" (any action game genre)
+   - **Leia:** "Downtown backgrounds" → "Environment/Asset artist for any game world" (any world, any platform)
+   - **Tarkin:** "firstPunch enemy types" → "Enemy/content designer for any action game" (any action game genre)
 
 3. **Added to All 7 Updated Charters (Yoda + the 6 above):**
    - Removed specific file path ownership (src/engine/, src/entities/, etc.) — these are project-specific

@@ -1,20 +1,20 @@
 /**
- * Springfield Background — SimpsonsKong
+ * Downtown Background — First Punch
  * Owner: Boba (VFX/Art Specialist)
  *
- * Three-layer parallax Springfield scene:
- *   Far  (0.2×) — Power Plant, mountains, Burns billboard, Springfield sign
- *   Mid  (0.5×) — Kwik-E-Mart, Moe's, Android's Dungeon, Elementary,
- *                  Lard Lad, Leftorium, Jebediah statue, houses
+ * Three-layer parallax city scene:
+ *   Far  (0.2×) — Factory, mountains, billboard, city sign
+ *   Mid  (0.5×) — Quick Stop, Joe's Bar, Comic Shop, City School,
+ *                  Donut Shop, Bargain Outlet, Founder statue, houses
  *   Near (1.0×) — Road, sidewalk, hydrants, street lamps, parked cars,
- *                  three-eyed fish puddle, nuclear sign
+ *                  mutant fish puddle, factory sign
  *
  * Plus foreground parallax layer:
  *   Front (1.3×) — Lampposts, chain-link fence, fire hydrants (in front of entities)
  *
- * Easter eggs (AAA-V5): El Barto graffiti, Burns "Excellent" billboard,
- *   Itchy & Scratchy poster, Blinky three-eyed fish, Nuclear Plant
- *   accident sign, Springfield welcome sign
+ * Easter eggs (AAA-V5): Graffiti tags, Mayor billboard,
+ *   cartoon poster, mutant fish, Factory
+ *   accident sign, city welcome sign
  *
  * INTEGRATION INSTRUCTIONS (for gameplay.js):
  * ──────────────────────────────────────────────────────────────────────────
@@ -44,22 +44,22 @@ const CLOUD_TILE = 1800;      // clouds repeat every N px
 // --- Building pattern (mid layer) ---
 const BUILDING_GAP   = 50;
 const BUILDINGS = [
-    { type: 'kwik',  w: 250, h: 180 },
+    { type: 'quickstop',  w: 250, h: 180 },
     { type: 'house', w: 155, h: 150, color: '#E8C48A' },
-    { type: 'moes',  w: 210, h: 165 },
-    { type: 'android', w: 200, h: 170 },
+    { type: 'bar',  w: 210, h: 165 },
+    { type: 'comics', w: 200, h: 170 },
     { type: 'house', w: 165, h: 155, color: '#C46B6B' },
-    { type: 'elementary', w: 310, h: 220 },
+    { type: 'school', w: 310, h: 220 },
     { type: 'house', w: 150, h: 145, color: '#8FBC8F' },
-    { type: 'lardlad', w: 180, h: 165 },
-    { type: 'leftorium', w: 155, h: 150 },
+    { type: 'donutshop', w: 180, h: 165 },
+    { type: 'bargain', w: 155, h: 150 },
     { type: 'statue', w: 100, h: 160 },
     { type: 'house', w: 160, h: 150, color: '#D4A574' },
 ];
 // Pre-compute pattern width
 const PATTERN_W = BUILDINGS.reduce((s, b) => s + b.w + BUILDING_GAP, 0);
 
-// --- Power plant (far layer) ---
+// --- Factory (far layer) ---
 const PLANT_SPACING = 2200;
 
 // --- Fire hydrant spacing ---
@@ -189,7 +189,7 @@ export class Background {
         ctx.globalAlpha = 1;
     }
 
-    // ── Far layer: Power Plant (0.2× parallax) ──────────────────────────
+    // ── Far layer: Factory (0.2× parallax) ──────────────────────────
 
     _farLayer(ctx, left, right) {
         // Mountain range silhouette behind everything
@@ -201,16 +201,16 @@ export class Background {
         for (let i = startI; i <= endI; i++) {
             const wx = i * PLANT_SPACING + left * FAR_PARALLAX;
             if (wx + 300 < left || wx > right) continue;
-            this._drawPowerPlant(ctx, wx, HORIZON);
+            this._drawFactory(ctx, wx, HORIZON);
 
-            // Burns billboard near every other plant
+            // Mayor billboard near every other plant
             if (i % 2 === 0) {
-                this._drawBurnsBillboard(ctx, wx + 400, HORIZON);
+                this._drawMayorBillboard(ctx, wx + 400, HORIZON);
             }
 
-            // Springfield sign near every 3rd plant
+            // City sign near every 3rd plant
             if (i % 3 === 0) {
-                this._drawSpringfieldSign(ctx, wx + 600, HORIZON);
+                this._drawCitySign(ctx, wx + 600, HORIZON);
             }
         }
     }
@@ -251,7 +251,7 @@ export class Background {
         ctx.restore();
     }
 
-    _drawBurnsBillboard(ctx, x, groundY) {
+    _drawMayorBillboard(ctx, x, groundY) {
         // Billboard posts
         ctx.fillStyle = '#666666';
         ctx.fillRect(Math.round(x + 30), groundY - 130, 8, 130);
@@ -264,16 +264,16 @@ export class Background {
         ctx.lineWidth = 2;
         ctx.strokeRect(Math.round(x), Math.round(groundY - 190), 150, 70);
 
-        // "VOTE BURNS" text with background
+        // "VOTE MAYOR" text with background
         ctx.fillStyle = '#880000';
         ctx.fillRect(Math.round(x + 5), Math.round(groundY - 188), 140, 24);
         ctx.fillStyle = '#FFFFFF';
         ctx.font = 'bold 16px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('VOTE BURNS', Math.round(x + 75), Math.round(groundY - 176));
+        ctx.fillText('VOTE MAYOR', Math.round(x + 75), Math.round(groundY - 176));
 
-        // Burns silhouette (simple hunched figure)
+        // Mayor silhouette (simple hunched figure)
         ctx.fillStyle = '#333333';
         ctx.beginPath();
         ctx.arc(Math.round(x + 40), Math.round(groundY - 152), 8, 0, Math.PI * 2);
@@ -286,7 +286,7 @@ export class Background {
         ctx.fillText('"Excellent..."', Math.round(x + 100), Math.round(groundY - 144));
     }
 
-    _drawSpringfieldSign(ctx, x, groundY) {
+    _drawCitySign(ctx, x, groundY) {
         // Sign posts
         ctx.fillStyle = '#8B4513';
         ctx.fillRect(Math.round(x + 5), groundY - 100, 7, 100);
@@ -306,10 +306,10 @@ export class Background {
         ctx.textBaseline = 'middle';
         ctx.fillText('WELCOME TO', Math.round(x + 80), Math.round(groundY - 98));
         ctx.font = 'bold 16px sans-serif';
-        ctx.fillText('SPRINGFIELD', Math.round(x + 80), Math.round(groundY - 82));
+        ctx.fillText('DOWNTOWN', Math.round(x + 80), Math.round(groundY - 82));
     }
 
-    _drawPowerPlant(ctx, x, groundY) {
+    _drawFactory(ctx, x, groundY) {
         ctx.fillStyle = '#8A8A8A';
         // Cooling tower 1 — trapezoid (scaled up ~1.5×)
         ctx.beginPath();
@@ -367,7 +367,7 @@ export class Background {
         ctx.fillRect(x + 390, groundY - 200, 24, 14);
     }
 
-    // ── Mid layer: Springfield buildings (0.5× parallax) ─────────────────
+    // ── Mid layer: City buildings (0.5× parallax) ─────────────────
 
     _midLayer(ctx, left, right) {
         // Determine which pattern tiles are visible
@@ -388,18 +388,18 @@ export class Background {
 
     _drawBuilding(ctx, x, groundY, b) {
         switch (b.type) {
-            case 'kwik':        this._drawKwikEMart(ctx, x, groundY, b); break;
-            case 'moes':        this._drawMoes(ctx, x, groundY, b);      break;
-            case 'android':     this._drawAndroidsDungeon(ctx, x, groundY, b); break;
-            case 'elementary':  this._drawElementary(ctx, x, groundY, b); break;
-            case 'lardlad':     this._drawLardLad(ctx, x, groundY, b); break;
-            case 'leftorium':   this._drawLeftorium(ctx, x, groundY, b); break;
-            case 'statue':      this._drawJebediahStatue(ctx, x, groundY, b); break;
+            case 'quickstop':   this._drawQuickStop(ctx, x, groundY, b); break;
+            case 'bar':         this._drawBar(ctx, x, groundY, b);      break;
+            case 'comics':      this._drawComicShop(ctx, x, groundY, b); break;
+            case 'school':      this._drawSchool(ctx, x, groundY, b); break;
+            case 'donutshop':   this._drawDonutShop(ctx, x, groundY, b); break;
+            case 'bargain':     this._drawBargainOutlet(ctx, x, groundY, b); break;
+            case 'statue':      this._drawFounderStatue(ctx, x, groundY, b); break;
             default:            this._drawHouse(ctx, x, groundY, b);     break;
         }
     }
 
-    _drawKwikEMart(ctx, x, groundY, b) {
+    _drawQuickStop(ctx, x, groundY, b) {
         const top = groundY - b.h;
 
         // Main building — desaturated teal (mid-layer muted)
@@ -443,8 +443,8 @@ export class Background {
         ctx.strokeStyle = OUTLINE;
         ctx.lineWidth = 2;
         ctx.lineJoin = 'round';
-        ctx.strokeText('KWIK-E-MART', Math.round(x + b.w / 2), Math.round(top + 14));
-        ctx.fillText('KWIK-E-MART', Math.round(x + b.w / 2), Math.round(top + 14));
+        ctx.strokeText('QUICK STOP', Math.round(x + b.w / 2), Math.round(top + 14));
+        ctx.fillText('QUICK STOP', Math.round(x + b.w / 2), Math.round(top + 14));
 
         // Door — character height (~80px)
         ctx.fillStyle = '#4A9A9A';
@@ -485,7 +485,7 @@ export class Background {
         ctx.stroke();
     }
 
-    _drawMoes(ctx, x, groundY, b) {
+    _drawBar(ctx, x, groundY, b) {
         const top = groundY - b.h;
 
         // Main building — muted dark brown
@@ -512,12 +512,12 @@ export class Background {
         ctx.lineWidth = 1.5;
         ctx.strokeRect(Math.round(x + 25), Math.round(top + 10), b.w - 50, 34);
 
-        // Neon "MOE'S" text
+        // Neon "JOE'S BAR" text
         ctx.fillStyle = '#FF6666';
         ctx.font = 'bold 18px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText("MOE'S", Math.round(x + b.w / 2), Math.round(top + 27));
+        ctx.fillText("JOE'S BAR", Math.round(x + b.w / 2), Math.round(top + 27));
 
         // Door — character height
         ctx.fillStyle = '#3A1F0D';
@@ -565,13 +565,13 @@ export class Background {
         ctx.lineWidth = 1;
         ctx.strokeRect(Math.round(x + b.w - 60), Math.round(top + 58), 35, 30);
 
-        // "El Barto" graffiti on wall (easter egg AAA-V5)
+        // Graffiti tag on wall (easter egg AAA-V5)
         if (seededRandom(x * 0.63 + 41) > 0.5) {
             ctx.save();
             ctx.fillStyle = '#CC3333';
             ctx.font = 'italic bold 12px sans-serif';
             ctx.textAlign = 'left';
-            ctx.fillText('EL BARTO', Math.round(x + b.w - 80), Math.round(groundY - 10));
+            ctx.fillText('TAGGED!', Math.round(x + b.w - 80), Math.round(groundY - 10));
             ctx.restore();
         }
     }
@@ -690,9 +690,9 @@ export class Background {
         ctx.fill();
     }
 
-    // ── Android's Dungeon (Comic Book Guy's shop) ──────────────────────
+    // ── Comic Shop ──────────────────────
 
-    _drawAndroidsDungeon(ctx, x, groundY, b) {
+    _drawComicShop(ctx, x, groundY, b) {
         const top = groundY - b.h;
 
         // Main building — muted green
@@ -721,7 +721,7 @@ export class Background {
         ctx.font = 'bold 14px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText("ANDROID'S", Math.round(x + b.w / 2), Math.round(top + 20));
+        ctx.fillText("COMICS", Math.round(x + b.w / 2), Math.round(top + 20));
         ctx.font = 'bold 12px sans-serif';
         ctx.fillText('DUNGEON', Math.round(x + b.w / 2), Math.round(top + 35));
 
@@ -736,7 +736,7 @@ export class Background {
         ctx.lineWidth = 1;
         ctx.strokeRect(Math.round(x + 18), Math.round(top + 55), b.w - 36, 50);
 
-        // Itchy & Scratchy poster in window (easter egg AAA-V5)
+        // Cartoon poster in window (easter egg AAA-V5)
         ctx.fillStyle = '#FF4444';
         ctx.fillRect(Math.round(x + 26), Math.round(top + 60), 26, 36);
         ctx.fillStyle = '#4444FF';
@@ -744,7 +744,7 @@ export class Background {
         ctx.fillStyle = '#FFFFFF';
         ctx.font = 'bold 10px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('I&S', Math.round(x + 54), Math.round(top + 100));
+        ctx.fillText('POW!', Math.round(x + 54), Math.round(top + 100));
 
         // Door — character height
         ctx.fillStyle = '#2A4A2A';
@@ -762,20 +762,20 @@ export class Background {
         ctx.arc(Math.round(x + b.w / 2 + 12), groundY - 40, 3, 0, Math.PI * 2);
         ctx.fill();
 
-        // "El Barto" graffiti on side wall (easter egg AAA-V5)
+        // Graffiti tag on side wall (easter egg AAA-V5)
         if (seededRandom(x * 0.47 + 91) > 0.4) {
             ctx.save();
             ctx.fillStyle = '#CC3333';
             ctx.font = 'italic bold 12px sans-serif';
             ctx.textAlign = 'left';
-            ctx.fillText('EL BARTO', Math.round(x + b.w - 75), Math.round(groundY - 12));
+            ctx.fillText('TAGGED!', Math.round(x + b.w - 75), Math.round(groundY - 12));
             ctx.restore();
         }
     }
 
-    // ── Springfield Elementary ───────────────────────────────────────────
+    // ── City School ───────────────────────────────────────────
 
-    _drawElementary(ctx, x, groundY, b) {
+    _drawSchool(ctx, x, groundY, b) {
         const top = groundY - b.h;
 
         // Main brick building
@@ -917,9 +917,9 @@ export class Background {
         }
     }
 
-    // ── Lard Lad Donut ──────────────────────────────────────────────────
+    // ── Donut Shop ──────────────────────────────────────────────────
 
-    _drawLardLad(ctx, x, groundY, b) {
+    _drawDonutShop(ctx, x, groundY, b) {
         const top = groundY - b.h;
 
         // Main building — beige/tan
@@ -946,7 +946,7 @@ export class Background {
         ctx.font = 'bold 14px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('LARD LAD', Math.round(x + b.w / 2), Math.round(top + 24));
+        ctx.fillText('BIG DONUT', Math.round(x + b.w / 2), Math.round(top + 24));
 
         // Giant donut on roof — pink with sprinkles (scaled up)
         const donutCX = Math.round(x + b.w / 2);
@@ -1006,9 +1006,9 @@ export class Background {
         ctx.fill();
     }
 
-    // ── The Leftorium ───────────────────────────────────────────────────
+    // ── Bargain Outlet ───────────────────────────────────────────────────
 
-    _drawLeftorium(ctx, x, groundY, b) {
+    _drawBargainOutlet(ctx, x, groundY, b) {
         const top = groundY - b.h;
 
         // Main building — muted light blue
@@ -1049,8 +1049,8 @@ export class Background {
         ctx.strokeStyle = OUTLINE;
         ctx.lineWidth = 1.5;
         ctx.lineJoin = 'round';
-        ctx.strokeText('LEFTORIUM', Math.round(x + b.w / 2), Math.round(top + 12));
-        ctx.fillText('LEFTORIUM', Math.round(x + b.w / 2), Math.round(top + 12));
+        ctx.strokeText('BARGAINS', Math.round(x + b.w / 2), Math.round(top + 12));
+        ctx.fillText('BARGAINS', Math.round(x + b.w / 2), Math.round(top + 12));
 
         // Window with frame
         ctx.fillStyle = '#ADE8F4';
@@ -1089,9 +1089,9 @@ export class Background {
         ctx.fill();
     }
 
-    // ── Jebediah Springfield Statue ─────────────────────────────────────
+    // ── Founder Statue ─────────────────────────────────────
 
-    _drawJebediahStatue(ctx, x, groundY, b) {
+    _drawFounderStatue(ctx, x, groundY, b) {
         // Stone pedestal (larger)
         const pedW = 60, pedH = 50;
         const pedX = x + b.w / 2 - pedW / 2;
@@ -1115,7 +1115,7 @@ export class Background {
         ctx.font = 'bold 10px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('JEBEDIAH', Math.round(pedX + pedW / 2), Math.round(groundY - pedH + 21));
+        ctx.fillText('FOUNDER', Math.round(pedX + pedW / 2), Math.round(groundY - pedH + 21));
 
         // Statue figure — bronze/green patina (scaled up)
         const figX = x + b.w / 2;
@@ -1158,7 +1158,7 @@ export class Background {
     // ── Easter eggs (drawn on select buildings) ─────────────────────────
 
     _drawEasterEggs(ctx, x, groundY, tileIndex) {
-        // Burns billboard — appears every 3rd tile on far layer
+        // Mayor billboard — appears every 3rd tile on far layer
         // (called from _farLayer)
     }
 
@@ -1268,21 +1268,21 @@ export class Background {
             }
         }
 
-        // Three-eyed fish puddle (easter egg, every 1800px)
+        // Mutant fish puddle (easter egg, every 1800px)
         const PUDDLE_SPACING = 1800;
         const puddleStart = Math.floor(left / PUDDLE_SPACING) * PUDDLE_SPACING + 300;
         for (let px = puddleStart; px < right; px += PUDDLE_SPACING) {
             if (px + 40 >= left && px <= right) {
-                this._drawThreeEyedFishPuddle(ctx, px, HORIZON + 17);
+                this._drawMutantFishPuddle(ctx, px, HORIZON + 17);
             }
         }
 
-        // Nuclear Plant accident sign (easter egg, every 2400px)
+        // Factory accident sign (easter egg, every 2400px)
         const NSIGN_SPACING = 2400;
         const nsignStart = Math.floor(left / NSIGN_SPACING) * NSIGN_SPACING + 500;
         for (let nx = nsignStart; nx < right; nx += NSIGN_SPACING) {
             if (nx + 80 >= left && nx <= right) {
-                this._drawNuclearSign(ctx, nx, HORIZON - 5);
+                this._drawFactorySign(ctx, nx, HORIZON - 5);
             }
         }
     }
@@ -1378,7 +1378,7 @@ export class Background {
         ctx.fill();
     }
 
-    _drawThreeEyedFishPuddle(ctx, x, y) {
+    _drawMutantFishPuddle(ctx, x, y) {
         // Small puddle (ellipse)
         ctx.save();
         ctx.fillStyle = '#5588AA';
@@ -1388,7 +1388,7 @@ export class Background {
         ctx.fill();
         ctx.restore();
 
-        // Tiny three-eyed fish (Blinky)
+        // Tiny three-eyed mutant fish
         ctx.fillStyle = '#FF8C00';
         // Body
         ctx.beginPath();
@@ -1425,7 +1425,7 @@ export class Background {
         ctx.fill();
     }
 
-    _drawNuclearSign(ctx, x, y) {
+    _drawFactorySign(ctx, x, y) {
         // Post
         ctx.fillStyle = '#8B8B8B';
         ctx.fillRect(Math.round(x + 42), y, 6, 35);
@@ -1442,7 +1442,7 @@ export class Background {
         ctx.font = 'bold 12px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('NUCLEAR PLANT', Math.round(x + 45), Math.round(y - 30));
+        ctx.fillText('POWER CO.', Math.round(x + 45), Math.round(y - 30));
         const days = Math.floor(seededRandom(x * 0.17 + 3) * 10);
         ctx.font = 'bold 14px sans-serif';
         ctx.fillText(days + ' DAYS', Math.round(x + 45), Math.round(y - 16));

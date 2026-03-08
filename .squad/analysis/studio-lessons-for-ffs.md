@@ -116,7 +116,7 @@ This document maps the most impactful findings from our industry research to spe
 
 **Source:** 155-postmortem meta-analysis, Diablo II postmortem, GDC best practices.
 
-**What:** Run a "5 things that went right / 5 things that went wrong" postmortem on SimpsonsKong. Document:
+**What:** Run a "5 things that went right / 5 things that went wrong" postmortem on firstPunch. Document:
 - Each squad member contributes their top 3 right/wrong items
 - Items are synthesized into studio-level lessons
 - Actionable items are added to the next project's Sprint 0 checklist
@@ -172,7 +172,7 @@ This document maps the most impactful findings from our industry research to spe
 | Priority | Action | Owner | Timeline |
 |----------|--------|-------|----------|
 | P0 | Add "Vision Keeper" principle + role | Yoda | Before next project |
-| P0 | Run SimpsonsKong postmortem (5/5 format) | Solo + All | Before next project |
+| P0 | Run firstPunch postmortem (5/5 format) | Solo + All | Before next project |
 | P0 | Institute Five-Minute Test protocol | Ackbar | Immediate |
 | P1 | Create `feature-triage` skill | Yoda + Solo | Next sprint |
 | P1 | Create `streamability-design` skill | Yoda + Boba | Next sprint |

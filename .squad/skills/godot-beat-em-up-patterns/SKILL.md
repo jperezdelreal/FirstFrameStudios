@@ -1,6 +1,6 @@
 # SKILL: Godot 4 Design Patterns for Beat 'Em Ups
 
-Practical, copy-paste-ready Godot 4 patterns for building a 2.5D beat 'em up. Every pattern here maps directly to SimpsonsKong's GDD — hitbox/hurtbox combat, 2-attacker throttle, health-cost specials, comedy-driven feedback, and Springfield-as-a-character level flow. Built from the squad's existing skills (beat-em-up-combat, state-machine-patterns) translated into GDScript.
+Practical, copy-paste-ready Godot 4 patterns for building a 2.5D beat 'em up. Every pattern here maps directly to firstPunch's GDD — hitbox/hurtbox combat, 2-attacker throttle, health-cost specials, comedy-driven feedback, and Downtown-as-a-character level flow. Built from the squad's existing skills (beat-em-up-combat, state-machine-patterns) translated into GDScript.
 
 ---
 name: "godot-beat-em-up-patterns"
@@ -11,7 +11,7 @@ source: "authored — Yoda (Game Designer), synthesized from GDD v1.0 + beat-em-
 ---
 
 ## When to Use This Skill
-- Implementing any SimpsonsKong system in Godot 4
+- Implementing any firstPunch system in Godot 4
 - Porting existing Canvas 2D logic to Godot's node system
 - Setting up project structure, autoloads, and scene hierarchy
 - Debugging combat feel, enemy behavior, or level flow in Godot
@@ -752,7 +752,7 @@ func _level_complete() -> void:
 ### 4.4 Environmental Interactions
 
 ```gdscript
-# interactive_prop.gd — Lard Lad's donut, fire hydrant, etc.
+# interactive_prop.gd — Donut Shop's donut, fire hydrant, etc.
 extends StaticBody2D
 
 @export var interaction_type: StringName = &"throw"
@@ -850,14 +850,14 @@ func _on_combo_changed(count: int, rating: String) -> void:
 ### 5.2 Combo Rating from GDD
 
 ```gdscript
-# Returns Simpsons-flavored combo text
+# Returns game-flavored combo text
 func _get_combo_rating(count: int) -> String:
 	if count >= 20:
 		return '"Best. Combo. Ever."'
 	elif count >= 15:
-		return '"Ay Caramba!"'
+		return '"Radical!"'
 	elif count >= 10:
-		return '"Excellent!"'  # Burns voice
+		return '"Excellent!"'  # Mayor voice
 	elif count >= 5:
 		return '"Woohoo!"'
 	elif count >= 3:
@@ -868,18 +868,18 @@ func _get_combo_rating(count: int) -> String:
 ### 5.3 Theme Resources for Consistent Styling
 
 ```gdscript
-# Create a Theme resource: res://themes/simpsons_theme.tres
+# Create a Theme resource: res://themes/game_theme.tres
 # In Project Settings → GUI → Theme → Custom, assign it globally.
 
 # Or apply per-Control:
 func _ready() -> void:
-	var theme = preload("res://themes/simpsons_theme.tres")
+	var theme = preload("res://themes/game_theme.tres")
 	# All child Controls inherit this theme
 	set_theme(theme)
 ```
 
 **Theme structure tips:**
-- `ProgressBar` → custom StyleBoxFlat for health (yellow fill, blue border — Simpsons palette)
+- `ProgressBar` → custom StyleBoxFlat for health (yellow fill, blue border — game palette)
 - `Label` → custom font (bold, outlined for readability against gameplay)
 - Set `Label.label_settings` for per-label font size/color overrides
 
@@ -896,7 +896,7 @@ Master
 ├── SFX        (combat hits, footsteps, props breaking)
 ├── Music      (level BGM, boss themes)
 ├── UI         (menu clicks, score pops, combo callouts)
-└── Ambience   (Springfield background — traffic, birds, chatter)
+└── Ambience   (Downtown background — traffic, birds, chatter)
 ```
 
 ### 6.2 Spatial SFX with AudioStreamPlayer2D
@@ -1288,20 +1288,20 @@ Level (Node2D, y_sort_enabled=true)
 
 ---
 
-## Mapping to SimpsonsKong GDD
+## Mapping to firstPunch GDD
 
 | GDD Feature | Godot Pattern | Section |
 |-------------|---------------|---------|
 | PPK combo (42 dmg/1.1s) | Hitbox activate/deactivate per combo step | §1 |
 | Health-cost specials (SoR2) | GameManager tracks grey health + Timer for recovery | §7.1 |
 | 2-attacker throttle | Group queries: `get_nodes_in_group("active_attackers")` | §2.2 |
-| Belly Bounce (Homer special) | Wide hitbox + high knockback_force + screen shake | §1.1, §1.5 |
-| Donut Rage Mode | GameManager secondary meter + modulate tint | §7.1 |
-| D'oh! Moments | AnimationPlayer death variants + EventBus signals | §7.2 |
+| Belly Bounce (Brawler special) | Wide hitbox + high knockback_force + screen shake | §1.1, §1.5 |
+| Rage Mode | GameManager secondary meter + modulate tint | §7.1 |
+| Ugh! Moments | AnimationPlayer death variants + EventBus signals | §7.2 |
 | Dodge roll i-frames | State.DODGING check in take_damage() | §1.2 |
 | Grab/throw system | State.GRABBING + thrown enemy as projectile (Area2D) | §2.1 |
 | Camera locks per wave | CameraLockZone + Camera2D.limit | §4.2 |
-| Combo meter ("Ay Caramba!") | EventBus.combo_changed → HUD tween animation | §5.1 |
-| Springfield environments | interactive_prop.gd + take_damage() on props | §4.4 |
+| Combo meter ("Radical!") | EventBus.combo_changed → HUD tween animation | §5.1 |
+| Downtown environments | interactive_prop.gd + take_damage() on props | §4.4 |
 | SFX variation (3+ per hit) | Array[AudioStream].pick_random() + pitch jitter | §6.2 |
 | Dynamic boss music | MusicManager crossfade on EventBus.boss_intro | §6.3 |

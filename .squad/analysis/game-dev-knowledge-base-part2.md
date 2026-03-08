@@ -2,7 +2,7 @@
 
 **Author:** Yoda (Game Designer)  
 **Date:** 2025-07-15  
-**Project:** SimpsonsKong — Browser-based Simpsons beat 'em up  
+**Project:** firstPunch — Browser-based game beat 'em up  
 **Scope:** Disciplines 6–10 of 10. Cross-project institutional knowledge.  
 **Companion:** Part 1 covers Disciplines 1–5.
 
@@ -12,11 +12,11 @@
 
 ### Core Principles
 
-Color in games is never decorative — it is *informational*. Every hue on screen must answer one of three questions for the player: "What am I?", "What hurts me?", and "What do I want?" The Simpsons IP gives us a head start here because its palette is iconic and instantly readable: Simpsons Yellow (#FED90F), Springfield Sky Blue (#87CEEB), and Moe's Tavern Purple (#663399) are burned into cultural memory. A game designer's job is to exploit that recognition ruthlessly.
+Color in games is never decorative — it is *informational*. Every hue on screen must answer one of three questions for the player: "What am I?", "What hurts me?", and "What do I want?" The game IP gives us a head start here because its palette is iconic and instantly readable: character yellow (#FED90F), Downtown Sky Blue (#87CEEB), and Joe's Bar Purple (#663399) are burned into cultural memory. A game designer's job is to exploit that recognition ruthlessly.
 
 **Depth through parallax** is one of the cheapest ways to make a 2D game feel expensive. The human eye infers depth from differential motion — objects closer move faster, objects farther move slower. Our four-layer parallax system (far at 0.2×, mid at 0.5×, near at 1.0×, foreground at 1.3×) creates convincing depth without a single 3D calculation. The foreground layer at 1.3× is the secret weapon: lampposts and fences sliding *past* the player create a "looking through a window" effect that most 2D games skip entirely.
 
-**Particle design** must serve readability first, spectacle second. Hit sparks (#FFD700 gold, #FFFFEE off-white, #FFA500 orange) need to pop against Springfield's muted pastels without obscuring the combat. Dust clouds (#C4A46C browns) should ground characters to the pavement. Death debris can be flamboyant because the threat is already resolved.
+**Particle design** must serve readability first, spectacle second. Hit sparks (#FFD700 gold, #FFFFEE off-white, #FFA500 orange) need to pop against Downtown's muted pastels without obscuring the combat. Dust clouds (#C4A46C browns) should ground characters to the pavement. Death debris can be flamboyant because the threat is already resolved.
 
 **Screen composition** in a scrolling beat 'em up demands that the action zone (where punches land) occupies the center 40% of the screen horizontally. HUD elements anchor to corners. Enemy spawn telegraphs need to be visible in peripheral vision. Our 1280×720 logical resolution gives us roughly 512px of "combat stage" — enough for two characters exchanging blows with breathing room.
 
@@ -38,13 +38,13 @@ Color in games is never decorative — it is *informational*. Every hue on scree
 - **Over-designing procedural art.** Each character takes ~400 LOC of Canvas drawing code. At some point, the cost of adding visual detail exceeds the value. We hit this ceiling — it's our strongest argument for migrating to sprite sheets.
 - **Particles that outlive their purpose.** A hit spark lasting 500ms obscures the next attack. Particles should communicate and vanish: 150–250ms is the sweet spot for combat feedback.
 
-### SimpsonsKong Application
+### firstPunch Application
 
-Our procedural art style (zero external assets, pure Canvas 2D drawing) creates both a unique aesthetic identity and a hard production ceiling. Each new character requires ~400 LOC of body-part rendering: head circle, body rectangle, limbs with joint positioning. The Springfield background system generates Kwik-E-Mart, houses (#E8C48A, #C46B6B, #8FBC8F, #D4A574), the Nuclear Power Plant, and Springfield Elementary through layered rectangles with color variation. This works *because* The Simpsons has a simple, flat visual style — the IP and the technology constraint aligned beautifully. Our VFX system (15+ effect types in vfx.js at 1300+ LOC) compensates for static character art with dynamic motion trails, starbursts, damage numbers, and screen flashes. The lesson: if your characters can't animate fluidly, make the *world* react fluidly to them.
+Our procedural art style (zero external assets, pure Canvas 2D drawing) creates both a unique aesthetic identity and a hard production ceiling. Each new character requires ~400 LOC of body-part rendering: head circle, body rectangle, limbs with joint positioning. The Downtown background system generates Quick Stop, houses (#E8C48A, #C46B6B, #8FBC8F, #D4A574), the Factory, and City School through layered rectangles with color variation. This works *because* the source IP has a simple, flat visual style — the IP and the technology constraint aligned beautifully. Our VFX system (15+ effect types in vfx.js at 1300+ LOC) compensates for static character art with dynamic motion trails, starbursts, damage numbers, and screen flashes. The lesson: if your characters can't animate fluidly, make the *world* react fluidly to them.
 
 ### Future Learnings
 
-- **Sprite sheet migration** is inevitable for character roster expansion. Phaser 3's texture atlas system would replace ~1200 LOC of procedural drawing for Bart/Marge/Lisa alone.
+- **Sprite sheet migration** is inevitable for character roster expansion. Phaser 3's texture atlas system would replace ~1200 LOC of procedural drawing for Kid/Defender/Prodigy alone.
 - **Shader effects** (glow, color grading, distortion) require WebGL. Canvas 2D's `globalCompositeOperation` is a partial substitute but can't replicate bloom or chromatic aberration.
 - **Resolution-independent UI** should use a separate coordinate system from gameplay. When zoom effects scale the game camera, HUD elements must remain stable — our current approach handles this but would break with more complex UI layouts.
 - **Visual hierarchy testing**: screenshot the game in grayscale and at 50% size. If you can still identify player, enemies, and pickups, your visual design is sound.
@@ -81,7 +81,7 @@ Our procedural art style (zero external assets, pure Canvas 2D drawing) creates 
 - **Missing feedback on invalid actions.** When the player presses attack during knockback and nothing happens, there's no audio or visual cue explaining why. A subtle "bonk" sound or UI flash says "I heard you, but not right now" — far better than silence.
 - **Forgetting the pause state.** Pausing during an attack animation, then unpausing, must resume exactly where it left off. State corruption during pause/unpause is a classic UX bug category.
 
-### SimpsonsKong Application
+### firstPunch Application
 
 Our juiciness stack is already competitive with commercial titles: hitlag (2–3 frame freeze), screen shake, motion trails (4-frame afterimage), damage numbers (with combo scaling), hit sparks (light/medium/heavy intensity), KO starbursts with orbiting stars, and speed lines for dashes. The style meter tracks unique attack variety, rewarding players for using their full moveset. The combo counter pulses and scales. What we're missing: (1) *negative* feedback — there's no juice for getting hit beyond i-frame blinking, (2) environmental reactions — destructibles break but the world doesn't *flinch*, (3) audio juice — we have procedural SFX but lack hit sound *variation* (the same crunch 50 times becomes invisible). The debug overlay (FPS, entity count, collision checks, VFX count) is excellent developer UX — toggled with backtick, never shown to players. Our HUD draws health, score, and combo counter with proper layering priority.
 
@@ -124,7 +124,7 @@ Our juiciness stack is already competitive with commercial titles: hitlag (2–3
 - **Ignoring the accumulator residual.** The leftover `accumulator` value after the while-loop represents sub-frame time. Ignoring it causes micro-stutter. Interpolating render positions by `accumulator / fixedDelta` produces buttery-smooth visuals. We don't currently interpolate — a future improvement.
 - **Over-engineering for scale you don't have.** Object pooling, spatial hashing, and quad trees are essential at 1000 entities. At 10 entities, they're complexity without benefit. Design for your current order of magnitude, refactor at the next.
 
-### SimpsonsKong Application
+### firstPunch Application
 
 Our architecture is a pragmatic hybrid that serves our scope. The game loop (game.js, 191 LOC) is production-quality: fixed timestep, death spiral prevention, hitlag/zoom/slow-mo as temporal layers, and clean scene transitions. The entity model (Player 64×80px, Enemy with 5 variants) uses OOP with state machine behavior — appropriate for our entity count. The system separation (combat.js, ai.js, camera.js, background.js, vfx.js, wave-manager.js) keeps logic modular. The renderer (112 LOC) is HiDPI-aware with camera transforms and screen shake. Unused infrastructure (EventBus 49 LOC, AnimationController 85 LOC, SpriteCache 35 LOC, CONFIG 45 LOC) totals 214 LOC of working code waiting to be wired — this is the highest-priority technical debt alongside the gameplay.js decomposition. The zero-dependency constraint (`<script type="module">` only, no npm, no bundler) enables instant local development but limits access to ecosystem tools.
 
@@ -167,7 +167,7 @@ Our architecture is a pragmatic hybrid that serves our scope. The game loop (gam
 - **Skipping regression after "small" changes.** The parallax direction fix (changing 1.3× to 0.3×) was a one-line change. Without regression testing, we wouldn't have caught that it also affected foreground element positioning. Small changes have large blast radii.
 - **No baseline build.** Without a "known good" build to compare against, you can't tell if a bug is new or pre-existing. Tag stable builds in version control. Our commit history serves this purpose, but explicit "QA-passed" tags would be better.
 
-### SimpsonsKong Application
+### firstPunch Application
 
 Our QA infrastructure is lightweight but effective for our scale. The debug overlay (debug-overlay.js, toggled with backtick) provides real-time performance monitoring: FPS, entity count, collision checks, VFX count, and world-space bounding box visualization. The regression checklist (regression-checklist.md) covers 12+ critical combat/movement scenarios with detailed pass/fail criteria. Balance analysis (balance-analysis.md, frame-data.md) provides numeric targets: PPK combo at 42 DPS/1.1s is the combat foundation, jump DPS capped at 38, all six critical flags from Ackbar's audit addressed. Playtest verification (playtest-verification.md) documents structured play sessions. What we lack: (1) automated test runner — no Jest, no Mocha, no unit tests for damage formulas or state transitions, (2) input replay — we can't record and replay a gameplay session for deterministic regression testing, (3) continuous integration — no automated build verification on commit. These gaps are acceptable for a solo/small-team project but would be blockers for a production team.
 
@@ -184,7 +184,7 @@ Our QA infrastructure is lightweight but effective for our scale. The debug over
 
 ### Core Principles
 
-**Vertical slice methodology** means building one complete, polished slice of the game before expanding horizontally. For SimpsonsKong, the vertical slice was: one character (Homer), one level section (Springfield street), one enemy type (normal goon), complete with combat, movement, VFX, audio, and HUD. This slice proves the game *works* — it has the loop of move → fight → advance → fight harder. Only after the slice feels good do you add enemy variants, level sections, and additional characters. The temptation is always to add breadth (more enemies! more levels! more characters!) before the core slice is polished. Resist this: a game with one perfect level and three broken ones ships worse than a game with one perfect level and nothing else.
+**Vertical slice methodology** means building one complete, polished slice of the game before expanding horizontally. For firstPunch, the vertical slice was: one character (Brawler), one level section (Downtown street), one enemy type (normal goon), complete with combat, movement, VFX, audio, and HUD. This slice proves the game *works* — it has the loop of move → fight → advance → fight harder. Only after the slice feels good do you add enemy variants, level sections, and additional characters. The temptation is always to add breadth (more enemies! more levels! more characters!) before the core slice is polished. Resist this: a game with one perfect level and three broken ones ships worse than a game with one perfect level and nothing else.
 
 **Feature freeze and polish** are two distinct phases that most indie projects blur together. Feature freeze means: no new mechanics, no new systems, no new content types. Everything added after freeze is tuning, fixing, or removing. Polish is the work of making existing features feel *finished*: adjusting hitlag from 3 frames to 2, tightening knockback curves, adding that extra particle burst on KO, ensuring the combo counter pulses at exactly the right rate. Polish is not the absence of work — it's the hardest, most taste-dependent work in game development. Our squad principle "Ship It Then Perfect It" encodes this: launch the vertical slice, then enter an unbounded polish phase on what exists.
 
@@ -210,9 +210,9 @@ Our QA infrastructure is lightweight but effective for our scale. The debug over
 - **Ignoring the dependency graph.** Starting work on enemy AI patterns before the combat system handles damage correctly creates rework. Map dependencies explicitly (our todo_deps table) and sequence work accordingly.
 - **Solo heroics instead of parallel streams.** One developer doing engine + gameplay + content + art sequentially takes 4× longer than four specialists working in parallel with clear interfaces. Our squad expansion from 4 to 9 agents was the single biggest production velocity improvement.
 
-### SimpsonsKong Application
+### firstPunch Application
 
-SimpsonsKong's production history is a case study in vertical slice methodology done right. The initial prototype (Homer punching goons on a Springfield street) was playable in 30 minutes. Every subsequent milestone expanded from that working core: combat feel → enemy variety → VFX layer → audio layer → wave system → boss encounters. The squad structure evolved organically: started with 4 core roles, identified bottlenecks through gap analysis on a 52-item backlog, expanded to 9 roles with explicit domain ownership. Key production artifacts that work: decisions.md (architectural record), history.md per agent (institutional memory), the analysis folder (20+ research documents covering beat 'em up genre, balance, frame data, visual direction, audio, technical learnings, and regression testing). Key production gaps: no formal sprint/milestone structure, no burndown tracking, no definition-of-done checklists per feature, and the backlog drifted (13 items completed but not marked done). The "Phaser 3 & Future Tech" decision is exemplary scope management: recognizing that a technology improvement is valuable but out-of-scope for the current project, capturing it as institutional knowledge rather than attempting a mid-project migration.
+firstPunch's production history is a case study in vertical slice methodology done right. The initial prototype (Brawler punching goons on a Downtown street) was playable in 30 minutes. Every subsequent milestone expanded from that working core: combat feel → enemy variety → VFX layer → audio layer → wave system → boss encounters. The squad structure evolved organically: started with 4 core roles, identified bottlenecks through gap analysis on a 52-item backlog, expanded to 9 roles with explicit domain ownership. Key production artifacts that work: decisions.md (architectural record), history.md per agent (institutional memory), the analysis folder (20+ research documents covering beat 'em up genre, balance, frame data, visual direction, audio, technical learnings, and regression testing). Key production gaps: no formal sprint/milestone structure, no burndown tracking, no definition-of-done checklists per feature, and the backlog drifted (13 items completed but not marked done). The "Phaser 3 & Future Tech" decision is exemplary scope management: recognizing that a technology improvement is valuable but out-of-scope for the current project, capturing it as institutional knowledge rather than attempting a mid-project migration.
 
 ### Future Learnings
 
@@ -225,4 +225,4 @@ SimpsonsKong's production history is a case study in vertical slice methodology 
 
 ## Cross-Discipline Synthesis
 
-These five disciplines form a feedback loop: **Visual Design** creates the world players see, **UX/UI Design** ensures players can navigate and understand that world, **Technical Architecture** makes both possible at 60 FPS, **Quality Assurance** verifies everything works correctly, and **Production & Process** coordinates the humans (and agents) building it all. The common thread across all five is *intentionality*: every color choice, every HUD element, every architectural pattern, every test case, and every scope decision should trace back to a player experience goal. SimpsonsKong's strongest lesson is that constraints (Canvas 2D, zero dependencies, procedural art, small team) don't limit quality — they focus it. The game feels good to play not despite its limitations but because every decision was made within known boundaries, leaving no room for half-measures.
+These five disciplines form a feedback loop: **Visual Design** creates the world players see, **UX/UI Design** ensures players can navigate and understand that world, **Technical Architecture** makes both possible at 60 FPS, **Quality Assurance** verifies everything works correctly, and **Production & Process** coordinates the humans (and agents) building it all. The common thread across all five is *intentionality*: every color choice, every HUD element, every architectural pattern, every test case, and every scope decision should trace back to a player experience goal. firstPunch's strongest lesson is that constraints (Canvas 2D, zero dependencies, procedural art, small team) don't limit quality — they focus it. The game feels good to play not despite its limitations but because every decision was made within known boundaries, leaving no room for half-measures.

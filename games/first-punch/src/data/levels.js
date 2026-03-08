@@ -65,7 +65,7 @@ export const ENEMY_TYPES = {
 };
 
 // ---------------------------------------------------------------------------
-// Level 1 — Springfield Downtown
+// Level 1 — Downtown District
 // ---------------------------------------------------------------------------
 // Wave design follows encounter-pacing.md and wave-rules.md:
 //   Wave 1: intro (2 normals — easy)
@@ -76,7 +76,7 @@ export const ENEMY_TYPES = {
 // enemies[] — spawn list; type must be a key in ENEMY_TYPES
 
 export const LEVEL_1 = {
-    name: 'Springfield Downtown',
+    name: 'Downtown District',
     width: 5000,
     background: 'downtown',
     waves: [
@@ -111,7 +111,7 @@ export const LEVEL_1 = {
             ]
         },
         {
-            // Wave 4 — Boss: Nelson Muntz
+            // Wave 4 — Boss: Bruiser
             triggerX: 3500,
             enemies: [
                 { type: 'boss', x: 3800, y: 500 }
@@ -120,9 +120,9 @@ export const LEVEL_1 = {
     ],
 
     // -----------------------------------------------------------------------
-    // Destructible objects — smashable Springfield street props
+    // Destructible objects — smashable street props
     // Types: trashCan (10 HP), newspaperStand (15 HP),
-    //        parkingMeter (20 HP), lardLadSign (25 HP)
+    //        parkingMeter (20 HP), donutSign (25 HP)
     // -----------------------------------------------------------------------
     destructibles: [
         // Wave 1 zone — teach smashing early
@@ -137,9 +137,9 @@ export const LEVEL_1 = {
         { type: 'newspaperStand', x: 2700, y: 470 },
         { type: 'parkingMeter',   x: 2900, y: 510 },
         { type: 'trashCan',       x: 3020, y: 540 },
-        { type: 'lardLadSign',    x: 3100, y: 460 },
+        { type: 'donutSign',    x: 3100, y: 460 },
         // Wave 4 / boss zone — one big smashable
-        { type: 'lardLadSign',    x: 3600, y: 480 }
+        { type: 'donutSign',    x: 3600, y: 480 }
     ],
 
     // -----------------------------------------------------------------------

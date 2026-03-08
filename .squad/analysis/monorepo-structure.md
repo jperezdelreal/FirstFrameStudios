@@ -23,7 +23,7 @@ The proposed monorepo structure is **fundamentally sound** but **incomplete**. I
 **This document provides:**
 - ✅ Validated, corrected full directory tree
 - ✅ Explanation for every directory
-- ✅ Migration plan from current layout (SimpsonsKong at root) to new structure
+- ✅ Migration plan from current layout (firstPunch at root) to new structure
 - ✅ Complete file creation checklist
 - ✅ Implementation sequence and dependencies
 - ✅ Trade-offs and architectural decisions
@@ -134,7 +134,7 @@ FirstFrameStudios/                          # Repository root
 ├── games/                                  # Game projects folder
 │   ├── README.md                           # Explanation of games structure
 │   │
-│   ├── simpsons-kong/                      # Project 1 — Canvas 2D beat 'em up
+│   ├── game-kong/                      # Project 1 — Canvas 2D beat 'em up
 │   │   ├── README.md                       # Game-specific README
 │   │   ├── package.json                    # (Optional) If using npm for dev tools
 │   │   ├── .editorconfig
@@ -219,7 +219,7 @@ FirstFrameStudios/                          # Repository root
 | `.github/` | GitHub infrastructure | workflows/, templates | Branch protection, issue templates, CI/CD, PR template. |
 | `.squad/` | Studio team & knowledge | agents/, skills/, identity/, decisions.md | The institutional brain. Every decision, every skill, every agent history. **DO NOT** put game-specific code here. |
 | `shared/` | Cross-game reusable assets & code | godot/, canvas-2d/, assets/, docs/, configs/ | Shared plugins, utilities, assets, style guides. Each game **symlinks** or **references** what it needs. |
-| `games/` | Game project folders | simpsons-kong/, ashfall/, [future games]/ | Each game is self-contained with its own README, .gitignore, architecture. |
+| `games/` | Game project folders | game-kong/, ashfall/, [future games]/ | Each game is self-contained with its own README, .gitignore, architecture. |
 | `docs/` | Repository-level documentation | GETTING_STARTED.md, ARCHITECTURE.md, CONTRIBUTING.md | How to navigate this monorepo. How to set up dev environment. How to build and ship. |
 | `tools/` | Build & dev infrastructure | game-builder.js, balance-importer.py | Scripts that run across the monorepo. Not tied to any single game. |
 
@@ -235,7 +235,7 @@ This is the **most important** directory for understanding how the studio works.
 - **team.md** — Current roster, roles, domains, availability.
 - **decisions.md** — Master decision log across all agents (append-only, union merge strategy in .gitattributes).
 
-**Rule:** Nothing game-specific lives here. If it's knowledge that carries forward to the next project, it belongs in `.squad/`. If it's only useful for SimpsonsKong or Ashfall, it belongs in `games/{game-name}/`.
+**Rule:** Nothing game-specific lives here. If it's knowledge that carries forward to the next project, it belongs in `.squad/`. If it's only useful for firstPunch or Ashfall, it belongs in `games/{game-name}/`.
 
 ### `shared/` (Cross-Game Assets & Code)
 
@@ -251,14 +251,14 @@ This is the **most important** directory for understanding how the studio works.
 - ✅ Shared documentation (art style guide, performance budgets, audio design guidelines)
 
 **What doesn't go here:**
-- ❌ Game-specific art (SimpsonsKong's Homer sprite)
-- ❌ Game-specific audio (SimpsonsKong's boss music)
+- ❌ Game-specific art (firstPunch's Brawler sprite)
+- ❌ Game-specific audio (firstPunch's boss music)
 - ❌ Game-specific story/lore
 - ❌ Game-specific GDD content
 
 **Reference strategy:** Each game's `.gitignore` should **exclude** shared/ folder, then symlink or mount specific pieces:
 ```bash
-# In games/simpsons-kong/.gitignore
+# In games/game-kong/.gitignore
 shared/          # Exclude the whole folder
 
 # Then in setup script:
@@ -273,7 +273,7 @@ Or for Godot, use the res:// path system with proper project configuration.
 Each game is a self-contained project with its own:
 
 ```
-games/simpsons-kong/
+games/game-kong/
 ├── README.md                    # What this game is, how to play it, controls
 ├── ARCHITECTURE.md              # Game-specific tech decisions
 ├── index.html                   # Entry point (for Canvas 2D)
@@ -288,7 +288,7 @@ games/simpsons-kong/
 
 **Key principle:** A new developer should be able to:
 1. Clone the entire repo
-2. `cd games/simpsons-kong`
+2. `cd games/game-kong`
 3. See README.md, read ARCHITECTURE.md
 4. Understand what technology this game uses
 5. Follow setup instructions and run it locally
@@ -298,7 +298,7 @@ games/simpsons-kong/
 # .github/workflows/ci-game-build.yml
 strategy:
   matrix:
-    game: [simpsons-kong, ashfall]
+    game: [game-kong, ashfall]
 run: |
   cd games/${{ matrix.game }}
   # Build/test that game
@@ -374,7 +374,7 @@ Thumbs.db
 !/games/**/.gitignore
 ```
 
-Then each game can add project-specific rules (e.g., games/simpsons-kong/.gitignore can ignore browser cache).
+Then each game can add project-specific rules (e.g., games/game-kong/.gitignore can ignore browser cache).
 
 ### `.gitattributes` (Binary Handling)
 
@@ -475,12 +475,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        game: [simpsons-kong, ashfall]
+        game: [game-kong, ashfall]
     steps:
       - uses: actions/checkout@v4
       
       - name: Set up Node (for Canvas 2D games)
-        if: matrix.game == 'simpsons-kong'
+        if: matrix.game == 'game-kong'
         uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -541,7 +541,7 @@ labels: bug
 ---
 
 ## Game
-- [ ] SimpsonsKong
+- [ ] firstPunch
 - [ ] Ashfall
 - [ ] Other
 
@@ -605,16 +605,16 @@ The entry point. Should answer:
 # First Frame Studios — Game Development Monorepo
 
 Welcome to First Frame Studios' central repository. This is a monorepo containing:
-- **Finished games:** SimpsonsKong (Canvas 2D beat 'em up)
+- **Finished games:** firstPunch (Canvas 2D beat 'em up)
 - **In-progress games:** Ashfall (Godot 4 action RPG)
 - **Studio knowledge:** Skills, decisions, principles, team structure
 - **Shared assets:** Reusable code, art, audio, UI components
 
 ## Quick Start
 
-### Run SimpsonsKong (locally)
+### Run firstPunch (locally)
 ```bash
-cd games/simpsons-kong
+cd games/game-kong
 python -m http.server  # or: npx serve .
 # Open http://localhost:8000
 ```
@@ -673,7 +673,7 @@ Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
 
 Examples:
 ```
-[SimpsonsKong] Fix knockback physics scaling
+[firstPunch] Fix knockback physics scaling
 [Ashfall] Add new enemy archetype
 [Shared] Update game-feel-juice documentation
 [Infra] Improve CI/CD performance
@@ -722,7 +722,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-**Note:** If a game uses licensed IP (like SimpsonsKong with The Simpsons), include a per-game LICENSE file.
+**Note:** If a game uses licensed IP (like firstPunch with the source IP), include a per-game LICENSE file.
 
 ### `SECURITY.md` (Security Policy)
 
@@ -756,12 +756,12 @@ All notable changes to First Frame Studios games are documented here.
 - Shared: New game-feel tuning addon
 
 ### Fixed
-- SimpsonsKong: Knockback physics scaling issue (#123)
+- firstPunch: Knockback physics scaling issue (#123)
 
-## [1.0.0] - SimpsonsKong Released
+## [1.0.0] - firstPunch Released
 
 ### Added
-- SimpsonsKong v1.0: Playable beat 'em up with 5 waves
+- firstPunch v1.0: Playable beat 'em up with 5 waves
 ```
 
 ### `copilot-instructions.md` (Agent Instructions)
@@ -847,7 +847,7 @@ Submodules are complex and prone to confusion. Symlinks or direct copies are sim
 For Canvas 2D games, import shared utilities via ES6 modules:
 
 ```javascript
-// games/simpsons-kong/src/systems/input.js
+// games/game-kong/src/systems/input.js
 import { StateMachine } from '../../../shared/canvas-2d/state-machines/index.js';
 import { InputHandler } from '../../../shared/canvas-2d/input-systems/index.js';
 ```
@@ -888,7 +888,7 @@ shared/assets/
 
 1. **Create directories**
    ```bash
-   mkdir -p games/simpsons-kong
+   mkdir -p games/game-kong
    mkdir -p games/ashfall  # (placeholder for future)
    mkdir -p shared/{godot,canvas-2d,assets,docs,configs}
    mkdir -p docs
@@ -924,13 +924,13 @@ shared/assets/
    - `documentation.md`
    - `.github/PULL_REQUEST_TEMPLATE.md`
 
-### Phase 2: Move SimpsonsKong (Main Game)
+### Phase 2: Move firstPunch (Main Game)
 
-**Objective:** Move current game code to `games/simpsons-kong/`.
+**Objective:** Move current game code to `games/game-kong/`.
 
 1. **Create game-specific files**
    ```bash
-   cd games/simpsons-kong
+   cd games/game-kong
    # Copy from root:
    # - index.html
    # - styles.css
@@ -939,10 +939,10 @@ shared/assets/
    ```
 
 2. **Create game documentation**
-   - `games/simpsons-kong/README.md` — Game-specific (controls, features, known issues)
-   - `games/simpsons-kong/ARCHITECTURE.md` — Technical design (Canvas 2D, entity-component, systems)
-   - `games/simpsons-kong/.gitignore` — Game-specific ignores (if any)
-   - `games/simpsons-kong/LICENSE` — (Simpsons IP license or inherit from studio)
+   - `games/game-kong/README.md` — Game-specific (controls, features, known issues)
+   - `games/game-kong/ARCHITECTURE.md` — Technical design (Canvas 2D, entity-component, systems)
+   - `games/game-kong/.gitignore` — Game-specific ignores (if any)
+   - `games/game-kong/LICENSE` — (game IP license or inherit from studio)
 
 3. **Create placeholder `games/ashfall/`**
    ```bash
@@ -962,7 +962,7 @@ shared/assets/
 **Objective:** Create GitHub Actions workflows.
 
 1. **Create `.github/workflows/ci-game-build.yml`**
-   - Build both Canvas 2D (simpsons-kong) and future Godot games
+   - Build both Canvas 2D (game-kong) and future Godot games
    - Trigger on PR and push
 
 2. **Create `.github/workflows/ci-tests.yml`**
@@ -992,7 +992,7 @@ shared/assets/
    - Symlink strategy
 
 4. **Test the setup:**
-   - Verify `cd games/simpsons-kong && open index.html` works
+   - Verify `cd games/game-kong && open index.html` works
    - Verify CI/CD pipeline triggers
    - Verify all links in documentation resolve
 
@@ -1028,9 +1028,9 @@ shared/assets/
 - [ ] `.github/workflows/ci-tests.yml` — Monorepo tests
 
 **Game-specific:**
-- [ ] `games/simpsons-kong/README.md` — Game-specific overview
-- [ ] `games/simpsons-kong/ARCHITECTURE.md` — Technical design
-- [ ] `games/simpsons-kong/.gitignore` — (If different from root)
+- [ ] `games/game-kong/README.md` — Game-specific overview
+- [ ] `games/game-kong/ARCHITECTURE.md` — Technical design
+- [ ] `games/game-kong/.gitignore` — (If different from root)
 - [ ] `games/ashfall/README.md` — Placeholder for future project
 
 **Shared infrastructure:**
@@ -1048,7 +1048,7 @@ shared/assets/
 
 ### Move (Existing Files from Root)
 
-**Move to `games/simpsons-kong/`:**
+**Move to `games/game-kong/`:**
 - [ ] `index.html`
 - [ ] `styles.css`
 - [ ] `src/` (entire directory)
@@ -1104,7 +1104,7 @@ shared/assets/
 **Chosen:** Only truly shared assets (fonts, generic UI, reusable SFX)
 
 **Why:**
-- ✅ Prevents asset bloat (SimpsonsKong's Homer sprite is NOT shared)
+- ✅ Prevents asset bloat (firstPunch's Brawler sprite is NOT shared)
 - ✅ Each game can evolve visually without affecting others
 - ✅ Clear ownership: game-specific art belongs in games/{game}/assets/
 
@@ -1178,7 +1178,7 @@ shared/assets/
 Before pushing to GitHub, verify:
 
 ### Repository Structure
-- [ ] `games/simpsons-kong/` exists with all game files
+- [ ] `games/game-kong/` exists with all game files
 - [ ] `games/ashfall/` exists as placeholder
 - [ ] `shared/` directory exists with subdirectories
 - [ ] `.squad/` exists with all existing files
@@ -1196,8 +1196,8 @@ Before pushing to GitHub, verify:
 ### Documentation
 - [ ] `docs/GETTING_STARTED.md` has onboarding checklist
 - [ ] `docs/ARCHITECTURE.md` explains monorepo design
-- [ ] `games/simpsons-kong/README.md` has game description and controls
-- [ ] `games/simpsons-kong/ARCHITECTURE.md` explains technical stack
+- [ ] `games/game-kong/README.md` has game description and controls
+- [ ] `games/game-kong/ARCHITECTURE.md` explains technical stack
 
 ### CI/CD
 - [ ] `.github/workflows/ci-game-build.yml` runs on PR/push
@@ -1206,8 +1206,8 @@ Before pushing to GitHub, verify:
 - [ ] Issue/PR templates are visible in UI
 
 ### Functionality
-- [ ] `cd games/simpsons-kong && open index.html` works
-- [ ] All relative imports in SimpsonsKong code work
+- [ ] `cd games/game-kong && open index.html` works
+- [ ] All relative imports in firstPunch code work
 - [ ] No broken links in Markdown files
 - [ ] Squad infrastructure remains untouched
 
@@ -1319,9 +1319,9 @@ Follow [DEVELOPMENT_SETUP.md](DEVELOPMENT_SETUP.md) for:
 
 ## 4. Choose Your Path
 
-### "I'm working on SimpsonsKong"
-1. Read `games/simpsons-kong/README.md` — Game overview
-2. Read `games/simpsons-kong/ARCHITECTURE.md` — Technical design
+### "I'm working on firstPunch"
+1. Read `games/game-kong/README.md` — Game overview
+2. Read `games/game-kong/ARCHITECTURE.md` — Technical design
 3. Read `.squad/skills/canvas-2d-optimization/` — Performance tips
 4. Read `.squad/skills/beat-em-up-combat/` — Combat mechanics
 5. Start coding!

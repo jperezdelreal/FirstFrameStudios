@@ -1,6 +1,6 @@
-# SimpsonsKong
+# First Punch
 
-A browser-based beat 'em up arcade game inspired by **The Simpsons Arcade**, **Final Fight**, and **Streets of Rage**. Fight your way through waves of enemies in Springfield with pure JavaScript, HTML5 Canvas, and Web Audio.
+A browser-based beat 'em up arcade game inspired by classic arcade beat 'em ups like **Final Fight** and **Streets of Rage**. Fight your way through waves of enemies downtown with pure JavaScript, HTML5 Canvas, and Web Audio.
 
 ## Quick Start
 
@@ -37,7 +37,7 @@ python -m http.server
 ## Project Structure
 
 ```
-SimpsonsKong/
+first-punch/
 ├── index.html              # Entry point
 ├── styles.css              # Page styling and canvas layout (16:9 letterboxing)
 ├── squad.config.ts         # Squad AI team configuration
@@ -52,10 +52,10 @@ SimpsonsKong/
 
 ## About This Project
 
-**SimpsonsKong** was built under a 30-minute time constraint to demonstrate rapid game development with vanilla JavaScript.
+**First Punch** was built under a 30-minute time constraint to demonstrate rapid game development with vanilla JavaScript.
 
 ### What's Included ✅
-- Playable level with Springfield setting
+- Playable level with downtown city setting
 - Combat system (punch and kick mechanics)
 - Enemy waves with AI behavior
 - Health and score tracking

@@ -7,7 +7,7 @@ name: "beat-em-up-combat"
 description: "Combat design patterns for beat 'em up games — frame data, combos, enemy design, boss phases, game feel"
 domain: "game-design"
 confidence: "low"
-source: "earned — extracted from SimpsonsKong combat implementation across 4 agents (Lando, Tarkin, Yoda, Ackbar)"
+source: "earned — extracted from firstPunch combat implementation across 4 agents (Lando, Tarkin, Yoda, Ackbar)"
 ---
 
 ## When to Use This Skill
@@ -40,7 +40,7 @@ STARTUP (anticipation)    ACTIVE (hitbox live)    RECOVERY (vulnerability)
 └─────────────────┘      └──────────────┘        └─────────────────┘
 ```
 
-**Anti-pattern (SimpsonsKong lesson):** Zero startup frames on all attacks made combat feel weightless. Even 2-3 frames of anticipation (arm pull-back) adds impact.
+**Anti-pattern (firstPunch lesson):** Zero startup frames on all attacks made combat feel weightless. Even 2-3 frames of anticipation (arm pull-back) adds impact.
 
 **Frame data reference targets (60fps):**
 
@@ -80,7 +80,7 @@ if (attackPhase === 'active') {
 - Clear `hitList` when the attack ends, not when it starts (prevents edge-case double-hits)
 - Hitbox should extend slightly beyond the visual to feel generous (players expect leniency)
 
-**Anti-pattern (SimpsonsKong lesson):** Hit detection ran only on the first frame of attack. Must check every frame during the active window.
+**Anti-pattern (firstPunch lesson):** Hit detection ran only on the first frame of attack. Must check every frame during the active window.
 
 ### 3. Combo System Patterns
 
@@ -131,7 +131,7 @@ if (currentAttackers.length >= MAX_SIMULTANEOUS_ATTACKERS) {
 }
 ```
 
-**Distance threshold coherence (SimpsonsKong lesson):**
+**Distance threshold coherence (firstPunch lesson):**
 ```
 attackRange < circleDistance < approachThreshold
     80px    <    125px      <     150px
@@ -203,7 +203,7 @@ onHit(attacker, target, damage) {
 
 1. **Zero startup frames** — Attacks feel like button presses, not physical actions. Always add 2+ frames of anticipation.
 2. **Hitbox active during recovery** — Player can "mash through" encounters. Hitbox must deactivate before recovery begins.
-3. **Timer conflation** — Using one timer for both attack duration AND cooldown. These are separate concerns: animation duration vs AI decision delay. (Caused 3 critical bugs in SimpsonsKong.)
+3. **Timer conflation** — Using one timer for both attack duration AND cooldown. These are separate concerns: animation duration vs AI decision delay. (Caused 3 critical bugs in firstPunch.)
 4. **Symmetrical frame data** — If every attack has identical timing, combat becomes monotonous. Vary the risk/reward profile.
 5. **No attack throttling** — All enemies attacking at once is unfair. Use a `MAX_SIMULTANEOUS_ATTACKERS` cap with orbiting behavior for excess enemies.
 6. **Distance threshold dead zones** — Attack range and approach distance must overlap. Draw the number line and verify.

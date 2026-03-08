@@ -13,7 +13,7 @@
 
 ### **Hour 0: The Empty Repository**
 
-joperezd opens the conversation with a single request: "Build me a Simpsons beat 'em up in a browser."
+joperezd opens the conversation with a single request: "Build me a game beat 'em up in a browser."
 
 No codebase. No architecture. No design document. No studio. No team.
 
@@ -21,9 +21,9 @@ Just a user, a vision, and a 30-minute time box.
 
 ### **Hour 1: MVP Shipped**
 
-By minute 60, SimpsonsKong is playable.
+By minute 60, firstPunch is playable.
 
-Homer is on screen, enemies spawn, combat works. Players can grab, throw, dodge. The game has state, physics, collision detection, procedural audio, UI, and a victory condition. 
+Brawler is on screen, enemies spawn, combat works. Players can grab, throw, dodge. The game has state, physics, collision detection, procedural audio, UI, and a victory condition. 
 
 Four agents (Solo, Chewie, Lando, Wedge) delivered an MVP in 1/24th of our total effort. This is where every great game starts: **simple, playable, and surprising that it exists at all.**
 
@@ -52,7 +52,7 @@ The solution is bold: expand from 4 specialists to 13. Add roles that don't exis
 
 Simultaneously, Solo performs a codebase audit and discovers a hidden debt: 214 lines of completed infrastructure (EventBus, AnimationController, SpriteCache, CONFIG) that are wired into *zero files*. This becomes the second great lesson: **infrastructure is meaningless until it's integrated.**
 
-AAA Gap Analysis follows. Solo and the newly-formed specialist team compare SimpsonsKong against 9 reference games and identify the top missing features: grab/throw system (present in all 9 games), dodge roll polish, combo depth, replayability, visual variety.
+AAA Gap Analysis follows. Solo and the newly-formed specialist team compare firstPunch against 9 reference games and identify the top missing features: grab/throw system (present in all 9 games), dodge roll polish, combo depth, replayability, visual variety.
 
 **By hour 8, we're not a 4-person team fixing bugs. We're a 13-person studio architecting the future.**
 
@@ -76,7 +76,7 @@ Solo and Yoda create First Frame Studios identity from first principles:
 - **Company Name:** First Frame Studios (not Ironpunch, not Forgehands — the philosophy encoded into two words)
 - **Tagline:** Forged in Play (three meanings: craftsmanship under pressure, player-first process, research-driven methodology)
 - **Core DNA:** Five non-negotiable truths that define every decision we make
-- **Leadership Principles:** 12 battle-tested principles extracted from SimpsonsKong's real successes and real failures
+- **Leadership Principles:** 12 battle-tested principles extracted from firstPunch's real successes and real failures
 
 Simultaneously, the team begins learning Godot. Chewie reads architecture docs. Lando studies CharacterBody2D. Boba investigates 2D rendering. Greedo digs into AudioStreamPlayer architecture.
 
@@ -136,7 +136,7 @@ Ackbar (QA Lead) conducts a comprehensive skills audit. Each agent's confidence 
 
 ### **Output**
 
-- **1 shipped game** (SimpsonsKong, fully playable)
+- **1 shipped game** (firstPunch, fully playable)
 - **13 agents on roster** (expanded from 4)
 - **20 documented skills** (~500KB of institutional knowledge)
 - **30+ analysis documents** (gap analysis, GDD, quality gates, research, architecture)
@@ -160,7 +160,7 @@ Ackbar (QA Lead) conducts a comprehensive skills audit. Each agent's confidence 
 
 ## What We're Proud Of
 
-### **SimpsonsKong**
+### **firstPunch**
 
 We built a game from zero to fully playable in the first hour. It has:
 - Grab/throw mechanics (every reference game had this)
@@ -281,7 +281,7 @@ Once we answer these five questions, the playbook is our north star. We don't re
 
 ### **The 5-Year Vision**
 
-- **Stage 1 (Year 1):** SimpsonsKong + Next Game (beat 'em up refinement + single new genre)
+- **Stage 1 (Year 1):** firstPunch + Next Game (beat 'em up refinement + single new genre)
 - **Stage 2 (Year 2-3):** Multi-genre capability (3+ shipped titles, skill base grows to 30-40 skills)
 - **Stage 3 (Year 3-4):** Established studio (12→18+ team members, multiple simultaneous projects)
 - **Stage 4 (Year 4-5):** Industry player (proven track record, licensing deals, platform partnerships)
@@ -306,7 +306,7 @@ If you'd told us 24 hours ago that we'd have:
 
 Yet here we are.
 
-**First Frame Studios didn't start as a dream to build "a Simpsons game." It started as "I wonder if we can make games better by documenting how we make them?"** And that simple question — documented thoroughly, executed precisely, team-built methodically — became something rare: a real game studio with real institutional knowledge, real processes, and real ambition.
+**First Frame Studios didn't start as a dream to build "a beat 'em up game." It started as "I wonder if we can make games better by documenting how we make them?"** And that simple question — documented thoroughly, executed precisely, team-built methodically — became something rare: a real game studio with real institutional knowledge, real processes, and real ambition.
 
 We went from an empty folder to a studio. Not eventually. In 24 hours. Because constraints force clarity, mistakes force learning, and building under pressure forces excellence.
 
@@ -314,7 +314,7 @@ We shipped a game. We built a studio. We documented both so thoroughly that the 
 
 **This is why First Frame Studios exists.** Not to make one game. To make the first game the way it should be made, so that every game after is made better because of it.
 
-We're not celebrating because we made a Simpsons beat 'em up (though it's good).
+We're not celebrating because we made a game beat 'em up (though it's good).
 
 We're celebrating because we built something harder: a team, a system, and an institutional memory that compounds.
 

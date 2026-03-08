@@ -1,4 +1,4 @@
-# Audio Excellence Research — SimpsonsKong
+# Audio Excellence Research — firstPunch
 
 *Compiled by Greedo, Sound Designer | June 2025*
 
@@ -16,7 +16,7 @@
 
 **Layered synthesis for richness**: Our `playLayeredHit()` fires 3 simultaneous components at different frequency bands (bass body, mid crack, high sparkle). This is the key insight — single oscillators sound thin and synthetic; multi-layer sounds with different timbres per band sound designed.
 
-**Formant synthesis for "vocals"**: Bandpass-filtered noise with frequency sweeps approximates vowel sounds. Our D'oh (800→200Hz descent) and Woohoo (300→1200Hz ascent) demonstrate that directional formant sweeps convey emotional character even without real speech.
+**Formant synthesis for "vocals"**: Bandpass-filtered noise with frequency sweeps approximates vowel sounds. Our Ugh (800→200Hz descent) and Woohoo (300→1200Hz ascent) demonstrate that directional formant sweeps convey emotional character even without real speech.
 
 ### Techniques That Scale Well
 
@@ -233,7 +233,7 @@ Current peak scenario: 3× simultaneous hits + music at intensity 2 + ambience. 
 
 | Limitation | Why | Impact |
 |------------|-----|--------|
-| **Realistic speech** | Formant synthesis approximates vowels but not consonants, words, or recognizable character voices | Voice barks are abstract "vocal sounds" — players won't hear "D'oh!" as speech |
+| **Realistic speech** | Formant synthesis approximates vowels but not consonants, words, or recognizable character voices | Voice barks are abstract "vocal sounds" — players won't hear "Ugh!" as speech |
 | **Instrument realism** | Oscillators produce static harmonic spectra; real instruments have time-varying harmonic content, resonance, and physical modeling nuances | Music sounds intentionally retro/chiptune rather than "real" |
 | **Room/hall reverb** | ConvolverNode requires an impulse response file (audio sample). Our delay-feedback is a comb filter, not true reverb | Sounds feel "dry" and disconnected from any physical space |
 | **Timbral richness** | Even with 3-layer hits, the component waveforms are mathematically perfect — lacking the noise floor, harmonic drift, and microvariation of recorded samples | Sounds are "clean" in a way that reads as synthetic |
@@ -289,7 +289,7 @@ For a **retro-styled browser beat 'em up**, pure synthesis is a **legitimate cre
 
 ---
 
-## 8. SimpsonsKong-Specific Learnings
+## 8. firstPunch-Specific Learnings
 
 ### 21 Procedural Sounds — Assessment
 
@@ -311,14 +311,14 @@ For a **retro-styled browser beat 'em up**, pure synthesis is a **legitimate cre
 | Exertion | `playExertion()` | Bandpass sweep 600→350Hz, 120ms | ⭐⭐⭐⭐ | Frequency descent sells effort. |
 | Oof | `playOof()` | Bandpass sweep 1000→400Hz, 150ms | ⭐⭐⭐⭐ | Clear damage indicator. |
 | Landing | `playLanding()` | Low sine thud, 55→30Hz, 60ms | ⭐⭐⭐ | Very subtle — might be inaudible on laptop speakers. |
-| D'oh | `playDoh()` | Dual-layer: sine base + formant descent | ⭐⭐⭐⭐ | Best vocal. Descending formant reads as dismay. |
-| Woohoo | `playWoohoo()` | Ascending formant + LFO tremolo | ⭐⭐⭐⭐⭐ | Tremolo is inspired — excitement vibrato works. |
-| Mmm Donuts | `playMmmDonuts()` | Sustained hum + pitch wobble + nasal formant | ⭐⭐⭐⭐ | Wobble LFO is great. Nasal layer adds character. |
-| Ay Caramba | `playAyCaramba()` | Ascending noise burst + sawtooth overlay | ⭐⭐⭐⭐ | Two-part design (noise + sawtooth) gives it energy. |
+| Ugh | `playGrunt()` | Dual-layer: sine base + formant descent | ⭐⭐⭐⭐ | Best vocal. Descending formant reads as dismay. |
+| Woohoo | `playCheer()` | Ascending formant + LFO tremolo | ⭐⭐⭐⭐⭐ | Tremolo is inspired — excitement vibrato works. |
+| Satisfied Hum | `playHum()` | Sustained hum + pitch wobble + nasal formant | ⭐⭐⭐⭐ | Wobble LFO is great. Nasal layer adds character. |
+| Radical | `playExclaim()` | Ascending noise burst + sawtooth overlay | ⭐⭐⭐⭐ | Two-part design (noise + sawtooth) gives it energy. |
 | Menu Select | `playMenuSelect()` | Triangle blip, 1200Hz, 40ms | ⭐⭐⭐⭐ | Clean, non-fatiguing. |
 | Menu Confirm | `playMenuConfirm()` | Two ascending triangle notes | ⭐⭐⭐⭐ | Satisfying confirmation feel. |
 
-**Top 5**: playLayeredHit, _playHeavyComboHit, playWoohoo, playLevelComplete, playDoh
+**Top 5**: playLayeredHit, _playHeavyComboHit, playCheer, playLevelComplete, playGrunt
 **Needs improvement**: playJump (too simple), playLanding (too quiet for laptop speakers), playGrunt (generic), playPunch (single-layer vs multi-layer hits)
 
 ### Mix Bus Architecture — Lessons Learned
@@ -362,4 +362,4 @@ The `playAtPosition()` sfxBus-swap technique is elegant:
 
 ---
 
-*This document captures the state of audio engineering knowledge for SimpsonsKong as of the completion of our 21-sound procedural audio system with adaptive music, mix bus architecture, spatial panning, and environmental ambience.*
+*This document captures the state of audio engineering knowledge for firstPunch as of the completion of our 21-sound procedural audio system with adaptive music, mix bus architecture, spatial panning, and environmental ambience.*

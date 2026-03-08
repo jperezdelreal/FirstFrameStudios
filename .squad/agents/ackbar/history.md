@@ -1,7 +1,7 @@
 # Ackbar — History
 
 ## Project Context
-- **Project:** SimpsonsKong — Browser-based Simpsons beat 'em up
+- **Project:** firstPunch — Browser-based game beat 'em up
 - **User:** joperezd
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Current state:** MVP playable with 3 enemy waves, basic combat. Combat feel scored 5/10 in gap analysis. No hitlag, no combos, no jump attacks. Input responsiveness 7/10. Knockback satisfaction 6/10.
@@ -92,12 +92,12 @@
   - **4 Medium:** M1-Particle system dead code, M2-Animation system dead code, M3-Event bus dead code, M4-Level complete audio not triggered
   - **2 Low:** L1-Audio beginFrame() never called, L2-Lives not displayed in HUD
 - **Visual Quality Score:** 5.5/10 — Functional but lacks polish
-  - **Character Art:** 6/10 — Homer recognizable, consistent style, but stiff animations, no facial expressions
-  - **Background:** 5/10 — Parallax works, iconic buildings (Kwik-E-Mart, Moe's, power plant), but generic houses, no landmarks
+  - **Character Art:** 6/10 — Brawler recognizable, consistent style, but stiff animations, no facial expressions
+  - **Background:** 5/10 — Parallax works, iconic buildings (Quick Stop, Joe's Bar, factory), but generic houses, no landmarks
   - **Effects:** 5/10 — Hit effects functional (starburst, damage numbers, KO text), but particle system unused, no dust/sparks/debris
   - **UI:** 6/10 — Clean HUD, combo counter pops, but missing lives display, no special move indicators, basic menus
   - **Animation:** 4/10 — Walk cycles basic (arm bob only), no squash/stretch, no anticipation/follow-through, stiff attacks
-  - **Cohesion:** 6/10 — Consistent outline style, Simpsons colors, but no style guide enforcement, font inconsistency
+  - **Cohesion:** 6/10 — Consistent outline style, cartoon colors, but no style guide enforcement, font inconsistency
 - **Team Assessment:** 100% capable — All bugs fixable in ~2.5 hours, visual improvements ~12-16 hours
 - **Key Bugs Found:**
   1. **Enemy attacks last 1 frame:** AI resets `aiCooldown` immediately after setting `state='attack'`, causing enemies to snap back to idle. This is THE ROOT CAUSE of "combat too easy" (5/10 score).
@@ -108,7 +108,7 @@
 - **Visual Gaps Found:**
   1. **Particle system unused:** Full system exists (dust, sparks, debris) but never imported or instantiated. VFX system used instead.
   2. **Animations stiff:** No squash/stretch, no anticipation, no follow-through. Functional but lifeless.
-  3. **Background generic:** Missing iconic Springfield landmarks (Simpsons house, Elementary School, Krusty Burger).
+  3. **Background generic:** Missing iconic Downtown landmarks (player house, City School, Burger Joint).
   4. **Effects feel bolted on:** Hit effects are sharp vectors, entities are soft outlines. Style mismatch.
 - **Priority Recommendations:**
   - **Immediate (30 min):** Fix C1-C4 + audio hooks → makes combat functional + adds missing feedback
@@ -227,7 +227,7 @@ Conducted comprehensive second-pass audit of 15 existing team skills. Evaluated 
 
 **Confidence assessment summary:**
 - High confidence (proven across projects): game-feel-juice, beat-em-up-combat
-- Medium confidence (validated in SimpsonsKong, cross-tested): procedural-audio, audio-excellence-research, web-game-engine
+- Medium confidence (validated in firstPunch, cross-tested): procedural-audio, audio-excellence-research, web-game-engine
 - Medium confidence (new universal skills): game-design-fundamentals, game-audio-design, animation-for-games, level-design-fundamentals, enemy-encounter-design
 - Low confidence (not yet cross-tested): project-conventions, skills-system-architecture, 3 others
 
@@ -239,10 +239,10 @@ Conducted comprehensive second-pass audit of 15 existing team skills. Evaluated 
 **Context:** After completing comprehensive industry research (Yoda's studio-research.md, Solo's operations-research.md) and analyzing all team documentation, conducted holistic team and skills assessment.
 
 **Findings:**
-- **Team Composition:** 13-agent specialist squad is EXCELLENT — matches Supercell cell model (10-17 people), validated against Nintendo franchise team structure. No hiring needed for SimpsonsKong completion. P1 decision: hire Producer for next project to separate Solo's Lead + Producer dual role.
+- **Team Composition:** 13-agent specialist squad is EXCELLENT — matches Supercell cell model (10-17 people), validated against Nintendo franchise team structure. No hiring needed for firstPunch completion. P1 decision: hire Producer for next project to separate Solo's Lead + Producer dual role.
 - **Vision Keeper Role Missing:** Every studio studied (FromSoftware, Supergiant, Larian, Team Cherry, Sandfall) has one person deciding "Does this feel like our game?" Currently undefined at FFS. Recommendation: Yoda inherits this role (charter update).
 - **Skills Coverage Improved:** 20 documented skills now. Three P0 gap-filling skills created (game-feel-juice, ui-ux-patterns, input-handling) boosted depth from 5/10 to 6.5/10. Still need: streamability-design, feature-triage (both P0 before next project).
-- **Charter Generalization Needed:** 6 of 14 agent charters still SimpsonsKong-specific (Chewie, Lando, Wedge, Greedo, Tarkin, Yoda). Must generalize before next project (1-2 hours work).
+- **Charter Generalization Needed:** 6 of 14 agent charters still firstPunch-specific (Chewie, Lando, Wedge, Greedo, Tarkin, Yoda). Must generalize before next project (1-2 hours work).
 - **Team Health Scores:**
   - Role Coverage: 8/10 ✅ (every discipline, matches best-in-class models)
   - Skill Depth: 6.5/10 ✅ (improved, still needs field validation on 2nd project)
@@ -258,14 +258,14 @@ Conducted comprehensive second-pass audit of 15 existing team skills. Evaluated 
 **Bottom Line:**
 - ✅ We are ready to start next project IMMEDIATELY with P0 prep work
 - ✅ Our domain ownership model is industry-validated (matches Supercell, Nintendo)
-- ✅ Our playbook works; we avoided SimpsonsKong bottlenecks through structured processes
+- ✅ Our playbook works; we avoided firstPunch bottlenecks through structured processes
 - 🔴 One missing role (Vision Keeper) must be formalized before dev starts
 - 📋 Six charters need generalization (1-2 hours total)
 - 📚 Two critical skills needed before Sprint 0 (feature-triage, streamability-design; 32 hours total P0 effort)
 
 **Deliverable:** .squad/analysis/team-evaluation-v3.md — comprehensive 48KB assessment with per-agent development plans, hiring decision matrix, skill improvement roadmap, and ready-now/needs-dev verdicts.
 
-**Recommendation to Leadership:** We're as ready as we can be to start another project. Do the P0 prep work (Vision Keeper role, 2 new skills, charter updates), and we'll exceed SimpsonsKong quality on the next one because we fixed the structural problems before they became bottlenecks.
+**Recommendation to Leadership:** We're as ready as we can be to start another project. Do the P0 prep work (Vision Keeper role, 2 new skills, charter updates), and we'll exceed firstPunch quality on the next one because we fixed the structural problems before they became bottlenecks.
 
 
 ### 2026-03-08T00:10 — Phase 2: Team Evaluation Post-Research
@@ -294,9 +294,9 @@ Created .squad/analysis/team-evaluation-v3.md (22 KB) — comprehensive post-res
 - ✅ Principle alignment will improve with documentation in company.md
 - ✅ Domain ownership model validated by industry research
 - 🔴 One missing formal role (Vision Keeper) should be addressed before dev starts
-- 📋 Charter generalization needed (6 charters have SimpsonsKong-specific language)
+- 📋 Charter generalization needed (6 charters have firstPunch-specific language)
 
 **Recommendation to Leadership:**
-"We're as ready as we can be to start another project. Do the P0 prep work (Vision Keeper role formalization, charter updates), and we'll exceed SimpsonsKong quality on the next one because we fixed the structural problems before they became bottlenecks."
+"We're as ready as we can be to start another project. Do the P0 prep work (Vision Keeper role formalization, charter updates), and we'll exceed firstPunch quality on the next one because we fixed the structural problems before they became bottlenecks."
 
 **Status:** COMPLETE. Team evaluation ready; all agents have clear development plans; ready for next project sprint with minor P0 prep.

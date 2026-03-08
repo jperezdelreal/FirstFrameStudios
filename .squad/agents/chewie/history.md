@@ -1,7 +1,7 @@
 # Chewie — History (formerly Fenster)
 
 ## Project Context
-- **Project:** SimpsonsKong — Browser-based Simpsons beat 'em up
+- **Project:** firstPunch — Browser-based game beat 'em up
 - **User:** joperezd
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Goal:** Ship playable beat 'em up level in 30 minutes
@@ -69,10 +69,10 @@
 ### AAA Systems Integration (Destructibles, Hazards, Audio, VFX)
 - **Destructibles (AAA-L1):** Imported `Destructible` + `LEVEL_1` from data/levels.js. Created instances in `onEnter()` from `LEVEL_1.destructibles`. Updated each frame via `forEach(d => d.update(dt))`. Attack collision uses `Combat.checkCollision` against `d.getHurtbox()`, with damage matching the player's current attack type from the same table combat.js uses. Drops apply instantly: health +10 (capped at maxHealth), score +100. Rendered before entities for proper depth layering. Player `attackHitList` reused to prevent double-hits per swing.
 - **Hazards (AAA-L3):** Created from `LEVEL_1.hazards` in `onEnter()`. Updated each frame. Damage zones checked for player AND all living enemies every frame. Used `entity.takeDamage()` method (not direct property assignment) to properly handle invuln, dodge frames, flash, and lives system. Rendered before entities like destructibles.
-- **Voice barks (AAA-A3):** `playDoh()` called at 30% chance when player takes enemy damage (inside existing health-delta check). `playWoohoo()` called when combo count crosses 5+ threshold (tracked via `comboCountBefore` snapshot). Both wrapped in try/catch for audio context safety.
+- **Voice barks (AAA-A3):** `playGrunt()` called at 30% chance when player takes enemy damage (inside existing health-delta check). `playCheer()` called when combo count crosses 5+ threshold (tracked via `comboCountBefore` snapshot). Both wrapped in try/catch for audio context safety.
 - **Enemy telegraphs (AAA-V3):** Tracks `prevState` per enemy before update/AI tick. Detects transitions INTO windup states (`windup`, `charge_windup`, `slam_windup`). Calls `VFX.createTelegraph()` at enemy center-X/top-Y. Guarded with `typeof` check.
 - **Environmental ambience (AAA-A2):** `audio.startAmbience(1)` called at end of `onEnter()` after music init. `audio.stopAmbience()` called in `onExit()` before music stop. Both wrapped in try/catch. Skipped on options-resume path.
-- **Boss intro (AAA-V4):** `VFX.createBossIntro()` called when wave spawning produces a boss variant enemy. Uses 'NELSON' name and 'Ha-Ha!' title. Guarded with `typeof` check.
+- **Boss intro (AAA-V4):** `VFX.createBossIntro()` called when wave spawning produces a boss variant enemy. Uses 'BRUISER' name and 'Heh!' title. Guarded with `typeof` check.
 - **Screen flash (AAA-V5):** `VFX.createScreenFlash()` triggered when any combat hit has `intensity === 'heavy'`. White flash, 0.15s duration. Guarded with `typeof` check.
 - **Combo-scaled hits (AAA-A4):** Updated all `audio.playHit()` calls in `combat.js`'s `handlePlayerAttack` to pass `player.comboCount`. Enemy-on-player hits in `handleEnemyAttacks` left at default (0) since combo scaling is for player attacks only. `playHit(comboCount)` method already existed in audio.js with the proper escalation logic.
 
@@ -107,20 +107,20 @@
   6. **Input Priority & Conflict Resolution:** Priority queue for simultaneous actions, InputConsumer pattern for "eating" inputs, movement as non-exclusive
   7. **Platform-Specific Patterns:** Keyboard (key repeat filtering, focus loss, modifier keys), Gamepad (dead zones 0.15-0.25, button mapping, vibration), Touch (virtual buttons, gesture recognition, screen-relative positioning)
   8. **Debug & Testing:** Input visualization overlay (backtick toggle showing held/pressed/buffered), input recording/playback for test sequences, latency measurement (target <100ms total)
-  9. **Implementation Examples:** SimpsonsKong patterns for keyboard + gamepad input manager, buffering ring, conflict resolution in gameplay loop, touchscreen fallback architecture
+  9. **Implementation Examples:** firstPunch patterns for keyboard + gamepad input manager, buffering ring, conflict resolution in gameplay loop, touchscreen fallback architecture
   10. **Anti-Patterns:** Polling instead of event-driven, no buffering (missed inputs), hardcoded key codes, assuming 60fps for timing, no dead zones, ignoring focus loss, no accessibility options
   11. **Genre Applications:** Action games (tight buffering, short grace periods), fighting games (frame-perfect input, 10-frame windows), platformers (jump coyote, dash buffer), RPGs (menu navigation, dialogue interaction), puzzle games (minimal latency requirement but gesture support needed)
-- **Confidence: `medium`** — Validated in SimpsonsKong (keyboard, gamepad, buffering, conflict resolution all tested and working). Patterns are universal across engines; ready for cross-project use.
+- **Confidence: `medium`** — Validated in firstPunch (keyboard, gamepad, buffering, conflict resolution all tested and working). Patterns are universal across engines; ready for cross-project use.
 - **Cross-refs:** game-feel-juice (input feedback), ui-ux-patterns (menu navigation), state-machine-patterns (input consumption in state machines)
 - **Session tag:** Skills Gap Remediation (2026-03-07T12:57:00Z) — P1 gap from Ackbar audit. Orchestration log: `.squad/orchestration-log/2026-03-07T12-57-skills-creation.md`
   9. **Anti-Patterns:** Raw polling only (no buffering = player frustration), fixed key mapping (no accessibility), input in render loop (frame-dependent), eating inputs silently, tight/unforgiving windows
-  10. **SimpsonsKong Learnings:** What we built (keyboard buffering, last-pressed-wins direction), what worked (separating capture from consumption, ring buffer simplicity, buffer clear on state entry), what we'd improve for Godot (gamepad/touch support, InputMapper, visualization overlay, latency measurement, action types beyond press/hold)
+  10. **firstPunch Learnings:** What we built (keyboard buffering, last-pressed-wins direction), what worked (separating capture from consumption, ring buffer simplicity, buffer clear on state entry), what we'd improve for Godot (gamepad/touch support, InputMapper, visualization overlay, latency measurement, action types beyond press/hold)
   11. **Checklist:** 14 items covering capture, buffering, processing, abstraction, remapping, priorities, consumption, movement, direction, grace periods, multiplatform, testing, recording, latency, accessibility
-- **Confidence level:** `medium` — Validated in SimpsonsKong (Canvas keyboard + Web Audio), patterns are universal across all engines and genres. Not marked `high` because gamepad/touch support is theoretical (Canvas only used keyboard), but the architectural patterns are battle-tested and portable.
-- **Format:** Followed existing SKILL.md format (name/description/domain/confidence/source header, When to Use/When NOT sections, core patterns with code examples, real-world examples, checklists, references). Used SimpsonsKong-specific learning sections tied to actual bugs we fixed (recursion in isDown, buffering preventing stale inputs, last-pressed-wins resolving left+right conflicts).
+- **Confidence level:** `medium` — Validated in firstPunch (Canvas keyboard + Web Audio), patterns are universal across all engines and genres. Not marked `high` because gamepad/touch support is theoretical (Canvas only used keyboard), but the architectural patterns are battle-tested and portable.
+- **Format:** Followed existing SKILL.md format (name/description/domain/confidence/source header, When to Use/When NOT sections, core patterns with code examples, real-world examples, checklists, references). Used firstPunch-specific learning sections tied to actual bugs we fixed (recursion in isDown, buffering preventing stale inputs, last-pressed-wins resolving left+right conflicts).
 - **Cross-references:** Skill references Ackbar's QA testing patterns, Yoda's Player Hands First principle, and the team's latency discipline from the 100ms budget in web game engine skill. Complements existing skills without duplicating: `web-game-engine` covers the game loop and Canvas renderer, this skill is focused purely on input abstraction and multiplatform support.
 - **SpriteCache class:** DPR-aware offscreen canvas factory. `getOrCreate(key, width, height, drawFn)` creates an offscreen canvas at `width*dpr × height*dpr`, scales its context by DPR, runs `drawFn(ctx)` once, and caches the result. Subsequent calls return the cached canvas for `drawImage()` blitting — 1 call instead of 100+. `invalidate(key)` for state changes (animation frame), `clear()` for full reset. Exported as a singleton `spriteCache`.
-- **Integration pattern for entity rendering:** `const key = \`homer_${state}_${facing}_${frame}\`; const sprite = spriteCache.getOrCreate(key, w, h, ctx => { ...all draw calls... }); mainCtx.drawImage(sprite, x, y, w, h);` — entity render methods can adopt this incrementally without changing draw call internals.
+- **Integration pattern for entity rendering:** `const key = \`brawler_${state}_${facing}_${frame}\`; const sprite = spriteCache.getOrCreate(key, w, h, ctx => { ...all draw calls... }); mainCtx.drawImage(sprite, x, y, w, h);` — entity render methods can adopt this incrementally without changing draw call internals.
 - **canvas.style.width/height set explicitly** to `1280px`/`720px` to prevent CSS `width: auto` from sizing the canvas based on the enlarged backing buffer. The `max-width: 100vw; max-height: 100vh` CSS constraints still apply for viewport fitting.
 
 ### Technical Learnings Document (Retrospective)

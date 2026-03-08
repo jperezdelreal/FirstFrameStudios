@@ -1,4 +1,4 @@
-# SimpsonsKong — Game Design Document
+# firstPunch — Game Design Document
 
 > **Author:** Yoda (Game Designer)  
 > **Date:** 2025  
@@ -9,7 +9,7 @@
 
 ## 1. Game Vision Statement
 
-SimpsonsKong is a browser-based beat 'em up that captures the chaotic joy of being *inside* a Simpsons episode — fists first. Players should feel the slapstick weight of Homer's belly bounce, laugh when Bart taunts a room full of goons, and grin when a perfectly timed combo earns them a "Best. Combo. Ever." rating. This isn't a game that happens to have Simpsons characters; it's a game where the comedy IS the combat, where Springfield's landmarks are weapons and arenas, and where every punch lands with the exaggerated, cartoon-physics satisfaction that only the Simpsons universe can deliver. Built for the browser, it's instant joy — no downloads, no installs, just click and punch. The goal: make players laugh, feel powerful, and immediately want to try the next character.
+firstPunch is a browser-based beat 'em up that captures the chaotic joy of being *inside* a game episode — fists first. Players should feel the slapstick weight of Brawler's belly bounce, laugh when Kid taunts a room full of goons, and grin when a perfectly timed combo earns them a "Best. Combo. Ever." rating. This isn't a game that happens to have game characters; it's a game where the comedy IS the combat, where Downtown's landmarks are weapons and arenas, and where every punch lands with the exaggerated, cartoon-physics satisfaction that only the source IP universe can deliver. Built for the browser, it's instant joy — no downloads, no installs, just click and punch. The goal: make players laugh, feel powerful, and immediately want to try the next character.
 
 ---
 
@@ -18,9 +18,9 @@ SimpsonsKong is a browser-based beat 'em up that captures the chaotic joy of bei
 Every design decision must pass through these four pillars. If a feature doesn't serve at least one pillar, it doesn't belong.
 
 ### Pillar 1: Comedy as a Core Mechanic
-Humor isn't cosmetic — it's woven into every system. Taunts are mechanically meaningful *and* hilarious. Failure states are funny ("D'oh!" moments), not frustrating. The combo meter speaks in Simpsons quotes. Enemy defeat animations reference show gags. Environmental interactions are comedic set pieces. A player who never reads a single line of dialogue should still laugh from gameplay alone.
+Humor isn't cosmetic — it's woven into every system. Taunts are mechanically meaningful *and* hilarious. Failure states are funny ("Ugh!" moments), not frustrating. The combo meter speaks in game quotes. Enemy defeat animations reference show gags. Environmental interactions are comedic set pieces. A player who never reads a single line of dialogue should still laugh from gameplay alone.
 
-**Design test:** "If we stripped the Simpsons skin off this mechanic, would it still be funny?" If no, the comedy is cosmetic. Push deeper.
+**Design test:** "If we stripped the source IP skin off this mechanic, would it still be funny?" If no, the comedy is cosmetic. Push deeper.
 
 ### Pillar 2: Accessible Depth
 Easy to play, deep to master — the Streets of Rage 4 principle. A first-time player mashing buttons should have fun and clear content. A veteran chaining dodge-cancel into juggle-combo into wall-bounce should feel like a combat artist. The skill ceiling is high but the skill floor is on the ground.
@@ -28,14 +28,14 @@ Easy to play, deep to master — the Streets of Rage 4 principle. A first-time p
 **Design test:** "Can a button-masher have fun? Can a combo master have a *different* kind of fun?" Both must be yes.
 
 ### Pillar 3: Family Synergy
-The Simpsons are a family. The game mechanically rewards playing together. Co-op isn't just "two players on screen" — it's team attacks, proximity buffs, and a family super that only fires when everyone coordinates. Solo play is great; family play is transcendent.
+the source IP are a family. The game mechanically rewards playing together. Co-op isn't just "two players on screen" — it's team attacks, proximity buffs, and a family super that only fires when everyone coordinates. Solo play is great; family play is transcendent.
 
 **Design test:** "Does this feature feel better with two players than one?" If it feels exactly the same, add a co-op dimension.
 
-### Pillar 4: Springfield Is a Character
-Environments aren't backdrops — they're interactive, story-rich, and full of surprises. Every Springfield location should feel like visiting a place you know from the show. Destructible props, environmental hazards, landmark-specific gags, and interactive set pieces turn levels from corridors into playgrounds.
+### Pillar 4: Downtown Is a Character
+Environments aren't backdrops — they're interactive, story-rich, and full of surprises. Every Downtown location should feel like visiting a place you know from the show. Destructible props, environmental hazards, landmark-specific gags, and interactive set pieces turn levels from corridors into playgrounds.
 
-**Design test:** "Would a Simpsons fan recognize this location? Would they be delighted by what they can interact with?"
+**Design test:** "Would a game fan recognize this location? Would they be delighted by what they can interact with?"
 
 ---
 
@@ -44,16 +44,16 @@ Environments aren't backdrops — they're interactive, story-rich, and full of s
 These define the emotional arc of the game — what the player should FEEL at each milestone.
 
 ### First 10 Seconds
-> "I'm Homer Simpson punching bad guys!"
+> "I'm the Brawler punching bad guys!"
 
-The player sees Homer — immediately recognizable, chunky, yellow. They press attack and Homer throws a big, satisfying punch. An enemy staggers backward. Screen shakes. A crunchy impact sound plays. The player grins. **They are Homer.**
+The player sees Brawler — immediately recognizable, chunky, yellow. They press attack and Brawler throws a big, satisfying punch. An enemy staggers backward. Screen shakes. A crunchy impact sound plays. The player grins. **They are Brawler.**
 
-*Design implication:* Homer's idle and first punch must be iconic. No tutorial needed — the first attack must land, feel weighty, and be unmistakably Homer.
+*Design implication:* Brawler's idle and first punch must be iconic. No tutorial needed — the first attack must land, feel weighty, and be unmistakably Brawler.
 
 ### First 30 Seconds
 > "This combat feels GREAT — that combo was satisfying!"
 
-The player has discovered punch-punch-kick. The combo counter appeared. The last enemy flew across the screen with a 375-knockback finisher. The combo meter flashed "Ay Caramba!" The player is now *seeking* combos, not just mashing.
+The player has discovered punch-punch-kick. The combo counter appeared. The last enemy flew across the screen with a 375-knockback finisher. The combo meter flashed "Radical!" The player is now *seeking* combos, not just mashing.
 
 *Design implication:* The PPK combo must be discoverable through natural play (most players will try punch-punch-kick organically). The feedback must be dramatically different from single hits — bigger screen shake, louder sound, longer knockback, combo text.
 
@@ -65,23 +65,23 @@ The player encounters a charger that punishes standing still, then a shielded en
 *Design implication:* The golden rule — one new enemy type per encounter. Never overwhelm the player's learning capacity. Each enemy must have a clear visual tell and a clear counter-strategy.
 
 ### First Level Complete
-> "Springfield feels alive, enemies are varied, the boss was EPIC."
+> "Downtown feels alive, enemies are varied, the boss was EPIC."
 
-The player has fought through Springfield Downtown, passing the Kwik-E-Mart and Moe's Tavern. They threw an enemy into Lard Lad's giant donut. The boss had three phases and required everything they'd learned. The victory screen showed their score, their best combo, and their rank. They feel accomplished.
+The player has fought through Downtown Downtown, passing the Quick Stop and Joe's Bar. They threw an enemy into Donut Shop's giant donut. The boss had three phases and required everything they'd learned. The victory screen showed their score, their best combo, and their rank. They feel accomplished.
 
 *Design implication:* Levels must have visual variety, environmental interaction, and a climactic boss fight. The end-of-level screen must celebrate the player's performance.
 
 ### First Game Over
-> "I want to try again — and maybe try Bart next time."
+> "I want to try again — and maybe try Kid next time."
 
-The game over screen shows their score, teases what they could improve ("Your best combo was 12 — can you hit 20?"), and shows the character select screen. The player notices Bart's speed stats and thinks "I wonder how he plays..."
+The game over screen shows their score, teases what they could improve ("Your best combo was 12 — can you hit 20?"), and shows the character select screen. The player notices Kid's speed stats and thinks "I wonder how he plays..."
 
 *Design implication:* Game over must not feel punishing. Tease improvement and alternatives. Character select should be visible and tempting.
 
 ### First Full Completion
 > "I need to play again with a different character — and beat my high score."
 
-The player beat all levels with Homer. They unlocked a new difficulty. They see their time and score on the leaderboard. They know Marge has completely different combos. The Treehouse of Horror bonus level is locked behind a challenge they haven't completed. There are reasons to return.
+The player beat all levels with Brawler. They unlocked a new difficulty. They see their time and score on the leaderboard. They know Defender has completely different combos. The Treehouse of Horror bonus level is locked behind a challenge they haven't completed. There are reasons to return.
 
 *Design implication:* Replayability comes from character variety, score chasing, difficulty modes, and unlockable content. The game must feel different with each character, not just a stat swap.
 
@@ -89,7 +89,7 @@ The player beat all levels with Homer. They unlocked a new difficulty. They see 
 
 ## 4. Core Combat Design
 
-The combat system is the heart of SimpsonsKong. It draws from the genre's best: Streets of Rage 4's depth, Turtles in Time's spectacle, Shredder's Revenge's modern feel, and the original Simpsons Arcade's authenticity.
+The combat system is the heart of firstPunch. It draws from the genre's best: Streets of Rage 4's depth, Turtles in Time's spectacle, Shredder's Revenge's modern feel, and the original classic arcade beat 'em ups's authenticity.
 
 ### 4.1 Inputs & Controls
 
@@ -148,10 +148,10 @@ Specials cost HP to use but recovering that HP by landing normal attacks creates
 - **Failure penalty:** If you don't recover in time, the grey health is lost permanently
 - **Design intent:** This creates a constant micro-decision — "Do I spend health to clear this crowd and then recover it aggressively, or play it safe?" Aggressive play is rewarded. Passive play is safe but slow.
 
-**Homer's Specials:**
-- **Belly Bounce (Neutral Special):** Homer lunges forward, belly-first. Hits all enemies in a wide frontal arc. Sends them flying. The signature move.
-- **Power Slide (Down + Special):** Homer slides along the ground. Low profile, hits grounded enemies, good for gap closing.
-- **Rising Uppercut (Up + Special):** Homer launches upward with a fist. Anti-air, combo launcher, sends enemies skyward for juggle follow-ups.
+**Brawler's Specials:**
+- **Belly Bounce (Neutral Special):** Brawler lunges forward, belly-first. Hits all enemies in a wide frontal arc. Sends them flying. The signature move.
+- **Power Slide (Down + Special):** Brawler slides along the ground. Low profile, hits grounded enemies, good for gap closing.
+- **Rising Uppercut (Up + Special):** Brawler launches upward with a fist. Anti-air, combo launcher, sends enemies skyward for juggle follow-ups.
 
 ### 4.5 Jump & Aerial Combat
 
@@ -159,7 +159,7 @@ Aerial combat adds a vertical dimension but must not trivialize ground play (per
 
 - **Jump Punch:** Quick, weak (8 damage), fast cooldown (0.25s) — air-to-air, gap closer
 - **Jump Kick:** Slow, strong (18 damage), dive angle — air-to-ground, committal
-- **Ground Pound (Down + Attack while airborne):** Homer slams down — AOE on landing, high damage (22), long recovery (0.3s landing lag). The "hype" option.
+- **Ground Pound (Down + Attack while airborne):** Brawler slams down — AOE on landing, high damage (22), long recovery (0.3s landing lag). The "hype" option.
 - **Landing Recovery:** All jump attacks incur 0.1s landing lag to prevent air-spam dominance. Jump attacks are burst tools, not the primary damage loop.
 
 **Target Balance (post-tuning):**
@@ -178,7 +178,7 @@ No modern beat 'em up ships without a dodge. It's the defensive complement to ag
 - **I-frames:** 0.2 seconds of invincibility during roll animation
 - **Recovery:** 0.15 seconds of vulnerability after roll ends
 - **Cooldown:** 0.5 seconds between dodges (prevents dodge spam)
-- **Character flavor:** Homer dives (clumsy, wide), Bart cartwheels (flashy), Lisa ducks (precise), Marge sidesteps (dignified)
+- **Character flavor:** Brawler dives (clumsy, wide), Kid cartwheels (flashy), Prodigy ducks (precise), Defender sidesteps (dignified)
 
 ### 4.7 Weapon Pickups (Final Fight Influence)
 
@@ -188,9 +188,9 @@ Weapons change combat feel temporarily:
 |--------|--------|----------------|---------------|------------|-------|
 | Metal Pipe | Crates, barrels | 1.5× | 1.3× | 8 hits | Classic beat 'em up weapon |
 | Baseball Bat | Barrels | 1.8× | 1.5× | 5 hits | Huge knockback, slow swing |
-| Beer Bottle (Duff) | Moe's level | 1.3× | 1.0× | 3 hits, then shatters | Fast, throwable after last hit |
-| Skateboard (Bart only) | Crates | 1.4× | 2.0× | 6 hits | Ride for dash attack, swing for melee |
-| Saxophone (Lisa only) | Special drop | 1.2× | 2.5× | 10 hits | Sonic wave, crowd control |
+| Beer Bottle (energy drink) | Joe's Bar level | 1.3× | 1.0× | 3 hits, then shatters | Fast, throwable after last hit |
+| Skateboard (Kid only) | Crates | 1.4× | 2.0× | 6 hits | Ride for dash attack, swing for melee |
+| Saxophone (Prodigy only) | Special drop | 1.2× | 2.5× | 10 hits | Sonic wave, crowd control |
 
 Weapons drop on the ground when the player is hit. Enemies can walk over dropped weapons, removing them. This creates urgency: use it or lose it.
 
@@ -211,7 +211,7 @@ Filled by dealing damage and taunting. The ultimate expression of each character
 
 - **Meter:** Fills from 0–100%. Dealing damage fills ~1% per hit. Taunting fills 5% per taunt (but leaves you vulnerable for 1.5 seconds).
 - **Activation:** Full meter + Special button
-- **Homer's Super — "Donut Apocalypse":** Homer inhales a massive donut, turns red, and belly-bounces across the entire screen. Everything hit takes massive damage and flies into the walls. Comedy and power fantasy in one move.
+- **Brawler's Super — "Donut Apocalypse":** Brawler inhales a massive donut, turns red, and belly-bounces across the entire screen. Everything hit takes massive damage and flies into the walls. Comedy and power fantasy in one move.
 - **Meter carries between encounters** within a level but resets between levels.
 
 ---
@@ -225,33 +225,33 @@ Each playable character must feel **completely different within 10 seconds of pl
 Characters follow the classic beat 'em up archetype triangle (Final Fight codified, every game since honors it):
 
 ```
-         HOMER (Power/All-Rounder)
+         BRAWLER (Power/All-Rounder)
             ↗               ↖
-    MARGE (Range)        BART (Speed)
+    DEFENDER (Range)        KID (Speed)
             ↖               ↗
-         LISA (Technical/Crowd Control)
+         PRODIGY (Technical/Crowd Control)
 ```
 
-### 5.2 Homer Simpson — The All-Rounder
+### 5.2 the Brawler — The All-Rounder
 
-> *"The everyman. If Homer can do it, anyone can."*
+> *"The everyman. If Brawler can do it, anyone can."*
 
 | Stat | Value | Notes |
 |------|-------|-------|
-| Speed | ★★★☆☆ | Medium — Homer isn't fast, but he's not slow |
+| Speed | ★★★☆☆ | Medium — Brawler isn't fast, but he's not slow |
 | Power | ★★★★☆ | Strong — his hits are meaty, satisfying |
 | Range | ★★☆☆☆ | Short — he's a brawler, in your face |
-| Defense | ★★★★☆ | Tanky — Homer takes punishment like a champ |
+| Defense | ★★★★☆ | Tanky — Brawler takes punishment like a champ |
 | Technical | ★★☆☆☆ | Simple — fewest inputs to master |
 
 **Signature Mechanics:**
-- **Belly physics:** Homer's belly is a hitbox. Belly Bounce is his defining move.
-- **Donut Rage Mode:** Eating 3 donuts in a level fills a secondary rage meter. When activated: +30% damage, +20% speed, belly attacks have AOE splash, lasts 10 seconds. Visual: Homer turns red, steam from ears.
-- **Duff Power-Up:** Duff beer pickup gives 5-second speed boost with very slightly wobbly controls (risk/reward flavor).
+- **Belly physics:** Brawler's belly is a hitbox. Belly Bounce is his defining move.
+- **Rage Mode:** Eating 3 donuts in a level fills a secondary rage meter. When activated: +30% damage, +20% speed, belly attacks have AOE splash, lasts 10 seconds. Visual: Brawler turns red, steam from ears.
+- **Energy Drink Power-Up:** energy drink pickup gives 5-second speed boost with very slightly wobbly controls (risk/reward flavor).
 
-**Why Homer is the starter character:** He's the most forgiving. His high defense and simple combos let new players learn the systems without dying. His power fantasy is direct: "I am a big guy and I hit things hard."
+**Why Brawler is the starter character:** He's the most forgiving. His high defense and simple combos let new players learn the systems without dying. His power fantasy is direct: "I am a big guy and I hit things hard."
 
-### 5.3 Bart Simpson — The Speedster
+### 5.3 the Kid — The Speedster
 
 > *"Hit and run. Never stand still. Be annoying."*
 
@@ -264,12 +264,12 @@ Characters follow the classic beat 'em up archetype triangle (Final Fight codifi
 | Technical | ★★★★☆ | Combo-heavy, rewards mastery |
 
 **Signature Mechanics:**
-- **Skateboard Dash:** Replaces dodge roll. Bart hops on his skateboard — faster, hits enemies during dash, can chain into attacks. Higher skill ceiling than a dodge.
+- **Skateboard Dash:** Replaces dodge roll. Kid hops on his skateboard — faster, hits enemies during dash, can chain into attacks. Higher skill ceiling than a dodge.
 - **Slingshot:** Dedicated ranged attack (down + attack at range). Low damage but interrupts enemy attacks and builds combo meter from safety.
-- **"Eat My Shorts" Taunt:** Bart's taunt fills meter 8% (vs. standard 5%) but has a longer animation — more reward, more risk.
-- **Bartman Super:** Bart transforms into Bartman — gains flight for 5 seconds, rains down aerial attacks, cape has a wide hitbox.
+- **"signature" Taunt:** Kid's taunt fills meter 8% (vs. standard 5%) but has a longer animation — more reward, more risk.
+- **alter-ego Super:** Kid transforms into alter-ego — gains flight for 5 seconds, rains down aerial attacks, cape has a wide hitbox.
 
-### 5.4 Marge Simpson — The Range Fighter
+### 5.4 the Defender — The Range Fighter
 
 > *"Keep them at arm's length. Protect the family."*
 
@@ -282,12 +282,12 @@ Characters follow the classic beat 'em up archetype triangle (Final Fight codifi
 | Technical | ★★★☆☆ | Moderate — spacing is her skill expression |
 
 **Signature Mechanics:**
-- **Purse Swing:** Marge's basic combo has 1.5× the range of Homer's. Her combo finisher sends enemies flying farther. She controls space.
-- **Hair Whip:** Marge's back attack uses her towering blue hair — 360° spin with massive range. The premier anti-surround tool.
-- **Maternal Instinct:** Passive — when near an ally below 30% HP, Marge takes 25% reduced damage and deals 15% more. She's the protector.
-- **Maggie Assist Super:** Maggie crawls out and bonks the nearest enemy with her mallet, stunning everything in a radius. A love letter to the show's intro.
+- **Purse Swing:** Defender's basic combo has 1.5× the range of Brawler's. Her combo finisher sends enemies flying farther. She controls space.
+- **Hair Whip:** Defender's back attack uses her towering blue hair — 360° spin with massive range. The premier anti-surround tool.
+- **Maternal Instinct:** Passive — when near an ally below 30% HP, Defender takes 25% reduced damage and deals 15% more. She's the protector.
+- **Tot Assist Super:** Tot crawls out and bonks the nearest enemy with her mallet, stunning everything in a radius. A love letter to the show's intro.
 
-### 5.5 Lisa Simpson — The Technical / Crowd Controller
+### 5.5 the Prodigy — The Technical / Crowd Controller
 
 > *"Smart play. Control the battlefield. Make enemies look foolish."*
 
@@ -300,10 +300,10 @@ Characters follow the classic beat 'em up archetype triangle (Final Fight codifi
 | Technical | ★★★★★ | Most complex, highest skill ceiling |
 
 **Signature Mechanics:**
-- **Saxophone Blast:** Chargeable sonic wave — tap for quick short-range pulse, hold for wide-cone crowd control. Lisa's defining tool.
-- **Intellect Advantage:** Lisa's dodge roll has 50% more i-frames (0.3s vs. 0.2s). She "reads" enemy attacks better. Rewards defensive mastery.
-- **Jump Rope Whip:** Lisa's basic attack uses her jump rope as a whip — longer range than Homer, faster than Marge, but less damage.
-- **Activist Rally Super:** Lisa gives a passionate speech. All enemies on screen are stunned for 3 seconds as they stop to listen. Comedy gold AND strategic (set up combos for allies).
+- **Saxophone Blast:** Chargeable sonic wave — tap for quick short-range pulse, hold for wide-cone crowd control. Prodigy's defining tool.
+- **Intellect Advantage:** Prodigy's dodge roll has 50% more i-frames (0.3s vs. 0.2s). She "reads" enemy attacks better. Rewards defensive mastery.
+- **Jump Rope Whip:** Prodigy's basic attack uses her jump rope as a whip — longer range than Brawler, faster than Defender, but less damage.
+- **Activist Rally Super:** Prodigy gives a passionate speech. All enemies on screen are stunned for 3 seconds as they stop to listen. Comedy gold AND strategic (set up combos for allies).
 
 ### 5.6 The 10-Second Differentiation Rule
 
@@ -311,10 +311,10 @@ Within 10 seconds of selecting a character, the player must feel the difference:
 
 | Character | 10-Second Moment |
 |-----------|-----------------|
-| Homer | Throw a big punch. Enemy flies across the screen. "I'm STRONG." |
-| Bart | Skateboard-dash through three enemies. "I'm FAST." |
-| Marge | Purse-whip hits an enemy two body-lengths away. "I have RANGE." |
-| Lisa | Saxophone blast hits four enemies at once. "I control the CROWD." |
+| Brawler | Throw a big punch. Enemy flies across the screen. "I'm STRONG." |
+| Kid | Skateboard-dash through three enemies. "I'm FAST." |
+| Defender | Purse-whip hits an enemy two body-lengths away. "I have RANGE." |
+| Prodigy | Saxophone blast hits four enemies at once. "I control the CROWD." |
 
 ---
 
@@ -324,28 +324,28 @@ Enemies are the game's vocabulary. Each type teaches the player a new word; enco
 
 ### 6.1 The Enemy Vocabulary
 
-| Type | Name (Simpsons) | HP | Speed | Behavior | Counter Strategy | Teaches Player... |
+| Type | Name (game) | HP | Speed | Behavior | Counter Strategy | Teaches Player... |
 |------|-----------------|-----|-------|----------|-----------------|------------------|
-| **Grunt** | Burns' Goon | 30 | Medium | Walk toward player, basic punch | Any attack | Basic combat flow |
+| **Grunt** | Mayor's Goon | 30 | Medium | Walk toward player, basic punch | Any attack | Basic combat flow |
 | **Tough** | Plant Security | 70 | Slow | Same as grunt, more HP, hits harder (10 dmg) | Sustained combos, patience | Commitment and combo chains |
-| **Dasher** | Nelson's Bully | 25 | Fast | Sprint at player, tackle, retreat | Dodge/jump, punish recovery | Timing and dodge usage |
-| **Ranged** | Knife Thrower (Snake Jailbird) | 20 | Medium | Throws projectiles from distance, retreats on approach | Close distance quickly, prioritize | Target prioritization |
+| **Dasher** | Bruiser's Bully | 25 | Fast | Sprint at player, tackle, retreat | Dodge/jump, punish recovery | Timing and dodge usage |
+| **Ranged** | Knife Thrower (street thug) | 20 | Medium | Throws projectiles from distance, retreats on approach | Close distance quickly, prioritize | Target prioritization |
 | **Shield** | Riot Cop | 40 | Slow | Blocks frontal attacks, advances slowly | Grab, jump attack, flank | Positional thinking |
 | **Grappler** | Wrestler (Bonesaw) | 50 | Medium | Grabs player on contact, throws them | Keep distance, hit-and-run | Spacing discipline |
 | **Aerial** | Radioactive Man Fan (flies in costume) | 20 | Fast | Swoops from above, dive attacks | Anti-air, timed jumps | Vertical awareness |
-| **Summoner** | Sideshow Bob | 35 | Slow | Summons grunt waves, stays back | Rush down immediately | Priority targeting |
+| **Summoner** | Ringleader | 35 | Slow | Summons grunt waves, stays back | Rush down immediately | Priority targeting |
 
 ### 6.2 Enemy Introduction Pacing
 
 ```
-Level 1: Springfield Downtown
+Level 1: Downtown Downtown
   Wave 1: Grunts only (learn to fight)
   Wave 2: Grunts + 1 Tough (learn commitment)
   Wave 3: Grunts + Dasher (learn to dodge)
   Wave 4: Mix of learned types (combine skills)
-  BOSS: Sideshow Bob (combines summoning + pattern recognition)
+  BOSS: Ringleader (combines summoning + pattern recognition)
 
-Level 2: Springfield Nuclear Power Plant
+Level 2: Downtown Factory
   Wave 1: Grunts + Ranged (learn prioritization)
   Wave 2: Tough + Shield (learn flanking)
   ...and so on, each level adding 1-2 new enemy types
@@ -376,7 +376,7 @@ Bosses are the final exam for each level. They must be multi-phase, memorable, a
 3. A punish window after every attack (the player's reward for learning)
 4. A comedy moment (a gag mid-fight that's funny even when you're losing)
 
-**Level 1 Boss: Sideshow Bob**
+**Level 1 Boss: Ringleader**
 - Phase 1: Bob throws rakes at the player (dodge them). Steps on rakes himself periodically (stun window — comedy reference).
 - Phase 2: Bob summons waves of grunts. Player must fight through adds to reach Bob. Bob throws larger rakes in patterns.
 - Phase 3: Bob enters "Fury" state — rapid rake throws, charges at player. But he trips on rakes more often (longer punish windows). The comedy escalates with the difficulty.
@@ -385,7 +385,7 @@ Bosses are the final exam for each level. They must be multi-phase, memorable, a
 
 ## 7. Level Design Philosophy
 
-Levels follow the proven beat 'em up structure but infuse it with Springfield's identity.
+Levels follow the proven beat 'em up structure but infuse it with Downtown's identity.
 
 ### 7.1 Pacing Template
 
@@ -398,7 +398,7 @@ Walk-in (mood setting, 10s)
       → Encounter 2: Introduce new element (1 new enemy type)
         → Scroll (brief, pick-up health/weapons)
           → Encounter 3: Difficulty spike / mini-boss (combination of learned types)
-            → Scroll (set piece moment — riding monorail, dodging nuclear waste)
+            → Scroll (set piece moment — riding sky rail, dodging toxic waste)
               → Encounter 4: Full tactical (all learned types combined)
                 → Camera Lock → BOSS FIGHT
                   → Victory Screen (score, rank, stats)
@@ -409,26 +409,26 @@ Walk-in (mood setting, 10s)
 - 20% of encounters: Player is challenged, needs to use their full toolkit
 - 10% of encounters: Player is overwhelmed, creating dramatic tension (boss phase 3, ambush waves)
 
-### 7.2 Springfield Levels
+### 7.2 Downtown Levels
 
-Each level is a recognizable Springfield location with unique visual identity, environmental hazards, and interactive elements.
+Each level is a recognizable Downtown location with unique visual identity, environmental hazards, and interactive elements.
 
 | Level | Location | Visual Theme | Unique Hazard | Interactive Elements | Boss |
 |-------|----------|-------------|---------------|---------------------|------|
-| 1 | Springfield Downtown | Daytime streets, shops, Lard Lad statue | Traffic (cars cross occasionally) | Throw enemies into Lard Lad's donut; smash Flanders' mailbox; break Kwik-E-Mart window | Sideshow Bob |
-| 2 | Nuclear Power Plant | Industrial, green glow, cooling towers | Radioactive barrels (damage zones) | Push enemies into reactor pools; use control rods as weapons; ride conveyor belts | Mr. Burns in mech suit |
-| 3 | Moe's Tavern → Squidport | Night scene, neon signs, waterfront | Wet floor (slip physics near dock) | Throw enemies into jukebox; use bar stools as weapons; knock enemies off the pier | Fat Tony |
-| 4 | Springfield Elementary → Treehouse | Schoolyard, playground, treehouse | Playground equipment (swings hit passersby) | Use dodgeballs as projectiles; slide down banister; launch enemies off seesaw | Nelson + Jimbo + Dolph (trio boss) |
-| Bonus | Treehouse of Horror | Horror-themed Springfield, dark, spooky | Zombie hands from ground (grab/slow) | Everything is different — zombie enemies, alien projectiles, haunted props | Kang & Kodos |
+| 1 | Downtown Downtown | Daytime streets, shops, Donut Shop statue | Traffic (cars cross occasionally) | Throw enemies into Donut Shop's donut; smash a neighbor's mailbox; break Quick Stop window | Ringleader |
+| 2 | Factory | Industrial, green glow, cooling towers | Toxic barrels (damage zones) | Push enemies into acid pools; use pipes as weapons; ride conveyor belts | the Mayor in mech suit |
+| 3 | Joe's Bar → Squidport | Night scene, neon signs, waterfront | Wet floor (slip physics near dock) | Throw enemies into jukebox; use bar stools as weapons; knock enemies off the pier | Fat Tony |
+| 4 | City School → Treehouse | Schoolyard, playground, treehouse | Playground equipment (swings hit passersby) | Use dodgeballs as projectiles; slide down banister; launch enemies off seesaw | Bruiser + Jimbo + Dolph (trio boss) |
+| Bonus | Treehouse of Horror | Horror-themed Downtown, dark, spooky | Zombie hands from ground (grab/slow) | Everything is different — zombie enemies, alien projectiles, haunted props | Kang & Kodos |
 
 ### 7.3 Environmental Interaction
 
-Springfield is RICH with interactive potential. Every level should have:
+Downtown is RICH with interactive potential. Every level should have:
 
 - **Destructible props (minimum 5 per level):** Trash cans, newspaper stands, mailboxes, benches, parking meters. Breaking them drops health, score items, or weapons.
 - **Throwable objects (minimum 2 per level):** Barrels, crates, Buzz Cola machines. Pick up and throw for massive damage + comedic ragdoll.
 - **Environmental hazards (1 per level):** Traffic, radioactive waste, wet floors. Affect enemies AND players. Clever players bait enemies into hazards.
-- **Landmark gags (1 per level):** Throwing an enemy into Lard Lad makes the donut fall. Hitting the Springfield Tire Fire makes it belch smoke. Breaking the "Welcome to Springfield" sign reveals the town motto changes each playthrough (Simpsons reference).
+- **Landmark gags (1 per level):** Throwing an enemy into Donut Shop makes the donut fall. Hitting the town tire fire makes it belch smoke. Breaking the "Welcome to Downtown" sign reveals the town motto changes each playthrough (pop culture reference).
 
 ### 7.4 Level Duration
 
@@ -444,7 +444,7 @@ Browser-native means respecting players' time:
 
 ### 8.1 Progression Model
 
-SimpsonsKong uses the **Neo-Retro** model (SoR4 / Shredder's Revenge): per-run scoring with unlockable content and difficulty modes. Light RPG elements are layered in without overwhelming browser-game scope.
+firstPunch uses the **Neo-Retro** model (SoR4 / Shredder's Revenge): per-run scoring with unlockable content and difficulty modes. Light RPG elements are layered in without overwhelming browser-game scope.
 
 ### 8.2 Score System with Style Bonuses
 
@@ -463,16 +463,16 @@ Score isn't just "hit enemy, get points." It's a performance rating that rewards
 | No-damage encounter clear | +50% encounter total | — |
 | Full-level no-continue | +100% level total | — |
 
-**Style Rating (Simpsons-Themed):**
+**Style Rating (retro-themed):**
 
 | Rating | Score Threshold | Visual |
 |--------|----------------|--------|
-| "Boring" | 0–999 | Gray text, sad Homer |
+| "Boring" | 0–999 | Gray text, sad Brawler |
 | "Meh" | 1,000–2,999 | White text, shrug emoji |
 | "Not Bad" | 3,000–5,999 | Yellow text, thumbs up |
-| "Ay Caramba!" | 6,000–9,999 | Orange text, Bart's catchphrase |
-| "Excellent!" | 10,000–14,999 | Green text, Mr. Burns fingers |
-| "Best. Level. Ever." | 15,000+ | Gold text, Comic Book Guy's voice |
+| "Radical!" | 6,000–9,999 | Orange text, Kid's exclamation |
+| "Excellent!" | 10,000–14,999 | Green text, the Mayor fingers |
+| "Best. Level. Ever." | 15,000+ | Gold text, announcer voice |
 
 ### 8.3 Combo Meter
 
@@ -481,11 +481,11 @@ A visible on-screen combo counter that increases with consecutive hits:
 - **Timer:** 2.5 seconds between hits before combo drops
 - **Display:** "COMBO ×12" with escalating text size and color
 - **Milestones:** At 5×, 10×, 20×, and 50× hits, a themed sound bite plays:
-  - 5×: Homer "Woohoo!"
-  - 10×: Bart "Ay Caramba!"
-  - 20×: Mr. Burns "Excellent!"
-  - 50×: Comic Book Guy "Best. Combo. Ever."
-- **Combo break:** Taking damage resets the combo and plays Homer's "D'oh!"
+  - 5×: Brawler "Woohoo!"
+  - 10×: Kid "Radical!"
+  - 20×: the Mayor "Excellent!"
+  - 50×: announcer "Best. Combo. Ever."
+- **Combo break:** Taking damage resets the combo and plays Brawler's "Ugh!"
 
 ### 8.4 Character Unlocks
 
@@ -493,20 +493,20 @@ Characters unlock through natural play, not grinding:
 
 | Character | Unlock Condition | Rationale |
 |-----------|-----------------|-----------|
-| Homer | Available from start | The entry point, the mascot |
-| Bart | Complete Level 1 | Early reward, encourages continued play |
-| Marge | Complete Level 2 | Mid-game unlock, new playstyle to explore |
-| Lisa | Complete Level 3 | Late-game unlock, highest skill ceiling character as reward for progression |
+| Brawler | Available from start | The entry point, the mascot |
+| Kid | Complete Level 1 | Early reward, encourages continued play |
+| Defender | Complete Level 2 | Mid-game unlock, new playstyle to explore |
+| Prodigy | Complete Level 3 | Late-game unlock, highest skill ceiling character as reward for progression |
 
 ### 8.5 Difficulty Modes
 
-Named with Simpsons flavor:
+Named with game flavor:
 
 | Mode | Name | Enemy HP | Enemy Damage | Max Attackers | Unlocked |
 |------|------|----------|-------------|---------------|----------|
-| Easy | "Couch Mode" | 0.7× | 0.5× | 1 | Default |
-| Normal | "Springfield" | 1.0× | 1.0× | 2 | Default |
-| Hard | "Sideshow Bob" | 1.3× | 1.5× | 3 | Beat game on Normal |
+| Easy | "Chill Mode" | 0.7× | 0.5× | 1 | Default |
+| Normal | "Downtown" | 1.0× | 1.0× | 2 | Default |
+| Hard | "Nightmare" | 1.3× | 1.5× | 3 | Beat game on Normal |
 | Nightmare | "Treehouse of Horror" | 1.5× | 2.0× | 4 | Beat game on Hard |
 
 ### 8.6 Per-Level Challenges (Shredder's Revenge Influence)
@@ -516,8 +516,8 @@ Each level has 3 optional challenges that reward stars. Stars unlock the bonus T
 | Challenge Type | Example | Stars |
 |---------------|---------|-------|
 | Score threshold | "Score 10,000+ on Downtown" | ★ |
-| No-damage | "Clear Power Plant without taking damage" | ★ |
-| Time trial | "Beat Moe's Tavern in under 4 minutes" | ★ |
+| No-damage | "Clear Factory without taking damage" | ★ |
+| Time trial | "Beat Joe's Bar in under 4 minutes" | ★ |
 | Style | "Land a 30-hit combo on Elementary" | ★ |
 
 **Bonus level unlock:** 8 out of 12 total stars required.
@@ -532,7 +532,7 @@ Each level has 3 optional challenges that reward stars. Stars unlock the bonus T
 
 ## 9. Web Platform Constraints & Future Migration
 
-SimpsonsKong is built for the browser (HTML5 Canvas 2D, Web Audio API, vanilla JS). This is a strength — instant play, zero friction — but it imposes constraints. This section documents what we CAN do, what we CANNOT do, and what belongs in a "Future: Native/Engine Migration" roadmap.
+firstPunch is built for the browser (HTML5 Canvas 2D, Web Audio API, vanilla JS). This is a strength — instant play, zero friction — but it imposes constraints. This section documents what we CAN do, what we CANNOT do, and what belongs in a "Future: Native/Engine Migration" roadmap.
 
 ### 9.1 What We Can Do Well on Canvas 2D
 
@@ -580,35 +580,35 @@ These constraints shape specific design decisions:
 
 ---
 
-## 10. Simpsons-Specific Mechanics
+## 10. game-Specific Mechanics
 
-These are the features that make SimpsonsKong *uniquely Simpsons* — mechanics no other beat 'em up can replicate because they're born from the IP.
+These are the features that make firstPunch *uniquely game* — mechanics no other beat 'em up can replicate because they're born from the IP.
 
-### 10.1 Homer's Donut Rage Mode
+### 10.1 Brawler's Rage Mode
 
-**Concept:** Donuts aren't just health pickups — they fuel Homer's signature power-up.
+**Concept:** Donuts aren't just health pickups — they fuel Brawler's signature power-up.
 
-- **Mechanic:** Each donut picked up fills the Donut Rage Meter by 33% (3 donuts = full meter)
+- **Mechanic:** Each donut picked up fills the Rage Mode Meter by 33% (3 donuts = full meter)
 - **Activation:** When meter is full, player can activate Rage Mode (dedicated button or auto-activates)
 - **Effects (10-second duration):**
-  - Homer turns red, steam shoots from his ears (show reference)
+  - Brawler turns red, steam shoots from his ears (show reference)
   - +30% damage on all attacks
   - +20% movement speed
   - Belly attacks gain AOE splash (hits in a radius)
   - All attacks cause extra screen shake
-  - Homer yells "WHY YOU LITTLE—!" on activation
-- **Design intent:** Creates a "hoarding vs. healing" dilemma. Do you eat the donut now for 25 HP, or save it toward Rage Mode? Three donuts saved means three times you didn't heal. Pure Simpsons risk/reward.
+  - Brawler yells "WHY YOU LITTLE—!" on activation
+- **Design intent:** Creates a "hoarding vs. healing" dilemma. Do you eat the donut now for 25 HP, or save it toward Rage Mode? Three donuts saved means three times you didn't heal. Pure game risk/reward.
 
-### 10.2 D'oh! Moments (Funny Failure States)
+### 10.2 Ugh! Moments (Funny Failure States)
 
-**Concept:** Failure should be funny, not frustrating. Homer's "D'oh!" is one of TV's most iconic sounds — make it part of the game.
+**Concept:** Failure should be funny, not frustrating. Brawler's "Ugh!" is one of TV's most iconic sounds — make it part of the game.
 
-- **Combo drop:** Homer says "D'oh!" when hit mid-combo. The combo counter text shatters.
-- **Missed grab:** Homer stumbles forward when a grab whiffs (reaching for thin air).
-- **Fall into hazard:** Homer flails with cartoon legs for 0.5s before taking damage. Wile E. Coyote energy.
-- **Game over:** Homer slumps on the couch (show reference). "Mmm... game over."
-- **Boss kill you:** Boss does a victory taunt specific to their character. Sideshow Bob laughs maniacally.
-- **Zero-damage level clear:** Screen text: "Wow, Homer actually did something right!" — Marge voice line.
+- **Combo drop:** Brawler says "Ugh!" when hit mid-combo. The combo counter text shatters.
+- **Missed grab:** Brawler stumbles forward when a grab whiffs (reaching for thin air).
+- **Fall into hazard:** Brawler flails with cartoon legs for 0.5s before taking damage. Wile E. Coyote energy.
+- **Game over:** Brawler slumps on the couch (show reference). "Mmm... game over."
+- **Boss kill you:** Boss does a victory taunt specific to their character. the boss laughs maniacally.
+- **Zero-damage level clear:** Screen text: "Wow, Brawler actually did something right!" — Defender voice line.
 
 ### 10.3 Couch Gag Loading Screens
 
@@ -619,36 +619,36 @@ These are the features that make SimpsonsKong *uniquely Simpsons* — mechanics 
 - **Loading function:** These mask any asset loading / state transition between levels.
 - **Collector incentive:** "You've seen 4/10 couch gags!" — encourages replays to see them all.
 
-### 10.4 Springfield Landmarks as Interactive Elements
+### 10.4 Downtown Landmarks as Interactive Elements
 
-Every level should have at least one major Springfield landmark that players can interact with:
+Every level should have at least one major Downtown landmark that players can interact with:
 
 | Landmark | Level | Interaction |
 |----------|-------|-------------|
-| Lard Lad Donut | Downtown | Throw enemy into statue → giant donut falls, damages area |
-| Kwik-E-Mart | Downtown | Break window → Apu yells "Thank you, come again!" + drops health item |
-| Nuclear Cooling Tower | Power Plant | Hit control panel → steam burst damages nearby enemies |
-| Moe's Jukebox | Moe's Tavern | Hit jukebox → music changes, brief enemy confusion (stun) |
-| Springfield Gorge | Bonus/Transition | Throw enemy into gorge → they fall like Homer in the show (long scream, distant thud) |
-| Springfield Tire Fire | Any level with it visible | Attack it → belches smoke cloud, obscures enemy vision (they wander randomly for 3s) |
+| Donut Shop Donut | Downtown | Throw enemy into statue → giant donut falls, damages area |
+| Quick Stop | Downtown | Break window → shopkeeper yells "Come again!" + drops health item |
+| Cooling Tower | Factory | Hit control panel → steam burst damages nearby enemies |
+| Joe's Bar Jukebox | Joe's Bar | Hit jukebox → music changes, brief enemy confusion (stun) |
+| the town gorge | Bonus/Transition | Throw enemy into gorge → they fall like Brawler in the show (long scream, distant thud) |
+| town tire fire | Any level with it visible | Attack it → belches smoke cloud, obscures enemy vision (they wander randomly for 3s) |
 
-### 10.5 Simpsons Quotes as Combat Barks
+### 10.5 game Quotes as Combat Barks
 
 **Concept:** Characters quip during combat, making fights feel like scenes from the show.
 
 **Trigger system:** Barks play on specific gameplay events with cooldowns (minimum 8 seconds between barks) to prevent annoyance.
 
-| Trigger | Homer | Bart |
+| Trigger | Brawler | Kid |
 |---------|-------|------|
-| Kill enemy | "Why you little—!" | "Eat my shorts!" |
-| Take damage | "D'oh!" | "Ay caramba!" |
+| Kill enemy | "Take this!" | "Take that!" |
+| Take damage | "Ugh!" | "Radical!" |
 | Grab enemy | "Come here, you!" | "Don't have a cow, man!" |
-| Use special | "Woohoo!" | "I'm Bartman!" |
+| Use special | "Woohoo!" | "I'm alter-ego!" |
 | Low health | "Mmm... hospital food..." | "I didn't do it!" |
 | Taunt | *belches* | *moons enemies* |
 | Boss encounter | "Ah, nuts." | "Cool, a boss!" |
 
-| Trigger | Marge | Lisa |
+| Trigger | Defender | Prodigy |
 |---------|-------|------|
 | Kill enemy | "Hmm!" (disapproving) | "The data supports this approach!" |
 | Take damage | "Oh, Homie!" | "This is not a scholarly pursuit!" |
@@ -658,18 +658,18 @@ Every level should have at least one major Springfield landmark that players can
 | Taunt | *tuts disapprovingly* | *plays saxophone* |
 | Boss encounter | "Oh, my." | "Fascinating specimen." |
 
-### 10.6 Springfield Food as Health Pickups
+### 10.6 Downtown Food as Health Pickups
 
-No generic "turkey leg in a trash can" — every health pickup is a Simpsons food item:
+No generic "turkey leg in a trash can" — every health pickup is a game food item:
 
-| Pickup | HP Restored | Source | Simpsons Reference |
+| Pickup | HP Restored | Source | pop culture reference |
 |--------|------------|--------|-------------------|
-| Pink Donut | 25 HP (or Rage Meter +33%) | Crates, defeated enemies | Homer's iconic food |
-| Krusty Burger | 40 HP | Barrels | The fast food staple |
-| Buzz Cola | 15 HP + 3s speed boost | Vending machines | Springfield's soda brand |
-| Flaming Moe | 50 HP | Moe's level only | The legendary drink |
-| Duff Beer | 20 HP + slight wobble | Various | Homer's beer of choice |
-| Squishee | 30 HP | Kwik-E-Mart level | Brain-freeze brief stun if at full HP (comedy) |
+| Pink Donut | 25 HP (or Rage Meter +33%) | Crates, defeated enemies | Brawler's iconic food |
+| Burger Joint | 40 HP | Barrels | The fast food staple |
+| Buzz Cola | 15 HP + 3s speed boost | Vending machines | Downtown's soda brand |
+| Fire Cocktail | 50 HP | Joe's Bar level only | The legendary drink |
+| power-ups | 20 HP + slight wobble | Various | Brawler's beer of choice |
+| Squishee | 30 HP | Quick Stop level | Brain-freeze brief stun if at full HP (comedy) |
 
 ---
 
@@ -691,13 +691,13 @@ Based on the gap analysis and balance analysis, here is where we are relative to
 | Boss fights | ❌ Not implemented | Multi-phase boss system | P2 |
 | Level variety | ⚠️ 1 level (Downtown) | Need 4 levels + bonus | P3 |
 | Environmental interaction | ❌ Not implemented | Destructibles, hazards, landmarks | P2-P3 |
-| Characters (Homer) | ✅ Playable | Needs art overhaul, specials, rage mode | P2 |
-| Characters (Bart, Marge, Lisa) | ❌ Not implemented | Full character builds | P3 |
+| Characters (Brawler) | ✅ Playable | Needs art overhaul, specials, rage mode | P2 |
+| Characters (Kid, Defender, Prodigy) | ❌ Not implemented | Full character builds | P3 |
 | Score system | ⚠️ Basic scoring exists | Style ratings, combo bonuses needed | P1-P2 |
 | Difficulty modes | ❌ Not implemented | 4 named difficulties | P2 |
 | Combat feel (hitlag, VFX, SFX) | ⚠️ Minimal | Hitlag, particles, sound variation | P1 (highest impact) |
-| Donut Rage Mode | ❌ Not implemented | Homer's signature mechanic | P2 |
-| D'oh! Moments | ❌ Not implemented | Failure humor system | P2 |
+| Rage Mode | ❌ Not implemented | Brawler's signature mechanic | P2 |
+| Ugh! Moments | ❌ Not implemented | Failure humor system | P2 |
 | High score persistence | ❌ Not implemented | localStorage save/load | P0 |
 
 ---
@@ -710,15 +710,15 @@ These are binding design decisions that the team should not override without con
 2. **The PPK combo is the foundation.** All combat balance flows from the punch-punch-kick chain. Don't change its timing without full rebalance.
 3. **Health-cost specials, not mana/MP.** The SoR2/SoR4 model (spend HP, recover by attacking) is the core risk/reward loop. Do not replace with a separate resource bar.
 4. **Two attackers max on Normal.** Enemy throttling is a design choice, not a performance compromise. Readable combat over chaotic pile-ons.
-5. **Each character must feel different in 10 seconds.** If a character feels like "Homer but faster," the design has failed. Rebuild.
+5. **Each character must feel different in 10 seconds.** If a character feels like "Brawler but faster," the design has failed. Rebuild.
 6. **Levels are 5-7 minutes, not 15.** This is a browser game. Respect session length. Pack density into short experiences.
 7. **Jump attacks must not be dominant.** Balance analysis shows 50 DPS aerial vs. 39 DPS ground is unhealthy. Landing lag and DPS tuning are required.
-8. **Environmental interaction is mandatory per level.** Every level must have destructibles and at least one landmark gag. Springfield is a playground, not a corridor.
-9. **Donut Rage Mode ships with Homer.** It's his signature. Do not defer it past the character being "complete."
-10. **D'oh! moments ship before victory celebrations.** Funny failure is more important than flashy success. The player should laugh when they mess up.
+8. **Environmental interaction is mandatory per level.** Every level must have destructibles and at least one landmark gag. Downtown is a playground, not a corridor.
+9. **Rage Mode ships with Brawler.** It's his signature. Do not defer it past the character being "complete."
+10. **Ugh! moments ship before victory celebrations.** Funny failure is more important than flashy success. The player should laugh when they mess up.
 
 ---
 
 *This Game Design Document is a living document. It will be updated as the team builds, playtests, and iterates. All mechanic decisions should be validated against these design pillars and principles.*
 
-*Created by Yoda — SimpsonsKong Game Designer*
+*Created by Yoda — firstPunch Game Designer*

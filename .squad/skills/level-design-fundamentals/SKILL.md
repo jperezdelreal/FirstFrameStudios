@@ -8,7 +8,7 @@ name: "level-design-fundamentals"
 description: "Universal level design principles covering spatial grammar, pacing, flow, environmental storytelling, genre-specific patterns, and playtesting methodology"
 domain: "game-design"
 confidence: "low"
-source: "extracted from SimpsonsKong beat 'em up level patterns (horizontal scroll, camera locks, wave arenas) + genre research (Super Metroid, Dark Souls, Portal, Celeste, Hollow Knight, Undertale, Doom, BotW)"
+source: "extracted from firstPunch beat 'em up level patterns (horizontal scroll, camera locks, wave arenas) + genre research (Super Metroid, Dark Souls, Portal, Celeste, Hollow Knight, Undertale, Doom, BotW)"
 
 ---
 
@@ -494,10 +494,10 @@ The best levels tell a story without cutscenes, dialogue, or text. The environme
 - **Function:** Do spaces look designed for their purpose? (A bar has seating, a forge has heat-related architecture.)
 - **Damage pattern:** If something is broken, is the breakage consistent with what broke it? (Explosion damage vs. rust vs. decay look different.)
 
-**Example: SimpsonsKong (beat 'em up)**
-- Every location is recognizable from the show: Power Plant, Kwik-E-Mart, Moe's, Springfield Elementary
+**Example: firstPunch (beat 'em up)**
+- Every location is recognizable from the show: Factory, Quick Stop, Joe's Bar, City School
 - Architecture matches the show's design (squat suburban structures, industrial plant)
-- Details (billboard signs, parked cars, vendor stands) are consistent with the Springfield we know
+- Details (billboard signs, parked cars, vendor stands) are consistent with the Downtown we know
 - Player recognizes the world; it feels authentic, not generic
 
 **Building consistency:**
@@ -967,7 +967,7 @@ CAMERA LOCK BOUNDARY
 - Faster iteration (move tiles around, don't redraw)
 
 **Example (beat 'em up backgrounds):**
-- **Base module:** 2-building cluster (power plant + shop, school + house, etc.)
+- **Base module:** 2-building cluster (factory + shop, school + house, etc.)
 - **Far layer:** Distant building silhouettes (repeated every 2-3 clusters)
 - **Mid layer:** Poles, signs, vehicles (placed between buildings)
 - **Foreground:** Trees, barriers, foreground elements (layered at 50% alpha)
@@ -1109,7 +1109,7 @@ CAMERA LOCK BOUNDARY
 - Fan service that delights without confusing new players
 - Multiple layers (casual players see one joke, hardcore fans see deeper references)
 
-**Example:** SimpsonsKong — a Treehouse of Horror reference in one specific level that only activates if you interact with a specific object. Players who know the show smile; players who don't see it and aren't confused.
+**Example:** firstPunch — a Treehouse of Horror reference in one specific level that only activates if you interact with a specific object. Players who know the show smile; players who don't see it and aren't confused.
 
 **Bad Easter egg design:**
 - Requires hours of grinding to find

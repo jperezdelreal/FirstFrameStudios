@@ -1,8 +1,8 @@
-# Technical Learnings — SimpsonsKong Engine
+# Technical Learnings — firstPunch Engine
 
 **Author:** Chewie (Engine Dev)  
 **Date:** 2025-07-15  
-**Project:** SimpsonsKong — Browser-based Simpsons beat 'em up  
+**Project:** firstPunch — Browser-based game beat 'em up  
 **Stack:** Vanilla JS (ES modules), HTML5 Canvas 2D, Web Audio API  
 **Constraint:** Zero build tools, zero npm, zero bundler. `<script type="module">` only.
 
@@ -78,7 +78,7 @@ Two-phase state machine (fade-out → scene switch → fade-in) with guards:
 These two systems were designed together and complement each other:
 - `SpriteCache.getOrCreate(key, w, h, drawFn)` creates offscreen canvas at `w*dpr × h*dpr`
 - One-time draw cost amortized across all frames until state change
-- Key pattern: `homer_idle_right_0` — entity type + state + facing + frame
+- Key pattern: `brawler_idle_right_0` — entity type + state + facing + frame
 - `invalidate(key)` for state changes, `clear()` for full reset
 - Integration pattern: entity render method wraps existing draw calls in the `drawFn` callback — zero refactoring of art code
 
@@ -226,7 +226,7 @@ Without this, cached sprites render at 1× and look blurry on the HiDPI main can
 **Before:** ~100 Canvas API calls per entity per frame × 20 entities = 2000 calls/frame.  
 **After:** 1 `drawImage` call per entity = 20 calls/frame. **100× reduction.**
 
-The key insight: procedural drawing is expensive per-call but cheap per-pixel. Drawing Homer's head once (15 arcs + fills) costs the same whether it's displayed for 1 frame or 1000. Cache the result, blit the image.
+The key insight: procedural drawing is expensive per-call but cheap per-pixel. Drawing Brawler's head once (15 arcs + fills) costs the same whether it's displayed for 1 frame or 1000. Cache the result, blit the image.
 
 **Cache key design:** `${entityType}_${state}_${facing}_${frame}` — captures all visual variations. State changes invalidate the key automatically (new key = new cache entry).
 
@@ -281,9 +281,9 @@ Each bus is a `GainNode`. Per-channel volume control is just `bus.gain.value = x
 
 **Vocal sounds (formant synthesis):**
 - Generate noise buffer → bandpass filter → sweep filter frequency over time
-- "D'oh!" = bandpass 800Hz→200Hz (descending mournful vowel)
+- "Ugh!" = bandpass 800Hz→200Hz (descending mournful vowel)
 - "Woohoo!" = bandpass 300Hz→1200Hz (ascending excited vowel) + LFO tremolo
-- "Ay Caramba!" = bandpass 600Hz→2400Hz→1800Hz + sawtooth overtone
+- "Radical!" = bandpass 600Hz→2400Hz→1800Hz + sawtooth overtone
 
 **Percussion:**
 - Kick = sine 60Hz→30Hz pitch drop, 0.1s

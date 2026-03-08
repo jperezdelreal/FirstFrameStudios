@@ -1,13 +1,13 @@
 # SKILL: Multi-Agent Coordination
 
-How to work on shared codebases with multiple AI agents. Every pattern here was learned from 72+ agent spawns on SimpsonsKong — including 214 LOC of unwired infrastructure, duplicate function definitions, and state machine overwrites caused by parallel edits.
+How to work on shared codebases with multiple AI agents. Every pattern here was learned from 72+ agent spawns on firstPunch — including 214 LOC of unwired infrastructure, duplicate function definitions, and state machine overwrites caused by parallel edits.
 
 ---
 name: "multi-agent-coordination"
 description: "Coordination patterns for multi-agent development — file ownership, integration contracts, conflict prevention"
 domain: "process"
 confidence: "low"
-source: "earned — extracted from SimpsonsKong multi-agent session (72+ spawns, 12 agents, 101 backlog items)"
+source: "earned — extracted from firstPunch multi-agent session (72+ spawns, 12 agents, 101 backlog items)"
 ---
 
 ## When to Use This Skill
@@ -72,7 +72,7 @@ background.js — Agent C owns
 // ============================
 ```
 
-**Comment-based integration contracts** (seen in SimpsonsKong's vfx.js, destructible.js, hazard.js) are effective lightweight API docs. They tell the integrator exactly what to do without requiring coordination meetings.
+**Comment-based integration contracts** (seen in firstPunch's vfx.js, destructible.js, hazard.js) are effective lightweight API docs. They tell the integrator exactly what to do without requiring coordination meetings.
 
 **Ideal flow:**
 1. Builder agent creates the system + writes integration comments
@@ -128,7 +128,7 @@ Integration Pass: 1 agent (ideally the engine owner) verifies:
 Wave N+1: Next set of parallel tasks
 ```
 
-**SimpsonsKong lesson:** Chewie (Engine Dev) did 3 major integration passes. Without them, 8+ features would have shipped broken because builders didn't wire their systems.
+**firstPunch lesson:** Chewie (Engine Dev) did 3 major integration passes. Without them, 8+ features would have shipped broken because builders didn't wire their systems.
 
 ---
 
@@ -218,7 +218,7 @@ Runtime:
 
 ## Anti-Patterns
 
-1. **Build without wiring** — Creating infrastructure (EventBus, CONFIG, SpriteCache) without integrating it into any consumer. The system exists but has zero effect. 214 LOC of this in SimpsonsKong.
+1. **Build without wiring** — Creating infrastructure (EventBus, CONFIG, SpriteCache) without integrating it into any consumer. The system exists but has zero effect. 214 LOC of this in firstPunch.
 
 2. **Two agents, one file** — Parallel edits to the same file produce overwrites, lost code, or merge conflicts. One agent per file per wave, always.
 

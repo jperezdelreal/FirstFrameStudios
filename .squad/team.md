@@ -1,6 +1,6 @@
 # Squad Team
 
-> SimpsonsKong — Browser-based Simpsons beat 'em up arcade game
+> firstPunch — Browser-based game beat 'em up arcade game
 
 ## Coordinator
 
@@ -31,9 +31,9 @@
 
 ## Project Context
 
-- **Project:** SimpsonsKong
+- **Project:** firstPunch
 - **User:** joperezd
 - **Created:** 2026-03-06
 - **Stack:** HTML + CSS + JavaScript (ES modules), HTML5 Canvas, Web Audio API
-- **Description:** Browser-based beat 'em up inspired by The Simpsons Arcade, Final Fight, Streets of Rage. Modern 2D visuals, side-scrolling with 2.5D plane, combat with hitstun/knockback. No build step, no frameworks.
+- **Description:** Browser-based beat 'em up inspired by classic arcade beat 'em ups, Final Fight, Streets of Rage. Modern 2D visuals, side-scrolling with 2.5D plane, combat with hitstun/knockback. No build step, no frameworks.
 - **Universe:** Star Wars

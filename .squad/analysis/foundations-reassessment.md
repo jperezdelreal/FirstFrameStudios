@@ -42,7 +42,7 @@ This is a well-layered architecture: identity → values → decision rules → 
 | 1 | **70/30 Rule** | playbook §intro, growth-framework §1, company.md §7 (implicitly) | Defined three times with slightly different emphasis each time. growth-framework goes deepest. Should be defined ONCE and referenced. |
 | 2 | **Domain ownership** | principles.md §7, mission-vision.md §4, growth-framework §1.3, company.md §6, playbook §6.4 | Five documents discuss domain ownership. Each adds nuance, but a new reader encounters the concept scattered everywhere without a single authoritative definition. |
 | 3 | **Minimum playable formula** | playbook §2.5, sprint-0-plan.md (success criteria), growth-framework §4.1 Phase 3 | Three definitions of "what playable means." Playbook has the genre table (most complete); sprint-0-plan has beat-em-up-specific criteria; growth-framework has a narrative version. |
-| 4 | **SimpsonsKong lessons** | Every document references SimpsonsKong bugs/wins as examples | Not redundancy per se — these are contextual illustrations. But there's risk of being a "SimpsonsKong memoir" rather than a forward-looking studio. Acceptable for now; flag for cleanup when the second project ships. |
+| 4 | **firstPunch lessons** | Every document references firstPunch bugs/wins as examples | Not redundancy per se — these are contextual illustrations. But there's risk of being a "firstPunch memoir" rather than a forward-looking studio. Acceptable for now; flag for cleanup when the second project ships. |
 
 ### 1.4 Language Consistency
 
@@ -50,17 +50,17 @@ This is a well-layered architecture: identity → values → decision rules → 
 
 | Document | Line/Section | Issue |
 |----------|-------------|-------|
-| **team.md** header | "SimpsonsKong — Browser-based Simpsons beat 'em up arcade game" | The team roster is project-scoped, not studio-scoped. Should be "First Frame Studios — Squad Roster" with project context as a sub-section. |
-| **team.md** Project Context | Stack: "HTML + CSS + JavaScript..." | SimpsonsKong-specific. The team roster shouldn't define a tech stack — that's project-level. |
-| **routing.md** | "Web Audio API" in Greedo's examples | SimpsonsKong-specific tool reference in a studio-wide routing document. |
-| **Chewie's charter** | "Canvas renderer," "Web Audio API," "src/engine/ directory" | Locked to SimpsonsKong/Canvas. No mention of Godot or future projects. |
-| **Lando's charter** | "Homer Simpson," "src/entities/," "src/scenes/gameplay.js" | Entirely SimpsonsKong-specific. |
-| **Wedge's charter** | "Canvas setup," "16:9 letterboxing," "index.html," "styles.css" | Entirely SimpsonsKong-specific. |
-| **Greedo's charter** | "Web Audio API exclusively (no external audio files)" | SimpsonsKong constraint, not a studio-wide rule. |
-| **Tarkin's charter** | "src/entities/enemy.js," "src/systems/ai.js" | SimpsonsKong file paths. |
-| **Scribe's charter** | Generic 3-line responsibilities with no substance | Not SimpsonsKong-specific, but also not useful. Doesn't match company.md's description of Scribe's role. |
+| **team.md** header | "firstPunch — Browser-based game beat 'em up arcade game" | The team roster is project-scoped, not studio-scoped. Should be "First Frame Studios — Squad Roster" with project context as a sub-section. |
+| **team.md** Project Context | Stack: "HTML + CSS + JavaScript..." | firstPunch-specific. The team roster shouldn't define a tech stack — that's project-level. |
+| **routing.md** | "Web Audio API" in Greedo's examples | firstPunch-specific tool reference in a studio-wide routing document. |
+| **Chewie's charter** | "Canvas renderer," "Web Audio API," "src/engine/ directory" | Locked to firstPunch/Canvas. No mention of Godot or future projects. |
+| **Lando's charter** | "the Brawler," "src/entities/," "src/scenes/gameplay.js" | Entirely firstPunch-specific. |
+| **Wedge's charter** | "Canvas setup," "16:9 letterboxing," "index.html," "styles.css" | Entirely firstPunch-specific. |
+| **Greedo's charter** | "Web Audio API exclusively (no external audio files)" | firstPunch constraint, not a studio-wide rule. |
+| **Tarkin's charter** | "src/entities/enemy.js," "src/systems/ai.js" | firstPunch file paths. |
+| **Scribe's charter** | Generic 3-line responsibilities with no substance | Not firstPunch-specific, but also not useful. Doesn't match company.md's description of Scribe's role. |
 
-**Key finding: 6 of 14 agent charters are still locked to SimpsonsKong.** This is the single biggest language-consistency gap. These charters tell new agents "you work on Canvas 2D" when the company identity says "we build across any platform."
+**Key finding: 6 of 14 agent charters are still locked to firstPunch.** This is the single biggest language-consistency gap. These charters tell new agents "you work on Canvas 2D" when the company identity says "we build across any platform."
 
 ---
 
@@ -98,7 +98,7 @@ This is a well-layered architecture: identity → values → decision rules → 
 **What's Missing:**
 - **No "Project Complete" ceremony.** What happens when we ship? Who runs the final retro? What's the deliverable? The playbook describes per-phase retros but not a project-level wrap-up.
 - **No retrospective template.** The playbook lists questions but doesn't have a structured document format for capturing answers.
-- **No "archive and hand off" process.** When SimpsonsKong is "done," how do we archive it? What stays active? What moves to a legacy folder?
+- **No "archive and hand off" process.** When firstPunch is "done," how do we archive it? What stays active? What moves to a legacy folder?
 - **Ceremonies.md only triggers retros on failures.** A successful project also deserves a retrospective. The ceremony config doesn't support that.
 
 **Recommendation:** Add "Project Retrospective" ceremony to ceremonies.md + create a retro template in `.squad/templates/`.
@@ -177,11 +177,11 @@ This is a **major gap.** As documented in §1.4 above:
 | Charter Status | Agents | Count |
 |---------------|--------|-------|
 | **Current / studio-scoped** | Solo, Boba, Jango, Ackbar, Yoda | 5 |
-| **Stale / SimpsonsKong-locked** | Chewie, Lando, Wedge, Greedo, Tarkin | 5 |
+| **Stale / firstPunch-locked** | Chewie, Lando, Wedge, Greedo, Tarkin | 5 |
 | **Skeletal / insufficient** | Scribe, Leia, Bossk, Nien | 4 |
 | **Missing entirely** | Ralph | 1 |
 
-**5 of 15 agents have charters that reference SimpsonsKong-specific files, technologies, and even character names (Homer Simpson in Lando's charter).** These charters will actively mislead agents on the next project.
+**5 of 15 agents have charters that reference firstPunch-specific files, technologies, and even character names (the Brawler in Lando's charter).** These charters will actively mislead agents on the next project.
 
 **4 agents have charters so thin they provide no useful guidance.** Scribe's charter is 3 generic lines. Leia, Bossk, and Nien have no charters visible in the directory listing (they may exist but are minimal).
 
@@ -230,7 +230,7 @@ If we started a Godot project tomorrow, here's what would fail, in order:
 
 4. **Quality gates would need adaptation.** quality-gates.md is Godot-specific already, BUT the growth-framework claims they're engine-agnostic. The playbook says "copy quality-gates.md and adapt" (§2.6) — but the current quality-gates.md is already adapted FOR Godot, creating confusion about what the "base" template is.
 
-5. **team.md would need updating.** It still says "Project: SimpsonsKong" with Canvas/JS stack. The team roster should be project-independent.
+5. **team.md would need updating.** It still says "Project: firstPunch" with Canvas/JS stack. The team roster should be project-independent.
 
 ### 4.2 Playbook Walk-Through: Owner & Output Verification
 
@@ -257,7 +257,7 @@ If we started a Godot project tomorrow, here's what would fail, in order:
 
 | Knowledge | Where It Lives | Shared? |
 |-----------|---------------|---------|
-| Full SimpsonsKong codebase understanding | Solo's history.md (31KB) | ❌ Only Solo has read all 28 files. Other agents have partial views. |
+| Full firstPunch codebase understanding | Solo's history.md (31KB) | ❌ Only Solo has read all 28 files. Other agents have partial views. |
 | Art department transition rationale | Solo's history.md (Session 6) | ⚠️ In decisions.md summarily, but the full analysis is only in Solo's history |
 | Backlog expansion analysis | Solo's history.md (Session 4) | ⚠️ Referenced in decisions.md but detail only in Solo's file |
 | Growth framework design rationale | Yoda's authorship | ⚠️ Yoda authored it but the "why behind the why" may only be in Yoda's memory |
@@ -297,8 +297,8 @@ If we started a Godot project tomorrow, here's what would fail, in order:
 
 | # | Action | Why It's Top Priority | Owner | Effort | Impact |
 |---|--------|----------------------|-------|--------|--------|
-| **1** | **Update all 10 stale/skeletal/missing agent charters** to be studio-scoped, engine-agnostic, and skill-linked | 6 charters reference SimpsonsKong-specific code/tech, 4 are skeletal, 1 is missing. These are the documents agents read FIRST. If they're wrong, everything downstream is confused. | Solo (author) + each agent (review) | **M** | 🔴 Critical — blocks clean project start |
-| **2** | **Update team.md and routing.md to be studio-scoped** instead of SimpsonsKong-scoped | team.md header says "SimpsonsKong — Browser-based Simpsons beat 'em up arcade game." routing.md references "Web Audio API." These are studio-level documents wearing project-level clothing. | Solo | **S** | 🔴 Critical — identity confusion |
+| **1** | **Update all 10 stale/skeletal/missing agent charters** to be studio-scoped, engine-agnostic, and skill-linked | 6 charters reference firstPunch-specific code/tech, 4 are skeletal, 1 is missing. These are the documents agents read FIRST. If they're wrong, everything downstream is confused. | Solo (author) + each agent (review) | **M** | 🔴 Critical — blocks clean project start |
+| **2** | **Update team.md and routing.md to be studio-scoped** instead of firstPunch-scoped | team.md header says "firstPunch — Browser-based game beat 'em up arcade game." routing.md references "Web Audio API." These are studio-level documents wearing project-level clothing. | Solo | **S** | 🔴 Critical — identity confusion |
 | **3** | **Create onboarding guide** (`.squad/identity/onboarding-guide.md`) | No Day 1 → Day N path exists. Growth-framework names 5 docs to read; nothing else. New agents have no setup instructions, no dev environment guide, no "how we work" orientation. | Solo + Scribe | **S** | 🟠 High — blocks team scaling |
 | **4** | **Resolve ceremonies contradiction** — align ceremonies.md operational config with growth-framework's 4-ceremony rhythm | Two documents define different ceremony sets. A new team member doesn't know which is real. ceremonies.md needs the 4 scheduled ceremonies from the growth framework added. | Solo + Yoda | **S** | 🟠 High — process confusion |
 | **5** | **Create release-management process** (skill + playbook section) | Zero documentation on how to ship a game to players. No versioning, no distribution, no release checklist, no hotfix process. We can build games but can't describe how we deliver them. | Solo + Jango | **M** | 🟠 High — blocks first release |
@@ -328,16 +328,16 @@ If we started a Godot project tomorrow, here's what would fail, in order:
 | **Quality Standards** | 8/10 | High | Quality gates, DoD, bug severity matrix, playtest protocols — all production-ready. Minor issue: Godot-specific framing vs. engine-agnostic aspiration. |
 | **Team Structure** | 7/10 | High | 15 agents with clear domains and routing. But 10/15 charters are stale or skeletal. Ralph is a ghost. Solo is a SPOF. |
 | **Knowledge System** | 7/10 | Medium | Skills system is well-designed and growing (15 skills now, up from 12). But 4 agents still have zero skills. Tribal knowledge risk in Solo's history.md. |
-| **Document Consistency** | 6.5/10 | Medium | Mostly coherent. But 6 contradictions found, 3 at High severity. team.md and routing.md are SimpsonsKong-scoped. Ceremonies conflict. |
+| **Document Consistency** | 6.5/10 | Medium | Mostly coherent. But 6 contradictions found, 3 at High severity. team.md and routing.md are firstPunch-scoped. Ceremonies conflict. |
 | **Scaling Readiness** | 7/10 | Medium | growth-framework is comprehensive. 70/30 rule is sound. But untested — zero projects have used this framework yet. The second project will be the real validation. |
 | **Operational Readiness** | 6/10 | High | No onboarding guide. No release process. No versioning. No project selection criteria. Charters would mislead agents on a new project. These gaps would cause real friction on Day 1 of the next project. |
 
 **Bottom line:** The *strategic* foundations are strong — identity, principles, growth model, skills architecture. The *operational* foundations have gaps — stale charters, missing processes, contradictory ceremonies. The studio knows WHO it is and WHERE it's going. It needs to clean up HOW it operates day-to-day before the next project starts.
 
-**The analogy:** We've built a beautiful house with a strong foundation and excellent blueprints. But some of the room signs still say "SimpsonsKong Construction Office," the instruction manual for the plumbing doesn't exist yet, and three rooms have no furniture. Fix the signs, write the manual, furnish the rooms — and this is a 9/10 studio foundation.
+**The analogy:** We've built a beautiful house with a strong foundation and excellent blueprints. But some of the room signs still say "firstPunch Construction Office," the instruction manual for the plumbing doesn't exist yet, and three rooms have no furniture. Fix the signs, write the manual, furnish the rooms — and this is a 9/10 studio foundation.
 
 ---
 
-*This document is a point-in-time assessment. It should be revisited after the Top 5 Actions are completed and again after the first non-SimpsonsKong project begins.*
+*This document is a point-in-time assessment. It should be revisited after the Top 5 Actions are completed and again after the first non-firstPunch project begins.*
 
 *— Solo, Lead / Chief Architect, First Frame Studios*

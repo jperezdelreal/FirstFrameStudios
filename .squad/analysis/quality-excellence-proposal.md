@@ -305,5 +305,5 @@ Excellence isn't one person being perfect. It's a system that catches what any o
 
 ---
 
-*Written by Ackbar (QA/Playtester) — SimpsonsKong Squad*  
+*Written by Ackbar (QA/Playtester) — firstPunch Squad*  
 *"It's a trap!" — and I walked right into the trap of overconfidence.*

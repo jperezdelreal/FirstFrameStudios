@@ -1,4 +1,4 @@
-# SimpsonsKong — AAA-Level Gap Analysis & Prioritized Backlog
+# firstPunch — AAA-Level Gap Analysis & Prioritized Backlog
 
 **Author:** Solo (Lead)  
 **Date:** 2026-06-04  
@@ -15,11 +15,11 @@ Rating scale: 1 (broken) → 5 (functional prototype) → 7 (solid indie) → 10
 |------|-------|------------|
 | **Combat Feel** | 5/10 | Hitlag + screen shake + knockback exist (great foundation). Missing: grab/throw system, dodge roll, juggle physics, attack buffering, directional specials. Combo system is basic (counter + timer). No risk/reward loops (health-cost specials, taunt meter). Beat 'em up research says grab/throw is in ALL 9 reference games — we have zero. |
 | **Enemy Variety** | 4/10 | 4 variants (normal, fast, heavy, boss) with behavior tree AI. Good AI architecture. Missing: ranged, shield, aerial, grappler, summoner types. Research says 6-9 enemy types minimum. Boss has 3 phases (good) but only 1 boss total. No mini-bosses. Enemy intro sequences absent. |
-| **Visual Quality** | 5.5/10 | Procedural Canvas art with consistent outlines. Boba's VFX system adds hit effects, KO text, damage numbers, motion trails, spawn effects. Missing: walk cycle animations, squash/stretch, facial expressions, unique enemy silhouettes, attack anticipation frames. Backgrounds have parallax but lack Springfield landmark density. |
-| **Audio Quality** | 6/10 | Layered hit sounds (bass+mid+sparkle), mix bus architecture, pitch variation, priority system, spatial panning, procedural music with 3 intensity layers. Missing: vocal barks (D'oh!, Ay Caramba!), environmental ambience, dynamic crowd reactions, Simpsons-themed SFX library. Bugs: some audio hooks not connected (wave fanfares, landing, vocals partially wired). |
+| **Visual Quality** | 5.5/10 | Procedural Canvas art with consistent outlines. Boba's VFX system adds hit effects, KO text, damage numbers, motion trails, spawn effects. Missing: walk cycle animations, squash/stretch, facial expressions, unique enemy silhouettes, attack anticipation frames. Backgrounds have parallax but lack Downtown landmark density. |
+| **Audio Quality** | 6/10 | Layered hit sounds (bass+mid+sparkle), mix bus architecture, pitch variation, priority system, spatial panning, procedural music with 3 intensity layers. Missing: vocal barks (Ugh!, Radical!), environmental ambience, dynamic crowd reactions, retro-themed SFX library. Bugs: some audio hooks not connected (wave fanfares, landing, vocals partially wired). |
 | **Level Design** | 3/10 | Single level with 4 waves. Wave data is hardcoded arrays. No environmental interaction (destructibles, throwable objects, hazards). No set pieces. No level intro/outro cinematics beyond a basic timer. Research says beat 'em ups need 6-8 encounters per level with walk → encounter → walk pacing. We have 4 flat waves. |
 | **UI/UX** | 6/10 | Health bar, score, combo counter, boss health bar, lives icons, enemy health bars all present and polished. Title screen is atmospheric. Missing: options menu, pause menu buttons, wave progress indicator, special cooldown display, score breakdown on game over, scene transitions, character select screen. |
-| **Replayability** | 2/10 | localStorage high score only. No character select (Homer only). No difficulty settings. No per-level rankings. No unlockables. No challenges. Research says progression systems "dramatically extend engagement." We have near-zero replay incentive. |
+| **Replayability** | 2/10 | localStorage high score only. No character select (Brawler only). No difficulty settings. No per-level rankings. No unlockables. No challenges. Research says progression systems "dramatically extend engagement." We have near-zero replay incentive. |
 | **Technical Polish** | 6/10 | Fixed timestep, modular ES6 architecture, camera system, wave manager, config.js. Debug overlay exists. Missing: event bus integration (exists but unused), animation controller (exists but unused), particle system partially integrated. Some dead code. Performance untested under heavy load. No accessibility features. |
 
 **Overall AAA Readiness: 4.7/10**
@@ -30,7 +30,7 @@ Rating scale: 1 (broken) → 5 (functional prototype) → 7 (solid indie) → 10
 2. **Dodge roll with i-frames** — Expected in every modern beat 'em up (SoR4, Shredder's Revenge).
 3. **Multiple playable characters** — Character differentiation is "non-negotiable" per research.
 4. **Level content depth** — 1 level, 4 waves. Award-winning games have 6-8 levels.
-5. **Environmental interaction** — Destructibles, throwables, hazards. Springfield is "RICH with interactive potential."
+5. **Environmental interaction** — Destructibles, throwables, hazards. Downtown is "RICH with interactive potential."
 6. **Animation quality** — Scored 4/10 in audit. No anticipation, follow-through, or squash/stretch.
 7. **Replayability systems** — Character select, scoring ranks, challenges, unlockables.
 
@@ -45,12 +45,12 @@ Items NOT in the existing 85-item backlog. Organized by domain.
 | # | Item | Owner | Complexity | Dependencies | Description |
 |---|------|-------|-----------|--------------|-------------|
 | AAA-C1 | Grab/throw system | Lando | XL | P1-8 (animation controller) | Proximity grab input when near enemy. Grab state: pummel (mash attack for damage) or throw (directional input + attack). Thrown enemies damage other enemies on collision. Foundation for the genre's most satisfying micro-interaction. Every reference game has this. |
-| AAA-C2 | Dodge roll with i-frames | Lando | L | None | Dedicated dodge input (double-tap direction or dedicated key). 0.3s animation with 0.15s i-frames in the middle. Recovery frames prevent spam. Homer's dodge: stumbling belly roll. Each future character gets unique dodge animation. |
+| AAA-C2 | Dodge roll with i-frames | Lando | L | None | Dedicated dodge input (double-tap direction or dedicated key). 0.3s animation with 0.15s i-frames in the middle. Recovery frames prevent spam. Brawler's dodge: stumbling belly roll. Each future character gets unique dodge animation. |
 | AAA-C3 | Juggle physics system | Lando | L | P1-8 | Launched enemies become physics objects. Hit airborne enemies to keep them up. Wall/floor bounce states. Simplified to 2-3 bounce states (not full simulation) for Canvas performance. Skill expression layer for advanced players. |
-| AAA-C4 | Style/combo scoring meter | Yoda + Wedge | M | None | Visible meter that fills with variety: different attacks, no repeats, grabs, throws, juggles, air combos. Resets on damage. Simpsons-themed ratings: "Boring" → "Meh" → "Ay Caramba!" → "Excellent!" → "Best. Combo. Ever." Drives replayability and score chasing. |
-| AAA-C5 | Taunt mechanic | Lando + Yoda | M | None | Dedicated taunt button. Builds super meter faster but leaves player vulnerable for ~1s. Homer: eats invisible donut. Animation must be cancellable on hit. Risk/reward that "Simpsons characters are MADE for." |
-| AAA-C6 | Super move meter + activation | Lando + Bossk | L | AAA-C5 | Meter fills from combat, taunts, and combo performance. When full, special input triggers character-specific super: Homer = Donut Rage (temporary berserk, belly attacks, invincibility). Cinematic camera zoom on activation. |
-| AAA-C7 | Dash attack | Lando | M | AAA-C2 | Double-tap forward + attack for closing-distance offensive move. Homer: running belly charge. Covers 150px gap quickly. Found in SoR2, SoR4, Scott Pilgrim. |
+| AAA-C4 | Style/combo scoring meter | Yoda + Wedge | M | None | Visible meter that fills with variety: different attacks, no repeats, grabs, throws, juggles, air combos. Resets on damage. retro-themed ratings: "Boring" → "Meh" → "Radical!" → "Excellent!" → "Best. Combo. Ever." Drives replayability and score chasing. |
+| AAA-C5 | Taunt mechanic | Lando + Yoda | M | None | Dedicated taunt button. Builds super meter faster but leaves player vulnerable for ~1s. Brawler: eats invisible donut. Animation must be cancellable on hit. Risk/reward that "game characters are MADE for." |
+| AAA-C6 | Super move meter + activation | Lando + Bossk | L | AAA-C5 | Meter fills from combat, taunts, and combo performance. When full, special input triggers character-specific super: Brawler = Rage Mode (temporary berserk, belly attacks, invincibility). Cinematic camera zoom on activation. |
+| AAA-C7 | Dash attack | Lando | M | AAA-C2 | Double-tap forward + attack for closing-distance offensive move. Brawler: running belly charge. Covers 150px gap quickly. Found in SoR2, SoR4, Scott Pilgrim. |
 | AAA-C8 | Back attack | Lando | S | None | Attack input while enemies behind = backward elbow/kick. Prevents "surrounded and helpless" situations. Found in SoR2, SoR4, Final Fight. |
 | AAA-C9 | Attack buffering system | Chewie | M | None | Queue next attack input during current attack's active frames. If player presses punch during kick recovery, punch executes immediately after kick ends. Makes combos feel responsive and intentional. Modern beat 'em up standard. |
 | AAA-C10 | Directional combo finishers | Lando + Yoda | M | P1-5 (combo system) | Different combo enders based on final directional input. Forward+attack = launch (juggle starter). Down+attack = ground slam. Neutral = knockdown sweep. Adds depth without extra buttons. |
@@ -59,24 +59,24 @@ Items NOT in the existing 85-item backlog. Organized by domain.
 
 | # | Item | Owner | Complexity | Dependencies | Description |
 |---|------|-------|-----------|--------------|-------------|
-| AAA-CH1 | Character select screen | Wedge + Nien | L | At least 2 characters | Arcade-style character select with animated preview of each character, stat comparison (speed/power/range triangle), unique idle animation. Simpsons couch in the middle — selected character sits on it. |
-| AAA-CH2 | Bart Simpson playable | Nien (art) + Lando (gameplay) | XL | AAA-C2, P1-8 | Fast/technical archetype. Skateboard dash, slingshot ranged, Bartman super. Unique combo strings. "Eat My Shorts" taunt. Different hitboxes, speed values, attack animations. Full character with unique feel within 10 seconds of play. |
-| AAA-CH3 | Marge Simpson playable | Nien (art) + Lando (gameplay) | XL | AAA-C2, P1-8 | Range/support archetype. Purse weapon (extended range), hair whip spin attack, Maggie Assist super. Maternal Instinct shield near allies. Unique combo strings and animations. |
-| AAA-CH4 | Lisa Simpson playable | Nien (art) + Lando (gameplay) | XL | AAA-C2, P1-8 | Technical/crowd-control archetype. Saxophone blast (cone AoE), jump rope whip (mid-range), extra dodge i-frames. Activist Rally super (stun all enemies). Smart, defensive playstyle. |
-| AAA-CH5 | Character unlock system | Yoda + Chewie | M | AAA-CH1, at least 1 extra character | Start with Homer. Unlock Bart after clearing Level 1. Unlock Marge after clearing Level 2. Unlock Lisa after clearing Level 3. localStorage persistence. Creates "one more run" motivation. |
+| AAA-CH1 | Character select screen | Wedge + Nien | L | At least 2 characters | Arcade-style character select with animated preview of each character, stat comparison (speed/power/range triangle), unique idle animation. game couch in the middle — selected character sits on it. |
+| AAA-CH2 | the Kid playable | Nien (art) + Lando (gameplay) | XL | AAA-C2, P1-8 | Fast/technical archetype. Skateboard dash, slingshot ranged, alter-ego super. Unique combo strings. "signature" taunt. Different hitboxes, speed values, attack animations. Full character with unique feel within 10 seconds of play. |
+| AAA-CH3 | the Defender playable | Nien (art) + Lando (gameplay) | XL | AAA-C2, P1-8 | Range/support archetype. Purse weapon (extended range), hair whip spin attack, Tot Assist super. Maternal Instinct shield near allies. Unique combo strings and animations. |
+| AAA-CH4 | the Prodigy playable | Nien (art) + Lando (gameplay) | XL | AAA-C2, P1-8 | Technical/crowd-control archetype. Saxophone blast (cone AoE), jump rope whip (mid-range), extra dodge i-frames. Activist Rally super (stun all enemies). Smart, defensive playstyle. |
+| AAA-CH5 | Character unlock system | Yoda + Chewie | M | AAA-CH1, at least 1 extra character | Start with Brawler. Unlock Kid after clearing Level 1. Unlock Defender after clearing Level 2. Unlock Prodigy after clearing Level 3. localStorage persistence. Creates "one more run" motivation. |
 
 ### 2.3 Level Design & Content (Tarkin + Leia + Yoda)
 
 | # | Item | Owner | Complexity | Dependencies | Description |
 |---|------|-------|-----------|--------------|-------------|
-| AAA-L1 | Destructible objects system | Tarkin + Leia | L | EX-T4 (data format) | Crates, barrels, newspaper stands, parking meters, phone booths. Each has HP, break animation, drop table (health, weapon, score). Interactable with attacks. Springfield-themed: smash Flanders' mailbox, kick Lard Lad sign. |
+| AAA-L1 | Destructible objects system | Tarkin + Leia | L | EX-T4 (data format) | Crates, barrels, newspaper stands, parking meters, phone booths. Each has HP, break animation, drop table (health, weapon, score). Interactable with attacks. Downtown-themed: smash a neighbor's mailbox, kick Donut Shop sign. |
 | AAA-L2 | Throwable props | Tarkin + Lando | M | AAA-C1 (grab system), AAA-L1 | Pick up environmental objects (trash cans, fire hydrants, enemy weapons). Throw directionally. Damages enemies on contact. Integrates with grab input when near prop instead of enemy. |
-| AAA-L3 | Environmental hazards | Tarkin + Leia | M | AAA-L1 | Radioactive barrels (damage zones), manhole steam (knockback), falling signs. Affect enemies AND player. Throwing enemy into hazard = bonus damage + score. Springfield-authentic. |
-| AAA-L4 | Level 2: Springfield Elementary | Tarkin + Leia | XL | EX-T4, AAA-L1 | New level with unique background (school hallways, gym, playground), new encounter pacing, new building types. Mini-boss: Nelson variant. Final boss: Sideshow Bob. 6-8 encounters with walk-fight-walk pacing. |
-| AAA-L5 | Level 3: Nuclear Power Plant | Tarkin + Leia | XL | AAA-L4 | Industrial setting with conveyor belts (moving platform mechanic), radioactive zones, cooling tower finale. Boss: Mr. Burns in mech suit. Environmental storytelling through background details. |
-| AAA-L6 | Couch gag level intros | Yoda + Bossk | M | Per level | Each level starts with a unique "couch gag" intro: brief animated scene before gameplay starts (2-3 seconds). Level 1: Homer crashes through door. Level 2: Family runs from bees. Simpsons tradition meets beat 'em up convention. |
-| AAA-L7 | Set piece encounters | Tarkin + Yoda | L | AAA-L4 | Mid-level unique moments that break the formula: monorail fight (scrolling platform), school bus chase, power plant meltdown countdown. One per level. Prevents monotony. |
-| AAA-L8 | Level select / world map | Wedge + Leia | M | AAA-L4 | Springfield world map showing available levels, completion stars, best ranks. Unlock linearly. Shows Springfield from above. Players choose which level to replay. |
+| AAA-L3 | Environmental hazards | Tarkin + Leia | M | AAA-L1 | Toxic barrels (damage zones), manhole steam (knockback), falling signs. Affect enemies AND player. Throwing enemy into hazard = bonus damage + score. Downtown-authentic. |
+| AAA-L4 | Level 2: City School | Tarkin + Leia | XL | EX-T4, AAA-L1 | New level with unique background (school hallways, gym, playground), new encounter pacing, new building types. Mini-boss: Bruiser variant. Final boss: Ringleader. 6-8 encounters with walk-fight-walk pacing. |
+| AAA-L5 | Level 3: Factory | Tarkin + Leia | XL | AAA-L4 | Industrial setting with conveyor belts (moving platform mechanic), toxic zones, cooling tower finale. Boss: the Mayor in mech suit. Environmental storytelling through background details. |
+| AAA-L6 | Couch gag level intros | Yoda + Bossk | M | Per level | Each level starts with a unique "couch gag" intro: brief animated scene before gameplay starts (2-3 seconds). Level 1: Brawler crashes through door. Level 2: Family runs from bees. game tradition meets beat 'em up convention. |
+| AAA-L7 | Set piece encounters | Tarkin + Yoda | L | AAA-L4 | Mid-level unique moments that break the formula: sky rail fight (scrolling platform), school bus chase, factory meltdown countdown. One per level. Prevents monotony. |
+| AAA-L8 | Level select / world map | Wedge + Leia | M | AAA-L4 | Downtown world map showing available levels, completion stars, best ranks. Unlock linearly. Shows Downtown from above. Players choose which level to replay. |
 
 ### 2.4 Visual AAA (Boba + Leia + Bossk + Nien)
 
@@ -84,9 +84,9 @@ Items NOT in the existing 85-item backlog. Organized by domain.
 |---|------|-------|-----------|--------------|-------------|
 | AAA-V1 | Screen zoom on power hits | Bossk + Chewie | M | None | Camera zooms to 1.15× for 0.2s on heavy attacks (belly bump, ground slam, combo finishers). Combined with existing hitlag creates cinematic impact. Canvas scale transform around hit point. |
 | AAA-V2 | Slow-motion final kill | Chewie + Bossk | M | None | Last enemy in wave: game runs at 0.3× speed for 0.5s during killing blow. Camera zoom, extra particles, dramatic audio pitch-shift. Classic arcade dramatics. |
-| AAA-V3 | Cinematic boss intros | Bossk + Nien | L | At least 1 boss | Camera pans to boss spawn, name card overlay ("NELSON — Ha Ha!"), unique entrance animation, brief dialogue. 3-4 seconds. Sets stakes, builds anticipation. Standard in every reference game. |
-| AAA-V4 | Character idle animations | Nien | M | P1-8 | Homer: occasional belly scratch, yawn, look at watch. Bart: skateboard trick, crack knuckles. Each character 3-4 unique idle variants on timer. Personality expressed through stillness. |
-| AAA-V5 | Environmental storytelling | Leia + Boba | M | Background system | Background details that tell Springfield stories: Burns' billboard, Itchy & Scratchy poster, graffiti ("El Barto"), Jebediah Springfield statue. Not interactive — pure visual worldbuilding. |
+| AAA-V3 | Cinematic boss intros | Bossk + Nien | L | At least 1 boss | Camera pans to boss spawn, name card overlay ("BRUISER — Heh!"), unique entrance animation, brief dialogue. 3-4 seconds. Sets stakes, builds anticipation. Standard in every reference game. |
+| AAA-V4 | Character idle animations | Nien | M | P1-8 | Brawler: occasional belly scratch, yawn, look at watch. Kid: skateboard trick, crack knuckles. Each character 3-4 unique idle variants on timer. Personality expressed through stillness. |
+| AAA-V5 | Environmental storytelling | Leia + Boba | M | Background system | Background details that tell Downtown stories: Mayor's billboard, cartoon-within-a-cartoon poster, graffiti ("graffiti tag"), Founder Downtown statue. Not interactive — pure visual worldbuilding. |
 | AAA-V6 | Scene transitions | Bossk + Wedge | M | None | Fade/wipe/slide transitions between title → gameplay, gameplay → game over, level → level. Currently instant-cut. 0.5s transition prevents jarring switches. |
 | AAA-V7 | Weather/atmosphere system | Leia + Bossk | L | Background system | Per-level atmosphere: Level 1 = sunny day, Level 2 = overcast, Level 3 = night with industrial glow. Rain particles, fog overlay, time-of-day sky gradients. |
 | AAA-V8 | Death animations | Nien + Bossk | M | P1-8 | Enemies: spin and fall, ragdoll bounce, dramatic fly-off-screen. Player: collapse animation, "Game Over" pose. Currently enemies just fade out (alpha). |
@@ -95,29 +95,29 @@ Items NOT in the existing 85-item backlog. Organized by domain.
 
 | # | Item | Owner | Complexity | Dependencies | Description |
 |---|------|-------|-----------|--------------|-------------|
-| AAA-A1 | Character voice barks | Greedo | L | None | Procedural voice synthesis for key moments: Homer "D'oh!" on hit (descending tone + vowel filter), "Woohoo!" on combo, "Mmm... donuts" on health pickup. Bart "Ay Caramba!" on big hit. Even simple synthesized vocals add massive personality. 3-4 barks per character. |
-| AAA-A2 | Environmental ambience | Greedo | M | None | Background audio layer per level: Springfield birds + distant traffic (Level 1), school bell + kids (Level 2), industrial hum + alarms (Level 3). Low-pass filtered, panned wide. Creates sense of place. Plays under music layer. |
-| AAA-A3 | Dynamic crowd reactions | Greedo | M | AAA-C4 (style meter) | Crowd cheering audio responds to combo performance: scattered claps at 3-hit, cheering at 5-hit, roaring at 8+. "Boo" on player death. Springfield citizens watching the fight. Builds the "audience" feeling of arcade games. |
+| AAA-A1 | Character voice barks | Greedo | L | None | Procedural voice synthesis for key moments: Brawler "Ugh!" on hit (descending tone + vowel filter), "Woohoo!" on combo, "Mmm..." on health pickup. Kid "Radical!" on big hit. Even simple synthesized vocals add massive personality. 3-4 barks per character. |
+| AAA-A2 | Environmental ambience | Greedo | M | None | Background audio layer per level: Downtown birds + distant traffic (Level 1), school bell + kids (Level 2), industrial hum + alarms (Level 3). Low-pass filtered, panned wide. Creates sense of place. Plays under music layer. |
+| AAA-A3 | Dynamic crowd reactions | Greedo | M | AAA-C4 (style meter) | Crowd cheering audio responds to combo performance: scattered claps at 3-hit, cheering at 5-hit, roaring at 8+. "Boo" on player death. Downtown citizens watching the fight. Builds the "audience" feeling of arcade games. |
 | AAA-A4 | Hit sound scaling by combo | Greedo | S | P1-5 | Hit sound intensity increases with combo count: hit #1 is light, hit #5 has full layered crack, hit #8+ adds reverb tail. Audio escalation mirrors visual combo escalation. |
 | AAA-A5 | Boss music themes | Greedo | L | AAA-V3, Music system | Unique procedural music pattern per boss fight. Tempo increase on phase transitions. Victory fanfare on boss defeat. Music is "50% of game feel" per research. Boss music must feel DIFFERENT from regular combat. |
-| AAA-A6 | Simpsons-themed pickup sounds | Greedo | S | P2-8 | Distinct sounds for Springfield food pickups: donut (satisfying crunch + "Mmm"), Buzz Cola (fizz + gulp), Krusty Burger (sizzle). Each pickup sounds appetizing. Reinforces IP authenticity. |
+| AAA-A6 | retro-themed pickup sounds | Greedo | S | P2-8 | Distinct sounds for Downtown food pickups: donut (satisfying crunch + "Mmm"), Buzz Cola (fizz + gulp), Burger Joint (sizzle). Each pickup sounds appetizing. Reinforces IP authenticity. |
 
 ### 2.6 UI/UX AAA (Wedge + Yoda)
 
 | # | Item | Owner | Complexity | Dependencies | Description |
 |---|------|-------|-----------|--------------|-------------|
-| AAA-U1 | Options/settings menu | Wedge | M | None | Accessible from title + pause. Volume sliders (Master, SFX, Music), difficulty select (Couch Mode / Normal / Sideshow Bob Mode), control display, credits. Rounded panels matching existing HUD style. |
+| AAA-U1 | Options/settings menu | Wedge | M | None | Accessible from title + pause. Volume sliders (Master, SFX, Music), difficulty select (Chill Mode / Normal / Nightmare Mode), control display, credits. Rounded panels matching existing HUD style. |
 | AAA-U2 | Pause menu redesign | Wedge | M | None | Replace text-only pause with proper menu: Resume, Restart Level, Options, Quit to Title. Keyboard navigation with visual highlight. Semi-transparent backdrop blur effect. |
 | AAA-U3 | Score breakdown screen | Wedge + Yoda | M | None | After level complete: animated tally of Enemies Defeated, Highest Combo, Time Bonus, Damage Taken penalty, Total Score. Letter grade (S/A/B/C/D). Drives score-chasing. |
 | AAA-U4 | Wave/progress indicator | Wedge | S | None | Small "Wave 2/4" or progress dots at top-center of HUD. Players need to know how much level remains. Fills as waves are cleared. |
 | AAA-U5 | Special move cooldown display | Wedge | S | AAA-C6 | Meter/icon near health bar showing super meter fill level. Glows when full. Pulses to draw attention. Clear affordance for "press X to activate." |
-| AAA-U6 | Loading/couch gag screens | Wedge + Bossk | M | AAA-L6 | Between-level screens showing Simpsons couch gag art while assets "load" (or just as transition entertainment). Different gag each time. Low-effort, high-charm. |
+| AAA-U6 | Loading/couch gag screens | Wedge + Bossk | M | AAA-L6 | Between-level screens showing game couch gag art while assets "load" (or just as transition entertainment). Different gag each time. Low-effort, high-charm. |
 
 ### 2.7 Replayability & Progression (Yoda + Chewie)
 
 | # | Item | Owner | Complexity | Dependencies | Description |
 |---|------|-------|-----------|--------------|-------------|
-| AAA-R1 | Difficulty modes | Yoda + Tarkin | M | None | 3 modes: "Couch Mode" (1.5× player HP, 0.7× enemy damage, generous i-frames), "Normal", "Sideshow Bob Mode" (0.7× player HP, 1.3× enemy damage, tighter windows). Affects scoring multiplier. Very Simpsons naming. |
+| AAA-R1 | Difficulty modes | Yoda + Tarkin | M | None | 3 modes: "Chill Mode" (1.5× player HP, 0.7× enemy damage, generous i-frames), "Normal", "Nightmare Mode" (0.7× player HP, 1.3× enemy damage, tighter windows). Affects scoring multiplier. Very game naming. |
 | AAA-R2 | Per-level rankings | Yoda + Chewie | M | AAA-U3 | S/A/B/C/D rank per level stored in localStorage. Based on score, time, and max combo. Shown on level select. Drives "get S rank on every level" goal. |
 | AAA-R3 | Per-level challenges | Yoda + Ackbar | M | AAA-L4 | 3 optional challenges per level: "No damage taken," "Reach 10-hit combo," "Complete under 3 minutes." Shown in level select. Unlock cosmetic rewards. Low-cost, high-replay-value per research. |
 | AAA-R4 | Unlockable extras | Yoda | S | AAA-CH5, AAA-R3 | Gallery of character concept art, enemy profiles, sound test. Unlocked by completing challenges or reaching milestones. Reward layer for completionists. |
@@ -143,7 +143,7 @@ Things that CANNOT be done well on Canvas 2D + vanilla JS. These are explicitly 
 | # | Item | Why Canvas 2D Can't | Target Tech | Impact |
 |---|------|---------------------|-------------|--------|
 | FUT-1 | Shader-based effects (glow, bloom, blur) | Canvas 2D has no programmable shaders. `filter` CSS property is slow and limited. Real-time bloom/blur requires fragment shaders. | WebGL / PixiJS / Phaser | Would enable hit glow halos, boss aura effects, screen-wide bloom on super moves, motion blur on dashes. |
-| FUT-2 | Skeletal animation (Spine-like) | Canvas 2D procedural drawing means redrawing every frame from code. Skeletal animation requires bone hierarchies with interpolation, which is impractical without a runtime. | Spine / DragonBones + WebGL | Would enable fluid character animation, blend trees, IK for grab poses, cloth physics on Marge's dress. |
+| FUT-2 | Skeletal animation (Spine-like) | Canvas 2D procedural drawing means redrawing every frame from code. Skeletal animation requires bone hierarchies with interpolation, which is impractical without a runtime. | Spine / DragonBones + WebGL | Would enable fluid character animation, blend trees, IK for grab poses, cloth physics on Defender's dress. |
 | FUT-3 | WebGL rendering pipeline | Canvas 2D is CPU-rendered and single-threaded. At 20+ entities with VFX, particle systems, and parallax layers, CPU becomes the bottleneck. | WebGL / PixiJS | Would enable GPU-accelerated rendering, sprite batching, 100+ particles without frame drops, post-processing pipeline. |
 | FUT-4 | Online multiplayer | Requires WebSocket/WebRTC infrastructure, server-authoritative game state, input prediction, rollback netcode. Far beyond vanilla JS scope. | Node.js server + WebSocket | Would enable 2-4 player online co-op — the genre's killer feature. |
 | FUT-5 | Sprite sheet asset pipeline | Current approach: procedural Canvas drawing. Real sprite sheets need: asset loading, atlas packing, frame extraction, async load management. | PixiJS / custom loader | Would enable imported pixel art, artist-drawn sprites, animation editors like Aseprite integration. |
@@ -191,7 +191,7 @@ Things that CANNOT be done well on Canvas 2D + vanilla JS. These are explicitly 
 - **Lane 6 (Wedge):** A-9 (UI for style meter)
 
 ### Phase B: Visual Excellence — "Make it look stunning"
-**Goal:** Every frame should be screenshot-worthy. Springfield comes alive.  
+**Goal:** Every frame should be screenshot-worthy. Downtown comes alive.  
 **Duration estimate:** Weeks 2-5 (overlaps with Phase A)  
 **Principle:** Art specialists work in parallel with combat team.
 
@@ -200,10 +200,10 @@ Things that CANNOT be done well on Canvas 2D + vanilla JS. These are explicitly 
 | B-1 | Art direction enforcement (EX-B1) | Boba | S | None | ★★★ Blocker |
 | B-2 | Consistent entity rendering style (EX-B7) | Boba + Nien | M | B-1 | ★★★ Core |
 | B-3 | Character ground shadows (EX-B2) | Bossk | S | None | ★★★ Core |
-| B-4 | Homer walk cycle (P1-9 / vis-mod §1.5) | Nien | M | P1-8 | ★★★ Core |
-| B-5 | Homer attack animations (P1-10 / vis-mod §1.4+) | Nien | M | P1-8 | ★★★ Core |
+| B-4 | Brawler walk cycle (P1-9 / vis-mod §1.5) | Nien | M | P1-8 | ★★★ Core |
+| B-5 | Brawler attack animations (P1-10 / vis-mod §1.4+) | Nien | M | P1-8 | ★★★ Core |
 | B-6 | Facial expressions (vis-mod §1.4) | Nien | S | None | ★★☆ High |
-| B-7 | Homer detail polish (stubble, ears, hands, shirt) | Nien | M | B-1 | ★★☆ High |
+| B-7 | Brawler detail polish (stubble, ears, hands, shirt) | Nien | M | B-1 | ★★☆ High |
 | B-8 | Enemy unique silhouettes (vis-mod §2.1-2.4) | Nien | L | B-1 | ★★☆ High |
 | B-9 | Enemy walk cycles (vis-mod §2.5) | Nien | M | B-4 | ★★☆ High |
 | B-10 | Enemy attack telegraph VFX (EX-B3) | Bossk | S | P1-8 | ★★★ Core |
@@ -244,12 +244,12 @@ Things that CANNOT be done well on Canvas 2D + vanilla JS. These are explicitly 
 | C-10 | Destructible objects (AAA-L1) | Tarkin + Leia | L | C-1 | ★★★ Core |
 | C-11 | Throwable props (AAA-L2) | Tarkin + Lando | M | C-10, AAA-C1 | ★★☆ High |
 | C-12 | Environmental hazards (AAA-L3) | Tarkin + Leia | M | C-10 | ★☆☆ Med |
-| C-13 | Bart Simpson (AAA-CH2) | Nien + Lando | XL | Phase A complete | ★★★ Core |
-| C-14 | Marge Simpson (AAA-CH3) | Nien + Lando | XL | C-13 | ★★☆ High |
-| C-15 | Lisa Simpson (AAA-CH4) | Nien + Lando | XL | C-14 | ★☆☆ Med |
+| C-13 | the Kid (AAA-CH2) | Nien + Lando | XL | Phase A complete | ★★★ Core |
+| C-14 | the Defender (AAA-CH3) | Nien + Lando | XL | C-13 | ★★☆ High |
+| C-15 | the Prodigy (AAA-CH4) | Nien + Lando | XL | C-14 | ★☆☆ Med |
 | C-16 | Character select screen (AAA-CH1) | Wedge + Nien | L | C-13 | ★★★ Core |
-| C-17 | Level 2: Springfield Elementary (AAA-L4) | Tarkin + Leia | XL | C-1, C-10 | ★★★ Core |
-| C-18 | Level 3: Nuclear Power Plant (AAA-L5) | Tarkin + Leia | XL | C-17 | ★★☆ High |
+| C-17 | Level 2: City School (AAA-L4) | Tarkin + Leia | XL | C-1, C-10 | ★★★ Core |
+| C-18 | Level 3: Factory (AAA-L5) | Tarkin + Leia | XL | C-17 | ★★☆ High |
 | C-19 | Cinematic boss intros (AAA-V3) | Bossk + Nien | L | C-7 | ★★☆ High |
 | C-20 | Couch gag level intros (AAA-L6) | Yoda + Bossk | M | Per level | ★☆☆ Med |
 | C-21 | Set piece encounters (AAA-L7) | Tarkin + Yoda | L | C-17 | ★☆☆ Med |
@@ -277,7 +277,7 @@ Things that CANNOT be done well on Canvas 2D + vanilla JS. These are explicitly 
 | D-3 | Dynamic crowd reactions (AAA-A3) | Greedo | M | AAA-C4 | ★★☆ High |
 | D-4 | Hit sound combo scaling (AAA-A4) | Greedo | S | P1-5 | ★★☆ High |
 | D-5 | Boss music themes (AAA-A5) | Greedo | L | C-7 | ★★☆ High |
-| D-6 | Simpsons pickup sounds (AAA-A6) | Greedo | S | C-8, C-9 | ★☆☆ Med |
+| D-6 | game pickup sounds (AAA-A6) | Greedo | S | C-8, C-9 | ★☆☆ Med |
 | D-7 | Options/settings menu (AAA-U1) | Wedge | M | None | ★★★ Core |
 | D-8 | Pause menu redesign (AAA-U2) | Wedge | M | None | ★★☆ High |
 | D-9 | Score breakdown screen (AAA-U3) | Wedge + Yoda | M | None | ★★★ Core |
@@ -364,7 +364,7 @@ Phase A: Lando's combat chain is the critical path
   A-1 (bug fixes) → A-2 (grab) → A-3 (dodge) → A-6 (dash) → A-8 (juggle)
   
 Phase C: Characters depend on Phase A combat
-  Phase A complete → C-13 (Bart) → C-14 (Marge) → C-15 (Lisa)
+  Phase A complete → C-13 (Kid) → C-14 (Defender) → C-15 (Prodigy)
   
 Phase C: Levels depend on content data format
   C-1 (data format) → C-10 (destructibles) → C-17 (Level 2) → C-18 (Level 3)
@@ -380,9 +380,9 @@ Based on the genre research, an award-winning browser beat 'em up needs:
 
 1. **Combat that feels incredible** — Every hit has weight (hitlag + shake + particles + sound). Grab/throw for crowd control. Dodge for defense. Combos for expression. ✅ Achievable in Phase A.
 
-2. **Character personality** — 4 distinct playable Simpsons, each feeling unique within 10 seconds. Taunts, voice barks, idle animations. ✅ Achievable in Phases B+C.
+2. **Character personality** — 4 distinct playable game, each feeling unique within 10 seconds. Taunts, voice barks, idle animations. ✅ Achievable in Phases B+C.
 
-3. **Springfield as a character** — Backgrounds that make fans say "I recognize that!" Destructible objects, environmental gags, authentic locations. ✅ Achievable in Phases B+C.
+3. **Downtown as a character** — Backgrounds that make fans say "I recognize that!" Destructible objects, environmental gags, authentic locations. ✅ Achievable in Phases B+C.
 
 4. **Replayability hooks** — Score rankings, challenges, character unlocks, difficulty modes. "One more run" motivation. ✅ Achievable in Phase D.
 

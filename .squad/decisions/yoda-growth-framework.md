@@ -15,7 +15,7 @@ First Frame Studios has created a comprehensive **Growth Framework** (`.squad/id
 
 ## Why Now?
 
-The founder's directive: **"amplitud de miras"** (breadth of vision). SimpsonsKong proved we can ship one game. But the studio must be built to absorb new genres, new platforms, new team members, and new challenges without fundamental restructuring.
+The founder's directive: **"amplitud de miras"** (breadth of vision). firstPunch proved we can ship one game. But the studio must be built to absorb new genres, new platforms, new team members, and new challenges without fundamental restructuring.
 
 At growth inflection points, studios either:
 1. **Scale vertically** — Add more layers of management, more process overhead, more bureaucracy. This works at massive scale but kills small teams.
@@ -67,7 +67,7 @@ This ratio means: **New genres, new platforms, and new teams don't break us. The
 ### Alternative 1: "Don't document. Trust people and relationships."
 - **Pro:** Faster in the short term. Less "bureaucracy."
 - **Con:** Catastrophic when people leave. Knowledge dies. Studio must rehire and retrain. At Stage 2 or 3, this breaks the studio.
-- **Why we didn't choose this:** SimpsonsKong already taught us that institutional memory (decisions.md, skills, history.md) is what compounds. We can't rely on people staying; we have to rely on documented patterns.
+- **Why we didn't choose this:** firstPunch already taught us that institutional memory (decisions.md, skills, history.md) is what compounds. We can't rely on people staying; we have to rely on documented patterns.
 
 ### Alternative 2: "Create new structure for each new genre."
 - **Pro:** Each genre gets optimized structure.
@@ -77,13 +77,13 @@ This ratio means: **New genres, new platforms, and new teams don't break us. The
 ### Alternative 3: "Write the framework after the second game ships."
 - **Pro:** We'll have more data.
 - **Con:** The second game will be chaotic and slow because the team won't have a shared mental model of how to scale. Decision-making will be ad-hoc. We'll make preventable mistakes.
-- **Why we didn't choose this:** Writing the framework *now*, from SimpsonsKong's lessons, gives us a hypothesis to test with the second game. If the hypothesis holds, the second game will be faster. If it breaks, we'll learn why and update the framework.
+- **Why we didn't choose this:** Writing the framework *now*, from firstPunch's lessons, gives us a hypothesis to test with the second game. If the hypothesis holds, the second game will be faster. If it breaks, we'll learn why and update the framework.
 
 ---
 
 ## Implementation
 
-The Growth Framework is **not** a change to current operations. It is a **description of how we already work** (from SimpsonsKong) plus a **set of protocols for what comes next**.
+The Growth Framework is **not** a change to current operations. It is a **description of how we already work** (from firstPunch) plus a **set of protocols for what comes next**.
 
 **Immediate actions:**
 1. ✅ Growth Framework created and archived at `.squad/identity/growth-framework.md`
@@ -102,7 +102,7 @@ The Growth Framework is **not** a change to current operations. It is a **descri
 
 **This is highly reversible.** The Growth Framework is a description of intent, not a constraint. If the team discovers that the framework is wrong, we update it. If the 70/30 ratio doesn't hold, we change the ratio. If the genre onboarding protocol doesn't work, we redesign it.
 
-The only part that's non-reversible is: **Committing to documentation as the source of truth.** Once we've organized institutional knowledge around written skills and decision logs, we can't go back to "knowledge in people's heads" without losing everything. But that's the direction we've already chosen (with SimpsonsKong's GDD, skills, and decisions.md), so this isn't a new commitment.
+The only part that's non-reversible is: **Committing to documentation as the source of truth.** Once we've organized institutional knowledge around written skills and decision logs, we can't go back to "knowledge in people's heads" without losing everything. But that's the direction we've already chosen (with firstPunch's GDD, skills, and decisions.md), so this isn't a new commitment.
 
 ---
 
@@ -113,7 +113,7 @@ The Growth Framework succeeds if:
 1. **Second game launches faster than first** — Research, planning, and architecture spikes take 4 weeks instead of 8 (because we have existing knowledge).
 2. **No reshuffling of team structure** — We don't need to reorganize roles or create new departments to ship the second game.
 3. **Skills compound** — We can point to at least two transferable patterns from beat 'em up that accelerated the second game's development.
-4. **New genres don't break quality** — The second game ships at the same quality bar as SimpsonsKong without working weekends or hiring crisis staff.
+4. **New genres don't break quality** — The second game ships at the same quality bar as firstPunch without working weekends or hiring crisis staff.
 5. **Framework survives contact with reality** — We update the framework based on what we learned. Some claims will be wrong; that's OK.
 
 ---

@@ -167,4 +167,4 @@ If the boss takes damage during `slam_windup` state, the phase transition at lin
 
 ---
 
-*Report by Ackbar (QA/Playtester) — SimpsonsKong Squad*
+*Report by Ackbar (QA/Playtester) — firstPunch Squad*

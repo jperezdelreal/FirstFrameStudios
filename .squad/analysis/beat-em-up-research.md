@@ -1,57 +1,57 @@
-# Beat 'Em Up Genre Research — SimpsonsKong
+# Beat 'Em Up Genre Research — firstPunch
 
-> **Purpose:** Deep-dive into the beat 'em up genre to inform SimpsonsKong's game design vision.
-> **Project:** SimpsonsKong — A browser-based Simpsons beat 'em up
+> **Purpose:** Deep-dive into the beat 'em up genre to inform firstPunch's game design vision.
+> **Project:** firstPunch — A browser-based game beat 'em up
 > **Date:** 2025
 
 ---
 
 ## 1. Landmark Titles (The Canon)
 
-### The Simpsons Arcade Game (1991) — Konami
-- **Innovation:** One of the first licensed beat 'em ups to nail the source material's tone. Introduced team attacks where two players standing near each other could execute cooperative moves (Homer + Marge rolling attack, Bart + Lisa catapult). Each Simpson family member played distinctly despite a simple move set.
-- **Why it matters:** Our direct ancestor. Proved that a beloved IP combined with accessible 4-player co-op creates something greater than the sum of its parts. The Springfield settings — Moe's Tavern, the power plant, Krustyland — turned familiar locations into combat arenas, making fans feel like they were *inside* the show. The humor carried through enemy designs (suited goons, bears in tutus) and environmental gags.
-- **Key takeaway for SimpsonsKong:** Authenticity to the IP is paramount. Players remember *feeling like a Simpsons episode*, not the combo depth.
+### the classic arcade beat 'em up (1991) — Konami
+- **Innovation:** One of the first licensed beat 'em ups to nail the source material's tone. Introduced team attacks where two players standing near each other could execute cooperative moves (Brawler + Defender rolling attack, Kid + Prodigy catapult). Each family member character played distinctly despite a simple move set.
+- **Why it matters:** Our direct ancestor. Proved that a beloved IP combined with accessible 4-player co-op creates something greater than the sum of its parts. The Downtown settings — Joe's Bar, the factory, the amusement park — turned familiar locations into combat arenas, making fans feel like they were *inside* the show. The humor carried through enemy designs (suited goons, bears in tutus) and environmental gags.
+- **Key takeaway for firstPunch:** Authenticity to the IP is paramount. Players remember *feeling like they were in the game world*, not the combo depth.
 
 ### Final Fight (1989) — Capcom
 - **Innovation:** Codified the character archetype trinity that every beat 'em up since has used: **Haggar** (slow/powerful grappler), **Cody** (balanced all-rounder), **Guy** (fast/technical). Introduced weapon pickups (pipes, knives) that changed combat feel. Popularized the "break open containers for food/health" mechanic.
 - **Why it matters:** Final Fight is the Rosetta Stone of the genre. Before it, beat 'em ups were looser; after it, the template was set. The grab → piledriver loop became the genre's most satisfying micro-interaction. The Metro City stages established the "urban danger" aesthetic that persists today.
-- **Key takeaway for SimpsonsKong:** Character differentiation through the speed/power/range triangle is non-negotiable. Players must *feel* the difference between characters within 10 seconds of play.
+- **Key takeaway for firstPunch:** Character differentiation through the speed/power/range triangle is non-negotiable. Players must *feel* the difference between characters within 10 seconds of play.
 
 ### Streets of Rage 2 (1992) — Sega (AM7)
 - **Innovation:** Deepest combat system of the 16-bit era. Each character had a full special move set with directional inputs (forward+attack, back+attack, jumping specials). Special moves cost a sliver of health — a brilliant risk/reward trade. Yuzo Koshiro's electronic soundtrack set a new bar for game audio. Enemy AI was varied: some blocked, some countered grabs, some attacked in coordinated pairs.
 - **Why it matters:** Proved that beat 'em ups could have fighting-game-level depth without sacrificing accessibility. A casual player could button-mash through; a skilled player could no-hit runs using frame-perfect specials. The health-cost special moves created constant micro-decisions: "Do I spend 5% HP to clear this crowd, or play it safe?"
-- **Key takeaway for SimpsonsKong:** Depth should be layered, not gated. The simplest input should still feel powerful, but mastery should reveal new options.
+- **Key takeaway for firstPunch:** Depth should be layered, not gated. The simplest input should still feel powerful, but mastery should reveal new options.
 
 ### Teenage Mutant Ninja Turtles: Turtles in Time (1991) — Konami
 - **Innovation:** The throw mechanic was genre-defining — players could grab enemies and *hurl them at the screen* (toward the camera in the arcade version), creating a visceral 3D-breaking moment. Boss fights were creative puzzles (throwing Foot Soldiers at Shredder). Environmental variety was extreme: time-travel premise allowed prehistoric, pirate, and futuristic stages.
 - **Why it matters:** Demonstrated that humor and spectacle could be core mechanics, not just flavor. The screen-throw wasn't just cool — it was the optimal strategy against certain bosses, making it both stylish AND strategic. Level theme variety kept the experience fresh across its runtime.
-- **Key takeaway for SimpsonsKong:** Environmental interaction and boss-specific mechanics prevent combat monotony. Humor should be *mechanical*, not just cosmetic.
+- **Key takeaway for firstPunch:** Environmental interaction and boss-specific mechanics prevent combat monotony. Humor should be *mechanical*, not just cosmetic.
 
 ### Scott Pilgrim vs. the World: The Game (2010) — Ubisoft Montreal
 - **Innovation:** Grafted RPG progression onto the beat 'em up chassis. Players earned XP, leveled up to unlock new moves, bought stat-boosting items from shops, and could grind earlier levels to power up. Paul Robertson's pixel art set a new standard for modern retro visuals. The world map gave players agency over level order.
 - **Why it matters:** Solved the beat 'em up's biggest problem: replayability. Traditional beat 'em ups were 45-minute arcade experiences; Scott Pilgrim was a 6–8 hour campaign with reasons to replay. The progression system turned "I finished the game" into "I maxed out every character." Hidden shops and secret paths rewarded exploration.
-- **Key takeaway for SimpsonsKong:** Progression systems dramatically extend engagement. Unlocking new moves through play (not just finding them) creates investment in each character.
+- **Key takeaway for firstPunch:** Progression systems dramatically extend engagement. Unlocking new moves through play (not just finding them) creates investment in each character.
 
 ### Castle Crashers (2008) — The Behemoth
 - **Innovation:** Made the genre accessible to non-gamers while hiding surprising depth. The magic system gave each character a unique elemental identity. Animal Orbs (passive pet companions) added collection and customization. XP/leveling with manual stat allocation (Strength, Magic, Defense, Agility) let players build characters their way. 4-player online co-op was seamless.
 - **Why it matters:** Castle Crashers was a gateway drug. It brought millions of players into the genre through its approachable art style, humor, and gentle difficulty curve. The 30+ unlockable characters created a collection metagame. It proved beat 'em ups could thrive as indie/digital titles, not just arcade or retail.
-- **Key takeaway for SimpsonsKong:** Customization and collection hooks keep players engaged beyond the core combat loop. A large character roster is a powerful motivator.
+- **Key takeaway for firstPunch:** Customization and collection hooks keep players engaged beyond the core combat loop. A large character roster is a powerful motivator.
 
 ### Dragon's Crown (2013) — Vanillaware
 - **Innovation:** Vanillaware's hand-painted art elevated the genre to fine art. Deep RPG systems: loot drops, equipment management, skill trees, character classes with fundamentally different playstyles (Sorceress played nothing like Fighter). The Labyrinth of Chaos provided endgame dungeon-crawling content. NPC companions could be recruited from bones found in dungeons.
 - **Why it matters:** Proved that beat 'em ups could sustain 40+ hour campaigns with RPG depth. The art direction alone sold the game — every frame was a painting. Class variety meant replaying the game as a different character was a genuinely new experience, not just a stat swap.
-- **Key takeaway for SimpsonsKong:** Visual identity is a competitive advantage. In a browser game, distinctive art can overcome technical limitations.
+- **Key takeaway for firstPunch:** Visual identity is a competitive advantage. In a browser game, distinctive art can overcome technical limitations.
 
 ### Streets of Rage 4 (2020) — DotEmu / Lizardcube / Guard Crush
 - **Innovation:** Perfected the "easy to learn, impossible to master" curve. The combo system introduced juggle physics where enemies could be bounced off walls and floors for extended combos. Star Moves (limited-use screen-clearing supers) added resource management. The special move health recovery system was genius: specials cost health, but landing normal attacks recovered that health, creating an aggressive risk/reward loop. Retro-compatible unlockable characters from previous games honored the legacy.
 - **Why it matters:** The modern gold standard. Proved the genre could feel contemporary without losing its soul. The combo scoring system and online leaderboards turned single runs into competitive events. The difficulty curve (12 difficulty levels!) made it accessible to newcomers and punishing for veterans simultaneously.
-- **Key takeaway for SimpsonsKong:** The "spend health on specials, recover by attacking" loop is the best risk/reward mechanic the genre has produced. Study it carefully.
+- **Key takeaway for firstPunch:** The "spend health on specials, recover by attacking" loop is the best risk/reward mechanic the genre has produced. Study it carefully.
 
 ### TMNT: Shredder's Revenge (2022) — Tribute Games
 - **Innovation:** Expanded co-op to 6 simultaneous players. Taunt mechanic — taunting near enemies builds your super meter faster but leaves you vulnerable. Super moves were flashy, character-defining moments. Dodge roll with i-frames gave defensive options beyond jumping. Challenge system layered optional objectives onto each level.
 - **Why it matters:** The latest word on what a modern beat 'em up should be. It nailed the nostalgia-meets-modernity balance: pixel art that evoked the '90s, mechanics that respected 2020s design sensibilities. The 6-player co-op created chaotic, joyful moments. Per-level challenges (complete without taking damage, find all collectibles) added replay incentive without RPG grinding.
-- **Key takeaway for SimpsonsKong:** Taunt mechanics and per-level challenges are low-cost, high-reward design additions. The dodge roll is now expected in modern entries.
+- **Key takeaway for firstPunch:** Taunt mechanics and per-level challenges are low-cost, high-reward design additions. The dodge roll is now expected in modern entries.
 
 ---
 
@@ -83,12 +83,12 @@ ADVANCED LOOP:
 | Attack (mash) | Basic combo string | All 9 games |
 | Jump + Attack | Aerial / dive attack | All 9 games |
 | Grab (proximity) | Initiates throw/pummel | All 9 games |
-| Special | Panic move / crowd clear | 8/9 (not original Simpsons) |
+| Special | Panic move / crowd clear | 8/9 (not original game) |
 | Dodge / Roll | Defensive i-frame movement | SoR4, Shredder's Revenge, Scott Pilgrim |
 | Dash Attack | Closing distance offensively | SoR2, SoR4, Scott Pilgrim |
 | Back Attack | Hitting enemies behind you | SoR2, SoR4, Final Fight |
 
-**SimpsonsKong minimum viable combat:** Attack string, jump attack, grab/throw, special move, and a dodge/roll. This covers the "feel" of both classic and modern entries.
+**firstPunch minimum viable combat:** Attack string, jump attack, grab/throw, special move, and a dodge/roll. This covers the "feel" of both classic and modern entries.
 
 ### 2.2 Crowd Control & Positioning
 
@@ -143,12 +143,12 @@ Progression has evolved dramatically across the genre's history:
 
 | Era | Progression Model | Games |
 |-----|------------------|-------|
-| **Arcade (1989–1993)** | Score → Extra Lives → Continues. No persistent progress. | Final Fight, Simpsons, TMNT |
+| **Arcade (1989–1993)** | Score → Extra Lives → Continues. No persistent progress. | Final Fight, game, TMNT |
 | **Console (1992–1999)** | Score + difficulty select + sometimes unlockable characters. | SoR2, SoR3 |
 | **Modern Indie (2008–2015)** | XP → Level up → New moves + Shops + Stats. Persistent between sessions. | Castle Crashers, Scott Pilgrim, Dragon's Crown |
 | **Neo-Retro (2020–2024)** | Per-run score/rank + Unlockable characters + Achievements + Leaderboards. | SoR4, Shredder's Revenge |
 
-**For a browser game like SimpsonsKong**, the sweet spot is likely the Neo-Retro model with light RPG elements: unlock new characters through play, per-level scoring with ranks, and a small number of persistent upgrades.
+**For a browser game like firstPunch**, the sweet spot is likely the Neo-Retro model with light RPG elements: unlock new characters through play, per-level scoring with ranks, and a small number of persistent upgrades.
 
 ### 2.6 Multiplayer & Co-op
 
@@ -156,7 +156,7 @@ Co-op is the genre's killer feature:
 
 - **Shared screen real estate:** All players share one camera. This creates natural proximity and emergent teamwork.
 - **Friendly fire (optional):** Some games include it (SoR2) for chaos; most modern games disable it for accessibility.
-- **Team attacks:** Two players combining inputs for a unique move (Simpsons Arcade's pair attacks). High coordination reward.
+- **Team attacks:** Two players combining inputs for a unique move (classic arcade beat 'em ups's pair attacks). High coordination reward.
 - **Revive mechanics:** Some modern games let downed players be revived by allies (Shredder's Revenge), reducing frustration.
 - **Enemy scaling:** More players = more enemies and/or tougher enemies. Poorly tuned scaling ruins co-op.
 - **Shared resources:** Health pickups are typically first-come-first-served, creating light tension ("I need that turkey!").
@@ -184,7 +184,7 @@ The #1 differentiator between a good and great beat 'em up. Every attack must co
 - **"It hurt"** — audio confirmation (impact SFX) + enemy reaction (stagger, knockback)
 - **"I'm powerful"** — exaggerated response (enemies fly across screen, bounce off walls)
 
-The Simpsons Arcade Game nailed this despite simple tech: Homer's belly bounce sent enemies cartwheeling. It *felt* like Homer.
+the classic arcade beat 'em up nailed this despite simple tech: Brawler's belly bounce sent enemies cartwheeling. It *felt* like Brawler.
 
 ### 3.2 Enemy Variety as Combat Puzzles
 
@@ -230,7 +230,7 @@ Using the environment makes players feel clever:
 - Breaking the environment for pickups (smashing parking meters for coins)
 - Stage-specific mechanics (conveyor belts, elevators, moving platforms)
 
-**For SimpsonsKong:** Springfield is RICH with interactive potential. Throw enemies into the Springfield Gorge. Use Lard Lad's donut as a weapon. Smash Flanders' mailbox. The show's world is a playground.
+**For firstPunch:** Downtown is RICH with interactive potential. Throw enemies into the the town gorge. Use Donut Shop's donut as a weapon. Smash a neighbor's mailbox. The show's world is a playground.
 
 ---
 
@@ -244,7 +244,7 @@ Using the environment makes players feel clever:
 
 **Why it works:** Transforms every encounter into a performance. Players don't just *win* — they win with *style*. Creates replayability as players chase higher scores.
 
-**SimpsonsKong fit:** ★★★★★ — Perfect fit. Could tie into Simpsons humor: "D'oh!" rating for low combos, "Excellent!" (Mr. Burns voice) for high ones.
+**firstPunch fit:** ★★★★★ — Perfect fit. Could tie into game humor: "Ugh!" rating for low combos, "Excellent!" (the Mayor voice) for high ones.
 
 ### 4.2 Juggle Physics
 
@@ -254,7 +254,7 @@ Using the environment makes players feel clever:
 
 **Why it works:** Adds a skill expression layer. Casual players can knock enemies around; advanced players can keep them airborne for 20+ hit combos.
 
-**SimpsonsKong fit:** ★★★★☆ — Great fit, but needs careful tuning for browser performance. Simplified juggle physics (2–3 bounce states rather than full simulation) would work.
+**firstPunch fit:** ★★★★☆ — Great fit, but needs careful tuning for browser performance. Simplified juggle physics (2–3 bounce states rather than full simulation) would work.
 
 ### 4.3 Taunt Mechanics
 
@@ -264,7 +264,7 @@ Using the environment makes players feel clever:
 
 **Why it works:** Pure risk/reward. Taunting in a dangerous situation for meter gain is thrilling. Also adds personality — each character's taunt can be a comedic moment.
 
-**SimpsonsKong fit:** ★★★★★ — Simpsons characters are MADE for taunts. Homer eating a donut, Bart mooning enemies, Lisa playing saxophone, Marge tutting disapprovingly. Each taunt would be character-defining.
+**firstPunch fit:** ★★★★★ — game characters are MADE for taunts. Brawler eating a donut, Kid mooning enemies, Prodigy playing saxophone, Defender tutting disapprovingly. Each taunt would be character-defining.
 
 ### 4.4 Super / Special Move Meters
 
@@ -274,7 +274,7 @@ Using the environment makes players feel clever:
 
 **Why it works:** Creates a strategic resource. Save it for the boss? Use it to survive a tough encounter? Spend it for style points?
 
-**SimpsonsKong fit:** ★★★★★ — Essential. Each Simpson's super should be iconic and over-the-top. Homer's should involve donuts or Duff beer. Bart's could summon Bartman.
+**firstPunch fit:** ★★★★★ — Essential. Each character's super should be iconic and over-the-top. Brawler's should involve food or power-ups. Kid's could summon alter-ego.
 
 ### 4.5 Online Leaderboards & Replay
 
@@ -282,9 +282,9 @@ Using the environment makes players feel clever:
 
 **Games using it:** SoR4, Fight'N Rage
 
-**Why it works:** Extends longevity indefinitely. Players compete against friends and the world. "I can beat your Springfield Mall score" drives replays.
+**Why it works:** Extends longevity indefinitely. Players compete against friends and the world. "I can beat your Downtown Mall score" drives replays.
 
-**SimpsonsKong fit:** ★★★★☆ — Strong fit for a browser game. Leaderboards are technically simple to implement and create social sharing moments. "Check out my score!" is organic marketing.
+**firstPunch fit:** ★★★★☆ — Strong fit for a browser game. Leaderboards are technically simple to implement and create social sharing moments. "Check out my score!" is organic marketing.
 
 ### 4.6 Character Progression Between Runs
 
@@ -294,7 +294,7 @@ Using the environment makes players feel clever:
 
 **Why it works:** Creates "one more run" motivation. Players return to level up, unlock new abilities, and try new builds.
 
-**SimpsonsKong fit:** ★★★☆☆ — Moderate fit. Too much progression risks overwhelming a browser game's scope. A light system (unlock 2–3 new moves per character through milestones) would work. Full RPG stats might be overscoped.
+**firstPunch fit:** ★★★☆☆ — Moderate fit. Too much progression risks overwhelming a browser game's scope. A light system (unlock 2–3 new moves per character through milestones) would work. Full RPG stats might be overscoped.
 
 ### 4.7 Dodge Roll with I-Frames
 
@@ -304,7 +304,7 @@ Using the environment makes players feel clever:
 
 **Why it works:** Gives players a defensive option beyond jumping. Creates a more modern, responsive feel. Players who master dodge timing feel skillful.
 
-**SimpsonsKong fit:** ★★★★★ — Modern players expect this. Without it, combat feels stiff. Each character's dodge could be visually unique (Homer dives, Bart cartwheels, Lisa ducks, Marge sidesteps).
+**firstPunch fit:** ★★★★★ — Modern players expect this. Without it, combat feels stiff. Each character's dodge could be visually unique (Brawler dives, Kid cartwheels, Prodigy ducks, Defender sidesteps).
 
 ### 4.8 Assist / Accessibility Options
 
@@ -314,92 +314,92 @@ Using the environment makes players feel clever:
 
 **Why it works:** Widens the audience without compromising depth for advanced players.
 
-**SimpsonsKong fit:** ★★★★☆ — A browser game should be accessible by default. Offering a "Couch Mode" (easy) and "Sideshow Bob Mode" (hard) would be very Simpsons.
+**firstPunch fit:** ★★★★☆ — A browser game should be accessible by default. Offering a "Chill Mode" (easy) and "Nightmare Mode" (hard) would be very game.
 
 ---
 
-## 5. SimpsonsKong Opportunity Analysis
+## 5. firstPunch Opportunity Analysis
 
-### 5.1 Unique Simpsons Mechanics
+### 5.1 Unique game Mechanics
 
-The Simpsons IP offers mechanics that NO other beat 'em up can replicate:
+The game IP offers mechanics that NO other beat 'em up can replicate:
 
-#### Homer Simpson
-- **Donut Rage Mode:** Eating donuts fills a rage meter. When full, Homer enters a berserk state — increased damage, belly-based attacks, temporary invincibility. Visual: Homer turns red, steam comes from ears (like the show).
-- **Duff Power-Up:** Duff beer pickups give Homer a temporary speed/strength boost but make controls slightly wobbly. Risk/reward embodied.
-- **Belly Bounce:** Homer's signature — his belly is a weapon. Charged belly bounce clears crowds.
-- **Spider-Pig Summon:** Super move — Homer summons Spider-Pig who swings across the screen damaging all enemies.
+#### the Brawler
+- **Rage Mode:** Eating donuts fills a rage meter. When full, Brawler enters a berserk state — increased damage, belly-based attacks, temporary invincibility. Visual: Brawler turns red, steam comes from ears (like the show).
+- **Energy Drink Power-Up:** energy drink pickups give Brawler a temporary speed/strength boost but make controls slightly wobbly. Risk/reward embodied.
+- **Belly Bounce:** Brawler's signature — his belly is a weapon. Charged belly bounce clears crowds.
+- **Spider-Pig Summon:** Super move — Brawler summons Spider-Pig who swings across the screen damaging all enemies.
 
-#### Bart Simpson
-- **Skateboard Dash:** Bart hops on his skateboard for a fast dash attack that covers distance and hits multiple enemies. Can be used for traversal and offense.
-- **Slingshot Ranged Attack:** A dedicated ranged option. Bart can fire slingshot pellets at distant enemies, giving the team a ranged character option.
-- **Bartman Mode:** Super move — Bart transforms into Bartman, gaining aerial attacks and a cape glide.
-- **"Eat My Shorts" Taunt:** Bart's taunt is especially effective — fills meter faster than other characters but has a longer animation (more risk).
+#### the Kid
+- **Skateboard Dash:** Kid hops on his skateboard for a fast dash attack that covers distance and hits multiple enemies. Can be used for traversal and offense.
+- **Slingshot Ranged Attack:** A dedicated ranged option. Kid can fire slingshot pellets at distant enemies, giving the team a ranged character option.
+- **alter-ego Mode:** Super move — Kid transforms into alter-ego, gaining aerial attacks and a cape glide.
+- **"signature" Taunt:** Kid's taunt is especially effective — fills meter faster than other characters but has a longer animation (more risk).
 
-#### Marge Simpson
-- **Purse Rage:** Marge swings her purse with increasing fury. Combo finisher sends enemies flying. Her purse could function as a unique weapon with extended range.
-- **Maternal Instinct Shield:** When near another player at low health, Marge gains a protective buff — takes reduced damage while "protecting the family."
-- **Hair Whip:** Marge's towering blue hair is a weapon. Spin attack using her hair has massive range.
-- **Maggie Assist:** Super move — Maggie crawls out and bonks the nearest enemy with her mallet (reference to the show's intro).
+#### the Defender
+- **Purse Rage:** Defender swings her purse with increasing fury. Combo finisher sends enemies flying. Her purse could function as a unique weapon with extended range.
+- **Maternal Instinct Shield:** When near another player at low health, Defender gains a protective buff — takes reduced damage while "protecting the family."
+- **Hair Whip:** Defender's towering blue hair is a weapon. Spin attack using her hair has massive range.
+- **Tot Assist:** Super move — Tot crawls out and bonks the nearest enemy with her mallet (reference to the show's intro).
 
-#### Lisa Simpson
+#### the Prodigy
 - **Saxophone Blast:** A sonic wave attack that damages enemies in a cone. Can be charged for wider range. Functions as crowd control.
-- **Intellect Advantage:** Lisa's dodge has extra i-frames (she's smart enough to read attacks). Rewards skilled defensive play.
-- **Activist Rally:** Super move — Lisa gives a passionate speech that stuns all enemies on screen (they stop to listen). Comedy gold.
-- **Jump Rope Whip:** Lisa's basic weapon — her jump rope used as a whip for mid-range attacks.
+- **Intellect Advantage:** Prodigy's dodge has extra i-frames (she's smart enough to read attacks). Rewards skilled defensive play.
+- **Activist Rally:** Super move — Prodigy gives a passionate speech that stuns all enemies on screen (they stop to listen). Comedy gold.
+- **Jump Rope Whip:** Prodigy's basic weapon — her jump rope used as a whip for mid-range attacks.
 
-### 5.2 Simpsons Themes → Beat 'Em Up Mechanics
+### 5.2 game Themes → Beat 'Em Up Mechanics
 
-| Simpsons Theme | Mechanic Mapping |
+| game Theme | Mechanic Mapping |
 |---------------|-----------------|
-| **Springfield locations** | Level themes (Power Plant, Moe's Tavern, Springfield Elementary, Squidport, Shelbyville) |
+| **Downtown locations** | Level themes (Factory, Joe's Bar, City School, Squidport, Shelbyville) |
 | **Couch gag tradition** | Each level starts with a unique "couch gag" intro animation |
-| **Recurring characters** | Enemy types: Burns' goons, Sideshow Bob clones, Snake Jailbird, Nelson's bullies |
-| **Homer's appetites** | Health pickups are Springfield food: donuts, Krusty Burgers, Buzz Cola, Flaming Moe's |
-| **Treehouse of Horror** | Bonus/secret horror-themed level with unique enemies (zombies, aliens, evil Krusty dolls) |
-| **Itchy & Scratchy** | Ultra-violent optional mini-game between levels (comic relief within comic relief) |
-| **Monorail** | Moving stage set piece — fight on top of the runaway monorail |
-| **"D'oh!" culture** | Failure feedback: Homer says "D'oh!" when hit, crowd groans on game over |
-| **Nuclear plant** | Environmental hazard — radioactive barrels that create damage zones |
-| **Ned Flanders** | NPC ally who occasionally appears to offer "okily-dokily" encouragement (small buff) |
+| **Recurring characters** | Enemy types: Mayor's goons, minion waves, street thug, Bruiser's bullies |
+| **Brawler's appetites** | Health pickups are Downtown food: donuts, Burger Joints, Buzz Cola, Flaming Joe's Bar |
+| **Treehouse of Horror** | Bonus/secret horror-themed level with unique enemies (zombies, aliens, evil Clown dolls) |
+| **cartoon-within-a-cartoon** | Ultra-violent optional mini-game between levels (comic relief within comic relief) |
+| **Sky Rail** | Moving stage set piece — fight on top of the runaway sky rail |
+| **"Ugh!" culture** | Failure feedback: Brawler says "Ugh!" when hit, crowd groans on game over |
+| **Factory** | Environmental hazard — toxic barrels that create damage zones |
+| **friendly neighbor** | NPC ally who occasionally appears to offer "you can do it!" encouragement (small buff) |
 
-### 5.3 What Makes SimpsonsKong Distinct
+### 5.3 What Makes firstPunch Distinct
 
 **The Three Pillars of Differentiation:**
 
 #### Pillar 1: Comedy as a Core Mechanic
-No other beat 'em up makes humor *mechanical*. In SimpsonsKong:
+No other beat 'em up makes humor *mechanical*. In firstPunch:
 - Taunts are *funny* and character-specific, making the risk/reward system entertaining regardless of outcome.
 - Enemy defeat animations reference show gags (enemy falls like Hans Moleman getting hit by a football).
-- Environmental interactions are comedic (throwing an enemy into Lard Lad's donut, using Comic Book Guy as a human shield NPC).
-- The combo meter uses Simpsons-themed ratings: "Boring" → "Meh" → "Ay Caramba!" → "Excellent!" → "Best. Combo. Ever."
+- Environmental interactions are comedic (throwing an enemy into Donut Shop's donut, using a bystander NPC as a human shield).
+- The combo meter uses retro-themed ratings: "Boring" → "Meh" → "Radical!" → "Excellent!" → "Best. Combo. Ever."
 
 #### Pillar 2: Family Synergy System
-The Simpsons are a FAMILY. The game should mechanically reward playing together:
-- **Family Combo Attacks:** When two specific Simpsons are near each other, a unique team attack becomes available (inheriting from the 1991 arcade game but expanding it).
-- **Family Buff Aura:** Playing near family members grants small passive buffs (Homer near Marge = more health regen, Bart near Lisa = more meter gain).
-- **Full Family Finisher:** When all four Simpsons are present and all meters are full, a screen-clearing "Simpson Family Photo" super becomes available — the ultimate reward for coordinated play.
+the source IP are a FAMILY. The game should mechanically reward playing together:
+- **Family Combo Attacks:** When two specific game are near each other, a unique team attack becomes available (inheriting from the 1991 arcade game but expanding it).
+- **Family Buff Aura:** Playing near family members grants small passive buffs (Brawler near Defender = more health regen, Kid near Prodigy = more meter gain).
+- **Full Team Finisher:** When all four characters are present and all meters are full, a screen-clearing "Team Photo" super becomes available — the ultimate reward for coordinated play.
 
 #### Pillar 3: Browser-Native Design
 Being a browser game isn't a limitation — it's a feature:
 - **Instant play:** No downloads, no installs. Click a link, start playing. Lower barrier than any console beat 'em up.
 - **Session-friendly:** Levels designed for 5–10 minute sessions. Play one level on a lunch break.
-- **Shareable moments:** One-click sharing of high scores, combo clips, and achievements. "I just got 'Best. Combo. Ever.' on the Springfield Mall level — can you beat it?"
+- **Shareable moments:** One-click sharing of high scores, combo clips, and achievements. "I just got 'Best. Combo. Ever.' on the Downtown Mall level — can you beat it?"
 - **Accessible controls:** Designed for keyboard with optional gamepad. Simplified control scheme that works without a D-pad.
 
 ### 5.4 Competitive Landscape & Positioning
 
-SimpsonsKong occupies a unique niche:
-- **vs. Shredder's Revenge / SoR4:** Those are premium console/PC games. SimpsonsKong is free, browser-based, instant-play.
-- **vs. Mobile beat 'em ups:** SimpsonsKong has proper controls and depth, not auto-play mechanics.
-- **vs. Other Simpsons games:** No current Simpsons beat 'em up exists in the browser space. The 1991 arcade game is only available via arcade1up cabinets and MAME. There's a nostalgia gap to fill.
+firstPunch occupies a unique niche:
+- **vs. Shredder's Revenge / SoR4:** Those are premium console/PC games. firstPunch is free, browser-based, instant-play.
+- **vs. Mobile beat 'em ups:** firstPunch has proper controls and depth, not auto-play mechanics.
+- **vs. Other beat 'em up games:** No current game beat 'em up exists in the browser space. The 1991 arcade game is only available via arcade1up cabinets and MAME. There's a nostalgia gap to fill.
 
 ---
 
-## 6. Summary: Research Takeaways for SimpsonsKong
+## 6. Summary: Research Takeaways for firstPunch
 
 ### Must-Have Mechanics (Non-Negotiable)
-1. ✅ Character differentiation (speed/power/range triangle across Homer, Bart, Marge, Lisa)
+1. ✅ Character differentiation (speed/power/range triangle across Brawler, Kid, Defender, Prodigy)
 2. ✅ Basic combo string → grab → throw → special move combat loop
 3. ✅ Dodge roll with i-frames
 4. ✅ Hitlag, screen shake, impact particles (game feel fundamentals)
@@ -409,27 +409,27 @@ SimpsonsKong occupies a unique niche:
 
 ### Should-Have Mechanics (High Value)
 1. ⭐ Super move meter system
-2. ⭐ Taunt mechanic (especially strong with Simpsons characters)
-3. ⭐ Combo scoring / style meter with Simpsons-themed ratings
+2. ⭐ Taunt mechanic (especially strong with game characters)
+3. ⭐ Combo scoring / style meter with retro-themed ratings
 4. ⭐ Team/family attack system
 5. ⭐ Per-level challenges and rankings
-6. ⭐ Weapon pickups from the Simpsons universe
+6. ⭐ Weapon pickups from the source IP universe
 
 ### Could-Have Mechanics (Stretch Goals)
 1. 💡 Light character progression (unlock moves through milestones)
 2. 💡 Leaderboards
 3. 💡 Treehouse of Horror bonus level
-4. 💡 Character-unique special mechanics (Homer's rage, Bart's skateboard, etc.)
+4. 💡 Character-unique special mechanics (Brawler's rage, Kid's skateboard, etc.)
 5. 💡 Couch gag level intros
-6. 💡 Itchy & Scratchy mini-game
+6. 💡 cartoon-within-a-cartoon mini-game
 
 ### Design Principles
-1. **Authenticity first:** Every mechanic should feel like it belongs in a Simpsons episode.
+1. **Authenticity first:** Every mechanic should feel like it belongs in a game episode.
 2. **Depth through layers:** Simple on the surface, deep for those who look. Button-mashers have fun; combo masters have a different kind of fun.
 3. **Comedy is mechanical:** Humor isn't just in cutscenes — it's in taunts, enemy reactions, environmental gags, and feedback text.
 4. **Sessions, not marathons:** Browser-native means respecting players' time. 5-minute levels, instant satisfaction.
-5. **Family synergy:** The Simpsons are stronger together. Co-op mechanics should reward proximity and coordination.
+5. **Family synergy:** the source IP are stronger together. Co-op mechanics should reward proximity and coordination.
 
 ---
 
-*This research document serves as the foundational reference for SimpsonsKong's game design. All mechanic decisions should be validated against these findings and the identified design principles.*
+*This research document serves as the foundational reference for firstPunch's game design. All mechanic decisions should be validated against these findings and the identified design principles.*

@@ -1,5 +1,5 @@
 /**
- * Particle System — SimpsonsKong
+ * Particle System — First Punch
  * Owner: Chewie (Engine Dev)
  *
  * Generic particle emitter for dust clouds, hit sparks, death debris, etc.

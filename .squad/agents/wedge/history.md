@@ -1,7 +1,7 @@
 # Wedge — History (formerly Hockney)
 
 ## Project Context
-- **Project:** SimpsonsKong — Browser-based Simpsons beat 'em up
+- **Project:** firstPunch — Browser-based game beat 'em up
 - **User:** joperezd
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Goal:** Ship playable beat 'em up level in 30 minutes
@@ -21,9 +21,9 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
 - **Animation & Transitions:** Menu transitions (fade, slide, scale+bounce), HUD element entrance/exit (slide+fade, emphasis pulses), button feedback (0.95x press state), no instant cuts (0.3-0.5s is standard).
 - **Accessibility Basics:** Colorblind modes (don't use color alone; add symbols/patterns), text contrast ratios (4.5:1 WCAG AA minimum), button prompts (show current control scheme), subtitle/caption support.
 - **Anti-Patterns:** UI overload (apply hierarchy), invisible state (always provide feedback), modal trap (ESC always exits), mouse-first action games (keyboard/gamepad primary), unscaled HUD (responsive layout), no input feedback (SFX on menu nav), instant state changes (animate everything), color-only info (add icons).
-- **SimpsonsKong Learnings:** What shipped (arcade HUD, style meter, title screen, pause menu, options menu, game over screen, level intro, enemy health bars, wave progress, HiDPI support, high score persistence), what worked (hierarchy, dark panels, rolling score, menu SFX, button feedback, letterboxing), what to improve (boss health bar separate, accessibility audit, rebindable controls, loading screen framework, text sizing algorithm, tutorial system).
+- **firstPunch Learnings:** What shipped (arcade HUD, style meter, title screen, pause menu, options menu, game over screen, level intro, enemy health bars, wave progress, HiDPI support, high score persistence), what worked (hierarchy, dark panels, rolling score, menu SFX, button feedback, letterboxing), what to improve (boss health bar separate, accessibility audit, rebindable controls, loading screen framework, text sizing algorithm, tutorial system).
 
-**Confidence: `medium`** — Earned through shipped features in SimpsonsKong. Patterns are universally applicable to any game genre. Validated in one project; ready for cross-project use.
+**Confidence: `medium`** — Earned through shipped features in firstPunch. Patterns are universally applicable to any game genre. Validated in one project; ready for cross-project use.
 
 **Cross-game applicability:** Directly transfers to RPGs (HUD hierarchy applies), puzzle games (information hierarchy), platformers (simple HUD), strategy games (complex HUD, same principles), roguelikes (combo counter → run timer), racing games (different Tier structure, same framework).
 
@@ -35,7 +35,7 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
 
 - Created comprehensive README.md with project overview, quick start guide, controls, and tech stack
 - Included sections covering:
-  - Project description (beat 'em up game inspired by The Simpsons Arcade, Final Fight, Streets of Rage)
+  - Project description (beat 'em up game inspired by classic arcade beat 'em ups, Final Fight, Streets of Rage)
   - Quick start instructions with local server options for ES modules
   - Controls mapping (WASD/arrows for movement, J/Z for punch, K/X for kick, Space for jump, Enter to start)
   - Tech stack (Pure HTML/CSS/JS, ES modules, HTML5 Canvas, Web Audio API)
@@ -45,7 +45,7 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
 - Implemented localStorage high score persistence (P0-1):
   - Created `src/ui/highscore.js` utility with `getHighScore()`, `saveHighScore(score)`, `isNewHighScore(score)`
   - All localStorage access wrapped in try/catch for private browsing graceful fallback
-  - Title screen shows "HIGH SCORE: {value}" in Simpsons yellow below controls (only if > 0)
+  - Title screen shows "HIGH SCORE: {value}" in character yellow below controls (only if > 0)
   - Game over screen shows current score + high score below it
   - Level complete screen shows "NEW HIGH SCORE!" if beaten, otherwise shows existing high score
   - `saveHighScore()` returns boolean indicating if a new record was set — used to toggle display text
@@ -55,7 +55,7 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
   - Added `update(dt, player)` method to HUD for time-based combo animation state
   - Tracks previous combo count to detect combo growth and resets
   - Pop effect: text scales from 1.5x → 1.0x over 0.2s when combo increases
-  - Color progression: Simpsons yellow (#FED90F) at 2 hits → orange at 3+ → red at 5+
+  - Color progression: character yellow (#FED90F) at 2 hits → orange at 3+ → red at 5+
   - Text size scales with combo count (36px base + 2px per combo hit, capped at +16px)
   - Quick fade-out (~0.25s) when combo drops below 2
   - Shows damage multiplier (x1.1, x1.2, etc.) in smaller text below the combo count
@@ -64,7 +64,7 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
 
 - Implemented Game Over Screen improvements (P1-13):
   - Added dark semi-transparent overlay (rgba 0,0,0,0.7) behind game over text for readability
-  - Shows "NEW HIGH SCORE!" banner in Simpsons yellow when high score is beaten
+  - Shows "NEW HIGH SCORE!" banner in character yellow when high score is beaten
   - Displays current score and high score below GAME OVER text
   - Added 0.5s `gameOverTimer` delay before accepting ENTER input to prevent accidental skip
   - High score already saved on game over via existing `highScoreSaved` flag
@@ -86,28 +86,28 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
 - Implemented Level Intro Text (P2-17):
   - Added `introActive`, `introTimer` (2s), `introElapsed` state to gameplay `onEnter()`
   - During intro: update loop returns early after counting elapsed time — no entity updates
-  - Render draws dark overlay (0.8 alpha) with "STAGE 1" (72px bold yellow with stroke) and "SPRINGFIELD DOWNTOWN" (28px white with stroke)
+  - Render draws dark overlay (0.8 alpha) with "STAGE 1" (72px bold yellow with stroke) and "DOWNTOWN" (28px white with stroke)
   - Alpha fades in over first 0.3s, holds, fades out over last 0.3s using `ctx.globalAlpha`
   - Input is consumed and discarded during intro to prevent premature actions
   - Uses `ctx.save()`/`ctx.restore()` to isolate globalAlpha and text state
 
 - Implemented Title Screen Polish (P2-10):
   - Added gradient sky background (dark purple → blue) replacing flat #87CEEB
-  - Scrolling Springfield skyline: 20 procedurally-generated buildings with random height/width/shade, window dots, wrapping via modulo
-  - Homer silhouette at right side using basic canvas shapes (arc for head, ellipse for body, rects for legs, arc for belly bump) in subtle yellow (0.18 alpha)
+  - Scrolling Downtown skyline: 20 procedurally-generated buildings with random height/width/shade, window dots, wrapping via modulo
+  - Brawler silhouette at right side using basic canvas shapes (arc for head, ellipse for body, rects for legs, arc for belly bump) in subtle yellow (0.18 alpha)
   - Yellow star particles: spawned randomly (~2.5/sec), float upward with drift, fade out over time, cleaned up when off-screen
   - Moved title to top third (18% height), controls to 75% height, "Press ENTER" centered at 55% with pulsing glow (`shadowBlur` + `globalAlpha` sine wave)
-  - Added "A SimpsonsKong Production" credit line at very bottom in small subtle white text
+  - Added "A firstPunch Production" credit line at very bottom in small subtle white text
   - High score display repositioned below controls
 
 - Modernized HUD to arcade quality (hud.js):
   - Replaced flat health bar with rounded-corner gradient bar (green→yellow→red) with glossy highlight overlay and edge glow
   - Added dark inset background (`#1a0000`) with `_roundRect()` helper for all rounded shapes
-  - Mini Homer head icons: yellow circle head, white eyes with pupils, mouth arc — used for avatar next to health bar and lives display
-  - "HOMER" label in bold `Arial Black` with dark stroke outline for readability
+  - Mini Brawler head icons: yellow circle head, white eyes with pupils, mouth arc — used for avatar next to health bar and lives display
+  - "BRAWLER" label in bold `Arial Black` with dark stroke outline for readability
   - Score display redesigned: "SCORE" label in small text above, zero-padded 7-digit number below in large bold yellow (#FED90F) with dark outline
   - Score lerp: `displayedScore` smoothly ticks toward actual score at 12% per frame via `Math.ceil((score - displayedScore) * 0.12)`
-  - Lives display: small Homer head icons rendered via `_drawHomerIcon()`, count driven by `player.lives`
+  - Lives display: small Brawler head icons rendered via `_drawPlayerIcon()`, count driven by `player.lives`
   - Semi-transparent dark panels (rgba 0,0,0,0.55) with rounded corners behind health and score areas
   - Combo counter enhanced: added `comboGlowTime` and `shadowBlur` pulse effect (sine wave oscillation) for glow on hit combos
   - Enemy health bars upgraded to rounded rectangles with gradient fill and subtle white border
@@ -131,7 +131,7 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
   - Vertical style meter bar on left side of HUD (22x100px) with rounded panel background
   - Fills based on unique attack types used (punch, kick, jump_attack, special) via `player.styleTypes` Set
   - Formula: `min(100, uniqueTypes * 18 + comboCount * 2)` — variety is king, combo length helps
-  - 5 Simpsons-themed thresholds with distinct colors: "Meh" (grey 0-20%), "Not Bad" (yellow 20-40%), "Ay Caramba!" (orange 40-60%), "Excellent!" (green 60-80%), "Best. Combo. Ever." (gold 80-100%, pulsing glow)
+  - 5 retro-themed thresholds with distinct colors: "Meh" (grey 0-20%), "Not Bad" (yellow 20-40%), "Radical!" (orange 40-60%), "Excellent!" (green 60-80%), "Best. Combo. Ever." (gold 80-100%, pulsing glow)
   - Score multiplier per threshold: 1x → 1.5x → 2x → 3x → 5x, shown below meter and in combo display
   - Resets on damage — tracked via `prevHealth` in HUD and `player.styleTypes.clear()` in gameplay
   - Natural decay (15/sec) when not actively comboing, smooth fill lerp (12% per frame)
@@ -141,7 +141,7 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
 - Implemented Options/Settings Menu (AAA-U1):
   - Created `src/scenes/options.js` with full scene lifecycle
   - 3 volume sliders (Master, SFX, Music) — hold left/right to adjust at 0.8/sec, wired to `audio.set*Volume()`
-  - Difficulty selector with 3 modes: "Couch Mode (Easy)" / "Normal" / "Sideshow Bob (Hard)" — stored on `game.difficulty`
+  - Difficulty selector with 3 modes: "Chill Mode (Easy)" / "Normal" / "Ringleader (Hard)" — stored on `game.difficulty`
   - Read-only controls display showing all key bindings in two-column layout
   - BACK button with pulsing selection indicator
   - Navigation via up/down arrows, adjustment via left/right, ESC or ENTER on BACK to exit
@@ -176,7 +176,7 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
 - Fixed text rendering crispness and CSS canvas scaling:
   - Removed `image-rendering: crisp-edges` and `image-rendering: pixelated` from `styles.css` — replaced with `image-rendering: auto` for smooth procedural art upscaling
   - Added `drawCrispText()` helper function at top of `hud.js` — wraps `ctx.save/restore`, rounds x/y to integers via `Math.round()`, supports outline/stroke, configurable font/color/align/baseline
-  - Replaced all direct HUD text draws (HOMER label, health text, LIVES, SCORE label, score value, NELSON boss bar text) with `drawCrispText()` calls
+  - Replaced all direct HUD text draws (BRAWLER label, health text, LIVES, SCORE label, score value, BRUISER boss bar text) with `drawCrispText()` calls
   - Rounded combo counter positions (`rcx`, `rcy`) and multiplier text positions
   - Rounded enemy health bar positions (`bx`, `by`) for pixel-perfect alignment
   - Rounded style meter text positions (STYLE label, threshold label, multiplier) and WAVE label
@@ -184,4 +184,4 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
   - Bumped title font from 72px → 76px and subtitle from 28px → 30px for HiDPI readability
   - Set `ctx.imageSmoothingEnabled = true` at start of HUD render
   - Pre-computed `hw = Math.round(w / 2)` in title.js for consistent centered text alignment
-  - Increased HOMER label font from 13px → 14px, health text from 11px → 12px, SCORE label from 11px → 12px
+  - Increased BRAWLER label font from 13px → 14px, health text from 11px → 12px, SCORE label from 11px → 12px

@@ -1,4 +1,4 @@
-# SimpsonsKong — Art Direction & Visual Style Guide
+# firstPunch — Art Direction & Visual Style Guide
 
 **Author:** Boba (VFX/Art Specialist)  
 **Date:** 2026-06-03  
@@ -10,8 +10,8 @@
 
 | Role | Color | Hex | Usage |
 |------|-------|-----|-------|
-| Simpsons Yellow | 🟡 | `#FED90F` | Homer's skin, title text, UI highlights |
-| Springfield Sky Blue | 🔵 | `#87CEEB` | Sky background, health bar backing |
+| character yellow | 🟡 | `#FED90F` | Brawler's skin, title text, UI highlights |
+| Downtown Sky Blue | 🔵 | `#87CEEB` | Sky background, health bar backing |
 | Grass Green | 🟢 | `#7CFC00` | Ground plane, stage floors |
 | Outline Black | ⚫ | `#222222` | 2px character outlines (not pure black — too harsh) |
 | White | ⚪ | `#FFFFFF` | Eyes, highlights, flash effects |
@@ -20,8 +20,8 @@
 
 | Role | Color | Hex | Usage |
 |------|-------|-----|-------|
-| Homer Blue (pants) | 🔵 | `#4169E1` | Homer's clothing |
-| Homer White (shirt) | ⚪ | `#F5F5F5` | Homer's shirt — slightly off-white |
+| Brawler Blue (pants) | 🔵 | `#4169E1` | Brawler's clothing |
+| Brawler White (shirt) | ⚪ | `#F5F5F5` | Brawler's shirt — slightly off-white |
 | Enemy Red | 🔴 | `#E74C3C` | Enemy health bars, damage indicators |
 | UI Gold | 🟡 | `#F1C40F` | Score text, combo counter |
 | UI Dark | ⬛ | `#2C3E50` | UI panel backgrounds |
@@ -41,20 +41,20 @@
 
 - **Flat colors only** — no Canvas gradients (keeps rendering fast and clean)
 - **One highlight layer** per major body part: a lighter shade at ~20% opacity overlaid on the upper portion
-- Example: Homer's belly gets a `rgba(255, 255, 255, 0.15)` highlight arc on the upper-left quadrant
+- Example: Brawler's belly gets a `rgba(255, 255, 255, 0.15)` highlight arc on the upper-left quadrant
 - Shadow side implied by the ground shadow (VFX system), not by shading on the character itself
 
 ## Character Proportions
 
-### Homer (Player)
+### Brawler (Player)
 - **Chunky/round** silhouette — big belly is the defining shape
-- Head-to-body ratio: ~1:2.5 (big head, Simpsons style)
+- Head-to-body ratio: ~1:2.5 (big head, cartoon style)
 - Short legs, wide stance for stability
 - Arms slightly short — reach comes from attack hitbox extension
 - Belly protrudes forward — key readability shape even at small sizes
 
 ### Enemies (Generic Thugs)
-- **Taller and leaner** than Homer — contrast makes Homer feel heavier/stronger
+- **Taller and leaner** than Brawler — contrast makes Brawler feel heavier/stronger
 - Narrower shoulders, longer legs
 - Slightly hunched posture (menacing)
 - Color-coded by type (palette swap approach for variety without new art)

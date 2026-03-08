@@ -13,7 +13,7 @@
 
 | Criterion | Score | Notes |
 |-----------|-------|-------|
-| **Depth** | Very High | 45KB, 10 core techniques, genre applications, implementation checklist, anti-patterns, SimpsonsKong learnings. This is exhaustive |
+| **Depth** | Very High | 45KB, 10 core techniques, genre applications, implementation checklist, anti-patterns, firstPunch learnings. This is exhaustive |
 | **Accuracy** | High | Hitlag ranges, knockback physics, squash/stretch values all align with industry standards (Celeste, SoR4, Hollow Knight cited correctly) |
 | **Actionability** | Excellent | Copy-paste code for every technique. Priority-ordered implementation checklist (P0→P3). An agent can juice a feature from reading this alone |
 | **Genre Independence** | Excellent | Section 8 explicitly covers beat 'em up, platformer, fighting game, puzzle, and 3D action. Every technique has genre-agnostic framing before genre-specific examples |
@@ -40,18 +40,18 @@
 
 | Criterion | Score | Notes |
 |-----------|-------|-------|
-| **Depth** | High | 42KB. 10 sections: information hierarchy, diegetic vs non-diegetic, HUD positioning, menu systems (title, pause, options, game over), feedback UI (damage numbers, combo, score, health bars, progress), responsive design, animation, accessibility, anti-patterns, SimpsonsKong learnings |
+| **Depth** | High | 42KB. 10 sections: information hierarchy, diegetic vs non-diegetic, HUD positioning, menu systems (title, pause, options, game over), feedback UI (damage numbers, combo, score, health bars, progress), responsive design, animation, accessibility, anti-patterns, firstPunch learnings |
 | **Accuracy** | High | WCAG contrast ratios are correct. DPR patterns match `canvas-2d-optimization`. Menu patterns are standard |
 | **Actionability** | Very High | Every menu type has mandatory elements, navigation rules, and code examples. Copy-paste HUD layout |
 | **Genre Independence** | Good | Cross-game applicability section explicitly lists RPG, puzzle, platformer, strategy, roguelike, racing. 90% of patterns are universal |
 | **Cross-References** | **MISSING** | No cross-reference section. Does not reference `game-feel-juice` (UI feedback), `input-handling` (menu navigation), or `state-machine-patterns` (menu state management). This is the biggest gap in this skill |
-| **Confidence** | `medium` — **Justified.** HUD, menus, and feedback UI shipped in SimpsonsKong. Accessibility and responsive patterns are from reference but not fully validated |
+| **Confidence** | `medium` — **Justified.** HUD, menus, and feedback UI shipped in firstPunch. Accessibility and responsive patterns are from reference but not fully validated |
 
 **Strengths:**
 - Information hierarchy (Section 1) is universally applicable. The 4-tier system with sizing/color/position rules is immediately usable in any game.
 - Anti-patterns section (Section 9) is excellent. 7 concrete anti-patterns with code fixes. "Mouse-First Action Game" is a real trap.
 - Accessibility section (Section 8) covers colorblind, text readability, button prompts, and subtitles. Foundational — not exhaustive, but starts the conversation.
-- SimpsonsKong learnings are genuine. "Built & Shipped" vs "What We'd Improve" is honest.
+- firstPunch learnings are genuine. "Built & Shipped" vs "What We'd Improve" is honest.
 
 **Weaknesses:**
 - **No cross-reference section at all.** This is the biggest structural gap. This skill should reference:
@@ -60,7 +60,7 @@
   - `state-machine-patterns` — for menu state management (pause → options → back)
   - `2d-game-art` — for HUD visual style consistency
   - `procedural-audio` — for menu audio feedback patterns
-- Minor: the title screen example references SimpsonsKong-specific details ("Yellow SIMPSONS KONG title") that don't generalize. Should separate universal pattern from project-specific example.
+- Minor: the title screen example references firstPunch-specific details ("Yellow FIRST PUNCH title") that don't generalize. Should separate universal pattern from project-specific example.
 - Missing patterns: loading screens, tutorial/onboarding flows, notification systems (achievements, unlocks). The "What We'd Improve" section mentions these but doesn't provide patterns.
 
 **Verdict:** Fills Wedge's domain gap completely. This is a solid, comprehensive UI/UX reference. The missing cross-reference section is the only significant flaw. Content quality matches the ⭐⭐⭐⭐ standard.
@@ -76,14 +76,14 @@
 | **Actionability** | Very High | InputBuffer, InputMapper, InputPriority, InputConsumer, DirectionalInput, KeyboardInput, GamepadInput, TouchInput — all with working code. An agent could build a complete input system from this alone |
 | **Genre Independence** | Excellent | References platformers, fighters, action games. Coyote time applies universally. Touch support covers mobile. Gamepad covers console |
 | **Cross-References** | **MISSING** | No cross-reference section. Mentions state machines conceptually (line 112: "In state machine update") but no formal reference to `state-machine-patterns`. No reference to `game-feel-juice` (buffer windows are game feel). No reference to `beat-em-up-combat` (combo input patterns) |
-| **Confidence** | `medium` — **Justified.** Keyboard system validated in SimpsonsKong. Gamepad/touch are patterns from industry, not shipped code |
+| **Confidence** | `medium` — **Justified.** Keyboard system validated in firstPunch. Gamepad/touch are patterns from industry, not shipped code |
 
 **Strengths:**
 - Ring buffer pattern (Section 2) is clean, bounded, and immediately implementable. The buffer window tuning table (6-10 frames) is practical.
 - Input mapping architecture (action abstraction) is the right pattern. Remapping, export/import, testability — all covered.
 - Platform-specific sections (keyboard, gamepad, touch) are genuinely useful. Each covers challenges + solutions + standards.
 - Input recording/playback (Section Debug & Testing) is a genuine innovation for our team. This enables regression testing of input sequences.
-- The recursion bug lesson (SimpsonsKong Learnings) is a real, earned pattern.
+- The recursion bug lesson (firstPunch Learnings) is a real, earned pattern.
 
 **Weaknesses:**
 - **No cross-reference section.** Should reference:
@@ -388,7 +388,7 @@ The studio's knowledge base has meaningfully improved. The three new skills are 
 | **Code examples** | Full GDScript example | Every technique has JS code | Every pattern has JS code | 8 complete class implementations |
 | **Anti-patterns** | 8 named anti-patterns | 6 named anti-patterns | 7 named anti-patterns | 5 named anti-patterns |
 | **Checklists** | Review checklist | 3 shipping checklists | 2 checklists (ship + anti-pattern) | 1 comprehensive checklist |
-| **SimpsonsKong learnings** | N/A (standards doc) | Dedicated section (what worked / what we'd change) | Dedicated section (built + improved) | Dedicated section (built + improved + bug story) |
+| **firstPunch learnings** | N/A (standards doc) | Dedicated section (what worked / what we'd change) | Dedicated section (built + improved) | Dedicated section (built + improved + bug story) |
 | **Genre-agnostic** | 100% | 100% (Section 8 covers 5 genres) | 100% (cross-game section) | 100% (3 platforms covered) |
 
 **Verdict:** `game-feel-juice` matches `project-conventions` as a ⭐⭐⭐⭐⭐ skill. `ui-ux-patterns` and `input-handling` are solid ⭐⭐⭐⭐ — excellent content, but the missing cross-reference sections prevent them from reaching reference quality.

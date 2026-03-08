@@ -85,7 +85,7 @@ Our core DNA — encoded in mission-vision.md and company.md — is permanent:
 - **Ship the playable then listen** — universal, applies to any platform
 - **Every lesson compounds** — the meta-principle that governs institutional memory
 
-These are not Simpsons-specific. They are not Canvas-2D-specific. They are studio truths.
+These are not IP-specific. They are not Canvas-2D-specific. They are studio truths.
 
 ---
 
@@ -99,7 +99,7 @@ These change per project. They are the specializations that sit *on top* of the 
 
 **What's adaptive:** Which engine we're using and what patterns matter for that engine.
 
-- SimpsonsKong used Canvas 2D. Skill: `godot-beat-em-up-patterns/SKILL.md` is our engine-specific knowledge for *the next* Canvas project (or conversion).
+- firstPunch used Canvas 2D. Skill: `godot-beat-em-up-patterns/SKILL.md` is our engine-specific knowledge for *the next* Canvas project (or conversion).
 - Next project might use Godot 4. Skill: `godot-4-manual/SKILL.md` captures Godot-specific patterns.
 - Future projects might use Unity, Unreal, or a custom engine. Each gets its own engine skill.
 
@@ -123,7 +123,7 @@ Each vertical is permanent once created. Adding a new vertical doesn't invalidat
 
 **What's adaptive:** Which architecture patterns are best for a given engine/platform/scope.
 
-- SimpsonsKong used a modular ES6 architecture with Canvas 2D rendering, a fixed timestep game loop, and Canvas-based procedural art. Those patterns are documented in `godot-beat-em-up-patterns/SKILL.md`.
+- firstPunch used a modular ES6 architecture with Canvas 2D rendering, a fixed timestep game loop, and Canvas-based procedural art. Those patterns are documented in `godot-beat-em-up-patterns/SKILL.md`.
 - If the next game uses Godot 4, the architecture might use a node tree with scenes, autoloads for managers, and @export variables for balancing.
 - If a future game is multiplayer, the architecture might add netcode (rollback, client-side prediction) and state synchronization.
 
@@ -135,7 +135,7 @@ The lesson isn't "use this specific architecture." It's "document your architect
 
 **What's adaptive:** Whether that pipeline uses 2D sprites, 3D models, vector art, procedural generation, or pixel art.
 
-- SimpsonsKong used procedural Canvas 2D art. Trade-off: fast iteration, low file size, high code cost (~400 LOC per character).
+- firstPunch used procedural Canvas 2D art. Trade-off: fast iteration, low file size, high code cost (~400 LOC per character).
 - Next project might use pre-drawn sprites with animation frames. Trade-off: slower visual iteration, larger file size, low code cost, higher visual fidelity.
 - Future project might use 3D models. Trade-off: new skillset, different asset pipeline, different rendering performance profile.
 
@@ -699,7 +699,7 @@ This prevents re-litigating old decisions and accelerates new ones.
 Let's walk through what the studio looks like in 5 years if it follows this framework.
 
 ### Year 1 (Current)
-- **Games shipped:** 1 (SimpsonsKong)
+- **Games shipped:** 1 (firstPunch)
 - **Genres mastered:** 1 (Beat 'Em Up)
 - **Team size:** 12 specialists
 - **Engine:** Canvas 2D
@@ -707,7 +707,7 @@ Let's walk through what the studio looks like in 5 years if it follows this fram
 - **Skills:** `beat-em-up-*` (4 skills), universal skills (8 skills), `canvas-2d-patterns` (1 skill)
 
 ### Year 2
-- **Games shipped:** 2 (SimpsonsKong + a Platformer)
+- **Games shipped:** 2 (firstPunch + a Platformer)
 - **Genres mastered:** 2 (Beat 'Em Up, Platformer)
 - **Team size:** 15 (original 12 + one new Level Designer + two junior artists)
 - **Engine:** Canvas 2D (platformer) or Godot 4 (team's choice)
@@ -717,7 +717,7 @@ Let's walk through what the studio looks like in 5 years if it follows this fram
 **Key milestone:** The team proves it can onboard a new genre without restructuring. Principles, processes, and team charters remain the same. Only skills and tech stack change.
 
 ### Year 3
-- **Games shipped:** 3 (SimpsonsKong + Platformer + Fighting Game)
+- **Games shipped:** 3 (firstPunch + Platformer + Fighting Game)
 - **Genres mastered:** 3 (Beat 'Em Up, Platformer, Fighting Game)
 - **Team size:** 20 (two squads: 12 core + 8 specialists split between projects)
 - **Engine:** Godot 4 becomes studio standard; Canvas 2D is "legacy"
@@ -744,7 +744,7 @@ Let's walk through what the studio looks like in 5 years if it follows this fram
 - **Platforms:** Everywhere the game demands it
 - **Skills:** Comprehensive library across all genres, engines, and disciplines
 
-**Key milestone:** First Frame Studios is no longer "a team that made SimpsonsKong." It's "a studio that ships great games." The knowledge from game 1 compounds into games 2, 3, 4, and beyond. Specialists can switch projects and be productive in a week because the principles, processes, and skills are documented.
+**Key milestone:** First Frame Studios is no longer "a team that made firstPunch." It's "a studio that ships great games." The knowledge from game 1 compounds into games 2, 3, 4, and beyond. Specialists can switch projects and be productive in a week because the principles, processes, and skills are documented.
 
 ---
 
@@ -830,7 +830,7 @@ To close the loop, here are the mistakes that would undo everything:
 **Why it breaks:** Overconfidence. The framework is a theory until tested.
 
 **Prevention:**
-- The framework is written *from* experience (SimpsonsKong taught us these lessons), but it's also a *hypothesis*.
+- The framework is written *from* experience (firstPunch taught us these lessons), but it's also a *hypothesis*.
 - Every major framework claim is tested before the framework is updated. "We claim we can onboard a new genre in 8 weeks" — that's tested with the second genre project.
 - Framework revisions are dated. Future readers can see when a claim was made and when it was validated.
 

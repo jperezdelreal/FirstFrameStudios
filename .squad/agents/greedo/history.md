@@ -1,7 +1,7 @@
 # Greedo — History
 
 ## Project Context
-- **Project:** SimpsonsKong — Browser-based Simpsons beat 'em up
+- **Project:** firstPunch — Browser-based game beat 'em up
 - **User:** joperezd
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Current audio:** 3 procedural sounds (punch, hit, KO) in src/engine/audio.js using oscillators
@@ -57,7 +57,7 @@
 - **Sound count**: Now at 17 procedural sounds total (15 gameplay + 2 UI).
 
 ### 2025-06-05: Character Voice Barks + Environmental Ambience + Hit Scaling (AAA-A1, AAA-A2, AAA-A4)
-- **AAA-A1 Voice Barks**: Four procedural "vocal" effects using formant synthesis (bandpass-filtered noise + sine base). `playDoh()` — descending bandpass sweep 800→200Hz over 0.3s with 120Hz sine body for Homer's mournful damage sound. `playWoohoo()` — ascending formant 300→1200Hz over 0.4s with 12Hz LFO tremolo on the base gain for excitement vibrato, triggered at 5+ combo. `playMmmDonuts()` — sustained 100Hz sine hum (0.5s) with 3Hz/±5Hz pitch wobble LFO + 250Hz nasal formant layer for satisfied health-pickup tone. `playAyCaramba()` — ascending noise burst with formant sweep 600→2400→1800Hz + sawtooth 400→1200→800Hz excitement overlay for Bart's surprise bark.
+- **AAA-A1 Voice Barks**: Four procedural "vocal" effects using formant synthesis (bandpass-filtered noise + sine base). `playGrunt()` — descending bandpass sweep 800→200Hz over 0.3s with 120Hz sine body for Brawler's mournful damage sound. `playCheer()` — ascending formant 300→1200Hz over 0.4s with 12Hz LFO tremolo on the base gain for excitement vibrato, triggered at 5+ combo. `playHum()` — sustained 100Hz sine hum (0.5s) with 3Hz/±5Hz pitch wobble LFO + 250Hz nasal formant layer for satisfied health-pickup tone. `playExclaim()` — ascending noise burst with formant sweep 600→2400→1800Hz + sawtooth 400→1200→800Hz excitement overlay for Kid's surprise bark.
 - **AAA-A2 Environmental Ambience**: New `ambienceBus` GainNode (default 0.08) added to the bus topology between uiBus and masterBus. `startAmbience(level)` creates 3 continuous layers for Level 1 (Downtown): looping lowpass-filtered noise at 200Hz cutoff for distant traffic rumble, randomly-timed bird chirps (3200Hz±30% sine blips with pitch contour, 5-8s random interval via setTimeout chain), and wind via bandpass noise at 800Hz with 0.15Hz LFO modulating gain for slow swells. All sources tracked in `_ambienceNodes[]` and timers in `_ambienceTimers[]`. `stopAmbience()` fades ambienceBus to 0 over 1s via linearRamp, then disconnects/stops all nodes after 1.1s timeout and restores bus gain.
 - **AAA-A4 Hit Sound Scaling**: `playHit(comboCount)` now accepts an optional combo count — default 0 preserves legacy random variation (light/medium/heavy). Combo 1-2 triggers `playLayeredHit(0.35)` (bass body only, sparkle skipped at <0.5 intensity). Combo 3-4 uses intensity 0.65 (bass + mid crack + sparkle). Combo 5-7 fires `_playHeavyComboHit()` — full intensity 1.0 layered hit plus an extra sub-bass layer (45→25Hz sine, 0.1s). Combo 8+ fires `_playMassiveComboHit()` — heavy hit plus a delay feedback network (80ms delay, 0.3 feedback gain) fed by a 60→30Hz burst, creating a brief reverb tail that fades over 0.4s. Delay network auto-disconnects after 500ms to prevent memory leaks.
 - **Bus topology update**: Now 5 buses — sfxBus, musicBus, uiBus, ambienceBus → masterBus → destination. Added `setAmbienceVolume()`/`getAmbienceVolume()` matching existing volume control pattern.
@@ -67,7 +67,7 @@
 ### 2025-06-05: Audio Excellence Research & Skill Documentation
 - **Research completed**: Wrote comprehensive `.squad/analysis/audio-excellence-research.md` covering 8 domains — procedural audio patterns, Web Audio API advanced techniques (ConvolverNode, WaveShaperNode, AudioWorkletNode, DynamicsCompressorNode), dynamic music systems (Hades/Celeste/SoR4 analysis), combat sound design pillars, mix engineering best practices, synthesis limitations vs. real samples, and audio middleware options (Tone.js, Howler.js).
 - **Skill created**: `.squad/skills/procedural-audio/SKILL.md` — reusable reference with 6 core synthesis patterns (tonal impact, noise burst, layered hit, formant vocal, multi-note sequence, continuous ambience), bus architecture template, adaptive music scheduler, spatial panning via sfxBus-swap, variation/priority systems, common pitfalls, and frequency cheat sheet.
-- **Key findings**: Our layered hit engine (`playLayeredHit` with bass/mid/high bands) is architecturally equivalent to professional combat audio. Our adaptive music mirrors Celeste/Hades stem-based systems. Top sounds: playLayeredHit, playWoohoo (LFO tremolo), playLevelComplete (sustained final note). Weakest: playJump (single-layer), playLanding (inaudible on laptop speakers), playPunch (no noise transient layer).
+- **Key findings**: Our layered hit engine (`playLayeredHit` with bass/mid/high bands) is architecturally equivalent to professional combat audio. Our adaptive music mirrors Celeste/Hades stem-based systems. Top sounds: playLayeredHit, playCheer (LFO tremolo), playLevelComplete (sustained final note). Weakest: playJump (single-layer), playLanding (inaudible on laptop speakers), playPunch (no noise transient layer).
 - **Recommended upgrades**: (1) DynamicsCompressorNode on masterBus for peak clipping prevention — zero cost, (2) pre-compute common noise buffers in constructor instead of per-call, (3) consider Tone.js if music system grows more complex, (4) ConvolverNode with impulse response for spatial reverb would be the single biggest quality upgrade but requires loading an audio file.
 - **Honest assessment**: For a retro-styled browser beat 'em up, 21 procedural sounds + adaptive music + mix buses + spatial panning is a legitimate creative choice, not just a limitation. The system works. Richer sound would require hybrid synthesis + samples.
 
@@ -114,7 +114,7 @@ Created universal game audio design skill — a comprehensive, engine-agnostic r
 9. Testing & QA (mute test, audio-only test, normalization, accessibility)
 10. Anti-Patterns Catalog (7 failure modes: placeholder sounds, audio last, wall of sound, etc.)
 
-**Key principles extracted from SimpsonsKong procedural audio system:**
+**Key principles extracted from firstPunch procedural audio system:**
 - **Audio Hierarchy:** CRITICAL > HIGH > NORMAL > LOW prevents "wall of sound"
 - **Adaptive Music:** Intensity levels (0 = walking, 1 = enemies, 2 = combat) with crossfade
 - **Mix Bus Architecture:** sfxBus, musicBus, uiBus, ambienceBus → masterBus pattern
@@ -123,5 +123,5 @@ Created universal game audio design skill — a comprehensive, engine-agnostic r
 
 **Cross-references:** Links to game-feel-juice, game-design-fundamentals, procedural-audio (Web Audio specific implementation)
 
-**Confidence:** Medium (validated in SimpsonsKong audio system + Hades/Celeste analysis + procedural-audio research). Will escalate to High after implementing on non-procedural-audio platforms.
+**Confidence:** Medium (validated in firstPunch audio system + Hades/Celeste analysis + procedural-audio research). Will escalate to High after implementing on non-procedural-audio platforms.
 

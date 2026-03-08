@@ -1,6 +1,6 @@
 # Project Context
 
-- **Project:** SimpsonsKong
+- **Project:** firstPunch
 - **Created:** 2026-03-06
 
 ## Core Context

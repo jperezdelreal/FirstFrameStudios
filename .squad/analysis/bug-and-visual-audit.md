@@ -1,4 +1,4 @@
-# Bug and Visual Quality Audit — SimpsonsKong
+# Bug and Visual Quality Audit — firstPunch
 **Date:** 2026-06-04  
 **Auditor:** Ackbar (QA/Playtester)  
 **Scope:** Complete codebase review (all src/ files + index.html + styles.css)
@@ -374,7 +374,7 @@ ctx.fillText(`Lives: ${player.lives}`, barX, barY + barHeight + 15);
 
 ### Character Art Quality: 6/10
 
-**Homer (Player):**
+**Brawler (Player):**
 - ✅ Recognizable silhouette — bald head, belly, yellow skin
 - ✅ Consistent 2px outline style with round caps/joins
 - ✅ Subtle highlights on head and shirt (good depth)
@@ -388,7 +388,7 @@ ctx.fillText(`Lives: ${player.lives}`, barX, barY + barHeight + 15);
 
 **Enemies:**
 - ✅ Distinct variants via color + head decoration (tough=bandana, fast=spiky hair, heavy=crew cut)
-- ✅ Same outline style as Homer (consistency)
+- ✅ Same outline style as Brawler (consistency)
 - ✅ Armor overlay on heavy enemies (green tint + plate)
 - ⚠️ Generic humanoid shapes — no personality
 - ⚠️ Attack animation is a simple arm extension
@@ -409,10 +409,10 @@ ctx.fillText(`Lives: ${player.lives}`, barX, barY + barHeight + 15);
 ### Background Quality: 5/10
 
 **Parallax Layers:**
-- ✅ Three-layer parallax (far: power plant, mid: buildings, near: ground)
+- ✅ Three-layer parallax (far: factory, mid: buildings, near: ground)
 - ✅ Smooth scrolling with correct depth perception (0.2×, 0.5×, 1.0×)
-- ✅ Power plant silhouette is iconic (cooling towers, smokestack)
-- ✅ Kwik-E-Mart and Moe's are recognizable
+- ✅ Factory silhouette is iconic (cooling towers, smokestack)
+- ✅ Quick Stop and Joe's Bar are recognizable
 - ⚠️ Generic house templates — all look same
 - ⚠️ Clouds drift but no variation in size/shape per-instance
 - ⚠️ Fire hydrants on sidewalk are nice touch but repetitive
@@ -420,13 +420,13 @@ ctx.fillText(`Lives: ${player.lives}`, barX, barY + barHeight + 15);
 - ❌ No environmental details (trash cans, streetlights, mailboxes)
 - ❌ Ground is flat road with yellow dashes — no depth variation
 
-**Springfield Accuracy:**
-- ⚠️ Buildings are Springfield-inspired but generic
-- ❌ Missing iconic landmarks (Simpsons house, Elementary School, Krusty Burger, Duff Brewery)
-- ❌ No Springfield-specific details (Jebediah Springfield statue, Town Square)
+**Downtown Accuracy:**
+- ⚠️ Buildings are Downtown-inspired but generic
+- ❌ Missing iconic landmarks (player house, City School, Burger Joint, Brewery)
+- ❌ No Downtown-specific details (Founder Downtown statue, Town Square)
 
 **Improvement Suggestions:**
-1. Add 2-3 more unique building types (Krusty Burger, Elementary School, Simpsons house)
+1. Add 2-3 more unique building types (Burger Joint, City School, player house)
 2. Vary house colors more (pink, green, blue roofs)
 3. Add environmental props (trash cans, benches, street signs)
 4. Add atmospheric effects (rain, fog, time-of-day gradient)
@@ -491,7 +491,7 @@ ctx.fillText(`Lives: ${player.lives}`, barX, barY + barHeight + 15);
 
 **Menus:**
 - ✅ Title screen has gradient sky, scrolling skyline, floating particles
-- ✅ Homer silhouette on title screen (atmospheric)
+- ✅ Brawler silhouette on title screen (atmospheric)
 - ✅ Pulsing "Press ENTER" with glow effect
 - ✅ High score display on title
 - ✅ Controls listed clearly
@@ -562,7 +562,7 @@ ctx.fillText(`Lives: ${player.lives}`, barX, barY + barHeight + 15);
 
 **What Works:**
 - ✅ Consistent outline style (2px black, round caps/joins) across all entities
-- ✅ Color palette is Simpsons-accurate (yellow skin, blue pants, purple enemies)
+- ✅ Color palette is game-accurate (yellow skin, blue pants, purple enemies)
 - ✅ Parallax background depth matches entity Y-sorting (feels 2.5D)
 - ✅ VFX effects use same yellow/white colors as UI (cohesive)
 - ✅ Shadows under all entities (helps readability)
@@ -575,7 +575,7 @@ ctx.fillText(`Lives: ${player.lives}`, barX, barY + barHeight + 15);
 - ❌ Effects feel "bolted on" — hit effects are sharp vectors, but entities are soft outlines
 
 **Improvement Suggestions:**
-1. Add UI frames/borders (comic book panels, Simpsons-style borders)
+1. Add UI frames/borders (comic book panels, game-style borders)
 2. Use a comic-style font for title and menus (bold, exaggerated)
 3. Add edge glow/blur to VFX effects to match soft entity outlines
 4. Create a visual style guide (enforce 2px outlines, color palette, shadow style)
@@ -640,7 +640,7 @@ ctx.fillText(`Lives: ${player.lives}`, barX, barY + barHeight + 15);
 **Biggest Bottleneck:** Boba's workload — owns VFX, background, and visual direction. Recommend prioritizing:
 1. **Critical bugs first** (C1-C4) — 1-2 hours
 2. **Particle integration** (M1) — 1 hour
-3. **Background landmarks** (Springfield feel) — 2-3 hours
+3. **Background landmarks** (Downtown feel) — 2-3 hours
 4. **Character animation polish** — 3-4 hours (Lando/Tarkin assist)
 
 ---
@@ -668,7 +668,7 @@ ctx.fillText(`Lives: ${player.lives}`, barX, barY + barHeight + 15);
 ---
 
 ### Medium-Term Improvements (Next 4-6 Hours)
-1. **Background landmarks** — Add Simpsons house, Krusty Burger, Elementary School
+1. **Background landmarks** — Add player house, Burger Joint, City School
 2. **Hit effect rotation** — Spinning starburst rays
 3. **Character walk cycles** — Leg movement, weight shift
 4. **UI frames** — Comic book panel borders
@@ -698,7 +698,7 @@ ctx.fillText(`Lives: ${player.lives}`, barX, barY + barHeight + 15);
 2. Integrate audio hooks (H1-H3) — game feels lifeless without wave fanfares and vocals
 3. Prioritize Boba work: particle integration, background landmarks, hit effect polish
 
-**Overall Assessment:** Game has strong foundation but is incomplete. All systems are implemented, but integration is missing. Once bugs are fixed and visuals are polished, this will be a solid Simpsons beat 'em up.
+**Overall Assessment:** Game has strong foundation but is incomplete. All systems are implemented, but integration is missing. Once bugs are fixed and visuals are polished, this will be a solid game beat 'em up.
 
 ---
 

@@ -1,4 +1,4 @@
-# Rendering Technology Research — SimpsonsKong
+# Rendering Technology Research — firstPunch
 
 **Author:** Chewie (Engine Dev)  
 **Date:** 2025-07-15  
@@ -284,7 +284,7 @@ But we'd lose the tight integration we've built between our systems. Our combo s
 - Custom shader-heavy rendering (film grain, ray marching, etc.)
 - When you need WebGPU support path
 
-### Verdict: **Not recommended for SimpsonsKong.** The 2D-in-3D overhead isn't justified when PixiJS provides all the 2D GPU features we need.
+### Verdict: **Not recommended for firstPunch.** The 2D-in-3D overhead isn't justified when PixiJS provides all the 2D GPU features we need.
 
 ---
 
@@ -304,7 +304,7 @@ Keep procedural Canvas 2D drawing for character art, but use PixiJS as the rende
 const offscreen = document.createElement('canvas');
 offscreen.width = 128; offscreen.height = 128;
 const octx = offscreen.getContext('2d');
-drawHomer(octx, state, frame); // existing procedural code
+drawPlayer(octx, state, frame); // existing procedural code
 
 // Convert to PixiJS texture
 const texture = PIXI.Texture.from(offscreen);

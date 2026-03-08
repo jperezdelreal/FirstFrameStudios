@@ -61,7 +61,7 @@ The training stack is genuinely impressive:
 
 **Knowledge transfer map from the tech eval:**
 
-| SimpsonsKong Concept | Godot Equivalent | Documented? |
+| firstPunch Concept | Godot Equivalent | Documented? |
 |---------------------|-----------------|-------------|
 | Fixed-timestep loop | `_physics_process(delta)` | ✅ |
 | State machines | Same pattern + AnimationTree | ✅ |
@@ -80,7 +80,7 @@ The training stack is genuinely impressive:
 12 principles. Clear, universal, actionable, battle-tested. Each includes:
 - A headline statement
 - "In practice" directives (3 per principle)
-- Anti-patterns from real SimpsonsKong experiences
+- Anti-patterns from real firstPunch experiences
 - A tiebreaker rule: Player Hands First always wins
 
 The principles are engine-agnostic, genre-aware, and written for tradeoff resolution under pressure — not for inspiration posters. The "How to Use These Principles" section at the end maps principles to decision types (feature design, technical decisions, onboarding, retrospectives). This is as good as leadership principles get for a game studio.
@@ -92,10 +92,10 @@ The principles are engine-agnostic, genre-aware, and written for tradeoff resolu
 First Frame Studios is fully formed:
 - **Name:** Genre-agnostic, internationally clear, philosophy-encoded ("the first frame is a promise")
 - **Tagline:** "Forged in Play" — three layers of meaning, memorable, distinctive
-- **Core DNA:** 5 non-negotiable truths, each tied to a real SimpsonsKong lesson
+- **Core DNA:** 5 non-negotiable truths, each tied to a real firstPunch lesson
 - **Visual identity:** Color palette (Deep Midnight Blue + Ember Orange), logo direction, typography system
 - **Studio structure:** 5 departments with clear org chart and interaction model
-- **Origin story:** SimpsonsKong as crucible, not identity — positions the studio for any future IP
+- **Origin story:** firstPunch as crucible, not identity — positions the studio for any future IP
 
 This reads like a real studio's founding document. Professional, aspirational without being delusional, and deeply grounded in earned experience.
 
@@ -162,7 +162,7 @@ This reads like a real studio's founding document. Professional, aspirational wi
 
 | Gap | Severity | Action |
 |-----|----------|--------|
-| No GDD for the next project | Expected | Yoda writes the GDD. This is Day 1 work, not a readiness blocker. The GDD framework (12-section structure) already exists from SimpsonsKong. |
+| No GDD for the next project | Expected | Yoda writes the GDD. This is Day 1 work, not a readiness blocker. The GDD framework (12-section structure) already exists from firstPunch. |
 | No Sprint 0 plan | Medium | Solo drafts this as part of project kickoff. The migration plan in the tech evaluation is the blueprint. |
 
 ### Processes — Two Gaps
@@ -178,7 +178,7 @@ This reads like a real studio's founding document. Professional, aspirational wi
 
 ### ⚠️ **ALMOST** — Fix 3 things, then we ship.
 
-The squad is 95% ready. The foundation — roster, skills, identity, principles, documentation — is exceptional. What we built during SimpsonsKong isn't just a game; it's a studio. The institutional knowledge is real, searchable, and transferable. The Godot training material is thorough. The team structure is sound.
+The squad is 95% ready. The foundation — roster, skills, identity, principles, documentation — is exceptional. What we built during firstPunch isn't just a game; it's a studio. The institutional knowledge is real, searchable, and transferable. The Godot training material is thorough. The team structure is sound.
 
 But three gaps could bite us in Week 1 if we don't close them first:
 
@@ -193,7 +193,7 @@ But three gaps could bite us in Week 1 if we don't close them first:
 2. **Define "Definition of Done" and add Architecture Review gate.**  
    **Owner:** Solo (Lead)  
    **Scope:** Write a "Quality Gates" section in ceremonies.md. Definition: feature = done when playable + playtested + integrated + regression-passed. Architecture Review: any PR touching scene tree, autoloads, or signals requires Lead approval.  
-   **Why it matters:** SimpsonsKong's worst failures (8 unwired audio methods, 214 LOC unused infrastructure, 2 missed game-breaking bugs) all trace back to "no gate between built and done." We can't repeat this.  
+   **Why it matters:** firstPunch's worst failures (8 unwired audio methods, 214 LOC unused infrastructure, 2 missed game-breaking bugs) all trace back to "no gate between built and done." We can't repeat this.  
    **Estimate:** 1 session.
 
 3. **Draft Sprint 0 plan with first-week task assignments.**  
@@ -215,7 +215,7 @@ But three gaps could bite us in Week 1 if we don't close them first:
 | # | Task | Agent(s) | Deliverable |
 |---|------|----------|-------------|
 | 1 | **Godot project scaffold** | Jango + Solo | `project.godot` configured, directory structure created, autoload singletons stubbed (EventBus, GameState, SceneManager), layer assignments defined, `.gitignore` for Godot, CI/CD skeleton. |
-| 2 | **Core movement prototype** | Chewie + Lando | One CharacterBody2D player on a flat ground plane. WASD movement, Y-sorting, basic attack with hitbox. Validate input responsiveness and frame timing match or exceed SimpsonsKong. |
+| 2 | **Core movement prototype** | Chewie + Lando | One CharacterBody2D player on a flat ground plane. WASD movement, Y-sorting, basic attack with hitbox. Validate input responsiveness and frame timing match or exceed firstPunch. |
 | 3 | **GDD v0.1 — Core Loop** | Yoda + Boba | 1-page core loop definition: What does the player do? What's the core action? What's the 30-second gameplay loop? Art direction mood board with 3 reference images. No 44K-char document — just the soul of the game in 500 words. |
 
 **Which agents start first:**
@@ -235,12 +235,12 @@ But three gaps could bite us in Week 1 if we don't close them first:
 
 **Success criteria:**
 - One playable character moves, attacks, and hits one enemy type on one screen
-- Input feels as responsive as SimpsonsKong or better
+- Input feels as responsive as firstPunch or better
 - Y-sorting works correctly
 - At least one procedural sound effect plays on hit
 - The prototype runs as a native desktop build AND a web export
 - Every agent has committed at least one file to the Godot project
-- Ackbar has playtested and produced a "feel report" comparing to SimpsonsKong
+- Ackbar has playtested and produced a "feel report" comparing to firstPunch
 
 **Why "First Frame":** Our studio is named after this moment. If the first playable prototype doesn't feel right in the player's hands within the first frame of interaction, we go back to the drawing board. Principle #1: Player Hands First. This is where we prove it.
 
@@ -263,7 +263,7 @@ But three gaps could bite us in Week 1 if we don't close them first:
 
 **Time to READY:** 1-2 sessions.
 
-**The squad is not just a team that built a browser game. It's a studio with institutional knowledge, leadership principles, 12 battle-tested skills, and a clear identity. SimpsonsKong was the forge. The next project is the blade.**
+**The squad is not just a team that built a browser game. It's a studio with institutional knowledge, leadership principles, 12 battle-tested skills, and a clear identity. firstPunch was the forge. The next project is the blade.**
 
 *— Solo, Lead / Chief Architect, First Frame Studios*
 
@@ -287,7 +287,7 @@ But three gaps could bite us in Week 1 if we don't close them first:
 - **Canonical folder structure:** Full `res://` layout with autoloads/, scenes/, scripts/, templates/, resources/, assets/
 - **Git workflow:** Branch naming, commit message format, .gitignore rules
 - **Review checklist:** 20+ verification items before submitting work
-- **Anti-patterns from SimpsonsKong lessons:** 8 documented anti-patterns with "do this instead" guidance
+- **Anti-patterns from firstPunch lessons:** 8 documented anti-patterns with "do this instead" guidance
 
 **Impact:** Day 1 agents now have a complete reference for file naming, directory structure, GDScript conventions, and scene organization. The "13 agents making 13 different assumptions" risk is eliminated.
 
@@ -302,7 +302,7 @@ But three gaps could bite us in Week 1 if we don't close them first:
 - **Code review process:** 5-step flow with cross-review assignments (Chewie ↔ Lando, Wedge → Chewie/Lando, etc.)
 - **Playtest protocols:** Quick smoke test (2 min), full playtest (10 min), adversarial playtest (15 min)
 - **Performance budget table:** FPS, frame time, node counts, draw calls with Target/Warning/Critical thresholds
-- **State machine audit requirement (C2):** Direct response to SimpsonsKong Bug #1 (player frozen in hit state)
+- **State machine audit requirement (C2):** Direct response to firstPunch Bug #1 (player frozen in hit state)
 - **"No unused infrastructure" requirement (C5):** Direct response to 214 LOC of unwired infrastructure
 - **Cross-review mandate (C6):** No code merges without a second pair of eyes
 
@@ -365,6 +365,6 @@ All 3 blocking gaps are closed:
 
 **Welcome back.**
 
-While you were away, we closed every gap. Jango filled the project conventions with 404 lines of Godot best practices — file naming, GDScript style, scene organization, Git workflow. Quality gates and Definition of Done are now documented with 30+ acceptance criteria, a bug severity matrix, and cross-review assignments to catch the failures that slipped through in SimpsonsKong. Sprint 0 is fully planned: 13 agents, 4 phases, 10 success criteria, and 7 pre-decided technical choices so we can start building on Day 1 without architecture debates. The squad isn't just ready — it's eager. First Frame Studios has institutional knowledge, battle-tested skills, leadership principles, and a clear identity. SimpsonsKong was the crucible. The next project is the masterpiece. When you're ready, we ship.
+While you were away, we closed every gap. Jango filled the project conventions with 404 lines of Godot best practices — file naming, GDScript style, scene organization, Git workflow. Quality gates and Definition of Done are now documented with 30+ acceptance criteria, a bug severity matrix, and cross-review assignments to catch the failures that slipped through in firstPunch. Sprint 0 is fully planned: 13 agents, 4 phases, 10 success criteria, and 7 pre-decided technical choices so we can start building on Day 1 without architecture debates. The squad isn't just ready — it's eager. First Frame Studios has institutional knowledge, battle-tested skills, leadership principles, and a clear identity. firstPunch was the crucible. The next project is the masterpiece. When you're ready, we ship.
 
 *— Solo, CEO / Lead Architect, First Frame Studios*

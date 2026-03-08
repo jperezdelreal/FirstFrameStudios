@@ -107,8 +107,8 @@ export class HUD {
         ctx.closePath();
     }
 
-    // Mini Homer head icon
-    _drawHomerIcon(ctx, cx, cy, size) {
+    // Mini player head icon
+    _drawPlayerIcon(ctx, cx, cy, size) {
         // Yellow head circle
         ctx.fillStyle = '#FED90F';
         ctx.beginPath();
@@ -150,7 +150,7 @@ export class HUD {
     _getStyleInfo(level) {
         if (level >= 80) return { label: 'Best. Combo. Ever.', color: '#FFD700', multiplier: 5, glow: true };
         if (level >= 60) return { label: 'Excellent!', color: '#00e040', multiplier: 3, glow: false };
-        if (level >= 40) return { label: 'Ay Caramba!', color: '#FF8C00', multiplier: 2, glow: false };
+        if (level >= 40) return { label: 'Oh Yeah!', color: '#FF8C00', multiplier: 2, glow: false };
         if (level >= 20) return { label: 'Not Bad', color: '#FED90F', multiplier: 1.5, glow: false };
         return { label: 'Meh', color: '#888', multiplier: 1, glow: false };
     }
@@ -345,11 +345,11 @@ export class HUD {
         ctx.stroke();
         ctx.restore();
 
-        // ── Homer Icon ──
-        this._drawHomerIcon(ctx, 62, 32, 14);
+        // ── Player Icon ──
+        this._drawPlayerIcon(ctx, 62, 32, 14);
 
-        // ── "HOMER" label ──
-        drawCrispText(ctx, 'HOMER', 82, 15, {
+        // ── "BRAWLER" label ──
+        drawCrispText(ctx, 'BRAWLER', 82, 15, {
             font: 'bold 14px "Arial Black", Arial, sans-serif',
             color: '#FED90F',
             baseline: 'top',
@@ -432,7 +432,7 @@ export class HUD {
         });
         const lives = player.lives !== undefined ? player.lives : 3;
         for (let i = 0; i < lives; i++) {
-            this._drawHomerIcon(ctx, 132 + i * 24, livesY, 8);
+            this._drawPlayerIcon(ctx, 132 + i * 24, livesY, 8);
         }
 
         // ── Score Panel (top-right) ──
@@ -562,7 +562,7 @@ export class HUD {
                 ctx.restore();
             }
 
-            drawCrispText(ctx, 'NELSON', Math.round(barX + 8), Math.round(barY + barH / 2), {
+            drawCrispText(ctx, 'BRUISER', Math.round(barX + 8), Math.round(barY + barH / 2), {
                 font: 'bold 12px "Arial Black", Arial, sans-serif',
                 color: '#FFF',
                 baseline: 'middle',

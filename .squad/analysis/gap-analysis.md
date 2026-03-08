@@ -1,4 +1,4 @@
-# SimpsonsKong — Comprehensive Gap Analysis & Prioritized Backlog
+# firstPunch — Comprehensive Gap Analysis & Prioritized Backlog
 
 **Author:** Keaton (Lead / Architect)  
 **Date:** 2026-06-03  
@@ -10,7 +10,7 @@
 
 ### Overview
 
-SimpsonsKong is a functional, playable browser-based beat 'em up built in ~30 minutes with pure JavaScript, HTML5 Canvas, and Web Audio API. The game has a working game loop, one playable character (Homer), one enemy type (with a "tough" variant), three enemy waves, and basic combat mechanics.
+firstPunch is a functional, playable browser-based beat 'em up built in ~30 minutes with pure JavaScript, HTML5 Canvas, and Web Audio API. The game has a working game loop, one playable character (Brawler), one enemy type (with a "tough" variant), three enemy waves, and basic combat mechanics.
 
 ### File Inventory & Quality
 
@@ -23,7 +23,7 @@ SimpsonsKong is a functional, playable browser-based beat 'em up built in ~30 mi
 | `src/engine/renderer.js` | 89 | Canvas wrapper, camera, screen shake | ✅ Good |
 | `src/engine/input.js` | 69 | Keyboard state management | ✅ Good (post-bugfix) |
 | `src/engine/audio.js` | 50 | Web Audio API SFX | ⚠️ Minimal — only 3 sounds |
-| `src/entities/player.js` | 256 | Homer: movement, attack, render | ⚠️ Mixed — logic+render coupled |
+| `src/entities/player.js` | 256 | Brawler: movement, attack, render | ⚠️ Mixed — logic+render coupled |
 | `src/entities/enemy.js` | 167 | Generic enemy with variant | ⚠️ Mixed — single type |
 | `src/systems/combat.js` | 75 | Collision detection, damage handling | ✅ Good |
 | `src/systems/ai.js` | 61 | Enemy AI state machine | ⚠️ Basic — single behavior |
@@ -106,7 +106,7 @@ SimpsonsKong is a functional, playable browser-based beat 'em up built in ~30 mi
 
 | Requirement | Status | Gap |
 |-------------|--------|-----|
-| One playable character (Homer) | ✅ Done | Homer with yellow head, white shirt, blue pants |
+| One playable character (Brawler) | ✅ Done | Brawler with yellow head, white shirt, blue pants |
 | One basic enemy type | ✅ Done | Purple variant (30 HP) |
 | Enemy variant | ✅ Done | "Tough" variant (dark red, 50 HP) — same behavior |
 | Optional boss | ❌ Not done | No boss entity exists |
@@ -189,7 +189,7 @@ SimpsonsKong is a functional, playable browser-based beat 'em up built in ~30 mi
 
 ### Current State
 Characters are drawn with basic Canvas primitives:
-- **Homer:** Yellow circle head, white rectangle body, blue rectangle pants, small rectangle arms with sine-wave bob. Punch animation extends one arm rectangle.
+- **Brawler:** Yellow circle head, white rectangle body, blue rectangle pants, small rectangle arms with sine-wave bob. Punch animation extends one arm rectangle.
 - **Enemies:** Pink circle head, purple/red rectangle body, black rectangle legs. Nearly identical animation to player.
 - **Background:** Flat color fills — sky blue, green grass, gray road with yellow dashes. Brown rectangles for buildings with blue rectangle windows.
 
@@ -197,11 +197,11 @@ Characters are drawn with basic Canvas primitives:
 
 The visual quality is at **early prototype** level. While functional, it looks nothing like a "modern 2D game." The characters lack:
 
-1. **Distinct silhouettes** — Homer and enemies are very similar stick-figure proportions
-2. **Proper body proportions** — Homer should be round/stocky, enemies should have varied builds
+1. **Distinct silhouettes** — Brawler and enemies are very similar stick-figure proportions
+2. **Proper body proportions** — Brawler should be round/stocky, enemies should have varied builds
 3. **Animation states** — Walk cycle is just arm bobbing, no leg movement. No distinct punch vs kick pose. No jump animation. No hurt pose.
-4. **Visual identity** — Homer is barely recognizable as Homer. No distinctive features (mouth, M-shaped hair, beer gut)
-5. **Background detail** — No Springfield landmarks, no depth layers beyond single parallax
+4. **Visual identity** — Brawler is barely recognizable as Brawler. No distinctive features (mouth, M-shaped hair, beer gut)
+5. **Background detail** — No Downtown landmarks, no depth layers beyond single parallax
 6. **Effects/juice** — Minimal impact effects. No dust clouds, no sparks, no impact flashes beyond a white overlay
 7. **Color palette** — Uses web-standard named colors rather than a cohesive art direction
 
@@ -209,11 +209,11 @@ The visual quality is at **early prototype** level. While functional, it looks n
 
 | Area | Effort | Description |
 |------|--------|-------------|
-| Homer redesign | L | Proper round body, M-shaped hair detail, distinct face, multiple pose states (idle, walk, punch, kick, jump, hurt, dead) |
+| Brawler redesign | L | Proper round body, M-shaped hair detail, distinct face, multiple pose states (idle, walk, punch, kick, jump, hurt, dead) |
 | Enemy redesign | M per type | Distinct body shapes, color schemes, visual identity for each variant |
 | Walk animation system | M | Frame-based leg/arm movement cycling, smooth transitions |
 | Attack animations | M | Distinct punch vs kick poses, wind-up and follow-through frames |
-| Background overhaul | L | Multi-layer parallax, Springfield buildings (Kwik-E-Mart, Power Plant silhouettes), clouds, street details |
+| Background overhaul | L | Multi-layer parallax, Downtown buildings (Quick Stop, Factory silhouettes), clouds, street details |
 | Impact effects | M | Starburst/flash on hit, motion lines, impact sparks |
 | Particle system | M | Dust on landing, debris on death, sparkle effects |
 | UI polish | S | Styled health bar with icons, arcade-style score counter, combo display |
@@ -365,7 +365,7 @@ Good foundation for a 30-minute sprint. Needs targeted refactors before adding f
 | Enemy attack throttling | Only 1-2 enemies attack at once, others circle |
 | Weapon pickups | Pipe, bat, beer bottle — timed powerups on the ground |
 | Food/health pickups | Donut, Buzz Cola — restore HP |
-| Special moves | Homer belly bump, power slide |
+| Special moves | Brawler belly bump, power slide |
 | Grab/throw | Grab stunned enemies, throw into others |
 
 ### 6.3 Enemy Variety
@@ -380,10 +380,10 @@ Good foundation for a 30-minute sprint. Needs targeted refactors before adding f
 ### 6.4 Visual Improvements
 | Item | Description |
 |------|-------------|
-| Homer redesign | Proper proportions, recognizable features, multiple animation frames per state |
+| Brawler redesign | Proper proportions, recognizable features, multiple animation frames per state |
 | Enemy redesign | Distinct look per type, varied body shapes and colors |
 | Animation system | Frame-based animation controller, smooth state transitions |
-| Background overhaul | Springfield landmarks, multi-layer parallax, environmental detail |
+| Background overhaul | Downtown landmarks, multi-layer parallax, environmental detail |
 | Impact VFX | Starburst, motion lines, sparks at hit point |
 | Particle system | Dust clouds, debris, sparkles, smoke |
 | Damage numbers | Floating numbers on hit with scaling and fade |
@@ -391,7 +391,7 @@ Good foundation for a 30-minute sprint. Needs targeted refactors before adding f
 | Combo counter | On-screen combo display with multiplier |
 | Screen flash | White flash overlay on big hits |
 | Death animations | Enemies fly back, bounce, fade with stars |
-| Homer idle animation | Breathing, belly jiggle, beer scratch |
+| Brawler idle animation | Breathing, belly jiggle, beer scratch |
 
 ### 6.5 Audio Improvements
 | Item | Description |
@@ -406,7 +406,7 @@ Good foundation for a 30-minute sprint. Needs targeted refactors before adding f
 | Level complete jingle | Victory music |
 | Game over sting | Dramatic failure sound |
 | UI sounds | Menu select, menu confirm |
-| Environmental ambience | Birds, traffic, Springfield hum |
+| Environmental ambience | Birds, traffic, Downtown hum |
 
 ### 6.6 UI/UX Polish
 | Item | Description |
@@ -419,14 +419,14 @@ Good foundation for a 30-minute sprint. Needs targeted refactors before adding f
 | Score pop-ups | Floating score values when enemies are hit/killed |
 | Lives system | 3 lives with continue |
 | Player death animation | Dramatic fall, fade, respawn with i-frames |
-| Level intro | "Springfield Downtown" text card before gameplay |
+| Level intro | "Downtown Downtown" text card before gameplay |
 | Screen transitions | Fade in/out between scenes |
 
 ### 6.7 Level & Progression
 | Item | Description |
 |------|-------------|
-| Level variety | Different backgrounds (Downtown, Power Plant, Moe's Tavern) |
-| Environmental hazards | Radioactive barrels, falling objects |
+| Level variety | Different backgrounds (Downtown, Factory, Joe's Bar) |
+| Environmental hazards | Toxic barrels, falling objects |
 | Destructible objects | Trash cans, barrels that drop items |
 | More enemy waves | Increase enemy count and variety through level |
 | Difficulty scaling | Enemies get more aggressive in later waves |
@@ -436,9 +436,9 @@ Good foundation for a 30-minute sprint. Needs targeted refactors before adding f
 ### 6.8 Extra Characters
 | Item | Description |
 |------|-------------|
-| Bart (playable) | Skateboard attack, slingshot ranged, fast/weak |
-| Marge (playable) | Purse swing, longer reach, balanced stats |
-| Lisa (playable) | Saxophone projectile, crowd control focus |
+| Kid (playable) | Skateboard attack, slingshot ranged, fast/weak |
+| Defender (playable) | Purse swing, longer reach, balanced stats |
+| Prodigy (playable) | Saxophone projectile, crowd control focus |
 | Character select screen | Choose character before gameplay |
 
 ---
@@ -467,8 +467,8 @@ Good foundation for a 30-minute sprint. Needs targeted refactors before adding f
 | P1-6 | Combo counter display | S | UI Dev | P1-5 | Show combo count on screen with scaling text. Fade after combo drops. |
 | P1-7 | Jump attacks | M | Gameplay Dev | None | Enable attacks while airborne. Air punch (quick, weak), air kick (dive kick). |
 | P1-8 | Animation system core | L | Engine Dev | None | Create `AnimationController` class: named states → frame arrays, transitions, events. Decouple render from logic. |
-| P1-9 | Homer walk cycle | M | Gameplay Dev | P1-8 | Multi-frame walk animation using animation system. Leg movement, arm swing. |
-| P1-10 | Homer attack animations | M | Gameplay Dev | P1-8 | Distinct multi-frame punch and kick animations with wind-up and follow-through. |
+| P1-9 | Brawler walk cycle | M | Gameplay Dev | P1-8 | Multi-frame walk animation using animation system. Leg movement, arm swing. |
+| P1-10 | Brawler attack animations | M | Gameplay Dev | P1-8 | Distinct multi-frame punch and kick animations with wind-up and follow-through. |
 | P1-11 | Enemy death animation | M | Gameplay Dev | P1-8 | Enemy flies backward on kill hit, bounces once, fades with stars/birds circling. |
 | P1-12 | Background music (procedural) | M | Engine Dev | None | Simple looping bass/melody using Web Audio API oscillators. Mute/unmute toggle. |
 | P1-13 | Game over screen | M | UI Dev | P0-1 | Continue option (with lives or timer), high score display, restart option. |
@@ -487,34 +487,34 @@ Good foundation for a 30-minute sprint. Needs targeted refactors before adding f
 | P2-1 | Boss enemy | L | Gameplay Dev | P1-8 | Large character, unique attack patterns (charge, ground pound, throw), multi-phase with visual tells. End of level 1. |
 | P2-2 | Fast enemy type | M | Gameplay Dev | P1-8 | Low HP, high speed, dash attack, hit-and-run AI behavior. |
 | P2-3 | Heavy enemy type | M | Gameplay Dev | P1-8 | High HP, slow, super armor (doesn't flinch on first hit), powerful attacks. |
-| P2-4 | Homer redesign (modern Canvas art) | L | Gameplay Dev | P1-8 | Recognizable Homer: round belly, M-hair, overbite, proper proportions. 8+ animation frames. |
-| P2-5 | Background overhaul | L | Gameplay Dev | P1-14 | Springfield landmarks: Kwik-E-Mart, cooling towers, Moe's Tavern. Multi-layer parallax (3+ layers). Clouds, street details. |
+| P2-4 | Brawler redesign (modern Canvas art) | L | Gameplay Dev | P1-8 | Recognizable Brawler: round belly, M-hair, overbite, proper proportions. 8+ animation frames. |
+| P2-5 | Background overhaul | L | Gameplay Dev | P1-14 | Downtown landmarks: Quick Stop, cooling towers, Joe's Bar. Multi-layer parallax (3+ layers). Clouds, street details. |
 | P2-6 | Particle system | M | Engine Dev | None | Generic particle emitter. Dust on landing, sparks on hit, debris on death. |
 | P2-7 | Weapon pickups | M | Gameplay Dev | P1-14, P1-15 | Pipe, bat on ground. Timed powerup, increased damage/range. Drop on hit. |
 | P2-8 | Food/health pickups | S | Gameplay Dev | P1-14, P1-15 | Donut, Buzz Cola spawn from defeated enemies or barrels. Restore 20-30 HP. |
 | P2-9 | KO text effects | S | UI Dev | None | "POW!" "WHAM!" comic-style text pop at hit location. Random selection, scale+fade animation. |
-| P2-10 | Animated title screen | M | UI Dev | P1-8 | Homer idle animation, animated logo, particle effects, scrolling background. |
+| P2-10 | Animated title screen | M | UI Dev | P1-8 | Brawler idle animation, animated logo, particle effects, scrolling background. |
 | P2-11 | Wave fanfares | S | Engine Dev | None | Audio cue for camera lock (danger) and wave clear (victory). |
 | P2-12 | Lives system | S | Gameplay Dev | P1-13 | 3 lives. Respawn with brief invulnerability. Display lives on HUD. |
 | P2-13 | Score pop-ups | S | UI Dev | None | "+10" "+50" floating text when scoring points. |
-| P2-14 | Special moves | M | Gameplay Dev | P1-5 | Homer belly bump (forward+attack during combo), power slide (down+jump). |
+| P2-14 | Special moves | M | Gameplay Dev | P1-5 | Brawler belly bump (forward+attack during combo), power slide (down+jump). |
 | P2-15 | Grab/throw | L | Gameplay Dev | P1-8 | Grab stunned enemy, throw directionally. Thrown enemy damages others. |
 | P2-16 | Difficulty scaling | S | Gameplay Dev | None | Later waves: faster AI cooldowns, more aggressive approach, enemies have more HP. |
-| P2-17 | Level intro text | S | UI Dev | None | "STAGE 1: SPRINGFIELD DOWNTOWN" text card with fade before gameplay. |
+| P2-17 | Level intro text | S | UI Dev | None | "STAGE 1: DOWNTOWN" text card with fade before gameplay. |
 
 ### P3 — Stretch (Beyond Original Scope)
 
 | # | Item | Complexity | Owner | Dependencies | Description |
 |---|------|-----------|-------|--------------|-------------|
-| P3-1 | Bart (playable character) | XL | Gameplay Dev | P1-8, P2-4 | Full character: skateboard dash, slingshot attack, unique animations. |
-| P3-2 | Marge (playable character) | XL | Gameplay Dev | P1-8, P2-4 | Full character: purse swing (long range), vacuum cleaner special. |
-| P3-3 | Lisa (playable character) | XL | Gameplay Dev | P1-8, P2-4 | Full character: saxophone wave projectile, crowd control focus. |
+| P3-1 | Kid (playable character) | XL | Gameplay Dev | P1-8, P2-4 | Full character: skateboard dash, slingshot attack, unique animations. |
+| P3-2 | Defender (playable character) | XL | Gameplay Dev | P1-8, P2-4 | Full character: purse swing (long range), vacuum cleaner special. |
+| P3-3 | Prodigy (playable character) | XL | Gameplay Dev | P1-8, P2-4 | Full character: saxophone wave projectile, crowd control focus. |
 | P3-4 | Character select screen | M | UI Dev | P3-1 or P3-2 or P3-3 | Character preview with stats, select with input, transitions to gameplay. |
 | P3-5 | Ranged enemy type | M | Gameplay Dev | P1-8 | Throws objects from distance, retreats when player closes in. Projectile entity. |
 | P3-6 | Shield enemy type | M | Gameplay Dev | P1-8 | Blocks frontal attacks, must be flanked or jump-attacked. Block animation. |
-| P3-7 | Multiple levels | XL | Gameplay Dev | P1-14, P2-5 | 3-4 levels: Downtown, Power Plant, Moe's Tavern, Krusty Burger. Each with unique waves and background. |
+| P3-7 | Multiple levels | XL | Gameplay Dev | P1-14, P2-5 | 3-4 levels: Downtown, Factory, Joe's Bar, Burger Joint. Each with unique waves and background. |
 | P3-8 | Level select screen | M | UI Dev | P3-7 | Post-level-1 selection screen. |
-| P3-9 | Environmental hazards | M | Gameplay Dev | P1-14 | Radioactive barrels (damage zone), falling donuts, conveyor belts. |
+| P3-9 | Environmental hazards | M | Gameplay Dev | P1-14 | Toxic barrels (damage zone), falling donuts, conveyor belts. |
 | P3-10 | Destructible objects | M | Gameplay Dev | P1-14, P1-15, P2-6 | Trash cans, barrels, boxes that break when hit and drop items. |
 | P3-11 | Full SFX library | L | Engine Dev | None | 15+ distinct sound effects: footsteps, environmental, voice grunts. |
 | P3-12 | Procedural music system | L | Engine Dev | P1-12 | Dynamic music that intensifies during combat, calms between waves. |
@@ -563,7 +563,7 @@ The current 4-person team **can deliver P0 and P1** but will be strained on P2. 
 
 **Phase 4 (P1 Polish — 2 sessions):** Background music, game over screen, damage numbers, enemy health bars, pause menu, screen transitions.
 
-**Phase 5 (P2 Content — 3-5 sessions):** Boss, enemy variety, Homer redesign, background overhaul, particles, pickups, special moves.
+**Phase 5 (P2 Content — 3-5 sessions):** Boss, enemy variety, Brawler redesign, background overhaul, particles, pickups, special moves.
 
 **Phase 6 (P3 Expansion — ongoing):** Additional characters, levels, advanced features.
 

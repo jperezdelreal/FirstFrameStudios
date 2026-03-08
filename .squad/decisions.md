@@ -40,9 +40,9 @@ Revised load distribution eliminates McManus bottleneck, enables parallel workst
 **By:** joperezd (via Copilot)  
 **Status:** Pending — Future Project Planning
 
-Phaser 3 and other "too late to implement" improvements should be captured as learnings for future projects, not implemented in SimpsonsKong. The squad should conduct deep research across all game development disciplines, document everything, analyze the current game for what's easily implementable vs needs major refactoring, and work autonomously for 4 hours with excellence as the standard.
+Phaser 3 and other "too late to implement" improvements should be captured as learnings for future projects, not implemented in firstPunch. The squad should conduct deep research across all game development disciplines, document everything, analyze the current game for what's easily implementable vs needs major refactoring, and work autonomously for 4 hours with excellence as the standard.
 
-**Why:** Strategic learning capture for the game dev squad's growth across projects. Protects SimpsonsKong from scope creep while building institutional knowledge for next project.
+**Why:** Strategic learning capture for the game dev squad's growth across projects. Protects firstPunch from scope creep while building institutional knowledge for next project.
 
 ### Full Codebase Analysis & Learnings (Solo)
 **Date:** 2026-03-06  
@@ -62,7 +62,7 @@ Read all 28 source files (370KB) and categorized every remaining backlog item in
 
 4. **gameplay.js (695 LOC) = #1 technical debt** — touches every system, 40+ direct calls. EventBus wiring is the single most impactful refactor.
 
-5. **Procedural art ceiling reached** — each character needs ~400 LOC Canvas code. Adding Bart/Marge/Lisa = 1200+ LOC. Strongest argument for Phaser 3 + sprite sheets.
+5. **Procedural art ceiling reached** — each character needs ~400 LOC Canvas code. Adding Kid/Defender/Prodigy = 1200+ LOC. Strongest argument for Phaser 3 + sprite sheets.
 
 6. **Phaser 3 migration impact:** Replaces ~800 LOC infrastructure (game loop, renderer, input, camera, particles, animation) with GPU-accelerated equivalents. Keeps ~3500 LOC game-specific logic.
 
@@ -82,7 +82,7 @@ Created `.squad/identity/new-project-playbook.md` — the definitive, repeatable
 3. **Production Phases** — P0-P3 priority system, parallel lane planning, skill capture rhythm, cross-project knowledge transfer
 4. **Technology Transition Checklist** — What transfers/rewrites/needs evaluation, migration mapping (Canvas→Godot as template), repeatable training protocol
 5. **Language/Stack Flexibility Matrix** — 12 tech stacks compared, T-shirt migration sizing, the 70/30 rule (70% of our effectiveness is tech-agnostic)
-6. **Anti-Bottleneck Patterns** — 7 SimpsonsKong bottlenecks with preventions, 6 common studio patterns, serialize/parallelize guide, add-role vs add-skill decision matrix
+6. **Anti-Bottleneck Patterns** — 7 firstPunch bottlenecks with preventions, 6 common studio patterns, serialize/parallelize guide, add-role vs add-skill decision matrix
 
 **Key Decisions Within:**
 - **8-point migration threshold:** Require 8+ point lead in 9-dimension matrix to justify engine migration
@@ -90,7 +90,7 @@ Created `.squad/identity/new-project-playbook.md` — the definitive, repeatable
 - **Module boundaries in Sprint 0:** Architecture proposal required before Phase 2 code begins
 - **Wiring requirement:** Every infrastructure PR must include connection to at least one consumer
 
-**Why:** The founder wants solid foundations so starting any new project is clear, repeatable, and bottleneck-free. SimpsonsKong taught us everything in this playbook through real bugs, real bottlenecks, and real breakthroughs. Documenting it ensures we never repeat the investigation.
+**Why:** The founder wants solid foundations so starting any new project is clear, repeatable, and bottleneck-free. firstPunch taught us everything in this playbook through real bugs, real bottlenecks, and real breakthroughs. Documenting it ensures we never repeat the investigation.
 
 **Impact:**
 - Every future project follows this playbook from Day 1

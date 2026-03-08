@@ -679,7 +679,7 @@ export class Player {
 
         const drawFist = (x, y, scale = 1) => {
             const s = scale;
-            // Simpsons 4-finger fist: palm base
+            // Cartoon-style fist: palm base
             ctx.beginPath();
             ctx.ellipse(x, y + 1.5 * s, 4.5 * s, 3 * s, 0, 0, Math.PI * 2);
             ctx.fill();

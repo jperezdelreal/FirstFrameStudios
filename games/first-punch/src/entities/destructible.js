@@ -1,7 +1,7 @@
 // ==========================================================================
 // Destructible Objects — AAA-L1
 // ==========================================================================
-// Springfield street props that can be smashed for items and points.
+// Street props that can be smashed for items and points.
 //
 // INTEGRATION (gameplay.js — do NOT add here, Solo owns that file):
 //   1. Import: import { Destructible, DESTRUCTIBLE_TYPES } from '../entities/destructible.js';
@@ -59,13 +59,13 @@ export const DESTRUCTIBLE_TYPES = {
         label: 'Parking Meter',
         dropChance: 0.5
     },
-    lardLadSign: {
+    donutSign: {
         hp: 25,
         width: 52,
         height: 64,
         color: '#E65100',
         accentColor: '#BF360C',
-        label: 'Lard Lad Donut Sign',
+        label: 'Donut Sign',
         dropChance: 0.6
     }
 };
@@ -194,8 +194,8 @@ export class Destructible {
             case 'parkingMeter':
                 this._renderParkingMeter(ctx, sx, sy, hpRatio);
                 break;
-            case 'lardLadSign':
-                this._renderLardLadSign(ctx, sx, sy, hpRatio);
+            case 'donutSign':
+                this._renderDonutSign(ctx, sx, sy, hpRatio);
                 break;
             default:
                 this._renderGeneric(ctx, sx, sy, hpRatio);
@@ -271,7 +271,7 @@ export class Destructible {
         ctx.fillRect(x + 2, y + this.height - 4, 12, 4);
     }
 
-    _renderLardLadSign(ctx, x, y, hpRatio) {
+    _renderDonutSign(ctx, x, y, hpRatio) {
         // Sign board
         ctx.fillStyle = this._tintColor(this.color, hpRatio);
         ctx.fillRect(x, y, this.width, this.height * 0.7);

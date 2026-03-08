@@ -7,7 +7,7 @@ name: "game-qa-testing"
 description: "QA patterns for games — execution tracing, state machine audits, playtest protocols, bug severity, regression testing"
 domain: "testing"
 confidence: "low"
-source: "earned — extracted from SimpsonsKong QA process (Ackbar's self-assessment, missed bugs, quality excellence proposal)"
+source: "earned — extracted from firstPunch QA process (Ackbar's self-assessment, missed bugs, quality excellence proposal)"
 ---
 
 ## When to Use This Skill
@@ -122,7 +122,7 @@ Code review finds syntax bugs. Playing finds game-feel bugs. Both are necessary;
 - MEDIUM = document as known issue. Fix in next pass if time allows.
 - LOW = log for future polish. Don't block ship.
 
-**Confidence calibration:** After the SimpsonsKong "10/10 confidence" miss, never rate confidence above 8/10 unless you have:
+**Confidence calibration:** After the source IPKong "10/10 confidence" miss, never rate confidence above 8/10 unless you have:
 1. Completed the state machine audit table for ALL entities
 2. Traced at least 5 critical scenarios frame-by-frame
 3. Run the adversarial playtest checklist
@@ -165,7 +165,7 @@ For each state transition in the design doc:
   → If no, that's the bug.
 ```
 
-**SimpsonsKong examples of absence bugs:**
+**firstPunch examples of absence bugs:**
 - Player freeze: `'hit' → 'idle'` transition was designed but never coded
 - Enemy passivity: attack duration logic existed but was overridden by AI before executing
 - Audio: 8 methods implemented but 0 callers (methods exist, wiring doesn't)
@@ -184,7 +184,7 @@ For each state transition in the design doc:
 
 4. **Subjective-only assessment** — "Combat feels good" is not QA. Measure DPS, frame data, and state durations. Quantitative findings plus subjective feel.
 
-5. **False positive over-reporting** — Reporting bugs that don't actually exist wastes fix time and reduces trust. Verify bugs by reproducing them before reporting. (SimpsonsKong: C5 bug was retracted as false positive.)
+5. **False positive over-reporting** — Reporting bugs that don't actually exist wastes fix time and reduces trust. Verify bugs by reproducing them before reporting. (firstPunch: C5 bug was retracted as false positive.)
 
 6. **No regression after combat changes** — Combat is coupled. Changing jab frame data can break combo timing. Run the 10-item checklist after every change.
 

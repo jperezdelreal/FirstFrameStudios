@@ -295,7 +295,7 @@ export class GameplayScene {
 
         // AAA-A3: Woohoo on reaching 5+ combo
         if (comboCountBefore < 5 && this.player.comboCount >= 5) {
-            try { this.audio.playWoohoo(); } catch (e) { /* ignore */ }
+            try { this.audio.playCheer(); } catch (e) { /* ignore */ }
         }
         
         // Update enemies
@@ -346,7 +346,7 @@ export class GameplayScene {
             this.player.styleTypes.clear();
             // AAA-A3: Voice bark on player damage (30% chance)
             if (Math.random() < 0.3) {
-                try { this.audio.playDoh(); } catch (e) { /* ignore */ }
+                try { this.audio.playGrunt(); } catch (e) { /* ignore */ }
             }
         }
 
@@ -410,7 +410,7 @@ export class GameplayScene {
             if (typeof VFX.createBossIntro === 'function') {
                 for (const enemy of newEnemies) {
                     if (enemy.variant === 'boss') {
-                        VFX.createBossIntro(this.vfx, 'NELSON', 'Ha-Ha!', 3.0);
+                        VFX.createBossIntro(this.vfx, 'BRUISER', 'Get ready!', 3.0);
                     }
                 }
             }
@@ -566,9 +566,9 @@ export class GameplayScene {
             ctx.font = 'bold 28px Arial';
             ctx.strokeStyle = '#000000';
             ctx.lineWidth = 3;
-            ctx.strokeText('SPRINGFIELD DOWNTOWN', w / 2, h / 2 + 30);
+            ctx.strokeText('DOWNTOWN DISTRICT', w / 2, h / 2 + 30);
             ctx.fillStyle = '#FFFFFF';
-            ctx.fillText('SPRINGFIELD DOWNTOWN', w / 2, h / 2 + 30);
+            ctx.fillText('DOWNTOWN DISTRICT', w / 2, h / 2 + 30);
 
             ctx.restore();
         }

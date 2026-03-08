@@ -1,13 +1,13 @@
 # SKILL: State Machine Patterns for Game Entities
 
-Robust state machine design for game entities. Every lesson here was learned the hard way — the player freeze bug, enemy passivity bug, and 3 timer conflation bugs in SimpsonsKong all trace to violations of these patterns.
+Robust state machine design for game entities. Every lesson here was learned the hard way — the player freeze bug, enemy passivity bug, and 3 timer conflation bugs in firstPunch all trace to violations of these patterns.
 
 ---
 name: "state-machine-patterns"
 description: "Robust state machine design — exit paths, transition guards, timeout safety nets, and common anti-patterns"
 domain: "game-architecture"
 confidence: "low"
-source: "earned — extracted from SimpsonsKong critical bugs (player freeze, enemy passivity, timer conflation)"
+source: "earned — extracted from firstPunch critical bugs (player freeze, enemy passivity, timer conflation)"
 ---
 
 ## When to Use This Skill
@@ -96,7 +96,7 @@ handleInput() {
 }
 ```
 
-**Enemy AI guard (SimpsonsKong lesson):** The enemy passivity bug happened because AI logic set `state = 'idle'` every frame during cooldown, overriding the `'attack'` state that was just set. Fix: protect animation-critical states from AI override.
+**Enemy AI guard (firstPunch lesson):** The enemy passivity bug happened because AI logic set `state = 'idle'` every frame during cooldown, overriding the `'attack'` state that was just set. Fix: protect animation-critical states from AI override.
 
 ```javascript
 // ❌ BROKEN — AI override kills attack state
@@ -159,7 +159,7 @@ update(dt) {
 
 ### 5. Timer Separation (The Conflation Anti-Pattern)
 
-**SimpsonsKong's worst recurring bug.** Using one timer for multiple purposes (attack duration AND cooldown AND AI decision delay) causes state corruption.
+**firstPunch's worst recurring bug.** Using one timer for multiple purposes (attack duration AND cooldown AND AI decision delay) causes state corruption.
 
 ```javascript
 // ❌ BROKEN — one timer, three jobs

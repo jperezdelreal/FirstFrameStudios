@@ -99,12 +99,12 @@ Multiple text draws use font sizes that are unreadable at 1280×720, and complet
 
 | Location | File | Font Size | Text | Readability |
 |---|---|---|---|---|
-| Jebediah plaque | `background.js:888` | **5px** | "JEBEDIAH" | Invisible |
+| Founder plaque | `background.js:888` | **5px** | "FOUNDER" | Invisible |
 | I&S poster | `background.js:620` | **5px** | "I&S" | Invisible |
-| El Barto graffiti | `background.js:493,635` | **8-9px** | "EL BARTO" | Barely visible |
-| Springfield sign | `background.js:305` | **9px** | "WELCOME TO" | Barely readable |
-| Burns billboard | `background.js:269` | **11px** | "VOTE BURNS" | Borderline |
-| Burns quote | `background.js:284` | **8px italic** | "Excellent..." | Unreadable |
+| graffiti tag graffiti | `background.js:493,635` | **8-9px** | "GRAFFITI" | Barely visible |
+| Downtown sign | `background.js:305` | **9px** | "WELCOME TO" | Barely readable |
+| Mayor billboard | `background.js:269` | **11px** | "VOTE MAYOR" | Borderline |
+| Mayor quote | `background.js:284` | **8px italic** | "Excellent..." | Unreadable |
 | Style meter label | `hud.js:164` | **9px** | "STYLE" | Tiny |
 | Style info | `hud.js:222` | **8px** | "Best. Combo. Ever." | Illegible |
 | Style multiplier | `hud.js:232` | **10px** | "x5" | Small |
@@ -118,7 +118,7 @@ Signs that should be charming Easter eggs are literally unreadable smudges. HUD 
 
 - **Minimum font size: 12px** for any text the player should read
 - **Background signs**: Increase to 14–16px for primary text, 12px for secondary
-- **Easter eggs (I&S, Jebediah, El Barto)**: Increase to 10–12px minimum, or replace with visual symbols that read at small sizes
+- **Easter eggs (I&S, Founder, graffiti tag)**: Increase to 10–12px minimum, or replace with visual symbols that read at small sizes
 - **HUD labels**: Increase "STYLE", "WAVE" to 11–12px minimum
 - Set `ctx.textBaseline = 'middle'` consistently (some draws omit it)
 
@@ -133,35 +133,35 @@ Signs that should be charming Easter eggs are literally unreadable smudges. HUD 
 Characters, buildings, and landmarks exist at contradictory scales:
 
 **Player (foreground, 1× parallax):**
-- Homer: 64×80px — walks on ground plane Y=400–600
+- Brawler: 64×80px — walks on ground plane Y=400–600
 
 **Mid-layer buildings (0.5× parallax — should read as "further away"):**
-- Kwik-E-Mart: 210×140px
-- Moe's: 170×125px
+- Quick Stop: 210×140px
+- Joe's Bar: 170×125px
 - Houses: 115–130px wide, 95–110px tall
 - Elementary: 250×155px
 
 **Far-layer landmarks (0.2× parallax — should read as "very far"):**
-- Power Plant cooling tower: 130px wide, 180px tall
+- Factory cooling tower: 130px wide, 180px tall
 - Billboard: 110×55px
-- Springfield sign: 130×35px
+- Downtown sign: 130×35px
 
-**The problem:** Buildings at 0.5× parallax scroll slower (suggesting distance) but their drawn size is only 1.5–3× larger than Homer. If Homer is supposed to be ~6 feet tall, a Kwik-E-Mart (a single-story convenience store) at 140px should be roughly 2× Homer's height (160px). That's close. But the Power Plant cooling towers at 180px (0.2× parallax, suggesting great distance) should be MUCH larger — cooling towers are 100+ feet tall. They look like garden sheds.
+**The problem:** Buildings at 0.5× parallax scroll slower (suggesting distance) but their drawn size is only 1.5–3× larger than Brawler. If Brawler is supposed to be ~6 feet tall, a Quick Stop (a single-story convenience store) at 140px should be roughly 2× Brawler's height (160px). That's close. But the Factory cooling towers at 180px (0.2× parallax, suggesting great distance) should be MUCH larger — cooling towers are 100+ feet tall. They look like garden sheds.
 
 **Ground plane compression:**
 - Walkable area: Y=400 to Y=600 (200px total depth)
-- Homer height: 80px (40% of walkable depth)
-- This makes Homer look enormous relative to the "street" he walks on
+- Brawler height: 80px (40% of walkable depth)
+- This makes Brawler look enormous relative to the "street" he walks on
 
 ### How Bad It Looks: 6/10
 
-It doesn't look overtly wrong at first glance because parallax sells some depth. But on closer inspection, the Power Plant looks like a toy, buildings feel like dollhouses, and Homer dominates the street in an uncanny way.
+It doesn't look overtly wrong at first glance because parallax sells some depth. But on closer inspection, the Factory looks like a toy, buildings feel like dollhouses, and Brawler dominates the street in an uncanny way.
 
 ### The Fix
 
-- **Far-layer landmarks**: Scale up 1.5–2×. Power Plant towers should be 250–300px tall, billboards 150×70px.
+- **Far-layer landmarks**: Scale up 1.5–2×. Factory towers should be 250–300px tall, billboards 150×70px.
 - **Consider increasing HORIZON** from 400 to 350 to give more vertical room for buildings to breathe and more ground plane for characters.
-- **Ground plane**: Consider expanding walkable depth range from 200px to 250px (Y=380–630) to reduce the "Homer fills the street" effect.
+- **Ground plane**: Consider expanding walkable depth range from 200px to 250px (Y=380–630) to reduce the "Brawler fills the street" effect.
 - **Foreground hydrants** (background.js foreground layer): Currently drawn at similar size to background ones — should be 1.5× larger to sell depth.
 
 ### Fixable on Canvas 2D? YES — constant tweaks, no rendering changes.
@@ -178,8 +178,8 @@ The art direction specifies `2px #222222` outlines with round caps for all eleme
 - ✅ Building exteriors (OUTLINE constant in `background.js:34`)
 
 But broken in:
-- ❌ Power Plant uses `#6A6A6A` and `#555555` strokes (`background.js:320–352`) — grey instead of dark
-- ❌ Jebediah statue uses `#4A6A4A` strokes (`background.js:901,910`) — green-tinted
+- ❌ Factory uses `#6A6A6A` and `#555555` strokes (`background.js:320–352`) — grey instead of dark
+- ❌ Founder statue uses `#4A6A4A` strokes (`background.js:901,910`) — green-tinted
 - ❌ Smokestack uses `#555555` stroke (`background.js:352`) — lighter than standard
 - ❌ Some window strokes drop to `lineWidth: 1` or `0.5` — inconsistent with 2px standard
 - ❌ Brick lines in Elementary are `0.5px` (`background.js:654`) — nearly invisible
@@ -214,11 +214,11 @@ The visual modernization plan (Wave 5) identified this: foreground, mid-ground, 
 
 ### How Bad It Looks: 5/10
 
-The eye doesn't know where to focus. Homer should pop against a slightly muted background. Instead, the Kwik-E-Mart's teal is almost as visually loud as Homer's yellow.
+The eye doesn't know where to focus. Brawler should pop against a slightly muted background. Instead, the Quick Stop's teal is almost as visually loud as Brawler's yellow.
 
 ### The Fix
 
-- **Mid-layer**: Reduce saturation by 30%. Kwik-E-Mart teal → desaturated teal (#5A9A9A). Moe's brown → muted (#6A4A31).
+- **Mid-layer**: Reduce saturation by 30%. Quick Stop teal → desaturated teal (#5A9A9A). Joe's Bar brown → muted (#6A4A31).
 - **Far-layer**: Keep current greys, add subtle blue atmospheric tint
 - **Foreground elements**: At 0.3 alpha already (good), no change needed
 
@@ -232,7 +232,7 @@ The eye doesn't know where to focus. Homer should pop against a slightly muted b
 
 All text throughout the game uses `"Arial Black", Arial, sans-serif` — a system font stack. While this is readable and available everywhere, it contributes to a "default/generic" look. Professional games use custom display fonts for titles and UI.
 
-The title "SIMPSONS KONG" at 72px in Arial Black (`title.js:196`) is functional but generic. The same font is reused for HUD labels, combo counter, menu items, and building signs.
+The title "FIRST PUNCH" at 72px in Arial Black (`title.js:196`) is functional but generic. The same font is reused for HUD labels, combo counter, menu items, and building signs.
 
 ### How Bad It Looks: 3/10
 
@@ -240,7 +240,7 @@ Not terrible — Arial Black is a decent bold display font. But it screams "web 
 
 ### The Fix
 
-- Load one custom web font via @font-face for titles/headers (something with personality — hand-drawn, comic book, or Simpsons-inspired)
+- Load one custom web font via @font-face for titles/headers (something with personality — hand-drawn, comic book, or retro-inspired)
 - Keep Arial/sans-serif for small labels and body text
 - Alternative: If no custom font, use Canvas text path rendering with manual outlines/shadows to make the system font feel more designed
 
@@ -274,7 +274,7 @@ Subtle issue, but it means the depth layering (far → mid → near → foregrou
 
 In `hud.js`, critical gameplay information is rendered at small sizes:
 - Health text "100 / 100": `11px` (`hud.js:399`)
-- "HOMER" label: `13px` (`hud.js:334`)
+- "BRAWLER" label: `13px` (`hud.js:334`)
 - Score label "SCORE": `11px` (`hud.js:437`)
 - "LIVES" label: `11px` (`hud.js:416`)
 - Wave dots: `5px radius` (`hud.js:244`)
@@ -346,6 +346,6 @@ Functionally adequate — you CAN tell them apart if you look. But in a beat 'em
 
 ## The Honest Bottom Line
 
-The game has **good procedural art** — Homer is recognizable, buildings are charming, effects are polished. The art team's work is solid. The problem is **the rendering pipeline throws it all away** by displaying everything at half resolution with nearest-neighbor upscaling. It's like printing a high-quality poster on a fax machine.
+The game has **good procedural art** — Brawler is recognizable, buildings are charming, effects are polished. The art team's work is solid. The problem is **the rendering pipeline throws it all away** by displaying everything at half resolution with nearest-neighbor upscaling. It's like printing a high-quality poster on a fax machine.
 
 Fix DPR + remove pixelated CSS = the game immediately looks 3–4× better. Everything else is polish on top.

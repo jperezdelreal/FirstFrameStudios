@@ -7,7 +7,7 @@ name: "godot-tooling"
 description: "Godot 4 development tooling — EditorPlugins, scene templates, autoloads, GDScript style guide, build automation"
 domain: "game-engine-tooling"
 confidence: "low"
-source: "synthesized — from Godot 4 documentation, SimpsonsKong lessons (unwired infrastructure pattern), and team coordination analysis"
+source: "synthesized — from Godot 4 documentation, firstPunch lessons (unwired infrastructure pattern), and team coordination analysis"
 ---
 
 ## When to Use This Skill

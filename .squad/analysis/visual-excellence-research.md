@@ -1,4 +1,4 @@
-# Visual Excellence Research — 2D Game Art & SimpsonsKong Learnings
+# Visual Excellence Research — 2D Game Art & firstPunch Learnings
 
 **Author:** Boba (Art Director)  
 **Date:** 2026-06-03  
@@ -35,7 +35,7 @@ Canvas 2D is underestimated. With expert use, it can produce visuals that rival 
 
 **What Canvas 2D does WELL:**
 - **Clean vector-style art:** Bezier curves, smooth outlines, crisp at any resolution. Think Hollow Knight's clean linework — achievable procedurally.
-- **Flat-shaded cartoon:** The Simpsons/Adventure Time/Gravity Falls look — solid fills with outlines. This is Canvas 2D's sweet spot.
+- **Flat-shaded cartoon:** the source IP/Adventure Time/Gravity Falls look — solid fills with outlines. This is Canvas 2D's sweet spot.
 - **Gradient depth effects:** Sky gradients, health bar bevels, spotlight halos, atmospheric fog — all native Canvas operations.
 - **Geometric particle effects:** Starbursts, speed lines, dust clouds, score popups — fast and memory-efficient.
 - **Resolution independence:** Procedural art scales perfectly to any DPR/screen size. No blurry upscaling.
@@ -86,7 +86,7 @@ Canvas 2D is underestimated. With expert use, it can produce visuals that rival 
 - Games with many unique characters/enemies
 - When art quality is the primary selling point
 
-**The crossover point:** When a single procedural character takes >200 lines of render code and >2 hours to build, sprites would have been faster. SimpsonsKong hit this threshold at Homer's Wave 6 redesign (~300 lines, ~3 hours).
+**The crossover point:** When a single procedural character takes >200 lines of render code and >2 hours to build, sprites would have been faster. firstPunch hit this threshold at Brawler's Wave 6 redesign (~300 lines, ~3 hours).
 
 ---
 
@@ -109,7 +109,7 @@ Disney's 12 principles of animation aren't just for film — they're the differe
 - **Implementation:** State machine with `windup` → `active` → `recovery` phases per action.
 
 #### Follow-Through & Overlapping Action
-- **Hair/clothing:** Homer's belly should lag behind his movement direction by 1-2 frames.
+- **Hair/clothing:** Brawler's belly should lag behind his movement direction by 1-2 frames.
 - **Arm swing:** Arms continue past strike point, decelerate, return.
 - **Landing dust:** Particles continue outward after character has stopped.
 - **Implementation:** Secondary properties with damped spring physics. `velocity += (target - current) * stiffness - velocity * damping`.
@@ -131,7 +131,7 @@ Disney's 12 principles of animation aren't just for film — they're the differe
 #### Palette Design
 - **Start with 5 colors maximum per entity.** Add colors only when gameplay requires distinction.
 - **Use HSB, not RGB, for palette construction.** Keep Saturation consistent within a palette (e.g., all at 70-80%) and vary Hue for variety.
-- **One accent color per palette.** Homer's accent is `#FED90F` yellow. Enemy accent is the variant color. UI accent is gold.
+- **One accent color per palette.** Brawler's accent is `#FED90F` yellow. Enemy accent is the variant color. UI accent is gold.
 
 #### The 60-30-10 Rule
 - **60%** dominant color (background, large surfaces) — low saturation, sets mood
@@ -171,7 +171,7 @@ Priority 5: ENVIRONMENTAL CONTEXT → background, atmosphere, setting
 ```
 
 **Rules for maintaining hierarchy:**
-1. **Player must contrast with everything.** If background is blue, player can't be blue. SimpsonsKong gets this right — Homer's yellow pops against every background color.
+1. **Player must contrast with everything.** If background is blue, player can't be blue. firstPunch gets this right — Brawler's yellow pops against every background color.
 2. **Enemies must contrast with background but not outshine player.** Slightly lower saturation or smaller size than player.
 3. **UI must be in screen-space, not world-space** (except damage numbers, which are world-anchored but short-lived).
 4. **Effects must not obscure gameplay.** VFX should use additive blending or low alpha so entities remain visible through explosions/impacts.
@@ -249,7 +249,7 @@ ctx.scale(dpr, dpr);
 
 ---
 
-## Part 2 — SimpsonsKong Learnings
+## Part 2 — firstPunch Learnings
 
 ### The devicePixelRatio Disaster
 
@@ -266,9 +266,9 @@ ctx.scale(dpr, dpr);
 ### Procedural Art Limitations — What Took Hours vs. Minutes
 
 **Hours spent on procedural that sprites would solve faster:**
-- Homer's full body render: ~300 lines, ~3 hours. A sprite sheet of 8 poses would take a skilled artist ~1 hour and look better.
+- Brawler's full body render: ~300 lines, ~3 hours. A sprite sheet of 8 poses would take a skilled artist ~1 hour and look better.
 - Enemy variants: ~200 lines each × 4 variants = ~800 lines, ~6 hours. Sprite palette swaps would take ~30 minutes per variant.
-- Springfield buildings: ~150 lines per building type. Pre-drawn building sprites would take ~20 minutes each and have texture/detail that procedural can't match.
+- Downtown buildings: ~150 lines per building type. Pre-drawn building sprites would take ~20 minutes each and have texture/detail that procedural can't match.
 
 **Things procedural did WELL:**
 - VFX (starbursts, damage numbers, trails) — always better procedural. Dynamic, resolution-independent, zero asset overhead.
@@ -282,7 +282,7 @@ ctx.scale(dpr, dpr);
 
 ### Multi-Artist Coordination — How 4 Art Roles Worked
 
-SimpsonsKong had four agents touching visuals: Boba (art direction + VFX), Lando (player entity), Tarkin (enemy entities), and implicitly whoever owned background.js.
+firstPunch had four agents touching visuals: Boba (art direction + VFX), Lando (player entity), Tarkin (enemy entities), and implicitly whoever owned background.js.
 
 **What worked:**
 - **art-direction.md as single source of truth** — the palette table, outline spec (`#222222`, 2px, round caps), and shading model were referenced by every agent. Consistency happened because the rules were written down, not verbal.
@@ -290,7 +290,7 @@ SimpsonsKong had four agents touching visuals: Boba (art direction + VFX), Lando
 - **Render-only scope** — art changes were explicitly scoped to `render()` methods. No art agent touched gameplay logic, preventing cross-domain bugs.
 
 **What didn't work:**
-- **Scale/proportion drift** — Homer was 64×80, enemies were 48×76, but the art direction spec said 1:2.5 head ratio for Homer and "taller/leaner" for enemies. In practice, proportions drifted because there was no visual reference sheet — just text descriptions.
+- **Scale/proportion drift** — Brawler was 64×80, enemies were 48×76, but the art direction spec said 1:2.5 head ratio for Brawler and "taller/leaner" for enemies. In practice, proportions drifted because there was no visual reference sheet — just text descriptions.
 - **No visual review step** — changes were reviewed as code diffs, not screenshots. A bezier curve change that looks correct in code can look terrible on screen. Need in-game screenshot reviews.
 - **Blocked integration** — art assets (VFX functions, render changes) were delivered but integration into gameplay.js was blocked on another agent. Art sat unused for waves.
 - **Style conflicts in edge cases** — the art-direction.md covered main cases but not edge cases (what color is a fist during a punch? what opacity is a dying enemy?). Each agent made different assumptions.
@@ -301,7 +301,7 @@ SimpsonsKong had four agents touching visuals: Boba (art direction + VFX), Lando
 
 ### Scale/Proportion Consistency — The Car/Building/Character Problem
 
-**The issue:** When Homer (80px) stands next to a building (150px), the building is less than 2× his height — making Homer look like a giant. When the Power Plant cooling towers (180px) appear on the far parallax layer, they should dwarf everything but were barely larger than mid-layer buildings.
+**The issue:** When Brawler (80px) stands next to a building (150px), the building is less than 2× his height — making Brawler look like a giant. When the Factory cooling towers (180px) appear on the far parallax layer, they should dwarf everything but were barely larger than mid-layer buildings.
 
 **Root causes:**
 1. **No proportion reference existed.** Each entity was drawn in isolation with arbitrary pixel dimensions. Nobody checked relative scale until everything was on screen together.
@@ -313,7 +313,7 @@ SimpsonsKong had four agents touching visuals: Boba (art direction + VFX), Lando
 PLAYER_HEIGHT: 80,  // reference unit
 ENEMY_HEIGHT: 76,   // 95% of player (slightly shorter for most, taller for heavy)
 BUILDING_HEIGHT: 240, // 3× player height
-POWER_PLANT_HEIGHT: 400, // 5× player height  
+FACTORY_HEIGHT: 400, // 5× player height  
 TREE_HEIGHT: 160,   // 2× player height
 ```
 All entities derive their dimensions from these constants. Change `PLAYER_HEIGHT` and everything scales proportionally.

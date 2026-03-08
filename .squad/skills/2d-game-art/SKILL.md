@@ -4,12 +4,12 @@ description: "Reusable skill for 2D game art direction, procedural Canvas render
 domain: "visual-art"
 confidence: "high"
 source: "project-experience"
-origin: "SimpsonsKong (2026)"
+origin: "firstPunch (2026)"
 ---
 
 ## Context
 
-This skill covers art direction for 2D browser games using HTML5 Canvas. It was developed through building SimpsonsKong — a beat 'em up with 100% procedural art (no external images). The patterns apply to any Canvas 2D game and partially to sprite-based games.
+This skill covers art direction for 2D browser games using HTML5 Canvas. It was developed through building firstPunch — a beat 'em up with 100% procedural art (no external images). The patterns apply to any Canvas 2D game and partially to sprite-based games.
 
 ## Patterns
 

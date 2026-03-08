@@ -3,7 +3,7 @@ name: "animation-for-games"
 description: "Universal animation principles, state machines, timing, and implementation patterns for all game genres and platforms"
 domain: "animation-systems"
 confidence: "low"
-source: "extracted from SimpsonsKong experience + cross-game research (Street Fighter, Celeste, Hollow Knight, Beat Saber)"
+source: "extracted from firstPunch experience + cross-game research (Street Fighter, Celeste, Hollow Knight, Beat Saber)"
 origin: "First Frame Studios (2026)"
 ---
 
@@ -1023,32 +1023,32 @@ Sprite Sheets (frame-by-frame):
   {character}_{action}_{variant}.png
   
   Example:
-    homer_idle_default.png
-    homer_walk_fast.png
-    homer_punch_heavy.png
-    homer_punch_light.png
-    homer_jump_startup.png
-    homer_jump_ascend.png
-    homer_jump_descend.png
-    homer_jump_land.png
+    brawler_idle_default.png
+    brawler_walk_fast.png
+    brawler_punch_heavy.png
+    brawler_punch_light.png
+    brawler_jump_startup.png
+    brawler_jump_ascend.png
+    brawler_jump_descend.png
+    brawler_jump_land.png
     
 Skeletal Animations (bones):
   {character}_{action}_{variant}.json (or .spine, .dragobones, etc)
   
   Example:
-    homer_idle_default.json
-    homer_walk_normal.json
-    homer_run_fast.json
-    homer_punch_light_01.json
-    homer_punch_light_02.json  (two-hit combo)
-    homer_punch_heavy.json
-    homer_grab_throw.json
-    homer_hit_light.json
-    homer_hit_heavy.json
-    homer_death_default.json
+    brawler_idle_default.json
+    brawler_walk_normal.json
+    brawler_run_fast.json
+    brawler_punch_light_01.json
+    brawler_punch_light_02.json  (two-hit combo)
+    brawler_punch_heavy.json
+    brawler_grab_throw.json
+    brawler_hit_light.json
+    brawler_hit_heavy.json
+    brawler_death_default.json
 
 Convention Key:
-  {character}: Entity name (homer, marge, barney, etc)
+  {character}: Entity name (brawler, defender, bruiser, etc)
   {action}: Animation type (idle, walk, run, punch, kick, grab, jump, hit, death)
   {variant}: Modifier if multiple versions of same action
     - Direction: forward, backward
@@ -1062,13 +1062,13 @@ Convention Key:
 **By Character (Recommended for small teams):**
 ```
 animations/
-├─ homer/
+├─ brawler/
 │  ├─ idle.png
 │  ├─ walk.png
 │  ├─ attack.png
 │  └─ ...
-├─ marge/
-├─ barney/
+├─ defender/
+├─ bruiser/
 └─ ...
 ```
 
@@ -1076,8 +1076,8 @@ animations/
 ```
 animations/
 ├─ idle/
-│  ├─ homer.png
-│  ├─ marge.png
+│  ├─ brawler.png
+│  ├─ defender.png
 │  └─ ...
 ├─ walk/
 ├─ attack/
@@ -1576,7 +1576,7 @@ Every game, every genre, every platform uses these concepts. Learn them once, ap
 
 ---
 
-**Confidence:** `low` — This skill captures universal patterns from SimpsonsKong and cross-game research, but needs validation across different genres, engines, and production scales before bumping to `medium` or `high`.
+**Confidence:** `low` — This skill captures universal patterns from firstPunch and cross-game research, but needs validation across different genres, engines, and production scales before bumping to `medium` or `high`.
 
 **Created:** 2026-08-03  
 **By:** Boba (Art Director, First Frame Studios)

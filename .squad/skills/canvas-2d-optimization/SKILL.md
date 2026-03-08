@@ -7,7 +7,7 @@ name: "canvas-2d-optimization"
 description: "Performance and quality patterns for Canvas 2D — HiDPI, sprite caching, text rendering, migration criteria"
 domain: "rendering"
 confidence: "low"
-source: "earned — extracted from SimpsonsKong HiDPI retrofit, visual quality audits, and rendering research"
+source: "earned — extracted from firstPunch HiDPI retrofit, visual quality audits, and rendering research"
 ---
 
 ## When to Use This Skill
@@ -53,7 +53,7 @@ const centerX = ctx.canvas.logicalWidth / 2;
 // Or: ctx.canvas.width / dpr / 2;
 ```
 
-**Hidden bugs post-DPR fix:** Any file using `ctx.canvas.width` or `ctx.canvas.height` directly will break. In SimpsonsKong, 5 files had this bug (game.js, vfx.js ×3, debug overlay). Add `logicalWidth`/`logicalHeight` properties and search-replace.
+**Hidden bugs post-DPR fix:** Any file using `ctx.canvas.width` or `ctx.canvas.height` directly will break. In firstPunch, 5 files had this bug (game.js, vfx.js ×3, debug overlay). Add `logicalWidth`/`logicalHeight` properties and search-replace.
 
 ### 2. Remove `image-rendering: pixelated`
 
@@ -130,7 +130,7 @@ ctx.fillText('SCORE: 1000', 10.7, 24.3);
 ctx.fillText('SCORE: 1000', Math.round(10.7), Math.round(24.3));
 ```
 
-**Helper pattern from SimpsonsKong:**
+**Helper pattern from firstPunch:**
 ```javascript
 function drawCrispText(ctx, text, x, y, font, color) {
     ctx.font = font;

@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'simpsonsKong_highScore';
+const STORAGE_KEY = 'firstPunch_highScore';
 
 export function getHighScore() {
     try {

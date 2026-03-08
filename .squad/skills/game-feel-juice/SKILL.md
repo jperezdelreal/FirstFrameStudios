@@ -8,7 +8,7 @@ name: "game-feel-juice"
 description: "Juice patterns and feedback techniques — screen shake, hitlag, flash, particles, knockback, squash-and-stretch, sound sync, time manipulation"
 domain: "game-design"
 confidence: "medium"
-source: "extracted from SimpsonsKong combat implementation (Lando, Ackbar, Yoda) + genre research (Celeste, SoR4, Hollow Knight, Gungeon, Hades)"
+source: "extracted from firstPunch combat implementation (Lando, Ackbar, Yoda) + genre research (Celeste, SoR4, Hollow Knight, Gungeon, Hades)"
 
 ---
 
@@ -1064,7 +1064,7 @@ A priority-ordered list. Implement in this order. Each unlocks the next.
 
 ---
 
-## 7. SimpsonsKong Learnings
+## 7. firstPunch Learnings
 
 What we learned building juice into our first beat 'em up:
 
@@ -1213,7 +1213,7 @@ Use this checklist when shipping any game feature with impact:
 ## Confidence Level: `medium`
 
 This skill is validated through:
-- **Shipped project:** SimpsonsKong combat implementation (Lando, Ackbar, Yoda)
+- **Shipped project:** firstPunch combat implementation (Lando, Ackbar, Yoda)
 - **Reference analysis:** Celeste, Streets of Rage 4, Hollow Knight, Enter the Gungeon, Hades (genre research for beat 'em ups + action games)
 - **Industry consensus:** Game feel patterns are standard across AAA studios, proven over 30+ years of action game design
 

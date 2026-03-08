@@ -1,7 +1,7 @@
 # Boba — Art Director
 
 ## Role
-Art Director for SimpsonsKong and future game projects. Promoted from VFX/Art Specialist.
+Art Director for firstPunch and future game projects. Promoted from VFX/Art Specialist.
 
 ## Responsibilities
 - Define and maintain the visual style guide (color palette, outline weights, shading approach, proportions)

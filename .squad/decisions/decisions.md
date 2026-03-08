@@ -12,18 +12,18 @@
 
 ### Summary
 
-Created the comprehensive Game Design Document (GDD) for SimpsonsKong — the team's north star for all design and implementation decisions.
+Created the comprehensive Game Design Document (GDD) for firstPunch — the team's north star for all design and implementation decisions.
 
 ### Key Decisions
 
 #### Vision
-SimpsonsKong is a browser-based Simpsons beat 'em up where comedy IS the combat. Players should laugh, feel powerful, and immediately want to try the next character. Instant-play browser design means zero friction, 5-7 minute levels, and session-friendly pacing.
+firstPunch is a browser-based game beat 'em up where comedy IS the combat. Players should laugh, feel powerful, and immediately want to try the next character. Instant-play browser design means zero friction, 5-7 minute levels, and session-friendly pacing.
 
 #### Four Design Pillars
-1. **Comedy as a Core Mechanic** — Humor is in the gameplay systems (taunts, D'oh! moments, Simpsons-rated combo meter), not just cosmetic.
+1. **Comedy as a Core Mechanic** — Humor is in the gameplay systems (taunts, Ugh! moments, game-rated combo meter), not just cosmetic.
 2. **Accessible Depth** — Button-mashers have fun; combo masters have a different kind of fun. Streets of Rage 4 principle.
-3. **Family Synergy** — Co-op mechanics reward playing as the Simpson family together (team attacks, proximity buffs, family super).
-4. **Springfield Is a Character** — Environments are interactive playgrounds with landmark gags, destructibles, and hazards.
+3. **Team Synergy** — Co-op mechanics reward playing as the team together (team attacks, proximity buffs, team super).
+4. **Downtown Is a Character** — Environments are interactive playgrounds with landmark gags, destructibles, and hazards.
 
 #### Core Combat
 - **PPK combo** as the bread-and-butter (42 damage/1.1s)
@@ -33,18 +33,18 @@ SimpsonsKong is a browser-based Simpsons beat 'em up where comedy IS the combat.
 - **Super meter** filled by damage and taunts
 - **Jump attacks rebalanced** with landing lag to prevent air-spam dominance (balance analysis finding)
 
-#### Characters (4 planned, Homer first)
-- Homer: Power/All-Rounder, Donut Rage Mode, Belly Bounce
-- Bart: Speed, Skateboard Dash, Slingshot ranged, Bartman super
-- Marge: Range, Purse Swing, Hair Whip, Maternal Instinct passive
-- Lisa: Technical/CC, Saxophone Blast, Intellect Advantage dodge, Activist Rally super
+#### Characters (4 planned, Brawler first)
+- Brawler: Power/All-Rounder, Rage Mode, Belly Bounce
+- Kid: Speed, Skateboard Dash, Slingshot ranged, alter-ego super
+- Defender: Range, Purse Swing, Hair Whip, Maternal Instinct passive
+- Prodigy: Technical/CC, Saxophone Blast, Intellect Advantage dodge, Activist Rally super
 
-#### Simpsons-Specific Mechanics
-- **Donut Rage Mode** (eat 3 donuts → Homer power-up, creates heal vs. rage dilemma)
-- **D'oh! Moments** (funny failure states at every level)
+#### game-Specific Mechanics
+- **Rage Mode** (eat 3 donuts → Brawler power-up, creates heal vs. rage dilemma)
+- **Ugh! Moments** (funny failure states at every level)
 - **Couch Gag loading screens** (randomized, collectible transitions)
-- **Springfield landmarks** as interactive combat elements
-- **Simpsons food** as themed health pickups (Pink Donut, Krusty Burger, Flaming Moe)
+- **Downtown landmarks** as interactive combat elements
+- **game food** as themed health pickups (Pink Donut, Burger Joint, Fire Cocktail)
 - **Combat barks** (character quotes on gameplay events)
 
 #### Balance Integration
@@ -79,7 +79,7 @@ Every team member now has a single reference for "what are we building and why."
 
 #### Current Boba Workload (17 items across 4 domains)
 
-**Character Art (5 items):** P2-4 Homer redesign, P1-9 Homer walk cycle (art side), P1-10 Homer attack animations (art side), P1-11 Enemy death animation, EX-B7 Consistent entity rendering style.
+**Character Art (5 items):** P2-4 Brawler redesign, P1-9 Brawler walk cycle (art side), P1-10 Brawler attack animations (art side), P1-11 Enemy death animation, EX-B7 Consistent entity rendering style.
 
 **Environment Art (3 items):** P2-5 Background overhaul, EX-B6 Foreground parallax layer, EX-B8 Environmental background animations.
 
@@ -91,7 +91,7 @@ Every team member now has a single reference for "what are we building and why."
 
 #### Analysis
 
-The visual modernization plan alone is **62KB** — a massive document covering Homer's stubble rendering, enemy proportions, background parallax layers, particle effects, and more. This is not a part-time gig. Each of the 4 proposed sub-roles maps cleanly to a real workload cluster:
+The visual modernization plan alone is **62KB** — a massive document covering Brawler's stubble rendering, enemy proportions, background parallax layers, particle effects, and more. This is not a part-time gig. Each of the 4 proposed sub-roles maps cleanly to a real workload cluster:
 
 | Proposed Role | Items Owned | Unique Skills Required |
 |---------------|-------------|----------------------|
@@ -120,7 +120,7 @@ Boba is the strongest candidate for Art Director because:
 2. **Boba does NOT hand off in-progress work mid-stream.** Any items Boba has started should be completed by Boba. New artists pick up unstarted items.
 3. **Art Director role includes code review authority** on all visual PRs. No visual code merges without Boba's review (or explicit delegation).
 4. **First task for new artists:** Each new artist implements one small item under Boba's direct review to calibrate style alignment. Don't let them run free on day one.
-5. **Boba's charter update:** Change from "VFX/Art Specialist" to "Art Director." Responsibilities shift from production to direction + review + style enforcement + selective production on high-complexity items (e.g., Homer's final design is too important to delegate to a new hire).
+5. **Boba's charter update:** Change from "VFX/Art Specialist" to "Art Director." Responsibilities shift from production to direction + review + style enforcement + selective production on high-complexity items (e.g., Brawler's final design is too important to delegate to a new hire).
 
 #### Risk: Boba Becomes a Bottleneck
 
@@ -135,13 +135,13 @@ If every visual change needs Art Director review, Boba becomes a chokepoint. Mit
 - **Solo (Lead) is implicitly doing game design.** The gap analysis, the 52-item backlog, the phased execution plan, the priority rankings — these are all game design decisions made by a project lead. This works at small scale but doesn't scale.
 - **Tarkin (Enemy/Content Dev) is doing content design.** Wave composition rules (EX-T2), encounter pacing curves (EX-T3), boss phase frameworks (EX-T5) — these are game design decisions embedded in a content dev role.
 - **Ackbar (QA) is doing balance design.** DPS analysis (EX-A5), frame data documentation (EX-A2) — balance tuning IS game design.
-- **Nobody owns the coherent vision.** Is SimpsonsKong a casual brawler or a technical fighter? How hard should it be? What's the target session length? What emotions should each wave evoke? These questions have no designated owner.
+- **Nobody owns the coherent vision.** Is firstPunch a casual brawler or a technical fighter? How hard should it be? What's the target session length? What emotions should each wave evoke? These questions have no designated owner.
 
 #### What a Game Designer Does Day-to-Day
 
 | Activity | Frequency | Example |
 |----------|-----------|---------|
-| Maintain GDD | Ongoing | "Homer's punch should feel heavy — 4 frame startup, 8 active, 12 recovery. Compare to enemy punch: 6/6/8." |
+| Maintain GDD | Ongoing | "Brawler's punch should feel heavy — 4 frame startup, 8 active, 12 recovery. Compare to enemy punch: 6/6/8." |
 | Review combat feel | Every combat change | "Hitlag is 4 frames but knockback distance is too short — enemies don't sell the hit. Increase from 60px to 90px." |
 | Define enemy personalities | Per enemy type | "Fast enemy: harasses from flanks, never attacks head-on, retreats after 1 hit. Player should feel annoyed, not threatened." |
 | Set difficulty curve | Per level | "Wave 3 is the first real challenge — 2 basic + 1 fast. Player should lose 20-30% health here on first attempt." |
@@ -176,7 +176,7 @@ Current routing sends ALL visual work to Boba. New routing:
 
 **Before (1 art pipeline):**
 ```
-Boba: [art direction] → [Homer redesign] → [backgrounds] → [VFX] → [enemies]
+Boba: [art direction] → [Brawler redesign] → [backgrounds] → [VFX] → [enemies]
                        (all sequential — one person)
 ```
 
@@ -185,7 +185,7 @@ Boba: [art direction] → [Homer redesign] → [backgrounds] → [VFX] → [enem
 Boba (Art Dir):   [style guide] → [review] → [review] → [review] → ...
 Env Artist:       [backgrounds] → [parallax] → [props] → [level 2 bg] → ...
 VFX Artist:       [hit VFX] → [telegraphs] → [trails] → [spawn FX] → ...
-Char Artist:      [Homer redesign] → [walk cycle] → [enemy art] → [boss] → ...
+Char Artist:      [Brawler redesign] → [walk cycle] → [enemy art] → [boss] → ...
 Game Designer:    [GDD] → [frame data specs] → [difficulty curve] → [review] → ...
 ```
 
@@ -267,7 +267,7 @@ I rejected this above, but I want to flag it explicitly. The visual modernizatio
 
 If approved, recommended rollout order:
 
-1. **Phase A — Game Designer (Yoda):** Onboard first. Before adding 3 artists, we need the GDD and design specs they'll work from. Yoda writes the GDD, defines Homer's target feel, specifies enemy personality profiles, and sets the difficulty curve. ~1 session to establish.
+1. **Phase A — Game Designer (Yoda):** Onboard first. Before adding 3 artists, we need the GDD and design specs they'll work from. Yoda writes the GDD, defines Brawler's target feel, specifies enemy personality profiles, and sets the difficulty curve. ~1 session to establish.
 
 2. **Phase B — Promote Boba to Art Director:** Update charter, update routing table. Boba reviews the existing art direction guide and visual modernization plan, then produces a brief "artist onboarding brief" — the subset of the 62KB plan that new artists need on day one.
 
@@ -304,7 +304,7 @@ If approved, recommended rollout order:
 
 ### What
 
-Comprehensive AAA gap analysis comparing SimpsonsKong's current state against "award-winning browser beat 'em up" standard. Produced a 101-item prioritized backlog (56 new + 45 carried from existing 85) organized into 5 execution phases, plus 8 future/migration items.
+Comprehensive AAA gap analysis comparing firstPunch's current state against "award-winning browser beat 'em up" standard. Produced a 101-item prioritized backlog (56 new + 45 carried from existing 85) organized into 5 execution phases, plus 8 future/migration items.
 
 ### Current State Assessment
 
@@ -325,7 +325,7 @@ Comprehensive AAA gap analysis comparing SimpsonsKong's current state against "a
 ### New Items Added (56 total)
 
 - **Combat AAA (10):** Grab/throw, dodge roll, juggle physics, style meter, taunt, super meter, dash attack, back attack, attack buffering, directional finishers
-- **Character Roster (5):** Character select, Bart/Marge/Lisa playable, unlock system
+- **Character Roster (5):** Character select, Kid/Defender/Prodigy playable, unlock system
 - **Level Design (8):** Destructibles, throwable props, hazards, 2 new levels, couch gags, set pieces, world map
 - **Visual AAA (8):** Screen zoom, slow-mo kills, boss intros, idle animations, storytelling, transitions, weather, death animations
 - **Audio AAA (6):** Voice barks, ambience, crowd reactions, combo scaling, boss music, pickup sounds
@@ -346,8 +346,8 @@ Comprehensive AAA gap analysis comparing SimpsonsKong's current state against "a
 ### Key Decisions Made
 
 1. **Combat first, always.** Lando's combat chain (grab → dodge → dash → juggle) is the critical path. Everything else runs in parallel.
-2. **4 playable characters.** Homer + Bart + Marge + Lisa. Each follows the speed/power/range archetype triangle from research.
-3. **3 levels minimum.** Springfield Streets → Springfield Elementary → Nuclear Power Plant. Each with unique boss and environment.
+2. **4 playable characters.** Brawler + Kid + Defender + Prodigy. Each follows the speed/power/range archetype triangle from research.
+3. **3 levels minimum.** Downtown Streets → City School → Factory. Each with unique boss and environment.
 4. **Engine migration is Phase E.** Canvas 2D can deliver an award-winning game. WebGL migration is valuable but NOT required for the prize.
 5. **No single owner exceeds 18 items.** Tarkin has the highest count (18) but distributed across two phases. Lando's critical path is 9 items.
 
@@ -418,7 +418,7 @@ Should we prioritize **combat feel** (hitlag, combos, enemy AI) or **visual qual
 
 ### Decision
 
-- localStorage key is `simpsonsKong_highScore` — namespaced to avoid collisions if other games share the domain.
+- localStorage key is `firstPunch_highScore` — namespaced to avoid collisions if other games share the domain.
 - High score is saved at the moment `gameOver` or `levelComplete` is triggered, not continuously during gameplay. A `highScoreSaved` flag prevents duplicate writes.
 - `saveHighScore()` returns a boolean so the renderer can show "NEW HIGH SCORE!" vs the existing value — no extra localStorage read needed in the render loop for that decision.
 - All localStorage access is wrapped in try/catch to gracefully handle private browsing or disabled storage (falls back to 0).
@@ -589,7 +589,7 @@ Evaluated 5 engine options across 9 dimensions for the next project ("nos jugamo
 ### Cost
 - 2-3 week learning sprint before production velocity matches current level
 - GDScript ramp-up (Python-like, approachable for JS devs)
-- SimpsonsKong engine code (1,931 LOC) doesn't transfer — but all architectural knowledge does
+- firstPunch engine code (1,931 LOC) doesn't transfer — but all architectural knowledge does
 
 ### Action Needed
 - Squad discussion on engine choice
@@ -701,7 +701,7 @@ Godot creates significantly more tooling surface area than vanilla JS:
 
 **Rationale:** The overlap with Chewie is only ~40%, and critically, it's the wrong 40%. Chewie's strength is runtime systems — the skill assessment rates Chewie as "Expert" in "System integration and engine architecture." Tool Engineer is about *development-time* productivity. Asking Chewie to also write EditorPlugins, manage import pipelines, and create scaffolding templates would split Chewie's focus between two fundamentally different jobs: making the game work vs. making the team work.
 
-**The lesson from SimpsonsKong proves this:** The #1 technical debt finding (Session 8) was "214 LOC of unused infrastructure — working systems that aren't wired into anything." The multi-agent-coordination skill (Session 10) identified the core pattern: "agents build infrastructure but don't wire it." A Tool Engineer's explicit job would be closing this gap — building the scaffolding, templates, and automation that ensure new code arrives pre-wired.
+**The lesson from firstPunch proves this:** The #1 technical debt finding (Session 8) was "214 LOC of unused infrastructure — working systems that aren't wired into anything." The multi-agent-coordination skill (Session 10) identified the core pattern: "agents build infrastructure but don't wire it." A Tool Engineer's explicit job would be closing this gap — building the scaffolding, templates, and automation that ensure new code arrives pre-wired.
 
 ---
 
@@ -721,7 +721,7 @@ In our Canvas/JS project, there was no editor, no import system, no scene tree, 
 | Signal system | Signal naming conventions, connection patterns, signal bus architecture | We built EventBus (49 LOC) but never used it |
 | Export/build system | Export presets, CI/CD, platform configs, feature flags | None (no build step) |
 
-**Conservative estimate:** 15-25 tooling items in the first Godot project, ongoing maintenance as game scope grows. That's a full role's worth of work, comparable to Tarkin's content workload (18 items in SimpsonsKong).
+**Conservative estimate:** 15-25 tooling items in the first Godot project, ongoing maintenance as game scope grows. That's a full role's worth of work, comparable to Tarkin's content workload (18 items in firstPunch).
 
 ### Godot's Scene-Signal Architecture Creates Unique Coordination Challenges
 
@@ -775,7 +775,7 @@ We evaluated 3 absorption candidates:
 
 **Yoda (Game Designer)?** No. Yoda defines *what* the game should be, not *how* the development environment works. Completely different domain.
 
-**Distribute across all agents?** No. This is exactly the pattern that produced 214 LOC of unused infrastructure in SimpsonsKong. When everyone is responsible for tooling, nobody is responsible for tooling. The multi-agent-coordination skill explicitly warns against this.
+**Distribute across all agents?** No. This is exactly the pattern that produced 214 LOC of unused infrastructure in firstPunch. When everyone is responsible for tooling, nobody is responsible for tooling. The multi-agent-coordination skill explicitly warns against this.
 
 ---
 
@@ -836,15 +836,15 @@ Preferred: auto
 
 ## Executive Summary
 
-**APPROVED.** Commissioned 7 agents in parallel to create universal, engine-agnostic game development skills based on SimpsonsKong beat 'em up expertise. Result: 7 comprehensive skill documents (292.7 KB) covering game design, audio design, animation, level design, and enemy design — applicable across all game genres and platforms.
+**APPROVED.** Commissioned 7 agents in parallel to create universal, engine-agnostic game development skills based on firstPunch beat 'em up expertise. Result: 7 comprehensive skill documents (292.7 KB) covering game design, audio design, animation, level design, and enemy design — applicable across all game genres and platforms.
 
 ### Key Decisions
 
 1. **Scope Expansion:** Broaden team knowledge from beat-em-up-specific to universal principles
 2. **Timing:** Execute *before* Phase 4 AAA work and potential future projects
-3. **Approach:** Extract theory from SimpsonsKong experience + validate against industry best practices
+3. **Approach:** Extract theory from firstPunch experience + validate against industry best practices
 4. **Documentation Standard:** Follow game-feel-juice pattern (philosophy → patterns → anti-patterns → genre-specific)
-5. **Confidence Model:** Medium confidence (validated in SimpsonsKong), will escalate to High after cross-project validation
+5. **Confidence Model:** Medium confidence (validated in firstPunch), will escalate to High after cross-project validation
 
 ---
 
@@ -913,7 +913,7 @@ Preferred: auto
 
 ### Why This Initiative Now?
 
-1. **Institutional Knowledge Risk:** SimpsonsKong expertise is deep but concentrated. One key agent departure means knowledge loss.
+1. **Institutional Knowledge Risk:** firstPunch expertise is deep but concentrated. One key agent departure means knowledge loss.
 2. **Future Project Readiness:** Next project (TBD) may not be beat-em-up. Without universal skills, team restarts from zero.
 3. **Team Scale:** Growing to 13+ agents (with Tool Engineer addition) increases knowledge-sharing burden. Written skills scale better than tribal knowledge.
 4. **Foundation Before Complexity:** Phase 4 AAA work requires solid conceptual foundation. This research wave provides that foundation.
@@ -924,8 +924,8 @@ Preferred: auto
 All skills include:
 - **Internal references:** Cross-link to game-feel-juice (our quality standard), beat-em-up-combat (proven system), and sibling universal skills
 - **Industry validation:** Patterns extracted from published game analysis, GDC talks, developer interviews, and peer-reviewed game studies
-- **Confidence ratings:** Medium for most (validated in SimpsonsKong context); will escalate to High after cross-project testing
-- **Anti-patterns:** 7-10 documented failure modes per skill, drawn from SimpsonsKong bugs and research
+- **Confidence ratings:** Medium for most (validated in firstPunch context); will escalate to High after cross-project testing
+- **Anti-patterns:** 7-10 documented failure modes per skill, drawn from firstPunch bugs and research
 
 ---
 
@@ -944,11 +944,11 @@ Each skill follows game-feel-juice structure:
 
 | Skill | Confidence | Validation Source |
 |-------|-----------|------------------|
-| game-design-fundamentals | Medium | SimpsonsKong design decisions + GDC talks + published game analysis |
-| game-audio-design | Medium | SimpsonsKong audio system + Hades/Celeste/SoR4 analysis + procedural-audio skill validation |
-| animation-for-games | Medium | SimpsonsKong animation patterns + industry best practices + character animation research |
-| level-design-fundamentals | Low | SimpsonsKong level design + 3-beat teaching model (not yet cross-tested on platformer/RPG) |
-| enemy-encounter-design | Medium | SimpsonsKong enemy types + wave composition rules + published enemy design frameworks |
+| game-design-fundamentals | Medium | firstPunch design decisions + GDC talks + published game analysis |
+| game-audio-design | Medium | firstPunch audio system + Hades/Celeste/SoR4 analysis + procedural-audio skill validation |
+| animation-for-games | Medium | firstPunch animation patterns + industry best practices + character animation research |
+| level-design-fundamentals | Low | firstPunch level design + 3-beat teaching model (not yet cross-tested on platformer/RPG) |
+| enemy-encounter-design | Medium | firstPunch enemy types + wave composition rules + published enemy design frameworks |
 
 *Confidence levels will increase as skills are applied to new projects.*
 
@@ -960,7 +960,7 @@ Each skill follows game-feel-juice structure:
 
 All 7 new universal skills interlink:
 - **game-feel-juice** (existing) ← referenced by all 5 universal skills as quality standard
-- **beat-em-up-combat** (existing) ← referenced by enemy-encounter-design and game-design-fundamentals as SimpsonsKong validation
+- **beat-em-up-combat** (existing) ← referenced by enemy-encounter-design and game-design-fundamentals as firstPunch validation
 - **game-design-fundamentals** ← references game-feel-juice, beat-em-up-combat
 - **game-audio-design** ← references game-feel-juice, game-design-fundamentals
 - **animation-for-games** ← references game-feel-juice, game-design-fundamentals
@@ -980,7 +980,7 @@ All 7 new universal skills interlink:
 
 ### Deliverables (Achieved)
 - ✅ 7 comprehensive skill documents created (292.7 KB)
-- ✅ Universal principles extracted from SimpsonsKong beat-em-up expertise
+- ✅ Universal principles extracted from firstPunch beat-em-up expertise
 - ✅ Game Design Fundamentals (Yoda): 62.6 KB, 12 sections, 8 anti-patterns
 - ✅ Game Audio Design (Greedo): 32.5 KB, 10 sections, validated against procedural-audio system
 - ✅ Animation for Games (Boba): 51 KB, 13 sections, 2D/3D frameworks

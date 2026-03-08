@@ -1,6 +1,6 @@
 # SKILL: Game UI/UX Design Patterns
 
-Game UI and UX design patterns applicable to any game genre, any engine, any platform. Covers HUD design, menu systems, information hierarchy, responsive scaling, animations, accessibility, and anti-patterns learned from building SimpsonsKong.
+Game UI and UX design patterns applicable to any game genre, any engine, any platform. Covers HUD design, menu systems, information hierarchy, responsive scaling, animations, accessibility, and anti-patterns learned from building firstPunch.
 
 ---
 
@@ -8,8 +8,8 @@ name: "ui-ux-patterns"
 description: "Game UI/UX design patterns — HUD systems, menu flow, information hierarchy, responsive layouts, animations, accessibility"
 domain: "user-experience"
 confidence: "medium"
-source: "earned — built arcade HUD, title screen, pause menu, options menu, level intro, game over screen, progress indicators, enemy health bars in SimpsonsKong"
-origin: "SimpsonsKong (2026)"
+source: "earned — built arcade HUD, title screen, pause menu, options menu, level intro, game over screen, progress indicators, enemy health bars in firstPunch"
+origin: "firstPunch (2026)"
 
 ---
 
@@ -69,7 +69,7 @@ TIER 4 (Reference — hidden until needed)
 - **Position:** Tier 1 stays in primary viewing area (center, top, high-attention zones). Tier 4 occupies corners, edges.
 - **On damage:** Only Tier 1 and 2 flash/pulse. Tier 3 stays calm.
 
-**Anti-pattern (SimpsonsKong lesson):** Showing all stats equally sized and colored makes players miss critical information. Early HUD prototype displayed score and combo with same visual weight as health — players died confused about their actual HP value.
+**Anti-pattern (firstPunch lesson):** Showing all stats equally sized and colored makes players miss critical information. Early HUD prototype displayed score and combo with same visual weight as health — players died confused about their actual HP value.
 
 **Example layout (action game):**
 
@@ -102,7 +102,7 @@ Two types of UI exist in games. Understanding the difference prevents clashing a
 
 **Design rule:** Pick one aesthetic and stick with it. Mixing diegetic armor HUD with non-diegetic score text creates visual confusion.
 
-**SimpsonsKong approach:** Mostly non-diegetic (arcade-style HUD in corners, menus overlay screen) with diegetic elements (enemy health bars float in world, damage numbers appear at impact location). Consistent because both use the same Simpsons-inspired art style.
+**firstPunch approach:** Mostly non-diegetic (arcade-style HUD in corners, menus overlay screen) with diegetic elements (enemy health bars float in world, damage numbers appear at impact location). Consistent because both use the same retro-inspired art style.
 
 **Example clarity:**
 
@@ -180,11 +180,11 @@ Title Screen
   └─→ Quit → Close application
 ```
 
-**SimpsonsKong example:**
-- Yellow "SIMPSONS KONG" title with dark stroke
+**firstPunch example:**
+- Yellow "FIRST PUNCH" title with dark stroke
 - Menu items centered vertically, pulsing glow on selected item
 - UP/DOWN to navigate, ENTER to select
-- Credits at bottom: "A SimpsonsKong Production"
+- Credits at bottom: "A firstPunch Production"
 - HIGH SCORE display above menu with ★ decorations
 - Controls panel showing key bindings
 
@@ -206,7 +206,7 @@ Title Screen
 - **No options input while paused:** If player enters Options, pause should suspend (don't exit on options close)
 - **One input to unpause:** ESC key both pauses AND unpauses (toggle)
 
-**Anti-pattern (SimpsonsKong lesson):** Initial pause menu required selecting "Resume" via menu navigation. Felt sluggish. Changed to ESC toggle — infinite improvement in feel.
+**Anti-pattern (firstPunch lesson):** Initial pause menu required selecting "Resume" via menu navigation. Felt sluggish. Changed to ESC toggle — infinite improvement in feel.
 
 #### 4.3 Options / Settings Menu
 
@@ -233,9 +233,9 @@ Title Screen
 - Value change: Immediate visual feedback (bar fills/empties, label updates)
 - No confirmation needed for slider changes (instant application)
 
-**SimpsonsKong example:**
+**firstPunch example:**
 - Three volume sliders (Master, SFX, Music) with hold-left/hold-right for continuous adjustment (0.8/sec)
-- Difficulty selector: "Couch Mode (Easy)", "Normal", "Sideshow Bob (Hard)"
+- Difficulty selector: "Chill Mode (Easy)", "Normal", "Ringleader (Hard)"
 - Read-only controls display showing all keybindings in two columns
 - BACK button with pulsing selection indicator
 - Dark gradient background matching game aesthetic
@@ -309,7 +309,7 @@ const damageNumber = {
 - **Format:** "COMBO x15" (word + multiplier) with actual damage multiplier below ("x1.5")
 - **Color progression:**
   - 1-2 hits: Muted (grey, 0.5 alpha)
-  - 3-4 hits: Simpsons yellow (#FED90F)
+  - 3-4 hits: character yellow (#FED90F)
   - 5-7 hits: Orange (#FF9500)
   - 8+ hits: Red (#FF0000) with pulsing glow
 - **Size scaling:** Base font (36px) + 2px per combo hit (so 10-hit combo = 56px)
@@ -321,7 +321,7 @@ const damageNumber = {
 - **Reset on time:** If >2 seconds since last hit, combo decays
 - **Fast fade-out:** When combo resets, alpha falls to 0 over 0.25s
 
-**SimpsonsKong implementation:**
+**firstPunch implementation:**
 - `comboGlowTime` tracks when last hit occurred
 - `displayCombo` lerps toward actual combo for smooth visual update
 - Glow pulse uses sine wave oscillation on `shadowBlur`
@@ -335,7 +335,7 @@ const damageNumber = {
 - **Label:** "SCORE" text above or to the side
 - **Rolling animation:** When score increases, animate from old value to new value over 0.5-1.0s (not instant jump)
 - **Increment formula:** Each frame: `displayedScore += (targetScore - displayedScore) * 0.12` (smooth acceleration)
-- **Color:** Simpsons yellow (#FED90F) with dark outline for readability
+- **Color:** character yellow (#FED90F) with dark outline for readability
 
 **Anti-pattern:** Instant score jump. Animated tick-up (rolling counter) is arcade tradition and feels more rewarding.
 
@@ -362,7 +362,7 @@ const damageNumber = {
 - **Auto-fade:** Disappear 3-5 seconds after last damage (player doesn't need ongoing awareness)
 - **Boss exception:** Boss health bars can be permanent and larger (150px), positioned top-center
 
-**Anti-pattern (SimpsonsKong lesson):** Fixed-width bar that doesn't scale with damage taken (player can't judge how much damage they did). Bars must be proportional.
+**Anti-pattern (firstPunch lesson):** Fixed-width bar that doesn't scale with damage taken (player can't judge how much damage they did). Bars must be proportional.
 
 #### 5.5 Progress / Wave Indicators
 
@@ -443,7 +443,7 @@ resizeCanvas();
 - **Aspect ratio preservation:** Always maintain 16:9 (or your chosen ratio) to prevent distortion.
 - **Letterbox over distortion:** If screen doesn't match your aspect, add black bars rather than stretch/squash the game.
 
-**Anti-pattern (SimpsonsKong lesson):** Skipping DPR scaling makes text and procedural art look cheap on modern monitors. Always set `ctx.scale(dpr, dpr)` after resizing.
+**Anti-pattern (firstPunch lesson):** Skipping DPR scaling makes text and procedural art look cheap on modern monitors. Always set `ctx.scale(dpr, dpr)` after resizing.
 
 #### 6.2 HUD Layout for Different Aspect Ratios
 
@@ -720,7 +720,7 @@ if (controls === 'keyboard') {
 - Action name: Text description of what button does
 - Position: At bottom of menu, above navigation hints
 
-**SimpsonsKong example:**
+**firstPunch example:**
 ```
 Movement: WASD / Arrow Keys
 Punch: J or Z
@@ -748,9 +748,9 @@ Speaker: "Dialogue text in game language."
 **Example:**
 
 ```
-Homer: "D'oh!"
+Brawler: "Ugh!"
 [explosion sound]
-Marge: "Homer, be careful!"
+Defender: "Brawler, be careful!"
 ```
 
 **Implementation:**
@@ -765,7 +765,7 @@ if (settings.subtitles === true) {
 
 ### 9. Anti-Patterns
 
-Mistakes that break UI/UX, learned from SimpsonsKong and industry observation.
+Mistakes that break UI/UX, learned from firstPunch and industry observation.
 
 #### 9.1 "UI Overload"
 
@@ -909,7 +909,7 @@ if (input.wasPressed('select')) {
 }
 ```
 
-**Anti-pattern (SimpsonsKong lesson):** Early menus had no audio. Added SFX and menu navigation instantly felt tighter and more responsive.
+**Anti-pattern (firstPunch lesson):** Early menus had no audio. Added SFX and menu navigation instantly felt tighter and more responsive.
 
 #### 9.7 "Instant State Changes"
 
@@ -936,17 +936,17 @@ if (enemyDefeated) {
 }
 ```
 
-### 10. SimpsonsKong Learnings
+### 10. firstPunch Learnings
 
 What we built, what worked, what we'd improve.
 
 #### Built & Shipped
 
-✓ **Arcade-style HUD:** Health bar (with gradient fill and glossy highlight), score display (with rolling counter animation), lives display (with mini Homer icons)
+✓ **Arcade-style HUD:** Health bar (with gradient fill and glossy highlight), score display (with rolling counter animation), lives display (with mini Brawler icons)
 
-✓ **Combo/Style Meter:** Vertical style meter (22×100px) with 5 Simpsons-themed thresholds and 5x multiplier on "Best. Combo. Ever."
+✓ **Combo/Style Meter:** Vertical style meter (22×100px) with 5 retro-themed thresholds and 5x multiplier on "Best. Combo. Ever."
 
-✓ **Title Screen:** Gradient sky, scrolling skyline, Homer silhouette, yellow star particles, menu selection system, high score display with ★ decorations
+✓ **Title Screen:** Gradient sky, scrolling skyline, Brawler silhouette, yellow star particles, menu selection system, high score display with ★ decorations
 
 ✓ **Pause Menu:** ESC toggle (instant response), "Press O for Options", "Press Q for Quit", dark overlay
 
@@ -954,7 +954,7 @@ What we built, what worked, what we'd improve.
 
 ✓ **Game Over Screen:** "GAME OVER" text, final score, high score comparison ("NEW HIGH SCORE!"), 0.5s input delay to prevent accidental skip
 
-✓ **Level Intro Text:** "STAGE 1" + "SPRINGFIELD DOWNTOWN" with fade-in/out over 2s
+✓ **Level Intro Text:** "STAGE 1" + "DOWNTOWN" with fade-in/out over 2s
 
 ✓ **Enemy Health Bars:** Appear when damaged (red background + green fill), auto-fade 3s after last hit, scale-proportional to health
 
@@ -1031,7 +1031,7 @@ What we built, what worked, what we'd improve.
 
 ---
 
-## Examples from SimpsonsKong
+## Examples from firstPunch
 
 ### Good: HUD Layout with Information Hierarchy
 

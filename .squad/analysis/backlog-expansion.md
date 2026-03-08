@@ -1,4 +1,4 @@
-# SimpsonsKong — Backlog Expansion (Specialist Team)
+# firstPunch — Backlog Expansion (Specialist Team)
 
 **Author:** Solo (Lead / Architect)  
 **Date:** 2026-06-03  
@@ -15,10 +15,10 @@ Items from the original 52-item backlog that should transfer to new specialist o
 | Original # | Item | Was | Now | Rationale |
 |-------------|------|-----|-----|-----------|
 | P1-2 | Hit impact VFX | Lando | **Boba** | VFX design, not gameplay logic |
-| P1-9 | Homer walk cycle | Lando | **Boba** (art) + Lando (hookup) | Art frames are Boba's domain; Lando wires to animation controller |
-| P1-10 | Homer attack animations | Lando | **Boba** (art) + Lando (hookup) | Same split — art vs mechanics |
+| P1-9 | Brawler walk cycle | Lando | **Boba** (art) + Lando (hookup) | Art frames are Boba's domain; Lando wires to animation controller |
+| P1-10 | Brawler attack animations | Lando | **Boba** (art) + Lando (hookup) | Same split — art vs mechanics |
 | P1-11 | Enemy death animation | Lando | **Boba** | Visual effect, not AI/gameplay |
-| P2-4 | Homer redesign | Lando | **Boba** | Pure character art |
+| P2-4 | Brawler redesign | Lando | **Boba** | Pure character art |
 | P2-5 | Background overhaul | Lando | **Boba** | Environmental art |
 | P2-9 | KO text effects | Wedge | **Boba** | VFX, not UI layout |
 | P2-10 | Animated title screen | Wedge | **Boba** (art) + Wedge (layout) | Shared — Boba does animation art, Wedge does screen structure |
@@ -78,14 +78,14 @@ New items that specialists would identify from their domain expertise. These are
 
 | # | Item | Priority | Complexity | Dependencies | Description |
 |---|------|----------|-----------|--------------|-------------|
-| EX-B1 | Art direction & color palette | P1 | S | None | Define cohesive visual style guide before any art work: primary palette (Simpsons yellow, Springfield greens/blues), outline weight, shading approach (flat vs cell-shaded), lighting direction. All subsequent art references this. Without it, art will look inconsistent across characters, backgrounds, and effects. |
+| EX-B1 | Art direction & color palette | P1 | S | None | Define cohesive visual style guide before any art work: primary palette (character yellow, Downtown greens/blues), outline weight, shading approach (flat vs cell-shaded), lighting direction. All subsequent art references this. Without it, art will look inconsistent across characters, backgrounds, and effects. |
 | EX-B2 | Character ground shadows | P1 | S | None | Oval shadow sprite under every character. Scales smaller/lighter as character rises during jumps. Critical for 2.5D depth readability — without shadows, players can't tell where characters will land. |
 | EX-B3 | Enemy attack telegraph VFX | P1 | S | P1-8 | Visual wind-up indicator before enemy attacks: brief flash, exclamation mark, or color shift. Players need ~300ms of visual warning to react fairly. Without this, enemy damage feels cheap. |
 | EX-B4 | Attack motion trails | P2 | M | P1-8, P1-10 | Semi-transparent arc trails behind fists/feet during attacks. 3-4 frame afterimage that fades. Standard in modern beat 'em ups for making attacks feel fast and readable. |
 | EX-B5 | Enemy spawn-in effects | P2 | S | P2-6 | Enemies shouldn't just appear. Dust cloud + drop-in from above, or shadow-on-ground → land effect. Gives player warning and feels polished. |
 | EX-B6 | Foreground parallax layer | P2 | M | P2-5 | Lampposts, chain-link fences, fire hydrants that scroll PAST the camera in front of action at 1.3x speed. Adds dramatic depth. Background overhaul only covers layers behind the action. |
-| EX-B7 | Consistent entity rendering style | P1 | M | EX-B1 | Implement shared rendering approach: consistent outline thickness, shadow/highlight placement, proportional style guide. Ensures Homer, enemies, and pickups look like they belong in the same game. |
-| EX-B8 | Environmental background animations | P3 | M | P2-5 | Animated background elements: drifting clouds, flickering neon signs (Moe's, Kwik-E-Mart), blowing newspaper, steam from manholes. Backgrounds feel alive instead of static paintings. |
+| EX-B7 | Consistent entity rendering style | P1 | M | EX-B1 | Implement shared rendering approach: consistent outline thickness, shadow/highlight placement, proportional style guide. Ensures Brawler, enemies, and pickups look like they belong in the same game. |
+| EX-B8 | Environmental background animations | P3 | M | P2-5 | Animated background elements: drifting clouds, flickering neon signs (Joe's Bar, Quick Stop), blowing newspaper, steam from manholes. Backgrounds feel alive instead of static paintings. |
 
 ### 2.2 Greedo (Sound Designer) — 8 New Items
 
@@ -154,7 +154,7 @@ New items that specialists would identify from their domain expertise. These are
 
 ### Pattern: Infrastructure Before Content
 
-Every specialist's highest-priority additions are **systems and infrastructure**, not content. Boba wants art direction before drawing Homer. Greedo wants mix buses before composing music. Tarkin wants data formats before designing levels. Ackbar wants debug tools before playtesting. This is the hallmark of experienced specialists — they build foundations first.
+Every specialist's highest-priority additions are **systems and infrastructure**, not content. Boba wants art direction before drawing Brawler. Greedo wants mix buses before composing music. Tarkin wants data formats before designing levels. Ackbar wants debug tools before playtesting. This is the hallmark of experienced specialists — they build foundations first.
 
 ### Critical New P0 Item
 

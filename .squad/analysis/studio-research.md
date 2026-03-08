@@ -232,7 +232,7 @@ We don't have a formal mechanism for measuring team morale or creative excitemen
 
 ### Validation for FFS
 
-Our Principle #11 ("Constraints Are Creative Fuel") is one of our strongest. SimpsonsKong's Canvas 2D constraints directly shaped our visual identity and procedural audio approach. This research confirms we're on the right track.
+Our Principle #11 ("Constraints Are Creative Fuel") is one of our strongest. firstPunch's Canvas 2D constraints directly shaped our visual identity and procedural audio approach. This research confirms we're on the right track.
 
 **Reinforcement:** This principle is not just correct — it's the single most common trait of studios that punch above their weight.
 
@@ -305,7 +305,7 @@ Early Access is not "releasing an unfinished game." It's a design methodology:
 
 ### Relevance to FFS
 
-SimpsonsKong is browser-based — inherently easy to share for playtesting. We could adopt an informal "early access" approach: structured external playtests with documented feedback cycles.
+firstPunch is browser-based — inherently easy to share for playtesting. We could adopt an informal "early access" approach: structured external playtests with documented feedback cycles.
 
 ---
 
@@ -384,9 +384,9 @@ We already have 12 strong principles. Schell's GDC talk validates our approach b
 
 ### Validation for FFS
 
-Our Principle #12 ("Every Project Teaches the Next") encodes this. We have decision logs and history files. But we haven't run a formal "5/5 postmortem" on SimpsonsKong yet.
+Our Principle #12 ("Every Project Teaches the Next") encodes this. We have decision logs and history files. But we haven't run a formal "5/5 postmortem" on firstPunch yet.
 
-**Action:** Run a formal SimpsonsKong postmortem before starting the next project.
+**Action:** Run a formal firstPunch postmortem before starting the next project.
 
 ---
 

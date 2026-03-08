@@ -1,4 +1,4 @@
-# Visual Modernization Plan — SimpsonsKong
+# Visual Modernization Plan — firstPunch
 **Author:** Boba (VFX/Art Specialist)  
 **Date:** 2026-06-03  
 **Status:** Active
@@ -7,15 +7,15 @@
 
 ## Executive Summary
 
-**Gap:** The game reads as "Simpsons-themed programmer art" rather than a "modern Simpsons game with current graphics." While recent improvements (consistent 2px outlines, proper character shapes, Springfield background, VFX system) elevated visual quality from 30% to ~60%, significant gaps remain in character detail, animation, visual feedback, and UI polish.
+**Gap:** The game reads as "retro-themed programmer art" rather than a "modern beat 'em up game with current graphics." While recent improvements (consistent 2px outlines, proper character shapes, Downtown background, VFX system) elevated visual quality from 30% to ~60%, significant gaps remain in character detail, animation, visual feedback, and UI polish.
 
-**Target:** Arcade-quality 2D Simpsons beat 'em up — clean, readable, unmistakably Simpsons. Think *Simpsons Arcade Game* (1991) updated with modern Canvas 2D techniques: bezier curves for organic shapes, gradients for depth, layered shading, smooth animation, particle effects, and polished UI.
+**Target:** Arcade-quality 2D game beat 'em up — clean, readable, unmistakably game. Think *classic arcade beat 'em ups Game* (1991) updated with modern Canvas 2D techniques: bezier curves for organic shapes, gradients for depth, layered shading, smooth animation, particle effects, and polished UI.
 
 **Implementation approach:** Canvas 2D API with bezier curves, quadratic curves, gradient fills, composite operations, and transform matrices. No external images — all procedural.
 
 ---
 
-## 1. HOMER (Player Character)
+## 1. BRAWLER (Player Character)
 
 ### Current State
 **Achieved (Wave 2):**
@@ -28,8 +28,8 @@
 - ✅ Highlight layer on belly
 
 **Remaining gaps:**
-- **Stubble:** Homer has a perpetual 5 o'clock shadow on his chin — not rendered
-- **Ears:** No ears visible (Simpsons characters have small rounded ears at head sides)
+- **Stubble:** Brawler has a perpetual 5 o'clock shadow on his chin — not rendered
+- **Ears:** No ears visible (game characters have small rounded ears at head sides)
 - **Hands:** Arms end abruptly — no defined hands/fingers (should be 3-fingered gloves)
 - **Body proportions:** Head-to-body ratio ~1:2.5 specified in art-direction, but current measurements are ~40px head on 80px total height = 1:2 ratio (head too big)
 - **Animation:** Arm bob is simple sine wave — no squash/stretch, no anticipation, no secondary motion
@@ -38,7 +38,7 @@
 - **Facial expression:** Mouth is static arc — no variation for states (idle smile vs attack grimace)
 
 ### Target State
-Homer should read as **unmistakably Homer Simpson** at a glance:
+Brawler should read as **unmistakably the Brawler** at a glance:
 - Iconic silhouette: beer gut, overbite, M-hair, stubble, short limbs
 - Recognizable colors: #FED90F skin, #F5F5F5 shirt, #4169E1 pants
 - Expressive animation: squash on landing, stretch on jump, anticipation before attacks
@@ -47,7 +47,7 @@ Homer should read as **unmistakably Homer Simpson** at a glance:
 ### Implementation Plan
 
 #### 1.1 Stubble (Chin Shadow)
-**Gap:** Homer's 5 o'clock shadow is a key character trait — missing.
+**Gap:** Brawler's 5 o'clock shadow is a key character trait — missing.
 
 **Canvas technique:**
 ```javascript
@@ -68,7 +68,7 @@ for (let sx = 28; sx <= 36; sx += 2) {
 ---
 
 #### 1.2 Ears
-**Gap:** Homer needs small rounded ears at head sides for Simpsons authenticity.
+**Gap:** Brawler needs small rounded ears at head sides for IP authenticity.
 
 **Canvas technique:**
 ```javascript
@@ -99,7 +99,7 @@ ctx.fill();
 ---
 
 #### 1.3 Hands (3-Fingered Cartoon Gloves)
-**Gap:** Arms end abruptly — Homer should have defined 3-fingered hands.
+**Gap:** Arms end abruptly — Brawler should have defined 3-fingered hands.
 
 **Canvas technique:**
 ```javascript
@@ -131,7 +131,7 @@ ctx.stroke();
 ---
 
 #### 1.4 Facial Expressions (State-Driven Mouths)
-**Gap:** Mouth is static — should react to state (smile when idle, grimace when attacking, "D'oh!" when hit).
+**Gap:** Mouth is static — should react to state (smile when idle, grimace when attacking, "Ugh!" when hit).
 
 **Canvas technique:**
 ```javascript
@@ -140,7 +140,7 @@ ctx.strokeStyle = '#222222';
 ctx.lineWidth = 1.5;
 
 if (this.state === 'hit' || this.state === 'dead') {
-    // D'oh! mouth (O-shape)
+    // Ugh! mouth (O-shape)
     ctx.beginPath();
     ctx.arc(32, 28, 4, 0, Math.PI * 2);
     ctx.stroke();
@@ -169,7 +169,7 @@ if (this.state === 'hit' || this.state === 'dead') {
 ---
 
 #### 1.5 Walk Cycle Animation
-**Gap:** Walk state exists but legs don't animate — Homer slides on locked legs.
+**Gap:** Walk state exists but legs don't animate — Brawler slides on locked legs.
 
 **Canvas technique:**
 ```javascript
@@ -260,7 +260,7 @@ ctx.stroke();
 ---
 
 #### 1.8 Squash/Stretch on Jump Land
-**Gap:** Jump land has no impact — Homer should squash on landing for juice.
+**Gap:** Jump land has no impact — Brawler should squash on landing for juice.
 
 **Canvas technique:**
 ```javascript
@@ -285,9 +285,9 @@ this.prevJumpHeight = this.jumpHeight;
 
 ---
 
-### Summary: Homer Upgrades
+### Summary: Brawler Upgrades
 **Total effort:** ~3 hours  
-**Impact:** High — Homer becomes instantly recognizable, expressive, and polished
+**Impact:** High — Brawler becomes instantly recognizable, expressive, and polished
 
 ---
 
@@ -306,17 +306,17 @@ this.prevJumpHeight = this.jumpHeight;
 - ✅ Highlights on head and body
 
 **Remaining gaps:**
-- **Character identity:** Enemies are "generic thugs" — should be recognizable Springfield citizens (Barney, Moe, Snake, etc.) or clear archetypes (biker, mob goon, nuclear worker)
+- **Character identity:** Enemies are "generic thugs" — should be recognizable Downtown citizens (Drunkard, thug, street thug, etc.) or clear archetypes (biker, mob goon, factory worker)
 - **Body language:** All enemies stand identical — no slouch for drunk, no hunch for thug, no wide stance for heavy
-- **Walk animation:** No leg movement during walk state (same as Homer issue)
+- **Walk animation:** No leg movement during walk state (same as Brawler issue)
 - **Clothing details:** Body is solid color — no shirt/pants distinction, no belt, no pockets
 - **Attack anticipation:** Wind-up exists for heavy, but visual telegraph is weak (just red pulse)
 - **Facial expressions:** Enemies never change expression — should grimace when attacking, wince when hit
 - **Variant visual clarity:** Fast/tough/heavy/normal differentiated by color + one head detail — needs more (body shape, posture, accessories)
 
 ### Target State
-Enemies should be **visually distinct Springfield archetypes**:
-- Barney (drunk): slouched posture, beer belly, stubble, disheveled
+Enemies should be **visually distinct Downtown archetypes**:
+- Drunkard (drunk): slouched posture, beer belly, stubble, disheveled
 - Tough (biker/thug): leather vest, bandana, muscular arms
 - Fast (hooligan): lean, hoodie or cap, running pose
 - Heavy (mob enforcer): wide stance, suit jacket, slicked hair
@@ -325,13 +325,13 @@ Each type should have **unique silhouette, posture, and details** so player reco
 
 ### Implementation Plan
 
-#### 2.1 Barney Gumble (Normal Variant)
-**Gap:** Normal enemy is "generic purple guy" — should be Barney for Springfield authenticity.
+#### 2.1 Drunkard (Normal Variant)
+**Gap:** Normal enemy is "generic purple guy" — should be a recognizable character for Downtown authenticity.
 
 **Canvas technique:**
 ```javascript
 // Replace current normal enemy head with:
-// Barney's balding head (fringe hair on sides)
+// Drunkard's balding head (fringe hair on sides)
 ctx.fillStyle = '#FFB6C1'; // skin
 ctx.beginPath();
 ctx.arc(24, 18, 12, 0, Math.PI * 2);
@@ -349,7 +349,7 @@ ctx.arc(34, 20, 4, Math.PI - 1.5, Math.PI + 0.5); // right fringe
 ctx.fill();
 ctx.stroke();
 
-// Stubble (drunk Barney always unshaven)
+// Stubble (the drunkard always unshaven)
 ctx.fillStyle = '#888888';
 for (let sx = 18; sx <= 30; sx += 2) {
     ctx.beginPath();
@@ -496,9 +496,9 @@ ctx.fillRect(29, 65, 7, 11); // right leg (was 25)
 ---
 
 #### 2.5 Enemy Walk Cycles
-**Gap:** Same as Homer — enemies slide without leg animation.
+**Gap:** Same as Brawler — enemies slide without leg animation.
 
-**Canvas technique:** Same approach as Homer walk cycle (§1.5) — sine wave leg phase, opposite foot positioning.
+**Canvas technique:** Same approach as Brawler walk cycle (§1.5) — sine wave leg phase, opposite foot positioning.
 
 **Effort:** 30 min per variant (2 hours total for 4 variants)
 
@@ -541,25 +541,25 @@ ctx.fillText('!', 24, 0);
 
 ### Summary: Enemy Upgrades
 **Total effort:** ~5 hours  
-**Impact:** High — enemies become recognizable Springfield characters, combat reads clearer
+**Impact:** High — enemies become recognizable Downtown characters, combat reads clearer
 
 ---
 
-## 3. SPRINGFIELD BACKGROUND
+## 3. DOWNTOWN BACKGROUND
 
 ### Current State
 **Achieved (Wave 4):**
-- ✅ Three-layer parallax (far: Power Plant, mid: buildings, near: road)
+- ✅ Three-layer parallax (far: Factory, mid: buildings, near: road)
 - ✅ Sky gradient (#87CEEB → #B0E0E6)
 - ✅ Puffy clouds (overlapping circles, tiling)
-- ✅ Kwik-E-Mart with red awning + text
-- ✅ Moe's Tavern with neon sign + grimy window
-- ✅ Springfield houses (3 colors, triangle roofs, cross-bar windows)
-- ✅ Power Plant cooling towers with steam, smokestack with red stripes
+- ✅ Quick Stop with red awning + text
+- ✅ Joe's Bar with neon sign + grimy window
+- ✅ Downtown houses (3 colors, triangle roofs, cross-bar windows)
+- ✅ Factory cooling towers with steam, smokestack with red stripes
 - ✅ Road with yellow dashes, curb, sidewalk, fire hydrants
 
 **Remaining gaps:**
-- **Landmark clarity:** Power Plant reads as "grey industrial building" — needs iconic pink/purple color scheme and Simpson-style simplification
+- **Landmark clarity:** Factory reads as "grey industrial building" — needs iconic pink/purple color scheme and cartoon-style simplification
 - **Building variety:** 5-building pattern is good but repeats visibly — needs 8-10 building types for less obvious tiling
 - **Depth cues:** No atmospheric perspective (distant objects should be hazier, desaturated)
 - **Foreground elements:** No trash cans, benches, lampposts, or street clutter for visual interest
@@ -567,17 +567,17 @@ ctx.fillText('!', 24, 0);
 - **Ground texture:** Road is flat grey — should have cracks, patches, grime for realism
 
 ### Target State
-Springfield should feel **lived-in and recognizable**:
-- Power Plant is iconic pink/purple with yellow cooling tower tops (show's visual)
-- 8-10 building types including iconic locations (Simpson house, Flanders' house, church steeple, school)
+Downtown should feel **lived-in and recognizable**:
+- Factory is iconic pink/purple with yellow cooling tower tops (show's visual)
+- 8-10 building types including iconic locations (player house, neighbor's house, church steeple, school)
 - Atmospheric perspective: far layer is desaturated/hazy, near layer is saturated/sharp
 - Foreground clutter: trash cans, fire hydrants, benches, lampposts, mailboxes
 - Ground texture: cracks, oil stains, leaf litter
 
 ### Implementation Plan
 
-#### 3.1 Power Plant Color Correction
-**Gap:** Power Plant is grey — should be pink/purple with yellow accents (show's iconic look).
+#### 3.1 Factory Color Correction
+**Gap:** Factory is grey — should be pink/purple with yellow accents (show's iconic look).
 
 **Canvas technique:**
 ```javascript
@@ -603,23 +603,23 @@ ctx.fillRect(x + 40, groundY - 90, 80, 90);
 **Gap:** 5-building pattern tiles visibly — needs 8-10 types.
 
 **Add:**
-- **742 Evergreen Terrace (Simpson house):** orange/salmon walls, red door, garage
-- **Flanders' house:** green walls, pristine trim, picket fence suggestion
-- **Springfield Elementary:** brick red, tall, flagpole
+- **742 Evergreen Terrace (player house):** orange/salmon walls, red door, garage
+- **neighbor's house:** green walls, pristine trim, picket fence suggestion
+- **City School:** brick red, tall, flagpole
 - **Church steeple:** white, tall pointed roof, cross on top
-- **Krustyburger:** bright red/yellow, clown logo outline
+- **burger joint:** bright red/yellow, restaurant logo outline
 
 **Canvas technique:**
 ```javascript
 // In background.js BUILDINGS array, add:
-{ type: 'simpson_house', w: 160, h: 115, color: '#FFA07A' },
-{ type: 'flanders_house', w: 140, h: 110, color: '#90EE90' },
+{ type: 'city_house', w: 160, h: 115, color: '#FFA07A' },
+{ type: 'neighbor_house', w: 140, h: 110, color: '#90EE90' },
 { type: 'school', w: 200, h: 150, color: '#B85450' },
 { type: 'church', w: 120, h: 180, color: '#FFFFFF' },
-{ type: 'krustyburger', w: 180, h: 130, color: '#FF4444' },
+{ type: 'burger joint', w: 180, h: 130, color: '#FF4444' },
 
 // Add drawing functions:
-_drawSimpsonHouse(ctx, x, groundY, b) {
+_drawCityHouse(ctx, x, groundY, b) {
     // Salmon walls, red door, brown garage, upper window
     // ... similar structure to _drawHouse() ...
 }
@@ -638,7 +638,7 @@ _drawSimpsonHouse(ctx, x, groundY, b) {
 // In background.js _farLayer(), apply global alpha:
 ctx.save();
 ctx.globalAlpha = 0.65; // far layer 65% opacity (hazy)
-// ... draw power plant ...
+// ... draw factory ...
 ctx.restore();
 
 // In _midLayer():
@@ -752,7 +752,7 @@ for (let sx = stainStart; sx < right; sx += 300) {
 
 ### Summary: Background Upgrades
 **Total effort:** ~3.5 hours  
-**Impact:** Medium-High — Springfield becomes instantly recognizable, depth feels professional
+**Impact:** Medium-High — Downtown becomes instantly recognizable, depth feels professional
 
 ---
 
@@ -1075,8 +1075,8 @@ if (player.comboCount > prevCombo) {
 
 **Remaining gaps:**
 - **Health bar style:** Bar is functional but generic — should be arcade-styled (thicker border, beveled corners, inner glow)
-- **Portrait icon:** No Homer portrait next to health bar (arcade standard)
-- **Lives display:** Lives tracked but not visually shown (should be Homer head icons in top-left)
+- **Portrait icon:** No Brawler portrait next to health bar (arcade standard)
+- **Lives display:** Lives tracked but not visually shown (should be Brawler head icons in top-left)
 - **Special move indicator:** Special move exists but no UI for cooldown (should show belly bump availability)
 - **Wave indicator:** No visual cue for which wave player is on ("WAVE 2" banner)
 - **Damage flash:** HUD doesn't react to player taking damage (health bar should shake/flash red)
@@ -1087,7 +1087,7 @@ if (player.comboCount > prevCombo) {
 ### Target State
 HUD should be **clear, arcade-styled, and informative**:
 - Health bar has thick beveled border, inner glow, portrait icon
-- Lives shown as Homer head icons (3-5 lives)
+- Lives shown as Brawler head icons (3-5 lives)
 - Special move cooldown bar fills up (empty when on cooldown)
 - Combo timer bar shows time remaining (yellow → red as it expires)
 - Wave number banner appears at wave start
@@ -1142,7 +1142,7 @@ ctx.strokeRect(barX, barY, barWidth, barHeight);
 
 ---
 
-#### 5.2 Homer Portrait Icon
+#### 5.2 Brawler Portrait Icon
 **Gap:** No visual indicator of who the player is (arcade standard shows character portrait).
 
 **Canvas technique:**
@@ -1161,7 +1161,7 @@ ctx.strokeStyle = '#FFFFFF';
 ctx.lineWidth = 3;
 ctx.stroke();
 
-// Simplified Homer head
+// Simplified Brawler head
 ctx.fillStyle = '#FED90F'; // yellow skin
 ctx.beginPath();
 ctx.arc(portraitX + 20, portraitY + 15, 18, 0, Math.PI * 2);
@@ -1184,11 +1184,11 @@ ctx.arc(portraitX + 20, portraitY + 18, 4, 0.2, Math.PI - 0.2);
 ctx.stroke();
 ```
 
-**Effort:** 25 min — simplified Homer portrait with basic features
+**Effort:** 25 min — simplified Brawler portrait with basic features
 
 ---
 
-#### 5.3 Lives Display (Homer Head Icons)
+#### 5.3 Lives Display (Brawler Head Icons)
 **Gap:** Lives tracked but not shown visually.
 
 **Canvas technique:**
@@ -1201,7 +1201,7 @@ ctx.fillText('LIVES:', barX, livesY);
 
 for (let i = 0; i < player.lives; i++) {
     const iconX = barX + 50 + (i * 30);
-    // Draw simplified Homer head (yellow circle)
+    // Draw simplified Brawler head (yellow circle)
     ctx.fillStyle = '#FED90F';
     ctx.beginPath();
     ctx.arc(iconX, livesY - 5, 10, 0, Math.PI * 2);
@@ -1409,9 +1409,9 @@ if (player.comboCount > 1) {
 - ✅ Gradient sky background (#1a1a40 → #87CEEB)
 - ✅ Scrolling skyline buildings with window dots
 - ✅ Ground strip
-- ✅ Homer silhouette (iconic standing pose, basic shapes, yellow tint)
+- ✅ Brawler silhouette (iconic standing pose, basic shapes, yellow tint)
 - ✅ Floating star particles (yellow, drift upward)
-- ✅ Title "SIMPSONS KONG" (72px yellow, outlined)
+- ✅ Title "FIRST PUNCH" (72px yellow, outlined)
 - ✅ Subtitle "BEAT 'EM UP" (32px white)
 - ✅ "Press ENTER to Start" (pulsing glow)
 - ✅ Controls text
@@ -1419,30 +1419,30 @@ if (player.comboCount > 1) {
 - ✅ Credits line
 
 **Remaining gaps:**
-- **Homer silhouette clarity:** Homer is very faint (18% alpha) — should be 40-50% for better visibility
-- **Animation:** Homer silhouette is static — should have subtle idle breathing animation
+- **Brawler silhouette clarity:** Brawler is very faint (18% alpha) — should be 40-50% for better visibility
+- **Animation:** Brawler silhouette is static — should have subtle idle breathing animation
 - **Logo style:** Title text is plain Arial — should have comic-book outline style (thicker stroke, yellow/orange gradient fill)
 - **Background dynamism:** Skyline scrolls but no parallax clouds, no flickering windows
-- **Character showcase:** Only Homer shown — could show 2-3 enemy silhouettes in background for context
+- **Character showcase:** Only Brawler shown — could show 2-3 enemy silhouettes in background for context
 - **Menu options:** Single "Press ENTER" — could have "NEW GAME / HIGH SCORES / CONTROLS" selectable menu
 
 ### Target State
-Title screen should **immediately communicate "Simpsons arcade beat 'em up"**:
+Title screen should **immediately communicate "game arcade beat 'em up"**:
 - Bold comic-style logo (thick outline, gradient fill, slight rotation/scale pulse)
-- Animated Homer silhouette (breathing, blinking, occasional arm movement)
+- Animated Brawler silhouette (breathing, blinking, occasional arm movement)
 - Parallax clouds drifting behind buildings
-- Enemy silhouettes in background (Barney, tough guy)
+- Enemy silhouettes in background (Drunkard, tough guy)
 - Selectable menu options with arcade-style selector (blinking arrow)
 - Flickering windows on buildings for life
 
 ### Implementation Plan
 
-#### 6.1 Homer Silhouette Clarity + Breathing Animation
-**Gap:** Homer is too faint and static.
+#### 6.1 Brawler Silhouette Clarity + Breathing Animation
+**Gap:** Brawler is too faint and static.
 
 **Canvas technique:**
 ```javascript
-// In title.js render(), replace Homer silhouette alpha and add breathing:
+// In title.js render(), replace Brawler silhouette alpha and add breathing:
 const breathe = Math.sin(this.blinkTime * 2) * 0.05; // subtle scale pulse
 ctx.fillStyle = 'rgba(254, 217, 15, 0.45)'; // increased from 0.18
 
@@ -1492,25 +1492,25 @@ ctx.textBaseline = 'middle';
 
 // Outer shadow (black, offset)
 ctx.fillStyle = '#000000';
-ctx.fillText('SIMPSONS KONG', logoX + 4, logoY + 4);
+ctx.fillText('FIRST PUNCH', logoX + 4, logoY + 4);
 
 // Thick outline (dark grey)
 ctx.strokeStyle = '#222222';
 ctx.lineWidth = 10;
 ctx.lineJoin = 'round';
-ctx.strokeText('SIMPSONS KONG', logoX, logoY);
+ctx.strokeText('FIRST PUNCH', logoX, logoY);
 
 // Inner outline (white for pop)
 ctx.strokeStyle = '#FFFFFF';
 ctx.lineWidth = 4;
-ctx.strokeText('SIMPSONS KONG', logoX, logoY);
+ctx.strokeText('FIRST PUNCH', logoX, logoY);
 
 // Gradient fill (yellow → orange)
 const grad = ctx.createLinearGradient(logoX, logoY - 40, logoX, logoY + 40);
 grad.addColorStop(0, '#FFEB3B');
 grad.addColorStop(1, '#FF9800');
 ctx.fillStyle = grad;
-ctx.fillText('SIMPSONS KONG', logoX, logoY);
+ctx.fillText('FIRST PUNCH', logoX, logoY);
 
 ctx.restore();
 ```
@@ -1520,18 +1520,18 @@ ctx.restore();
 ---
 
 #### 6.3 Enemy Silhouettes (Background Showcase)
-**Gap:** Only Homer shown — enemies should appear in background.
+**Gap:** Only Brawler shown — enemies should appear in background.
 
 **Canvas technique:**
 ```javascript
-// In title.js render(), after Homer silhouette:
-// Barney silhouette (left side, smaller, hazier)
-const barneyX = w * 0.15;
-const barneyY = h - 110;
+// In title.js render(), after Brawler silhouette:
+// Drunkard silhouette (left side, smaller, hazier)
+const bruiserX = w * 0.15;
+const bruiserY = h - 110;
 ctx.fillStyle = 'rgba(150, 80, 150, 0.25)'; // purple tint, faint
 
 ctx.save();
-ctx.translate(barneyX, barneyY);
+ctx.translate(bruiserX, bruiserY);
 
 // Head
 ctx.beginPath();
@@ -1728,7 +1728,7 @@ if (this.state === 'walk') {
 - **Lighting direction:** Highlights on characters are random — should be consistent top-left light source
 - **Shadow consistency:** Player/enemies use VFX.drawShadow() but buildings don't cast shadows
 - **Outline thickness:** Most elements use 2px but some UI text uses 3-6px stroke
-- **Color saturation:** Some elements (skyline) are very desaturated, others (Homer) are highly saturated — inconsistent visual hierarchy
+- **Color saturation:** Some elements (skyline) are very desaturated, others (Brawler) are highly saturated — inconsistent visual hierarchy
 
 ### Target State
 **Unified visual rules:**
@@ -1744,7 +1744,7 @@ if (this.state === 'walk') {
 
 **Fix:** In player.js and enemy.js, move all highlights to upper-left of each shape:
 ```javascript
-// Example: Homer's belly highlight
+// Example: Brawler's belly highlight
 ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
 ctx.beginPath();
 ctx.arc(26, 44, 10, Math.PI * 0.75, Math.PI * 0.25); // upper-left arc only
@@ -1805,7 +1805,7 @@ Apply desaturation formula: `newColor = mix(originalColor, grey, 0.3)`
 ## PRIORITY MATRIX
 
 ### P0 — Critical (Must-Have for "Modern")
-1. **Homer facial expressions** (§1.4) — 20 min — High impact, low effort
+1. **Brawler facial expressions** (§1.4) — 20 min — High impact, low effort
 2. **Walk cycle animation** (§1.5) — 45 min — Immediately visible, core polish
 3. **Landing dust clouds** (§4.1) — 30 min — Juice, makes movement feel grounded
 4. **Screen shake on heavy hits** (§4.3) — 25 min — Huge impact feel improvement
@@ -1818,11 +1818,11 @@ Apply desaturation formula: `newColor = mix(originalColor, grey, 0.3)`
 ---
 
 ### P1 — High Value (Modern Standard)
-1. **Homer hands** (§1.3) — 30 min — Character detail
-2. **Homer stubble + ears** (§1.1, §1.2) — 25 min — Simpsons authenticity
-3. **Enemy character identity** (§2.1–§2.4) — 2.5 hours — Springfield feel
-4. **Power Plant color correction** (§3.1) — 5 min — Instant recognition
-5. **Additional building types** (§3.2) — 2 hours — Springfield landmarks
+1. **Brawler hands** (§1.3) — 30 min — Character detail
+2. **Brawler stubble + ears** (§1.1, §1.2) — 25 min — IP authenticity
+3. **Enemy character identity** (§2.1–§2.4) — 2.5 hours — Downtown feel
+4. **Factory color correction** (§3.1) — 5 min — Instant recognition
+5. **Additional building types** (§3.2) — 2 hours — Downtown landmarks
 6. **Speed lines** (§4.2) — 30 min — Motion clarity
 7. **Hitstop** (§4.4) — 15 min — Attack impact feel
 8. **Combo sparkle burst** (§4.6) — 25 min — Reward feedback
@@ -1844,7 +1844,7 @@ Apply desaturation formula: `newColor = mix(originalColor, grey, 0.3)`
 7. **Foreground clutter** (§3.4) — 45 min
 8. **Ground texture** (§3.5) — 20 min
 9. **Impact ripples** (§4.5) — 25 min
-10. **Homer portrait icon** (§5.2) — 25 min
+10. **Brawler portrait icon** (§5.2) — 25 min
 11. **Wave indicator banner** (§5.5) — 30 min
 12. **Combo timer bar** (§5.7) — 15 min
 13. **Comic-style logo** (§6.2) — 20 min
@@ -1884,7 +1884,7 @@ Apply desaturation formula: `newColor = mix(originalColor, grey, 0.3)`
 ### Wave 1 (P0 — Core Polish) — 2.5 hours
 **Goal:** Make core gameplay feel modern and juicy
 
-1. Homer facial expressions
+1. Brawler facial expressions
 2. Walk cycle animation
 3. Landing dust clouds
 4. Screen shake on heavy hits
@@ -1896,15 +1896,15 @@ Apply desaturation formula: `newColor = mix(originalColor, grey, 0.3)`
 ---
 
 ### Wave 2 (P1 High-Priority Visual Upgrades) — 6.5 hours
-**Goal:** Recognizable Springfield, detailed characters, arcade UI
+**Goal:** Recognizable Downtown, detailed characters, arcade UI
 
-1. Homer hands, stubble, ears (character detail)
-2. Enemy character identity (Barney, biker, hooligan, enforcer)
-3. Power Plant color + additional buildings (Springfield landmarks)
+1. Brawler hands, stubble, ears (character detail)
+2. Enemy character identity (Drunkard, biker, hooligan, enforcer)
+3. Factory color + additional buildings (Downtown landmarks)
 4. Speed lines, hitstop, combo burst (combat feel)
 5. Arcade health bar, special cooldown bar (UI polish)
 
-**Validation:** Characters read as Simpsons universe. Combat feels arcade-quality.
+**Validation:** Characters read as game universe. Combat feels arcade-quality.
 
 ---
 
@@ -2003,9 +2003,9 @@ ctx.fill('evenodd'); // or 'nonzero'
 
 ## CONCLUSION
 
-**Current state:** 60% modern — consistent outlines, proper shapes, Springfield background, functional VFX
+**Current state:** 60% modern — consistent outlines, proper shapes, Downtown background, functional VFX
 
-**Target state:** 95% modern — expressive characters, recognizable Springfield, arcade-quality UI, juicy combat feedback
+**Target state:** 95% modern — expressive characters, recognizable Downtown, arcade-quality UI, juicy combat feedback
 
 **Gap:** 36 items across 4 priority tiers, ~23 hours total effort
 

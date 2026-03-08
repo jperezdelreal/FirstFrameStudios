@@ -1,5 +1,5 @@
 /**
- * VFX System — SimpsonsKong
+ * VFX System — First Punch
  * Owner: Boba (VFX/Art Specialist)
  *
  * INTEGRATION INSTRUCTIONS (for whoever owns gameplay.js — currently Chewie):
@@ -71,7 +71,7 @@
  *      VFX.createMotionTrail(vfx, fistX, fistY, 55, 30, Math.PI*0.3, '#FFFFCC', 'special');
  *
  * 11. For boss intro cinematic (call when boss entity spawns):
- *      VFX.createBossIntro(vfx, 'NELSON', 'Ha-Ha!', 3.0);
+ *      VFX.createBossIntro(vfx, 'BRUISER', 'Get ready!', 3.0);
  *      // IMPORTANT: gameplay.js should PAUSE game updates during boss intro.
  *      //   if (vfx.effects.some(e => e.type === 'boss_intro')) {
  *      //       // skip enemy AI / player input / physics this frame
@@ -118,7 +118,7 @@ const KO_STAR_COUNT  = 5;     // orbiting star particles
 // KO text constants
 const KO_TEXT_LIFETIME = 0.6;   // 0.1s pop-in + 0.5s fade
 const KO_TEXT_POP_TIME = 0.1;   // seconds for scale 0 → 1.5
-const KO_TEXT_PHRASES  = ['POW!', 'WHAM!', 'BAM!', 'BONK!', "D'OH!"];
+const KO_TEXT_PHRASES  = ['POW!', 'WHAM!', 'BAM!', 'BONK!', 'UGH!'];
 const KO_TEXT_COLOR    = '#FED90F';
 const KO_TEXT_SIZE     = 40;
 const KO_TEXT_DRIFT    = 60;    // px/s upward drift
@@ -839,8 +839,8 @@ export class VFX {
      * and skip game updates while one is playing. See header instructions #11.
      *
      * @param {VFX} vfxInstance  The VFX singleton
-     * @param {string} bossName   Boss display name (e.g. 'NELSON')
-     * @param {string} bossTitle  Subtitle (e.g. 'Ha-Ha!')
+     * @param {string} bossName   Boss display name (e.g. 'BRUISER')
+     * @param {string} bossTitle  Subtitle (e.g. 'Get ready!')
      * @param {number} [duration=3.0]  Total cinematic duration in seconds
      */
     static createBossIntro(vfxInstance, bossName, bossTitle, duration = 3.0) {

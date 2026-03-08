@@ -111,7 +111,7 @@ Based on research, the methodology that best fits a 12-person creative game stud
 |------|---------|-----------|
 | **Game Feel Tuning Panel** | Real-time parameter adjustment during play (hitlag, screen shake, knockback, timing windows) | This is our core differentiator (Principle #1: Player Hands First). No off-the-shelf tool tunes game feel as well as a custom debug overlay |
 | **Balance Data Dashboard** | Visualize DPS, health curves, difficulty progression in real-time | Principle #10 (Measure the Fun) requires data, not vibes. A custom dashboard surfaces balance issues faster than spreadsheets |
-| **Reusable Module Library** | Audio system, input manager, save/load, UI framework, scene transitions | Extract from SimpsonsKong and future projects. Research shows 30–50% faster project starts. This IS Principle #12 in action |
+| **Reusable Module Library** | Audio system, input manager, save/load, UI framework, scene transitions | Extract from firstPunch and future projects. Research shows 30–50% faster project starts. This IS Principle #12 in action |
 
 ### Don't Build
 - Game engine (use Godot/Unity/Unreal)
@@ -156,13 +156,13 @@ This is a genuine competitive advantage. Research confirms that studios with cen
 
 3. **Onboarding test.** New agents should be able to read our documentation and pass a "first week" competency check. If they can't, the docs have gaps. This keeps documentation honest
 
-4. **Cross-project postmortem.** After SimpsonsKong's completion, run a formal postmortem that produces a searchable document. Every lesson should be tagged with the principle it validates or violates
+4. **Cross-project postmortem.** After firstPunch's completion, run a formal postmortem that produces a searchable document. Every lesson should be tagged with the principle it validates or violates
 
 ---
 
 ## 6. Business Model Considerations
 
-### For SimpsonsKong (Current Project)
+### For firstPunch (Current Project)
 - **Model:** Free browser game (passion project / learning vehicle)
 - **Revenue:** None expected — this is our "tuition"
 - **Value:** Institutional knowledge, team capability development, portfolio piece
@@ -199,17 +199,17 @@ These are the specific next steps, ordered by impact:
 | **P1** | Build game feel tuning panel (debug overlay) | Lando + Chewie | 1–2 days |
 | **P1** | Evaluate Codecks or similar game-dev project management tool | Solo | 1 hour |
 | **P2** | Create balance data dashboard | Ackbar + Lando | 1–2 days |
-| **P2** | Begin reusable module extraction from SimpsonsKong | Chewie + Greedo | 2–3 days |
+| **P2** | Begin reusable module extraction from firstPunch | Chewie + Greedo | 2–3 days |
 | **P2** | Evaluate Godot for next project (formal 9-dimension matrix) | Solo + Chewie | 1 session |
 | **P3** | Formalize cross-domain review checklist | Ackbar | 1 hour |
 | **P3** | Document business model framework in playbook | Solo + Founder | 1 session |
-| **P3** | Run SimpsonsKong postmortem and publish findings | All agents | 1 session |
+| **P3** | Run firstPunch postmortem and publish findings | All agents | 1 session |
 
 ---
 
 ## Closing Note
 
-The research validates what SimpsonsKong taught us through experience: small teams win through clarity (who decides what), discipline (structured iteration, not hero-mode), and compounding knowledge (every project makes the next one better). The industry's best studios — Supergiant, Nintendo, Supercell — all share these traits regardless of their size or structure.
+The research validates what firstPunch taught us through experience: small teams win through clarity (who decides what), discipline (structured iteration, not hero-mode), and compounding knowledge (every project makes the next one better). The industry's best studios — Supergiant, Nintendo, Supercell — all share these traits regardless of their size or structure.
 
 What separates FFS from most indie studios is that we already document our lessons. The next step is to operationalize them: turn principles into processes, turn knowledge into reusable tools, and turn one successful project into a studio that ships consistently.
 

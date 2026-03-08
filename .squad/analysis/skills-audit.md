@@ -14,7 +14,7 @@
 | Criterion | Score | Notes |
 |-----------|-------|-------|
 | **Depth** | High | 10 substantive patterns covering pipeline, style guide, color theory, animation, VFX, parallax, UI, procedural-to-sprite migration criteria |
-| **Accuracy** | High | Canvas API patterns are correct; DPR handling, bezier curves, seeded random — all verified in SimpsonsKong |
+| **Accuracy** | High | Canvas API patterns are correct; DPR handling, bezier curves, seeded random — all verified in firstPunch |
 | **Actionability** | High | Copy-paste code examples for every pattern. An agent can read this and draw a character immediately |
 | **Genre Independence** | Good | Mostly universal 2D art. Minor Canvas-specific lean, but patterns transfer to any 2D renderer |
 | **Confidence** | `high` — **Justified.** Earned through shipped project |
@@ -76,7 +76,7 @@
 | **Depth** | High | 12 sections across two files covering nodes, GDScript, signals, scene architecture, physics, animation, input, audio, tilemaps, project org, patterns, migration mapping |
 | **Accuracy** | Medium-High | Content aligns with Godot 4.x docs. Some patterns may lag behind 4.3+ changes (TileMapLayer replacing TileMap) |
 | **Actionability** | High | Migration mapping table (Section 12) is the crown jewel — any agent porting from JS can use it immediately |
-| **Genre Independence** | Mixed | Framed as "for SimpsonsKong port" but content is 80% universal Godot 4. Beat-em-up examples leak into general sections unnecessarily |
+| **Genre Independence** | Mixed | Framed as "for firstPunch port" but content is 80% universal Godot 4. Beat-em-up examples leak into general sections unnecessarily |
 | **Confidence** | Part 1: `low` (no header), Part 2: `medium` — **Part 2 is correct, Part 1 should match** |
 
 **Strengths:** The JS → Godot migration table is reference-quality and unique to our studio's specific path. Section 4 (Scene Architecture) gives a complete, ready-to-use scene tree. Two-part split keeps file sizes manageable.
@@ -169,7 +169,7 @@
 | **Genre Independence** | Excellent | 100% universal. Works for any game, any engine, any genre |
 | **Confidence** | `low` — **Too conservative.** Should be `medium`. These patterns prevented recurrence of our two worst bugs |
 
-**Strengths:** Timer separation pattern (the conflation anti-pattern) is the highest-impact lesson from SimpsonsKong. The state machine audit checklist is QA gold. "Missing negative code" anti-pattern is genuinely insightful.
+**Strengths:** Timer separation pattern (the conflation anti-pattern) is the highest-impact lesson from firstPunch. The state machine audit checklist is QA gold. "Missing negative code" anti-pattern is genuinely insightful.
 **Weaknesses:** Only covers flat state machines. No patterns for hierarchical state machines (HSM), behavior trees, or pushdown automata — all of which we'll need for complex AI in future games. Code examples are JavaScript-only; should include GDScript equivalents or reference the Godot skill.
 
 ---

@@ -1,18 +1,18 @@
 # SKILL: Godot 4 Manual — Part 2 (Sections 7–12)
 
-Continuation of the Godot 4 reference for porting SimpsonsKong from Canvas 2D / Web Audio to Godot 4. Covers input, audio, tilemaps, project organization, key patterns, and a complete JS → Godot migration table.
+Continuation of the Godot 4 reference for porting firstPunch from Canvas 2D / Web Audio to Godot 4. Covers input, audio, tilemaps, project organization, key patterns, and a complete JS → Godot migration table.
 
 ---
 name: "godot-4-manual-part2"
 description: "Godot 4 deep-dive: input, audio, tilemaps, project org, patterns, and JS migration mapping"
 domain: "game-engine"
 confidence: "medium"
-source: "authored — Chewie (Engine Dev), synthesized from Godot 4.x docs + SimpsonsKong codebase analysis"
+source: "authored — Chewie (Engine Dev), synthesized from Godot 4.x docs + firstPunch codebase analysis"
 ---
 
 ## When to Use This Skill
 - Implementing input, audio, tilemaps, or project structure in the Godot port
-- Migrating any SimpsonsKong JS module to its Godot equivalent
+- Migrating any firstPunch JS module to its Godot equivalent
 - Applying beat-em-up patterns (state machines, pooling, screen shake) in GDScript
 - Setting up export presets or folder conventions for the Godot project
 
@@ -70,7 +70,7 @@ var h = Input.get_axis("move_left", "move_right")
 
 ### 7.4 Input Buffering
 
-SimpsonsKong's JS `input.js` buffers attack presses for combo chains. Replicate with a timer:
+firstPunch's JS `input.js` buffers attack presses for combo chains. Replicate with a timer:
 
 ```gdscript
 var _attack_buffer_time := 0.0
@@ -116,7 +116,7 @@ func on_hit():
 
 ### 8.2 Audio Bus Layout
 
-Edit buses in the **Audio** tab at the bottom of the editor. SimpsonsKong's JS `audio.js` has four buses — replicate the same layout:
+Edit buses in the **Audio** tab at the bottom of the editor. firstPunch's JS `audio.js` has four buses — replicate the same layout:
 
 | Bus | Purpose | Godot Setup |
 |-----|---------|-------------|
@@ -146,7 +146,7 @@ AudioServer.set_bus_volume_db(
 
 ### 8.4 Procedural Audio with AudioStreamGenerator
 
-SimpsonsKong's `music.js` generates oscillator-based music. In Godot, use `AudioStreamGenerator`:
+firstPunch's `music.js` generates oscillator-based music. In Godot, use `AudioStreamGenerator`:
 
 ```gdscript
 var playback: AudioStreamGeneratorPlayback
@@ -202,7 +202,7 @@ if data and data.get_custom_data("is_hazard"):
 
 ### 9.3 Parallax Layers
 
-SimpsonsKong's `background.js` renders a 3-layer parallax Springfield skyline. In Godot, use `ParallaxBackground` + `ParallaxLayer` nodes:
+firstPunch's `background.js` renders a 3-layer parallax Downtown skyline. In Godot, use `ParallaxBackground` + `ParallaxLayer` nodes:
 
 ```gdscript
 # Scene tree:
@@ -216,11 +216,11 @@ Each `ParallaxLayer` contains a `Sprite2D` or `TextureRect`. Set `motion_mirrori
 
 ### 9.4 Visual Level Editing
 
-For a beat-em-up like SimpsonsKong, combine TileMap painting with placed scene instances:
+For a beat-em-up like firstPunch, combine TileMap painting with placed scene instances:
 1. Paint ground/walls with TileMap.
 2. Place spawn markers as `Marker2D` nodes at positions where enemies/items appear.
 3. Use `Area2D` trigger zones for wave boundaries and camera locks.
-4. Group all level content under a single scene (e.g., `level_springfield.tscn`).
+4. Group all level content under a single scene (e.g., `level_downtown.tscn`).
 
 This replaces the data-driven `levels.js` approach with a visual, WYSIWYG workflow.
 
@@ -241,7 +241,7 @@ res://
 │   └── fonts/           # .ttf/.otf
 ├── scenes/
 │   ├── characters/      # player.tscn, enemy_*.tscn
-│   ├── levels/          # level_springfield.tscn
+│   ├── levels/          # level_downtown.tscn
 │   ├── ui/              # hud.tscn, title_screen.tscn
 │   └── effects/         # hit_effect.tscn, particles
 ├── scripts/
@@ -254,7 +254,7 @@ res://
 
 ### 10.2 Autoload Singletons
 
-Register in **Project → Project Settings → Autoload**. These are always-available global nodes — equivalent to SimpsonsKong's imported module instances.
+Register in **Project → Project Settings → Autoload**. These are always-available global nodes — equivalent to firstPunch's imported module instances.
 
 Common autoloads for a beat-em-up:
 
@@ -294,7 +294,7 @@ Create `.tres` files in the editor for each enemy variant (normal, tough, fast, 
 ### 10.4 Export Presets
 
 Configure in **Project → Export**. Add presets for each target:
-- **Web (HTML5)** — closest to current SimpsonsKong deployment. Outputs `.html` + `.wasm` + `.pck`.
+- **Web (HTML5)** — closest to current firstPunch deployment. Outputs `.html` + `.wasm` + `.pck`.
 - **Windows/macOS/Linux** — desktop builds.
 - **Android/iOS** — mobile (requires SDK setup).
 
@@ -306,7 +306,7 @@ Set export filters to include/exclude files, configure icons, and set feature ta
 
 ### 11.1 State Machine with Enum + Match
 
-The core pattern for player/enemy behavior. Replaces SimpsonsKong's string-based state checks in `player.js` and `enemy.js`.
+The core pattern for player/enemy behavior. Replaces firstPunch's string-based state checks in `player.js` and `enemy.js`.
 
 ```gdscript
 enum State { IDLE, RUN, ATTACK, HURT, DEAD }
@@ -382,7 +382,7 @@ Call from anywhere: `SceneManager.change_scene("res://scenes/levels/level_1.tscn
 
 ### 11.4 Screen Shake & Hit Lag
 
-SimpsonsKong's `renderer.js` applies screen shake on hits; `combat.js` uses hit-stop frames. In Godot:
+firstPunch's `renderer.js` applies screen shake on hits; `combat.js` uses hit-stop frames. In Godot:
 
 ```gdscript
 # Attach to Camera2D
@@ -406,7 +406,7 @@ Set player/enemy `process_mode` to `PROCESS_MODE_ALWAYS` for nodes that should i
 
 ## 12. Migration Mapping Table
 
-Complete mapping of SimpsonsKong's JS modules to their Godot 4 equivalents.
+Complete mapping of firstPunch's JS modules to their Godot 4 equivalents.
 
 ### 12.1 Engine Modules
 

@@ -4,7 +4,7 @@
 > **Date:** 2025-07  
 > **Status:** Active — Living reference for how we run ourselves, not just make games.  
 > **Confidence:** `low` (first observation from research, not yet validated across multiple projects)  
-> **Source:** Industry research across Supergiant, Team Cherry, Sandfall, Larian, ConcernedApe, Nintendo, academic meta-analyses, and SimpsonsKong lived experience.
+> **Source:** Industry research across Supergiant, Team Cherry, Sandfall, Larian, ConcernedApe, Nintendo, academic meta-analyses, and firstPunch lived experience.
 
 ---
 
@@ -371,7 +371,7 @@ After every major milestone and at the end of every project:
 Every studio-craft principle in this document is marked with a confidence level:
 
 - **🟢 High confidence** — Validated across multiple projects, backed by extensive research, proven in practice
-- **🟡 Medium confidence** — Validated in SimpsonsKong, supported by multiple studios' approaches, not yet tested in different genres
+- **🟡 Medium confidence** — Validated in firstPunch, supported by multiple studios' approaches, not yet tested in different genres
 - **🔴 Low confidence** — First observation from research, not yet validated across multiple projects at FFS
 
 **This skill is marked `low` confidence** because it represents our *first* observation from industry research, not yet proven across multiple projects. As we ship more games and validate these patterns, confidence increases.

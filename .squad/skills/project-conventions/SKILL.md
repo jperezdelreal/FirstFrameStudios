@@ -3,7 +3,7 @@ name: "project-conventions"
 description: "GDScript style, file naming, scene conventions, folder structure, Git workflow, documentation, and review standards for First Frame Studios Godot 4 projects"
 domain: "project-conventions"
 confidence: "high"
-source: "synthesized — from Godot 4 documentation, GDScript style guide, godot-tooling skill, and SimpsonsKong lessons"
+source: "synthesized — from Godot 4 documentation, GDScript style guide, godot-tooling skill, and firstPunch lessons"
 ---
 
 ## When to Use This Skill
@@ -405,7 +405,7 @@ Before submitting any work, verify every item:
 
 ### ❌ The "Build It, Don't Wire It" Anti-Pattern
 **What it looks like:** An agent creates a system (EventBus, SpriteCache, state machine) but never connects it to any consumer. The system exists but nothing uses it.
-**Why it's bad:** SimpsonsKong shipped with 214 LOC of working infrastructure that no agent integrated. Unwired code is dead code that creates false confidence.
+**Why it's bad:** firstPunch shipped with 214 LOC of working infrastructure that no agent integrated. Unwired code is dead code that creates false confidence.
 **Do this instead:** Every new system must be connected to at least one consumer in the same PR. Include integration contracts as comments showing where and how to connect.
 
 ### ❌ The "Everyone Edits project.godot" Anti-Pattern

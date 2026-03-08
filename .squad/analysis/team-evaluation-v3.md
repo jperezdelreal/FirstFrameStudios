@@ -11,9 +11,9 @@
 
 ## Executive Summary
 
-With industry research complete, we now know what successful studios actually prioritize. The good news: FFS is **well-structured for a 12-13 person team**. The research validates our domain ownership model, principles, and flat-with-clarity structure. The gaps are **role clarity** (we need an explicit Vision Keeper), **charter generalization** (6 charters are still locked to SimpsonsKong), and **skill completeness** (we've closed critical gaps but still lack 2-3 specialized skills for next-project maturity).
+With industry research complete, we now know what successful studios actually prioritize. The good news: FFS is **well-structured for a 12-13 person team**. The research validates our domain ownership model, principles, and flat-with-clarity structure. The gaps are **role clarity** (we need an explicit Vision Keeper), **charter generalization** (6 charters are still locked to firstPunch), and **skill completeness** (we've closed critical gaps but still lack 2-3 specialized skills for next-project maturity).
 
-**Bottom line:** We're ready to start another project **immediately**. We won't hit the bottlenecks we hit on SimpsonsKong. But we have 3 hiring decisions and 4 charter rewrites to make before launch.
+**Bottom line:** We're ready to start another project **immediately**. We won't hit the bottlenecks we hit on firstPunch. But we have 3 hiring decisions and 4 charter rewrites to make before launch.
 
 ---
 
@@ -72,7 +72,7 @@ We operate a **13-agent specialist squad** (excluding Scribe the logger and Ralp
 
 **Risk:** Solo is carrying 2 jobs. If Solo gets deep into architecture work, no one is tracking "Are we shipping on schedule?"
 
-**Recommendation:** 🔴 **DON'T HIRE** for SimpsonsKong's completion. We're already shipping the game. But for the **next project**, hire a dedicated Producer or promote Ackbar to Producer (QA + Production). This prevents the "Single Lead bottleneck" that derailed SimpsonsKong.
+**Recommendation:** 🔴 **DON'T HIRE** for firstPunch's completion. We're already shipping the game. But for the **next project**, hire a dedicated Producer or promote Ackbar to Producer (QA + Production). This prevents the "Single Lead bottleneck" that derailed firstPunch.
 
 **When:** P1 — before next project starts  
 **Estimated Cost:** One person, could be internal promotion
@@ -93,9 +93,9 @@ We operate a **13-agent specialist squad** (excluding Scribe the logger and Ralp
 - Boba (Art) occasionally contributes to aesthetic narrative
 - No one owns "Is our story coherent across all scenes?"
 
-**Risk:** For a narrative-light game like SimpsonsKong, this isn't a blocker. But if we move toward story-rich games (RPG, adventure), narrative ownership becomes critical.
+**Risk:** For a narrative-light game like firstPunch, this isn't a blocker. But if we move toward story-rich games (RPG, adventure), narrative ownership becomes critical.
 
-**Recommendation:** 🟡 **DON'T HIRE immediately.** For SimpsonsKong: story is minimal, current structure works. For next project: IF it's narrative-heavy (RPG, Adventure), hire a Narrative Designer or give Yoda explicit narrative authority in charter. IF it's action-light (Puzzle, Platformer), assign narrative to Yoda as secondary responsibility.
+**Recommendation:** 🟡 **DON'T HIRE immediately.** For firstPunch: story is minimal, current structure works. For next project: IF it's narrative-heavy (RPG, Adventure), hire a Narrative Designer or give Yoda explicit narrative authority in charter. IF it's action-light (Puzzle, Platformer), assign narrative to Yoda as secondary responsibility.
 
 **Decision Matrix:**
 | Next Project Genre | Recommendation |
@@ -120,9 +120,9 @@ We operate a **13-agent specialist squad** (excluding Scribe the logger and Ralp
 
 **Risk:** We ship a great game and nobody knows about it.
 
-**Recommendation:** 🟡 **HIRE after shipping SimpsonsKong.** This isn't needed for dev, but is critical for next project's success. Once we have a shipping track record, a Community Lead becomes a force multiplier for marketing.
+**Recommendation:** 🟡 **HIRE after shipping firstPunch.** This isn't needed for dev, but is critical for next project's success. Once we have a shipping track record, a Community Lead becomes a force multiplier for marketing.
 
-**When:** P2 — after SimpsonsKong ships, before next project marketing starts
+**When:** P2 — after firstPunch ships, before next project marketing starts
 
 ---
 
@@ -137,7 +137,7 @@ We operate a **13-agent specialist squad** (excluding Scribe the logger and Ralp
 **⚠️ GAPS:**
 - **Vision Keeper role missing** (see Section 1.4 below)
 - **Producer function undefined** — Solo doing Lead + Producer work
-- **Narrative ownership unclear** — appropriate for SimpsonsKong, risky for story-heavy games
+- **Narrative ownership unclear** — appropriate for firstPunch, risky for story-heavy games
 - **Community/Marketing owned by no one** — okay for dev, risky for launch
 
 **🟢 VERDICT: Team composition is EXCELLENT for game development. We need ONE process change (Vision Keeper clarification) and ONE optional role (Producer) for next project.**
@@ -291,7 +291,7 @@ domain technical expertise. VK authority is about coherence, not capability.
    - **Timeline:** Needed for 2nd project if targeting EU/JP
 
 6. **`monetization-frameworks` (P2)**
-   - **Why:** SimpsonsKong is free passion project. Next project may need revenue model (F2P, premium, cosmetics). No documented strategy.
+   - **Why:** firstPunch is free passion project. Next project may need revenue model (F2P, premium, cosmetics). No documented strategy.
    - **Timeline:** Needed for next project if pursuing revenue
 
 ### Skill Quality & Confidence Assessment
@@ -302,7 +302,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 - `game-feel-juice` — NEW, reference quality, genre-agnostic
 - `state-machine-patterns` — Proven architecture, well-documented
 - `new-project-playbook` — Studio-wide starting methodology
-- `2d-game-art` — Character art principles with SimpsonsKong validation
+- `2d-game-art` — Character art principles with firstPunch validation
 - `web-game-engine` — Canvas 2D architecture, comprehensive
 
 **Very Good (⭐⭐⭐⭐ — Confidence medium→high):**
@@ -378,7 +378,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 
 #### 2. **Chewie** — Engine Dev
 
-**Charter Alignment:** ⚠️ SimpsonsKong-specific
+**Charter Alignment:** ⚠️ firstPunch-specific
 - Lists "Canvas renderer," "Web Audio API," "src/engine/ directory"
 - Should be: "Engine architecture across platforms (Canvas, Godot, other)"
 
@@ -401,8 +401,8 @@ domain technical expertise. VK authority is about coherence, not capability.
 
 #### 3. **Lando** — Gameplay Dev
 
-**Charter Alignment:** ⚠️ SimpsonsKong-specific
-- Lists "Homer Simpson," "src/entities/," "src/scenes/gameplay.js"
+**Charter Alignment:** ⚠️ firstPunch-specific
+- Lists "the Brawler," "src/entities/," "src/scenes/gameplay.js"
 - Should be: "Core Gameplay Mechanics (movement, actions, state management)"
 
 **Post-Research Development Needs:**
@@ -424,7 +424,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 
 #### 4. **Wedge** — UI Dev
 
-**Charter Alignment:** ⚠️ SimpsonsKong-specific
+**Charter Alignment:** ⚠️ firstPunch-specific
 - Lists "Canvas setup," "16:9 letterboxing," "index.html," "styles.css"
 - Should be: "UI/UX design and implementation across platforms"
 
@@ -435,7 +435,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 
 **Readiness for Next Project:** 🟢 **READY**
 - Has domain-specific skill now (ui-ux-patterns)
-- SimpsonsKong UI is functional (options menu, HUD works)
+- firstPunch UI is functional (options menu, HUD works)
 - Gap: menus are menu items, not deep UX architecture
 
 **Development Plan:**
@@ -459,7 +459,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 
 **Readiness for Next Project:** 🟢 **READY**
 - Art direction is strong
-- Procedural art ceiling hit for SimpsonsKong (acknowledged in code analysis)
+- Procedural art ceiling hit for firstPunch (acknowledged in code analysis)
 - If next project uses sprites/3D, needs tool learning (Aseprite, Blender)
 
 **Development Plan:**
@@ -472,7 +472,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 
 #### 6. **Greedo** — Sound Designer
 
-**Charter Alignment:** ⚠️ SimpsonsKong-specific
+**Charter Alignment:** ⚠️ firstPunch-specific
 - Lists "Web Audio API exclusively (no external audio files)"
 - Should be: "Audio design and music (procedural or asset-based per project)"
 
@@ -495,7 +495,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 
 #### 7. **Tarkin** — Enemy/Content Dev
 
-**Charter Alignment:** ⚠️ SimpsonsKong-specific
+**Charter Alignment:** ⚠️ firstPunch-specific
 - Lists "src/entities/enemy.js," "src/systems/ai.js"
 - Should be: "Enemies, AI behaviors, encounter design, difficulty scaling"
 
@@ -511,7 +511,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 
 **Development Plan:**
 1. Generalize charter: "Enemy design, AI behaviors, encounter design"
-2. Extract AI pattern library from SimpsonsKong (if continuing beat 'em up)
+2. Extract AI pattern library from firstPunch (if continuing beat 'em up)
 3. Or: Study reference game AIs for new genre (if switching)
 4. Document difficulty curve philosophy
 
@@ -527,7 +527,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 - Lead "Feature Triage" skill creation (P0)
 - Create `balance-data-dashboard` (real-time visualizations for DPS, difficulty curves)
 - Implement Five-Minute Test for EVERY playable build
-- Document QA regression checklist per game (done for SimpsonsKong, need template for next game)
+- Document QA regression checklist per game (done for firstPunch, need template for next game)
 
 **Readiness for Next Project:** 🟢 **READY**
 - QA methodology is strong
@@ -581,7 +581,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 
 **Readiness for Next Project:** 🟡 **NEEDS DEVELOPMENT**
 - Environment art is functional (backgrounds exist)
-- Level design patterns are minimal (SimpsonsKong is mostly linear waves)
+- Level design patterns are minimal (firstPunch is mostly linear waves)
 - Gap: no documented level design methodology
 
 **Development Plan:**
@@ -627,7 +627,7 @@ domain technical expertise. VK authority is about coherence, not capability.
 - Mentor on rigging/animation if moving to 3D
 
 **Readiness for Next Project:** 🟡 **NEEDS DEVELOPMENT**
-- Character art is strong (SimpsonsKong character style is cohesive)
+- Character art is strong (firstPunch character style is cohesive)
 - Animation is limited (Canvas 2D procedural limits frame diversity)
 - Gap: if next project needs more animation (combat chains, idles, takes), animation tools/pipeline needed
 
@@ -649,16 +649,16 @@ domain technical expertise. VK authority is about coherence, not capability.
 - Create proper charter with explicit responsibilities
 - Document build system and CI/CD setup (currently in playbook, should be in charter)
 - Set up GitHub Actions (research recommends P1)
-- Create reusable module library from SimpsonsKong (research: 30-50% faster project starts)
+- Create reusable module library from firstPunch (research: 30-50% faster project starts)
 
 **Readiness for Next Project:** 🟡 **NEEDS DEVELOPMENT**
-- Tool engineering role is new (we didn't have this at SimpsonsKong start)
+- Tool engineering role is new (we didn't have this at firstPunch start)
 - Potential is high, but needs clearer definition and skill documentation
 
 **Development Plan:**
 1. Create explicit Jango charter (tool engineering, CI/CD, module library)
 2. Set up GitHub Actions for automated build + test (P1)
-3. Extract reusable modules from SimpsonsKong (input manager, audio system, save/load)
+3. Extract reusable modules from firstPunch (input manager, audio system, save/load)
 4. Create `studio-module-library` documentation (P1)
 5. Create `ci-cd-setup` skill (P1)
 
@@ -781,7 +781,7 @@ Based on industry research patterns, I'm scoring FFS on 5 core dimensions:
 ⚠️ **Gaps:**
 - Godot architecture not yet battle-tested (skill written, not shipped)
 - CI/CD is partial (not yet GitHub Actions as research recommends)
-- Reusable module library not extracted from SimpsonsKong
+- Reusable module library not extracted from firstPunch
 - No documented cross-project technical transition playbook
 
 **What successful studios have that we need:**
@@ -823,7 +823,7 @@ We have deep expertise in **beat 'em up + Canvas 2D + small indie game delivery*
 - Compounding learning across projects
 - Founder vision that crystallizes with each game
 
-**Bottom Line:** We're on the right path. Our first bottleneck-free project will be the second project (not the first). Once we ship SimpsonsKong and do a formal postmortem, we'll know exactly what to do differently next time.
+**Bottom Line:** We're on the right path. Our first bottleneck-free project will be the second project (not the first). Once we ship firstPunch and do a formal postmortem, we'll know exactly what to do differently next time.
 
 ---
 
@@ -859,7 +859,7 @@ Based on research and current assessment, here's the clear hiring recommendation
 ### Hiring Recommendation Summary
 
 ✅ **Hire decisions we should make:**
-- **Don't hire new roles for SimpsonsKong completion** — We're already shipping
+- **Don't hire new roles for firstPunch completion** — We're already shipping
 - **Plan to hire Producer for next project (P1)** — Solo can't carry both lead + operations long-term
 - **Plan to hire Narrative Designer IF next game is story-heavy (P1 conditional)** — Most indie games don't need this
 - **Plan to hire Community Lead after shipping (P2)** — Marketing is post-dev concern
@@ -873,12 +873,12 @@ Based on research and current assessment, here's the clear hiring recommendation
 
 ## 6. Charter Updates Needed
 
-Six agent charters need generalization away from SimpsonsKong specifics:
+Six agent charters need generalization away from firstPunch specifics:
 
 | Agent | Current | Needed Update | Effort |
 |-------|---------|----------------|--------|
 | **Chewie** | "Canvas renderer, Web Audio API, src/engine/" | "Engine architecture across platforms" | 1 hour |
-| **Lando** | "Homer Simpson, src/entities/, gameplay.js" | "Core gameplay mechanics (genre-agnostic)" | 1 hour |
+| **Lando** | "the Brawler, src/entities/, gameplay.js" | "Core gameplay mechanics (genre-agnostic)" | 1 hour |
 | **Wedge** | "Canvas setup, 16:9 letterboxing, index.html" | "UI/UX design across platforms" | 1 hour |
 | **Greedo** | "Web Audio API exclusively" | "Audio design and music (procedural + asset-based)" | 1 hour |
 | **Tarkin** | "src/entities/enemy.js, src/systems/ai.js" | "Enemy design, AI behaviors, encounter design" | 1 hour |
@@ -928,7 +928,7 @@ Six agent charters need generalization away from SimpsonsKong specifics:
 1. Create Vision Keeper role (charter update: Yoda)
 2. Create `feature-triage` skill
 3. Create `streamability-design` skill
-4. Generalize 6 agent charters away from SimpsonsKong
+4. Generalize 6 agent charters away from firstPunch
 
 **Must Do During Sprint 0 (P1):**
 1. Define Producer methodology (Solo + future producer)
@@ -941,7 +941,7 @@ Six agent charters need generalization away from SimpsonsKong specifics:
 1. Extract reusable module library
 2. Hire Community Lead for marketing
 3. Create `ai-integration-workflow` skill
-4. Run formal SimpsonsKong postmortem
+4. Run formal firstPunch postmortem
 
 ### Key Strengths We Should Leverage
 
@@ -956,7 +956,7 @@ Six agent charters need generalization away from SimpsonsKong specifics:
 1. **Vision coherence undefined** — Each domain creates independently; need explicit Creative Director
 2. **Producer methodology implicit** — Solo carries it; needs to be documented for next project
 3. **Iteration discipline fuzzy** — Research says 3 cycles minimum; we don't formalize this
-4. **Charter lock-in** — 6 charters still think "SimpsonsKong Canvas 2D" instead of "cross-platform game dev"
+4. **Charter lock-in** — 6 charters still think "firstPunch Canvas 2D" instead of "cross-platform game dev"
 
 ### What Makes Us Vulnerable (vs. Studios We're Comparing To)
 
@@ -966,7 +966,7 @@ Six agent charters need generalization away from SimpsonsKong specifics:
 
 ### Path to Becoming Like Supergiant (in 2-3 projects)
 
-1. **Ship SimpsonsKong well** (nearly done)
+1. **Ship firstPunch well** (nearly done)
 2. **Ship next project in different genre** (validates playbook across contexts)
 3. **Ship third project with similar quality** (proves we can repeat excellence)
 4. **Extract reusable library across all three** (builds compounding advantage)
@@ -1002,7 +1002,7 @@ By project 3, we'll have the **genre versatility, multi-engine fluency, and comp
 
 ---
 
-**Assessment complete. We're ready to ship SimpsonsKong and start the next project strong.**
+**Assessment complete. We're ready to ship firstPunch and start the next project strong.**
 
 *— Ackbar, QA Lead / Playtester, First Frame Studios*
 *— 2025-07-21*

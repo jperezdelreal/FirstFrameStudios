@@ -1,7 +1,7 @@
 # Ackbar — QA/Playtester
 
 ## Role
-Quality assurance and playtester for SimpsonsKong and future game projects.
+Quality assurance and playtester for firstPunch and future game projects.
 
 ## Responsibilities
 - Playtesting builds for game feel, responsiveness, and fun factor

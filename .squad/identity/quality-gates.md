@@ -20,10 +20,10 @@ A code deliverable is accepted when ALL of the following are true:
 | # | Requirement | Rationale |
 |---|-------------|-----------|
 | C1 | **Compiles and runs without errors or warnings** | No `push_error()`, no orphan nodes, no null reference crashes. Zero-warning policy. |
-| C2 | **State machine audit passed** | Every state has a documented entry condition, per-frame behavior, AND exit condition. No dead-end states. (Lesson: SimpsonsKong Bug #1 — player frozen in `hit` state because exit path was missing.) |
+| C2 | **State machine audit passed** | Every state has a documented entry condition, per-frame behavior, AND exit condition. No dead-end states. (Lesson: firstPunch Bug #1 — player frozen in `hit` state because exit path was missing.) |
 | C3 | **All imports/dependencies valid** | Every `preload()`, `load()`, `@onready`, and `class_name` reference resolves. No dangling references to deleted scenes or scripts. |
 | C4 | **Tested in Godot editor AND exported build** | Runs correctly in editor play mode AND at least one export target (desktop or web). Editor-only code paths caught here. |
-| C5 | **No unused infrastructure** | Every system created must be wired into at least one consumer. No orphan autoloads, no dead signals, no comment-only integration contracts. (Lesson: 214 LOC of unwired infrastructure in SimpsonsKong.) |
+| C5 | **No unused infrastructure** | Every system created must be wired into at least one consumer. No orphan autoloads, no dead signals, no comment-only integration contracts. (Lesson: 214 LOC of unwired infrastructure in firstPunch.) |
 | C6 | **Cross-reviewed by a second engineer** | Chewie reviews Lando's code, Lando reviews Chewie's. Solo reviews anything touching autoloads, scene tree structure, or signal bus. (Recommendation from Ackbar's quality proposal: separate code review from QA.) |
 | C7 | **GDScript style conventions followed** | Naming, indentation, signal naming, and file organization match `project-conventions` skill document. |
 | C8 | **Frame-by-frame trace completed for critical paths** | For state transitions, combat interactions, and AI behaviors: trace at least 3 consecutive frames of execution. Document in PR description. |
@@ -77,7 +77,7 @@ A design deliverable is accepted when ALL of the following are true:
 | D3 | **Difficulty tested** | Playtested at intended difficulty. Clear time, damage taken, and deaths recorded. Metrics fall within target ranges (defined per encounter/wave). |
 | D4 | **Difficulty curve maintained** | New content doesn't create difficulty spikes or dead zones. Tested in sequence, not isolation. |
 | D5 | **Player feedback clear** | Player can tell what happened and why. Hits have impact feedback, damage has visual/audio cue, state changes are communicated. |
-| D6 | **No degenerate strategies** | Playtester attempts to cheese the mechanic. If one strategy dominates all others, redesign. (Lesson: jump-attack dominance in SimpsonsKong.) |
+| D6 | **No degenerate strategies** | Playtester attempts to cheese the mechanic. If one strategy dominates all others, redesign. (Lesson: jump-attack dominance in firstPunch.) |
 
 **Gate owner:** Yoda (Game Designer). Playtesting by Ackbar.
 

@@ -8,7 +8,7 @@ name: "enemy-encounter-design"
 description: "Universal enemy & encounter design for action games — archetypes, AI patterns, wave composition, difficulty scaling, boss design"
 domain: "game-design"
 confidence: "medium"
-source: "earned — extracted from SimpsonsKong enemy implementation (beat 'em up context), generalized to be genre-agnostic with genre-specific guidance"
+source: "earned — extracted from firstPunch enemy implementation (beat 'em up context), generalized to be genre-agnostic with genre-specific guidance"
 
 ---
 
@@ -793,7 +793,7 @@ Each state has clear entry/exit conditions.
 
 **Beat 'em up example:**
 ```javascript
-// SimpsonsKong approach — behavior tree style (simple state dispatch)
+// firstPunch approach — behavior tree style (simple state dispatch)
 function updateEnemy(enemy, player, dt) {
     // Common checks
     if (enemy.state === 'dead') return;
@@ -1103,7 +1103,7 @@ const enemies = [
 
 **Fix:** Use archetype variety from earlier sections. Each enemy type should force a different player response.
 
-### 4. "Passive Crowd" (SimpsonsKong Lesson)
+### 4. "Passive Crowd" (firstPunch Lesson)
 
 **Anti-pattern:** Enemies stand around waiting for their "turn" to attack instead of acting autonomously.
 

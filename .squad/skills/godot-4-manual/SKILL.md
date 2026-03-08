@@ -1,6 +1,6 @@
 # Godot 4 Manual — Part 1 (Sections 1–6)
 
-> Reference for SimpsonsKong — a beat 'em up built with Godot 4 and GDScript.
+> Reference for firstPunch — a beat 'em up built with Godot 4 and GDScript.
 
 ---
 

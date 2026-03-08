@@ -8,7 +8,7 @@ name: "input-handling"
 description: "Universal input system design — buffering, latency budgets, action mapping, multiplatform support, accessibility, and testing patterns"
 domain: "engine-architecture"
 confidence: "medium"
-source: "validated in SimpsonsKong (Canvas keyboard + Web Audio), patterns are universal across all engines and genres"
+source: "validated in firstPunch (Canvas keyboard + Web Audio), patterns are universal across all engines and genres"
 
 ---
 
@@ -1189,7 +1189,7 @@ Player leaves the ground and 50ms later presses jump. Too late. Game feels punis
 
 ---
 
-## SimpsonsKong Learnings
+## firstPunch Learnings
 
 ### What We Built
 
@@ -1214,7 +1214,7 @@ Player leaves the ground and 50ms later presses jump. Too late. Game feels punis
 
 ### What We'd Improve for Godot
 
-1. **Gamepad/Touch support** — SimpsonsKong only supports keyboard. Next project should abstract from day 1.
+1. **Gamepad/Touch support** — firstPunch only supports keyboard. Next project should abstract from day 1.
 2. **InputMapper for remapping** — Hard-coded key names. Player preferences matter.
 3. **Input visualization overlay** — Would have caught the recursion bug faster (isDown confusion).
 4. **Latency measurement** — No way to verify responsiveness empirically. Add frame-accurate measurement.

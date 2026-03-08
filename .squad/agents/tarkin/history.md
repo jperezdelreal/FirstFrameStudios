@@ -1,7 +1,7 @@
 # Tarkin — History
 
 ## Project Context
-- **Project:** SimpsonsKong — Browser-based Simpsons beat 'em up
+- **Project:** firstPunch — Browser-based game beat 'em up
 - **User:** joperezd
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Current enemies:** One basic goon type (30 HP) with a "tough" variant (50 HP, red, same behavior). Simple approach/circle/attack AI in src/systems/ai.js. 3 waves with camera locks.
@@ -46,12 +46,12 @@
 - **Key insight:** The gameplay.js `WAVE_DATA` uses `variant` key and `x` for trigger position, while levels.js uses `type` and `triggerX` — dual formats exist because WaveManager was written before levels.js data format was finalized. Both must be updated until they're unified.
 
 ### P2-1 + EX-T5 Boss Phase Framework (2026-06-20)
-- **Boss variant:** Added Nelson Muntz boss (80×100, 200 HP) with phase state, invulnerability on transitions, and phase-based speed boosts. New Wave 4 spawns the boss and Level 1 width extends to 5000.
+- **Boss variant:** Added the Bruiser boss (80×100, 200 HP) with phase state, invulnerability on transitions, and phase-based speed boosts. New Wave 4 spawns the boss and Level 1 width extends to 5000.
 - **Phase behaviors:** Phase 1 punch + occasional charge with 2 add spawns; Phase 2 adds ground slam and spawns 2 more goons with red tint; Phase 3 alternates punch/charge with flashing red and no more adds.
-- **Combat + HUD:** Boss AI bypasses attack throttling, supports charge/slam states with new hit handling, and HUD now renders a full-width "NELSON" health bar at the bottom.
+- **Combat + HUD:** Boss AI bypasses attack throttling, supports charge/slam states with new hit handling, and HUD now renders a full-width "BRUISER" health bar at the bottom.
 
 ### AAA-L1 Destructible Objects + AAA-L3 Environmental Hazards (2025-06-21)
-- **Destructible types:** Trash can (10 HP), newspaper stand (15 HP), parking meter (20 HP), Lard Lad donut sign (25 HP). Each has type-specific Canvas rendering with damage tinting (darkens as HP drops) and crack overlays below 50% HP.
+- **Destructible types:** Trash can (10 HP), newspaper stand (15 HP), parking meter (20 HP), Donut Shop donut sign (25 HP). Each has type-specific Canvas rendering with damage tinting (darkens as HP drops) and crack overlays below 50% HP.
 - **Destructible break animation:** On destruction, 6-10 debris particles scatter with gravity simulation and alpha fade over 0.6s. Drop table uses weighted random: health pickup (30%), score bonus (40%), nothing (30%), gated by per-type `dropChance`.
 - **Shake feedback:** `shakeTime` + `shakeIntensity` give immediate visual hit response before destruction — small but critical for juice.
 - **Hazard types:** Steam vent (periodic 2s cycle, 3 dmg), radioactive barrel (constant 2 dmg every 0.5s via per-entity cooldown Map), manhole (5 dmg knockback burst every 5s with 250-force radial push).
@@ -74,7 +74,7 @@
 - **DPS budget framework:** Calculate max safe DPS from player HP ÷ safe TTK (4-6s). Normal enemy ≈ 5 dps, Bruiser ≈ 12 dps, capped by throttling. Time-to-kill targets: Fodder 2-3s, Normal 3-5s, Bruiser 8-10s, Mini-boss 20-30s, Boss 60-90s.
 - **8 anti-patterns to avoid:** (1) Bullet sponge (huge HP, boring behavior), (2) Unfair ambush (spawn behind player), (3) Palette swap army (all same behavior, diff colors), (4) Passive crowd (stand idle waiting), (5) Instant death no telegraph, (6) Distance dead zones (ranges don't overlap), (7) Arrow spam (too many ranged), (8) No boss recovery window.
 - **Genre-specific guidance:** Beat 'em up (grabs, back attacks, hitstun), Platformer (patrol routes, jump threats), Shooter (cover, suppression, formations), RPG (stat-based, elemental weaknesses), Stealth (patrol routes, detection cones, alert states).
-- **Confidence: Medium.** Patterns validated in SimpsonsKong beat 'em up context; archetypes and principles generalize well across action games. Not tested in actual platformer/shooter/RPG projects yet, but foundational theory is sound.
+- **Confidence: Medium.** Patterns validated in firstPunch beat 'em up context; archetypes and principles generalize well across action games. Not tested in actual platformer/shooter/RPG projects yet, but foundational theory is sound.
 - **Cross-references:** Links to game-feel-juice, beat-em-up-combat (foundational), state-machine-patterns, game-design-fundamentals, camera-systems.
 
 ### Session 17: Enemy & Encounter Design Skill Creation (2026-03-07)
@@ -96,10 +96,10 @@ Created universal enemy and encounter design skill — a comprehensive framework
 10. Anti-Patterns Catalog (8 failures: bullet sponge, unfair ambush, palette swap, etc.)
 11. Genre-Specific Guidance (Beat 'em up, Platformer, Shooter, RPG, Stealth with audio/visual specifics)
 
-**Key principles extracted from SimpsonsKong:**
-- **10 Universal Archetypes:** Covers all SimpsonsKong enemy types (Normal, Tough, Fast, Heavy, Boss) plus generalized patterns
+**Key principles extracted from firstPunch:**
+- **10 Universal Archetypes:** Covers all firstPunch enemy types (Normal, Tough, Fast, Heavy, Boss) plus generalized patterns
 - **Mega Man Principle:** Patterns are learnable, telegraph clear, phase progression teaches new mechanics
-- **DPS Budget Framework:** Calculated from SimpsonsKong balance tuning (player HP 80 ÷ safe 4-6s TTK = 13-20 dps safe threshold)
+- **DPS Budget Framework:** Calculated from firstPunch balance tuning (player HP 80 ÷ safe 4-6s TTK = 13-20 dps safe threshold)
 - **Wave Composition Rules:** From Encounter Pacing document — intro new types solo, mix only after player learns
 
 **Cross-references:** Links to game-feel-juice, beat-em-up-combat (validation), game-design-fundamentals, level-design-fundamentals

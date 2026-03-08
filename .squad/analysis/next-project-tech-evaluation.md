@@ -11,7 +11,7 @@
 
 **Phaser 3 is a good engine. But "good" is not what you said you wanted. You said "nos jugamos todo."**
 
-After building SimpsonsKong from scratch — 1,931 LOC of custom engine, 28 source files, every system hand-crafted — I know exactly what Canvas 2D and browser JavaScript can do. I know the ceiling. And I'm telling you: **the ceiling exists, and it's lower than where we need to be if we're serious about competing.**
+After building firstPunch from scratch — 1,931 LOC of custom engine, 28 source files, every system hand-crafted — I know exactly what Canvas 2D and browser JavaScript can do. I know the ceiling. And I'm telling you: **the ceiling exists, and it's lower than where we need to be if we're serious about competing.**
 
 Phaser 3 raises that ceiling from our current 7/10 to maybe 8.5/10. It's a real improvement. But Godot 4 raises it to 9.5/10 AND opens doors (native export, console, desktop, mobile) that no browser engine can.
 
@@ -67,7 +67,7 @@ Before evaluating engines, let's be honest about the quality bar:
 
 ### PixiJS + Custom
 
-**Same rendering ceiling as Phaser** (same underlying WebGL). More control, less framework overhead, but we'd be rebuilding what Phaser gives us for free (scene management, input, physics). We already proved this approach works with SimpsonsKong — it would just be a better version of what we have.
+**Same rendering ceiling as Phaser** (same underlying WebGL). More control, less framework overhead, but we'd be rebuilding what Phaser gives us for free (scene management, input, physics). We already proved this approach works with firstPunch — it would just be a better version of what we have.
 
 **Verdict:** If we stay web-only, use Phaser, not PixiJS + custom. We already did the "build everything yourself" experiment. Time to leverage a framework. But the real question is: should we stay web-only?
 
@@ -228,7 +228,7 @@ For THAT goal, Phaser is conformist. Godot is ambitious.
 
 ---
 
-## Migration Plan — SimpsonsKong Squad → Godot 4
+## Migration Plan — firstPunch Squad → Godot 4
 
 ### Phase 1: Learning Sprint (Week 1-2)
 - Squad completes GDScript fundamentals (Godot docs + tutorials)
@@ -249,17 +249,17 @@ For THAT goal, Phaser is conformist. Godot is ambitious.
 - Build a single-screen beat 'em up prototype in Godot
 - One playable character, one enemy type, one background
 - Validate: input responsiveness, hitbox system, Y-sorting, basic VFX
-- Compare feel with SimpsonsKong — must match or exceed
+- Compare feel with firstPunch — must match or exceed
 
 ### Phase 3: Production (Week 5+)
 - Full game development with Godot's integrated tools
-- All institutional knowledge from SimpsonsKong applied from day 1
+- All institutional knowledge from firstPunch applied from day 1
 - State machine exit transitions defined before implementation
 - HiDPI + audio bus + event architecture from the start
 - Clean scene/node structure enforced from project creation
 
 ### What Transfers Directly
-| SimpsonsKong Knowledge | Godot Equivalent |
+| firstPunch Knowledge | Godot Equivalent |
 |----------------------|-----------------|
 | Fixed-timestep loop | `_physics_process(delta)` — built in |
 | State machines | Same pattern, AnimationTree for complex ones |

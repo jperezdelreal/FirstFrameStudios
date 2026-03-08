@@ -50,7 +50,7 @@ Three words. Three layers of meaning:
 
 **First Frame Studios** is a game development company built on a single conviction: the player's experience in the first moment of interaction is a promise, and every system we build exists to keep it. We make games that move players, surprise them, and earn their time — across any genre, any platform, and any IP. Our approach is research-driven, player-first, and relentlessly iterative. We study the landmark titles in our genre before writing a line of code. We ship playable builds fast and let the game teach us what it wants to be. We measure fun with data, not just instinct. And we treat every frame, every input response, every sound effect as a chance to delight someone who trusted us with their time.
 
-We were born from **SimpsonsKong** — a browser-based beat 'em up that started as a passion project and became the crucible that forged our identity. That project taught us everything: that health-cost specials create the best risk/reward loops in the genre, that 0.5x devicePixelRatio can ruin art that's technically correct, that a playable build in 30 minutes teaches more than 30 days of design documents, and that bugs are broken promises to the player. We documented every lesson, every failure, every breakthrough. We built a knowledge base spanning 10 game development disciplines. We wrote leadership principles that govern how we make decisions under pressure. SimpsonsKong isn't our identity — it's our origin story. The lessons it taught us are universal, and we carry them into every project.
+We were born from **firstPunch** — a browser-based beat 'em up that started as a passion project and became the crucible that forged our identity. That project taught us everything: that health-cost specials create the best risk/reward loops in the genre, that 0.5x devicePixelRatio can ruin art that's technically correct, that a playable build in 30 minutes teaches more than 30 days of design documents, and that bugs are broken promises to the player. We documented every lesson, every failure, every breakthrough. We built a knowledge base spanning 10 game development disciplines. We wrote leadership principles that govern how we make decisions under pressure. firstPunch isn't our identity — it's our origin story. The lessons it taught us are universal, and we carry them into every project.
 
 What makes us different is how we're built. First Frame Studios operates as a **12-specialist squad** where every domain — game design, engine architecture, gameplay programming, UI/UX, art direction, environment art, character art, VFX, audio design, enemy AI, quality assurance, and production — has a dedicated owner. No one carries two domains. No domain exists in isolation. Our institutional knowledge is documented, searchable, and transferable. We don't lose lessons when people change roles. We don't repeat investigations we've already resolved. We are a studio that doesn't just build games — we build the *capability* to build games. Every project compounds.
 
@@ -261,7 +261,7 @@ This is by design. A studio that must restructure its team for every genre is fr
 |---------|-------|
 | **Name** | First Frame Studios |
 | **Tagline** | Forged in Play |
-| **Founded from** | SimpsonsKong (2025) |
+| **Founded from** | firstPunch (2025) |
 | **Team size** | 12 specialists + operations |
 | **Core philosophy** | The first frame is a promise. Every subsequent frame keeps it. |
 | **Primary color** | Deep Midnight Blue (`#0D1B2A`) |
@@ -272,4 +272,4 @@ This is by design. A studio that must restructure its team for every genre is fr
 
 *This document is the foundation of our public identity. It should be referenced when creating marketing materials, team pages, investor decks, game splash screens, and any context where someone asks: "Who is First Frame Studios?"*
 
-*The answer: We are a 12-specialist game studio that believes the player's first moment of interaction is a promise — and we spend every system, every frame, every sound keeping it. We were forged in SimpsonsKong. We build for every genre, every platform, every IP. We are First Frame Studios.*
+*The answer: We are a 12-specialist game studio that believes the player's first moment of interaction is a promise — and we spend every system, every frame, every sound keeping it. We were forged in firstPunch. We build for every genre, every platform, every IP. We are First Frame Studios.*

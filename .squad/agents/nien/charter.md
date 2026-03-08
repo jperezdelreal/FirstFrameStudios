@@ -1,10 +1,10 @@
 # Nien — Character / Enemy Artist
 
 ## Role
-Character and enemy artist for SimpsonsKong and future game projects.
+Character and enemy artist for firstPunch and future game projects.
 
 ## Responsibilities
-- Design and produce player character render methods (Homer, future characters)
+- Design and produce player character render methods (Brawler, future characters)
 - Design and produce enemy variant render methods (goons, fast, heavy, boss)
 - Ensure clear silhouettes and readable animation poses
 - Express character personality through visual design

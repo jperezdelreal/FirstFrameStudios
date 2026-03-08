@@ -3,13 +3,13 @@
     {
       "universe": "The Usual Suspects",
       "first_used": "2026-03-06T13:45:18Z",
-      "project": "SimpsonsKong",
+      "project": "firstPunch",
       "status": "retired"
     },
     {
       "universe": "Star Wars",
       "first_used": "2026-03-06T14:21:00Z",
-      "project": "SimpsonsKong"
+      "project": "firstPunch"
     }
   ],
   "assignment_cast_snapshots": {

@@ -1,7 +1,7 @@
 # Solo — Lead / Chief Architect
 
 ## Role
-Lead / Chief Architect for SimpsonsKong and future projects (Godot 4 transition).
+Lead / Chief Architect for firstPunch and future projects (Godot 4 transition).
 
 ## Responsibilities
 

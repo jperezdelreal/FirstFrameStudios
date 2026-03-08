@@ -4,7 +4,7 @@
 > **Date:** 2025-07-21  
 > **Status:** Active — First formal triage process for First Frame Studios  
 > **Confidence:** `low` (first documentation of the framework; will bump to `medium` after applying to first feature cycle)  
-> **Source:** Principle #14 (Kill Your Darlings), studio-craft meta-analysis (Supergiant, Team Cherry, Nintendo, Larian), SimpsonsKong prototype and postmortem data
+> **Source:** Principle #14 (Kill Your Darlings), studio-craft meta-analysis (Supergiant, Team Cherry, Nintendo, Larian), firstPunch prototype and postmortem data
 
 ---
 
@@ -467,9 +467,9 @@ Every triage decision is logged in `.squad/decisions.md` with this format:
 
 ---
 
-## 10. Integration with SimpsonsKong Backlog
+## 10. Integration with firstPunch Backlog
 
-**Current state:** SimpsonsKong backlog has 52+ items. Many should never have made the backlog.
+**Current state:** firstPunch backlog has 52+ items. Many should never have made the backlog.
 
 **Action:**
 1. Retroactive triage on existing backlog (Solo + Yoda, 4 hours)

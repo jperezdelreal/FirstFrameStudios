@@ -1,7 +1,7 @@
 # Boba — History
 
 ## Project Context
-- **Project:** SimpsonsKong — Browser-based Simpsons beat 'em up
+- **Project:** firstPunch — Browser-based game beat 'em up
 - **User:** joperezd
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Visual approach:** All art is procedural Canvas 2D drawing — no external images
@@ -13,7 +13,7 @@
 ### Wave 1 — EX-B1, EX-B2, P1-2 (2026-06-03)
 
 **Delivered:**
-- `.squad/analysis/art-direction.md` — Full visual style guide: primary/secondary palettes, outline approach (2px #222222, round caps), flat shading with one highlight layer, character proportions (Homer chunky, enemies lean), comic-book effect style.
+- `.squad/analysis/art-direction.md` — Full visual style guide: primary/secondary palettes, outline approach (2px #222222, round caps), flat shading with one highlight layer, character proportions (Brawler chunky, enemies lean), comic-book effect style.
 - `src/systems/vfx.js` — Complete VFX system module:
   - `VFX.drawShadow()` (static) — oval ground shadow that scales/fades with jump height. Ready for player.js and enemy.js to adopt when those owners migrate.
   - `VFX.createHitEffect(x, y, intensity)` — starburst at impact point. Three intensities: light (20px, punch), medium (30px, kick), heavy (40px, combo finisher). 6 radiating rays, white center flash, scale-up + alpha-fade over 100ms.
@@ -37,7 +37,7 @@
 ### Wave 2 — EX-B7 (Consistent Entity Rendering Style)
 
 **Delivered:**
-- `src/entities/player.js` render() — Full visual overhaul of Homer:
+- `src/entities/player.js` render() — Full visual overhaul of Brawler:
   - 2px `#222222` outlines (round join/cap) on all body parts for readability
   - Belly now uses quadraticCurveTo path that bulges outward (x=12–52 at peak vs 18–46 at top/bottom)
   - M-shaped hair: 3 brown (#8B4513) triangle spikes on crown
@@ -92,8 +92,8 @@
 
 **Delivered:**
 - `.squad/analysis/visual-modernization-plan.md` — Comprehensive 63k-character assessment of visual upgrade path:
-  - Gap analysis: current 60% modern → target 95% modern (recognizable Springfield, expressive characters, arcade-quality UI)
-  - 36 specific upgrade items across 8 categories: Homer (8 items), Enemies (6 items), Background (5 items), VFX (6 items), UI/HUD (7 items), Title Screen (5 items), Animation System (1 item), Consistency (3 items)
+  - Gap analysis: current 60% modern → target 95% modern (recognizable Downtown, expressive characters, arcade-quality UI)
+  - 36 specific upgrade items across 8 categories: Brawler (8 items), Enemies (6 items), Background (5 items), VFX (6 items), UI/HUD (7 items), Title Screen (5 items), Animation System (1 item), Consistency (3 items)
   - 4-tier priority matrix: P0 (6 items, 2.5hr — core polish), P1 (10 items, 6.5hr — modern standard), P2 (15 items, 6.5hr — advanced polish), P3 (5 items, 7.5hr — future enhancements)
   - Total effort estimate: 23 hours for complete visual modernization
   - Detailed Canvas 2D implementation plans for each item: bezier curves for organic shapes (belly bulge, hair), gradients for depth (health bar, sky), composite operations for effects (glows, additive blending), transform matrices for animation (walk cycles, squash/stretch)
@@ -101,12 +101,12 @@
   - Implementation roadmap: 4 waves focused on progressive polish (core feel → recognizable characters → micro-details → infrastructure)
 
 **Key insights:**
-- **Visual modernization ≠ external assets:** Gap is not lack of images/sprites — it's applying modern Canvas 2D techniques to existing procedural art. Current work already has solid foundations (consistent outlines, proper shapes, Springfield background).
+- **Visual modernization ≠ external assets:** Gap is not lack of images/sprites — it's applying modern Canvas 2D techniques to existing procedural art. Current work already has solid foundations (consistent outlines, proper shapes, Downtown background).
 - **The 60% → 95% gap is detail + expressiveness + juice:**
   - Detail: stubble, ears, hands, clothing folds, ground texture, building variety
   - Expressiveness: facial expressions tied to state, breathing animation, posture variations
   - Juice: dust clouds, screen shake, hitstop, speed lines, combo bursts, score popups
-- **Recognizability is king:** Power Plant must be pink/purple (not grey), enemies must be Springfield archetypes (not "purple guy"), Homer must have M-hair + overbite + stubble (not just a yellow circle).
+- **Recognizability is king:** Factory must be pink/purple (not grey), enemies must be Downtown archetypes (not "purple guy"), Brawler must have M-hair + overbite + stubble (not just a yellow circle).
 - **P0 items deliver 80% of perceived improvement:** 6 items totaling 2.5 hours (facial expressions, walk cycle, dust clouds, screen shake, lives display, score popup) transform the game from "functional" to "polished" — highest ROI.
 - **Animation is currently ad-hoc:** Walk cycles are manual sine waves, attacks are hard-coded state checks. Structured animation system (keyframes, easing) is P3 (infrastructure) but manual animations are sufficient for modern feel — don't block on system rewrite.
 - **Lighting direction inconsistency:** Highlights are placed arbitrarily — need top-left 45° light source rule for visual unity.
@@ -121,21 +121,21 @@
 6. `ctx.setLineDash([3, 5])` — ground cracks, dotted lines, comic-book speed lines
 
 **Next actions (not blocking other agents):**
-- P0 wave (2.5hr): Homer expressions + walk cycle + dust/shake/lives/score — transforms core feel
-- P1 wave (6.5hr): Character detail + Springfield landmarks + combat juice + UI polish — achieves "modern" target
+- P0 wave (2.5hr): Brawler expressions + walk cycle + dust/shake/lives/score — transforms core feel
+- P1 wave (6.5hr): Character detail + Downtown landmarks + combat juice + UI polish — achieves "modern" target
 - Blocked on: None — all visual work can proceed independently of gameplay/engine changes
 
-### Wave 4 — P2-5 (Springfield Background Overhaul), P2-9 (KO Text Effects)
+### Wave 4 — P2-5 (Downtown Background Overhaul), P2-9 (KO Text Effects)
 
 **Delivered:**
-- `src/systems/background.js` — Complete rewrite with three-layer parallax Springfield scene:
+- `src/systems/background.js` — Complete rewrite with three-layer parallax Downtown scene:
   - Sky gradient (#87CEEB → #B0E0E6), 3 drifting puffy clouds (overlapping circles, tiling)
-  - Far layer (0.2× parallax): Power Plant cooling towers — dual trapezoid towers, steam circles, smokestack with red warning stripes, main building block
-  - Mid layer (0.5× parallax): Repeating Springfield building pattern — Kwik-E-Mart (teal, red awning, "KWIK-E-MART" text, door, windows), Moe's Tavern (dark brown, neon "MOE'S" sign, grimy window), 3 colored houses (triangle roofs, cross-bar windows, doors)
+  - Far layer (0.2× parallax): Factory cooling towers — dual trapezoid towers, steam circles, smokestack with red warning stripes, main building block
+  - Mid layer (0.5× parallax): Repeating Downtown building pattern — Quick Stop (teal, red awning, "QUICK STOP" text, door, windows), Joe's Bar (dark brown, neon "JOE'S" sign, grimy window), 3 colored houses (triangle roofs, cross-bar windows, doors)
   - Ground: green sidewalk strip, grey sidewalk, dark road with yellow center dashes, curb line, fire hydrants every 600px
   - All buildings use #222222 outlines consistent with art-direction.md
 - `src/systems/vfx.js` — New `VFX.createKOText(vfxInstance, x, y)` static method:
-  - Random phrase from ["POW!", "WHAM!", "BAM!", "BONK!", "D'OH!"]
+  - Random phrase from ["POW!", "WHAM!", "BAM!", "BONK!", "UGH!"]
   - 40px bold yellow (#FED90F) text with 4px dark outline
   - Random rotation ±15° for comic energy
   - Scale 0→1.5× over 0.1s (pop-in), then 1.5→1.0× (settle), fade 1→0 over 0.5s
@@ -145,15 +145,15 @@
 **Key decisions:**
 - Used `performance.now()` for cloud drift timing instead of requiring an `update(dt)` method — keeps the render-only API that gameplay.js expects.
 - Tiling system for both clouds and buildings ensures they repeat infinitely as camera scrolls — no gaps no matter how far the player walks.
-- Power Plant placed on far layer with large spacing (2200px) so it reads as distant landmark, not clutter.
+- Factory placed on far layer with large spacing (2200px) so it reads as distant landmark, not clutter.
 - KO text positioned 30px above enemy center so it floats above the starburst, not on top of it.
 - ±15° rotation computed once at creation (not per-frame random) for stable visual during animation.
 
 ### Wave 6 — P0 Character Redesigns (2026-06-03)
 
 **Delivered:**
-- `src/entities/player.js` render() — full Homer Simpson rebuild with M-hair, ears, stubble, overbite, highlight shading, and state-driven body poses (idle breathing, walk leg swaps, punch/kick/jump/ground slam variations), all with 2px #222 outlines.
-- `src/entities/enemy.js` render() — Springfield thug variants with distinct silhouettes (purple suit, blue hoodie, green tank + bandana, red tough w/ scar), angry/wild expressions, fighting stances, and 2px outlines.
+- `src/entities/player.js` render() — full the Brawler rebuild with M-hair, ears, stubble, overbite, highlight shading, and state-driven body poses (idle breathing, walk leg swaps, punch/kick/jump/ground slam variations), all with 2px #222 outlines.
+- `src/entities/enemy.js` render() — Downtown thug variants with distinct silhouettes (purple suit, blue hoodie, green tank + bandana, red tough w/ scar), angry/wild expressions, fighting stances, and 2px outlines.
 
 **Key decisions:**
 - Preserved existing gameplay state checks, shadows, hit flashes, facing flips, and death fade while swapping in new organic shapes.
@@ -185,7 +185,7 @@
 - `src/systems/background.js` — Background polish enhancements:
   - Sky gradient now 4-stop: deep blue (#5BADE2) → sky blue → powder blue → very light (#E0EEF0) at horizon
   - House windows randomly "lit" (warm yellow #FFE566 + #FFD700 glow halo) using seeded position-based random for frame stability
-  - Moe's Tavern grimy window also gets lit state (40% chance — bar is often open)
+  - Joe's Bar grimy window also gets lit state (40% chance — bar is often open)
   - Sidewalk detail: vertical joint lines every 60px + horizontal edge line for texture
   - Clouds already had 3 puffy shapes with drift — no changes needed
 
@@ -204,9 +204,9 @@
 **Key learnings:**
 - **The #1 "cutre" cause is a missing `devicePixelRatio` canvas scaling.** The canvas is 1280×720 physical pixels but displayed at 2560×1440 on Retina. Zero DPR references in the entire codebase. This single omission makes ALL art look blurry/low-res. 30-minute fix for 60%+ perceived improvement.
 - **CSS `image-rendering: pixelated` is poison for procedural Canvas art.** It forces nearest-neighbor upscaling, turning smooth curves and gradients into chunky blocks. This is correct for pixel art but catastrophically wrong for our bezier-curve characters and gradient skies.
-- **Tiny font sizes are invisible on HiDPI.** Found 5px text (Jebediah plaque, I&S poster) that is literally sub-pixel on Retina. Minimum viable font size for background signs should be 12px.
-- **Good art ≠ good rendering.** The procedural art is genuinely solid — Homer is recognizable, buildings are charming, outlines are consistent. The rendering pipeline (DPR + CSS) is what destroys it. It's like printing a poster on a fax machine.
-- **Scale hierarchy breaks depth perception.** Far-layer Power Plant cooling towers (180px at 0.2× parallax) should visually dwarf Homer (80px at 1×) but are barely 2× his height. Mid-layer buildings compete with player for attention due to matching saturation levels.
+- **Tiny font sizes are invisible on HiDPI.** Found 5px text (Founder plaque, I&S poster) that is literally sub-pixel on Retina. Minimum viable font size for background signs should be 12px.
+- **Good art ≠ good rendering.** The procedural art is genuinely solid — Brawler is recognizable, buildings are charming, outlines are consistent. The rendering pipeline (DPR + CSS) is what destroys it. It's like printing a poster on a fax machine.
+- **Scale hierarchy breaks depth perception.** Far-layer Factory cooling towers (180px at 0.2× parallax) should visually dwarf Brawler (80px at 1×) but are barely 2× his height. Mid-layer buildings compete with player for attention due to matching saturation levels.
 - **P0 fix path is only ~35 minutes** for DPR scaling + CSS removal, which would resolve the majority of user complaints about quality.
 
 ### Wave 8 — Visual Excellence Research & Art Direction Learnings (2026-06-03)
@@ -221,14 +221,14 @@
   - Visual hierarchy priority order (player → threats → UI → interactables → background) with squint test
   - Full art pipeline: concept → style guide → prototype → production → integration → polish → QA
   - Resolution-independent design: DPR scaling, responsive layout, aspect ratio locking
-  - SimpsonsKong retrospective: DPR disaster, procedural limitations, multi-artist coordination, scale consistency, art direction role evaluation
+  - firstPunch retrospective: DPR disaster, procedural limitations, multi-artist coordination, scale consistency, art direction role evaluation
   - Future project guidelines: Day 1 checklist, sprite pipeline triggers, art review process
 - `.squad/skills/2d-game-art/SKILL.md` — Reusable skill with 10 patterns, code examples, and 12 anti-patterns covering display pipeline, style guides, Canvas techniques, color theory, animation, VFX systems, visual hierarchy, parallax, resolution-independent UI, and procedural-to-sprite transition criteria.
 
 **Key insights:**
-- **Display pipeline is the #1 art decision.** DPR scaling + correct CSS should be the very first thing set up in any Canvas project. SimpsonsKong's hours of art work were invisible because the rendering pipeline was broken.
+- **Display pipeline is the #1 art decision.** DPR scaling + correct CSS should be the very first thing set up in any Canvas project. firstPunch's hours of art work were invisible because the rendering pipeline was broken.
 - **Canvas 2D's ceiling is higher than expected.** The flat-shaded cartoon style (our chosen approach) is literally Canvas 2D's sweet spot. The art wasn't limited by the technology — it was limited by rendering pipeline bugs and missing animation principles.
-- **The procedural crossover point is ~200 lines / 2 hours per entity.** Below that, procedural is faster (zero pipeline setup). Above that, sprites win on speed and quality. Homer at ~300 lines crossed this threshold.
+- **The procedural crossover point is ~200 lines / 2 hours per entity.** Below that, procedural is faster (zero pipeline setup). Above that, sprites win on speed and quality. Brawler at ~300 lines crossed this threshold.
 - **Art direction as a role justified itself primarily through the DPR audit and style guide.** Without the audit, the game would have shipped blurry. Without the style guide, 4 agents would have used 4 different outline colors.
 - **Animation principles matter more than rendering detail.** A simple shape with proper squash/stretch looks better than a detailed shape that doesn't move naturally. The industry research confirmed this across all 5 reference games.
 - **Visual reference sheets > text descriptions.** The art-direction.md text spec worked for palette/outlines but failed for proportions. Next project needs a rendered reference image on Day 1.
@@ -260,7 +260,7 @@
 - **Animation state machines are simpler than most people think.** A few dozen lines of pseudocode handles 95% of games. The complexity is tuning timings, not building the system.
 - **Sprites vs. Skeletal is a 200-line decision point.** Below 200 lines of procedural character code, the crossover hasn't happened. Above it, sprites win. This applies to animation counts too: <4 animation states = sprites tolerable, 4+ = skeletal wins.
 - **Procedural animation should be simple.** Screen shake, squash/stretch, trails, particle effects are perfect for procedural. Complex motion (attacks, special moves, character acting) should be key-framed.
-- **Confidence is low because the skill is based on SimpsonsKong + cross-game research, not multi-genre, multi-engine production experience.** Next projects will validate (or refute) these patterns.
+- **Confidence is low because the skill is based on firstPunch + cross-game research, not multi-genre, multi-engine production experience.** Next projects will validate (or refute) these patterns.
 
 **Cross-References:**
 - Links to 2d-game-art (sprite creation), game-feel-juice (screen shake, hitlag, particles), state-machine-patterns (transition logic), eat-em-up-combat (frame data)
@@ -295,9 +295,9 @@ Created universal animation principles skill — a comprehensive, engine-agnosti
 12. Blending & Layering (additive animation, blend spaces, layer masks)
 13. Anti-Patterns Catalog (7 failures: over-animation, rigid poses, no squash-stretch, etc.)
 
-**Key insight:** 12 FPS rule comes from SimpsonsKong experience — more frames than needed wastes artist time; fewer frames breaks readability. The 12 FPS baseline applies to all game animation, not just beat-em-ups.
+**Key insight:** 12 FPS rule comes from firstPunch experience — more frames than needed wastes artist time; fewer frames breaks readability. The 12 FPS baseline applies to all game animation, not just beat-em-ups.
 
 **Cross-references:** Links to game-feel-juice (juicy feedback visuals), game-design-fundamentals (animation as communication), beat-em-up-combat (attack animation timing)
 
-**Confidence:** Medium (SimpsonsKong experience + industry best practices). Low for 3D motion capture section (not yet applied to game project).
+**Confidence:** Medium (firstPunch experience + industry best practices). Low for 3D motion capture section (not yet applied to game project).
 

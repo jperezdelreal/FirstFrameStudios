@@ -1,7 +1,7 @@
 # Bossk — VFX Artist
 
 ## Role
-Visual effects artist for SimpsonsKong and future game projects.
+Visual effects artist for firstPunch and future game projects.
 
 ## Responsibilities
 - Design and implement dynamic visual effects (particles, explosions, impacts)

@@ -1,7 +1,7 @@
 # Jango — History
 
 ## Project Context
-- **Project:** SimpsonsKong — Transitioning from browser-based (HTML/Canvas/JS) to Godot 4
+- **Project:** firstPunch — Transitioning from browser-based (HTML/Canvas/JS) to Godot 4
 - **User:** joperezd
 - **Stack (current):** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Stack (target):** Godot 4, GDScript, Godot editor toolchain
@@ -12,7 +12,7 @@
 ### Why This Role Exists
 Created during Session 12 as part of the Godot 4 transition planning. The evaluation (`.squad/decisions/inbox/solo-new-roles-godot.md`) identified that:
 
-1. **SimpsonsKong's #1 technical debt was unwired infrastructure** — 214 LOC of working systems (EventBus, AnimationController, SpriteCache, CONFIG) that no agent ever integrated. When nobody owns tooling, it doesn't get done.
+1. **firstPunch's #1 technical debt was unwired infrastructure** — 214 LOC of working systems (EventBus, AnimationController, SpriteCache, CONFIG) that no agent ever integrated. When nobody owns tooling, it doesn't get done.
 
 2. **Godot introduces 5 entire systems needing tooling attention** that vanilla JS didn't have: scene tree + inheritance, EditorPlugin API, resource system, signal system, and export/build system. Conservative estimate: 15-25 tooling items in the first Godot project.
 
@@ -67,7 +67,7 @@ Created .squad/analysis/tools-evaluation.md (18 KB) — comprehensive tooling as
 
 **Evaluation Scope:**
 - 8 build/test/lint tools evaluated for JavaScript/web platform
-- Current tooling review (SimpsonsKong setup analysis)
+- Current tooling review (firstPunch setup analysis)
 - Next project tooling recommendations
 - CI/CD pipeline design aligned with "balance" principle
 - Migration readiness assessment
@@ -94,20 +94,20 @@ Created .squad/analysis/tools-evaluation.md (18 KB) — comprehensive tooling as
 **Role:** Tool Engineer — Repository structure, scaffolding, pipeline infrastructure
 
 **Task Executed:**
-Restructured the SimpsonsKong repository into a multi-game monorepo layout.
+Restructured the source IPKong repository into a multi-game monorepo layout.
 
 **Changes Made:**
-1. **Created directory structure:** `games/simpsons-kong/`, `games/ashfall/`, `shared/{shaders,ui-components,audio,fonts,addons}/`, `docs/`
-2. **Moved all SimpsonsKong source files** into `games/simpsons-kong/` using `git mv` (preserves history):
-   - `src/` → `games/simpsons-kong/src/`
-   - `assets/` → `games/simpsons-kong/assets/`
-   - `index.html`, `styles.css`, `README.md` → `games/simpsons-kong/`
+1. **Created directory structure:** `games/game-kong/`, `games/ashfall/`, `shared/{shaders,ui-components,audio,fonts,addons}/`, `docs/`
+2. **Moved all firstPunch source files** into `games/game-kong/` using `git mv` (preserves history):
+   - `src/` → `games/game-kong/src/`
+   - `assets/` → `games/game-kong/assets/`
+   - `index.html`, `styles.css`, `README.md` → `games/game-kong/`
 3. **Created `games/ashfall/.gitkeep`** — placeholder for founder's Godot project
 4. **Created root-level files:**
    - `README.md` — Studio-level README with structure table, games list, team link
    - `.editorconfig` — Consistent formatting across GDScript, JS, Markdown, JSON/YAML
    - `.gitignore` — Expanded to cover Godot (.godot/, *.import, *.pck), OS files, IDE dirs, Node, build artifacts
-   - `docs/GETTING_STARTED.md` — Quick setup guide for both SimpsonsKong and Ashfall
+   - `docs/GETTING_STARTED.md` — Quick setup guide for both firstPunch and Ashfall
 5. **Updated `.gitattributes`** — Added LFS comment noting future configuration needed
 6. **Preserved at root:** `.squad/`, `.gitattributes`, `squad.config.ts`, `.copilot/`, `.github/`
 

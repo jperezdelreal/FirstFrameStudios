@@ -113,7 +113,7 @@ These architectural choices are made now to avoid Sprint 0 debates:
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
 | **Physics** | CharacterBody2D with `move_and_slide()` | Standard Godot pattern for player-controlled characters. Built-in collision resolution. |
-| **State machine** | GDScript enum + match statement | Simple, readable, debuggable. No custom StateMachine node until complexity warrants it. (Lesson: YAGNI from SimpsonsKong.) |
+| **State machine** | GDScript enum + match statement | Simple, readable, debuggable. No custom StateMachine node until complexity warrants it. (Lesson: YAGNI from firstPunch.) |
 | **Hitbox/Hurtbox** | Area2D with collision layers | Hitboxes on layer 2, hurtboxes on layer 3. Clean separation. Signal-based detection (`area_entered`). |
 | **Event system** | Autoload EventBus with typed signals | Central signal bus for cross-system communication (damage dealt, enemy died, health changed). Avoids direct node references. |
 | **Camera** | Camera2D following player | Smoothing enabled. Limits set to level bounds. Simple — no fancy camera until Sprint 2+. |
@@ -158,7 +158,7 @@ These architectural choices are made now to avoid Sprint 0 debates:
 | Risk | Likelihood | Impact | Mitigation |
 |------|-----------|--------|------------|
 | Godot unfamiliarity causes slowdown | Medium | Medium | Agents reference `godot-4-manual` and `godot-beat-em-up-patterns` skills. Pair work for first Godot scenes. |
-| State machine bug (repeat of SimpsonsKong) | Medium | High | State machine audit in quality gates (C2). Frame-by-frame trace required. |
+| State machine bug (repeat of firstPunch) | Medium | High | State machine audit in quality gates (C2). Frame-by-frame trace required. |
 | Scope creep ("just one more feature") | High | Medium | Sprint 0 goal is razor-sharp: move, punch, damage. Everything else is Sprint 1. Solo enforces. |
 | Art direction delays block Nien | Low | Low | Nien can start with geometric placeholder (colored rectangles) while Boba finalizes direction. |
 | Integration failures at Phase 3 | Medium | High | EventBus architecture defined upfront. Signal names agreed in Phase 1 scaffold. |

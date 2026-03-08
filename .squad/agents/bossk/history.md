@@ -1,7 +1,7 @@
 # Bossk — History
 
 ## Project Context
-- **Project:** SimpsonsKong — Browser-based Simpsons beat 'em up
+- **Project:** firstPunch — Browser-based game beat 'em up
 - **User:** joperezd
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Current VFX:** Hit starbursts, KO effects, damage numbers, motion trails, spawn effects in src/systems/vfx.js. Particle system with dust/sparks/debris in src/engine/particles.js.

@@ -36,7 +36,7 @@ The landmark titles in any genre have already answered most of our design questi
 
 **Anti-pattern:** "I have an original idea for how this system should work" — without having played the games that already explored this design space. Originality is earned through mastery, not ignorance.
 
-*In SimpsonsKong, this meant studying nine landmark beat 'em ups before writing a line of combat code. SoR4's health-cost specials, Turtles in Time's throw spectacle, Shredder's Revenge's taunt mechanic — 35 years of solved problems saved us months of design mistakes.*
+*In firstPunch, this meant studying nine landmark beat 'em ups before writing a line of combat code. SoR4's health-cost specials, Turtles in Time's throw spectacle, Shredder's Revenge's taunt mechanic — 35 years of solved problems saved us months of design mistakes.*
 
 ---
 
@@ -53,7 +53,7 @@ Character mechanics should flow from personality, not from generic archetypes. E
 
 **Anti-pattern:** "I added a generic dash attack to the character." Why a dash? Does this character *dash*? The verb matters. The character dictates the mechanic, not the other way around.
 
-*In SimpsonsKong, this meant Homer's belly bounce instead of a generic dash — Homer being Homer. Bart's taunt as a bratty provocation, not a generic meter button. Springfield as a place fans recognized in every pixel.*
+*In firstPunch, this meant Brawler's belly bounce instead of a generic dash — Brawler being Brawler. Kid's taunt as a bratty provocation, not a generic meter button. Downtown as a place fans recognized in every pixel.*
 
 ---
 
@@ -70,7 +70,7 @@ The bias is always toward *running software*. Get it on the target platform. Get
 
 **Anti-pattern:** "I spent three days designing this system on paper and I'm ready to implement." Three days of design without a single playtest is three days of untested assumptions. Build day one. Design around what you learn on day two.
 
-*In SimpsonsKong, we went from zero to a playable build in 30 minutes. That rough, imperfect prototype revealed more about combat feel than any amount of planning.*
+*In firstPunch, we went from zero to a playable build in 30 minutes. That rough, imperfect prototype revealed more about combat feel than any amount of planning.*
 
 ---
 
@@ -117,7 +117,7 @@ The sound designer owns the audio pipeline end-to-end. The gameplay designer own
 
 **Anti-pattern:** "That's not my module." If a player-facing bug exists, it's every specialist's concern. Domain ownership means you own quality in your area — it doesn't mean you ignore quality elsewhere.
 
-*In SimpsonsKong, we learned this when art direction needed its own dedicated owner, separate from sprite implementation and VFX.*
+*In firstPunch, we learned this when art direction needed its own dedicated owner, separate from sprite implementation and VFX.*
 
 ---
 
@@ -134,7 +134,7 @@ A game-breaking bug isn't a technical issue — it's a moment where a player tri
 
 **Anti-pattern:** "We'll fix it in the next sprint." The player experiencing the bug doesn't have a sprint schedule. If the game breaks, the player walks away and never comes back. That's not a backlog item — that's a lost player.
 
-*In SimpsonsKong, a player freeze bug and passive AI bug shipped because no single owner caught them. That taught us: bugs are everyone's problem, and "next sprint" is too late.*
+*In firstPunch, a player freeze bug and passive AI bug shipped because no single owner caught them. That taught us: bugs are everyone's problem, and "next sprint" is too late.*
 
 ---
 
@@ -166,7 +166,7 @@ Intuition starts the design. Measurement validates it. Every core gameplay param
 
 **Anti-pattern:** "It feels balanced to me." Balanced for whom? The developer who's played 200 hours or the new player on their first run? Measurement reveals what feel obscures. Your calibration is not the player's calibration.
 
-*In SimpsonsKong, when balance analysis showed jump attacks dealing 50 DPS above the 45 target, we didn't say "it feels fine." We measured, identified the problem, and tuned to 38 DPS. That discipline made combat fair for new players, not just veterans.*
+*In firstPunch, when balance analysis showed jump attacks dealing 50 DPS above the 45 target, we didn't say "it feels fine." We measured, identified the problem, and tuned to 38 DPS. That discipline made combat fair for new players, not just veterans.*
 
 ---
 
@@ -183,7 +183,7 @@ Nintendo built the Game Boy with 4 shades of green and made Pokémon. Constraint
 
 **Anti-pattern:** "We should switch to a different engine/platform for better capabilities." Better capabilities for *what*? Define the player experience gap first. If the gap can be closed within the current tech (and it often can), stay. Platform migrations destroy velocity and compound expertise.
 
-*In SimpsonsKong, Canvas 2D with no shaders and no skeletal animation forced us toward snappy sprite work and procedural audio — a visual and audio identity we wouldn't have found if we'd had unlimited tools.*
+*In firstPunch, Canvas 2D with no shaders and no skeletal animation forced us toward snappy sprite work and procedural audio — a visual and audio identity we wouldn't have found if we'd had unlimited tools.*
 
 ---
 
@@ -200,7 +200,7 @@ Lessons from evaluating frameworks, from discovering a tech stack's ceiling, fro
 
 **Anti-pattern:** "Let's re-evaluate that technology/approach for the next project." We already evaluated it. We documented why we chose what we chose. Learning means not repeating the investigation.
 
-*SimpsonsKong taught us: Phaser's overhead exceeded its benefit for our scope. Procedural art has a ceiling at ~400 LOC/character. Domain splitting unlocks parallelism. Testing is a team responsibility. These lessons travel with us.*
+*firstPunch taught us: Phaser's overhead exceeded its benefit for our scope. Procedural art has a ceiling at ~400 LOC/character. Domain splitting unlocks parallelism. Testing is a team responsibility. These lessons travel with us.*
 
 ## 13. Creative Vision Has a Keeper
 

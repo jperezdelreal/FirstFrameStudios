@@ -1,7 +1,7 @@
 # Lando — History (formerly McManus)
 
 ## Project Context
-- **Project:** SimpsonsKong — Browser-based Simpsons beat 'em up
+- **Project:** firstPunch — Browser-based game beat 'em up
 - **User:** joperezd
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Goal:** Ship playable beat 'em up level in 30 minutes
@@ -10,7 +10,7 @@
 
 ### Game Architecture (2026-06-03)
 - **Engine Layer**: Core game loop (fixed timestep accumulator), renderer with camera/shake, input manager, Web Audio API
-- **Entity Layer**: Player (Homer) and Enemy classes with state machines, animation, physics (jump, knockback)
+- **Entity Layer**: Player (Brawler) and Enemy classes with state machines, animation, physics (jump, knockback)
 - **Systems Layer**: Combat (hit detection, damage, knockback) and AI (approach/attack/retreat behaviors)
 - **Scene Layer**: Title screen and Gameplay scene with wave-based progression
 - **File Paths**:
@@ -72,10 +72,10 @@
   - Tuning guidelines: 60fps rule, start subtle + dial up, layer don't stack, toggle test methodology
   - 10 anti-patterns we learned: juice fatigue, desync, constant motion, copy-paste juice, juice on non-events, knockback direction
   - P0-P3 implementation checklist (hitlag → screen shake → flash → sound sync → particles → knockback → squash-stretch → time manipulation)
-  - SimpsonsKong learnings: what worked (hitlag foundation, knockback as feedback), what we'd do differently (juice from start, scale with combo, particle system early, audio specialist)
+  - firstPunch learnings: what worked (hitlag foundation, knockback as feedback), what we'd do differently (juice from start, scale with combo, particle system early, audio specialist)
   - Genre applications: beat 'em up, platformer, fighting game, puzzle, 3D action
   - Quick reference checklists for attack types, movement, enemy death, boss phase
-- **Confidence: `medium`** — validated in SimpsonsKong (hitlag, screen shake, knockback, sound sync proven shipped); reference games confirm universality (Celeste, SoR4, Hollow Knight, Gungeon, Hades); boss design and advanced effects not yet fully validated in our shipped code
+- **Confidence: `medium`** — validated in firstPunch (hitlag, screen shake, knockback, sound sync proven shipped); reference games confirm universality (Celeste, SoR4, Hollow Knight, Gungeon, Hades); boss design and advanced effects not yet fully validated in our shipped code
 - **Addresses Ackbar's audit (P0 gap):** Game feel had no dedicated skill; patterns were scattered across 3 skills. This unified reference aligns with Principle #1 (Player Hands First) — now the first skill new agents should read when implementing ANY feature with impact.
 - **Cross-referenced:** state-machine-patterns (state triggers), beat-em-up-combat (frame data), 2d-game-art (particles), game-qa-testing (juice toggle test), godot-beat-em-up-patterns (GDScript examples)
 - **Session tag:** Skills Gap Remediation (2026-03-07T12:57:00Z) — Orchestration log: `.squad/orchestration-log/2026-03-07T12-57-skills-creation.md`

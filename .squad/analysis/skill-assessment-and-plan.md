@@ -2,7 +2,7 @@
 
 **Author:** Solo (Lead)
 **Date:** 2025-07-21
-**Scope:** Full 12-agent squad — SimpsonsKong project session
+**Scope:** Full 12-agent squad — firstPunch project session
 
 ---
 
@@ -86,9 +86,9 @@
 ### Wedge (UI Dev)
 
 **What they did well:**
-- HUD modernization is genuinely arcade-quality — gradient bars, Mini Homer icons, score lerp, combo glow
+- HUD modernization is genuinely arcade-quality — gradient bars, Mini Brawler icons, score lerp, combo glow
 - Title screen polish — gradient sky, scrolling skyline, key cap icons, star particles
-- Style/combo meter with Simpsons-themed thresholds ("Meh" → "Best. Combo. Ever.")
+- Style/combo meter with retro-themed thresholds ("Meh" → "Best. Combo. Ever.")
 - Options menu with working volume sliders wired to audio buses
 - Text crispness fix — `drawCrispText()` helper with `Math.round()` for pixel-perfect alignment
 - Consistently produced complete, polished features with no regressions
@@ -112,13 +112,13 @@
 - Visual modernization plan (63K chars) with correct priority ranking (P0 = 80% of improvement)
 - Identified DPR scaling as THE #1 visual quality problem — the most impactful single finding
 - Created the 2d-game-art skill document with 10 patterns and 12 anti-patterns
-- Homer and enemy visual redesigns genuinely improved character recognizability
+- Brawler and enemy visual redesigns genuinely improved character recognizability
 
 **What they struggled with:**
-- Multiple waves of redesigns — Homer render() was rewritten at least 3 times (Waves 2, 6, and by Nien)
+- Multiple waves of redesigns — Brawler render() was rewritten at least 3 times (Waves 2, 6, and by Nien)
 - Foreground parallax and spawn effects created but not integrated (blocked on other agents)
 - "30% modern" initial assessment was later revised to "60% modern" — initial audit was too harsh
-- Scale hierarchy issues (Power Plant too small) discovered late in the process
+- Scale hierarchy issues (Factory too small) discovered late in the process
 
 **Strongest skill:** Visual analysis and art direction standards
 **Weakest skill:** Stabilizing a design before implementation (multiple rewrites)
@@ -261,8 +261,8 @@
 ### Nien (Character / Enemy Artist)
 
 **What they did well:**
-- Homer walk-cycle leg framing and expression-based face drawing — adds life
-- Simpsons-style 4-finger fists with palm, knuckle row, thumb — authentic detail
+- Brawler walk-cycle leg framing and expression-based face drawing — adds life
+- game-style 4-finger fists with palm, knuckle row, thumb — authentic detail
 - Enemy visual identity pass: distinct per-variant accessories (cap, goatee, sneaker laces, vest)
 - Shoe soles, belt, ears — small details that sell the character proportions
 - All shapes use smooth arcs/ellipses/quadraticCurveTo — clean anti-aliased rendering
@@ -406,11 +406,11 @@
 
 ### Nien (Character / Enemy Artist)
 **Current level:** Competent
-**Strengths:** Character detail, visual identity differentiation, authentic Simpsons styling, clean canvas technique
+**Strengths:** Character detail, visual identity differentiation, authentic game styling, clean canvas technique
 **Gaps:** Animation (static poses only), limited feature output, unclear ownership boundary with Boba
 **Development plan:**
 1. Read SKILL.md: `2d-game-art` — specifically the Animation Essentials (Big 4: squash/stretch, anticipation, follow-through, timing)
-2. Practice: Implement walk cycle animation for Homer using transform-based posing (not sine waves) — prove animation capability
+2. Practice: Implement walk cycle animation for Brawler using transform-based posing (not sine waves) — prove animation capability
 3. Cross-train with: Boba on ownership boundaries — clarify who owns character redesign vs character detail vs character animation
 
 ---

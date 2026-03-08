@@ -9,9 +9,9 @@
 
 ## Why This Exists
 
-SimpsonsKong taught us that starting a project right determines everything that follows. We went from zero to a playable build in 30 minutes — and then spent months untangling decisions we made in those first 30 minutes (god-scene in gameplay.js, 214 LOC of unwired infrastructure, state machines with missing exit paths, timer conflation bugs). 
+firstPunch taught us that starting a project right determines everything that follows. We went from zero to a playable build in 30 minutes — and then spent months untangling decisions we made in those first 30 minutes (god-scene in gameplay.js, 214 LOC of unwired infrastructure, state machines with missing exit paths, timer conflation bugs). 
 
-This playbook ensures that every new project starts with the clarity SimpsonsKong earned through pain. It is genre-agnostic, tech-agnostic, and IP-agnostic. The ~70% of what makes First Frame Studios effective — principles, processes, team coordination, design methodology, quality standards — transfers to any project. Only ~30% is tech-specific and needs adaptation.
+This playbook ensures that every new project starts with the clarity firstPunch earned through pain. It is genre-agnostic, tech-agnostic, and IP-agnostic. The ~70% of what makes First Frame Studios effective — principles, processes, team coordination, design methodology, quality standards — transfers to any project. Only ~30% is tech-specific and needs adaptation.
 
 **Use this document as a sequential checklist.** Complete each phase before advancing to the next. Skip nothing.
 
@@ -19,7 +19,7 @@ This playbook ensures that every new project starts with the clarity SimpsonsKon
 
 ## 1. Pre-Production Phase (Before Writing Code)
 
-Pre-production is where we earn the right to write code. Every hour invested here saves a week during production. SimpsonsKong proved this: our 9-reference-game study produced a GDD that prevented dozens of design dead ends. The hours we *didn't* spend on pre-production (tech evaluation, architecture planning) cost us months of rework.
+Pre-production is where we earn the right to write code. Every hour invested here saves a week during production. firstPunch proved this: our 9-reference-game study produced a GDD that prevented dozens of design dead ends. The hours we *didn't* spend on pre-production (tech evaluation, architecture planning) cost us months of rework.
 
 ---
 
@@ -35,7 +35,7 @@ Pre-production is where we earn the right to write code. Every hour invested her
    - 2-3 indie standouts (the ones that did something unexpected within constraints)
    - 1-2 failures (the ones that prove what NOT to do — just as important)
 
-   *SimpsonsKong example: We studied 9 beat 'em ups spanning Streets of Rage 2 (1992) to Shredder's Revenge (2022) — 30 years of genre evolution. This wasn't optional research. It was the foundation of every design decision.*
+   *firstPunch example: We studied 9 beat 'em ups spanning Streets of Rage 2 (1992) to Shredder's Revenge (2022) — 30 years of genre evolution. This wasn't optional research. It was the foundation of every design decision.*
 
 2. **Play each reference game for at least 30 minutes with analytical intent.** Not for fun — for study. Take notes on:
    - Core loop: What do the first 60 seconds teach the player?
@@ -59,7 +59,7 @@ Pre-production is where we earn the right to write code. Every hour invested her
 
 **Output:** `analysis/{genre}-research.md`, initial skill outlines, shared team understanding of the genre's design space.
 
-**Time budget:** 2-4 sessions. Do not rush this. The genre research for SimpsonsKong's beat 'em ups produced findings that informed 101 backlog items.
+**Time budget:** 2-4 sessions. Do not rush this. The genre research for firstPunch's beat 'em ups produced findings that informed 101 backlog items.
 
 ---
 
@@ -82,7 +82,7 @@ Pre-production is where we earn the right to write code. Every hour invested her
 
 1. **Source material immersion.** The entire team consumes the source material — not just the lead. Everyone. Tarkin needs to understand villain archetypes. Greedo needs to hear the audio landscape. Nien needs to see how characters move.
 
-2. **IP authenticity checklist.** For every mechanic: "Does this feel authentic to the source material?" If it could be any IP, redesign it. *SimpsonsKong example: Homer's belly bounce instead of a generic dash. The verb came from the character, not from a genre template.*
+2. **IP authenticity checklist.** For every mechanic: "Does this feel authentic to the source material?" If it could be any IP, redesign it. *firstPunch example: Brawler's belly bounce instead of a generic dash. The verb came from the character, not from a genre template.*
 
 3. **IP constraint mapping.** What can we NOT do? Which characters, locations, and storylines are off-limits? What are the licensee's approval gates? Document these constraints early — they're creative fuel (Principle #11), not obstacles.
 
@@ -96,7 +96,7 @@ Pre-production is where we earn the right to write code. Every hour invested her
 
 **Framework: 9-Dimension Scoring Matrix**
 
-We developed this during the SimpsonsKong → Godot evaluation. It works for any tech comparison. Score each candidate 1-10 on:
+We developed this during the source IPKong → Godot evaluation. It works for any tech comparison. Score each candidate 1-10 on:
 
 | # | Dimension | What It Measures |
 |---|-----------|-----------------|
@@ -112,7 +112,7 @@ We developed this during the SimpsonsKong → Godot evaluation. It works for any
 
 **Process:**
 
-1. **List 3-5 viable candidates.** Include the obvious choices AND one "stretch" option that pushes us. Our SimpsonsKong eval compared Phaser 3, Godot 4, Unity, Defold, and Unreal (the stretch).
+1. **List 3-5 viable candidates.** Include the obvious choices AND one "stretch" option that pushes us. Our firstPunch eval compared Phaser 3, Godot 4, Unity, Defold, and Unreal (the stretch).
 
 2. **Score each candidate.** Chewie leads the technical evaluation. Yoda evaluates design workflow. Boba evaluates art pipeline. Greedo evaluates audio capabilities. Solo synthesizes.
 
@@ -157,7 +157,7 @@ We developed this during the SimpsonsKong → Godot evaluation. It works for any
    - What's the validation milestone? (Build a small thing that proves competence)
    - What's the estimated ramp-up time?
 
-   *SimpsonsKong example: For Godot transition, we estimated 2-3 weeks GDScript ramp, created a 12-section manual (`godot-4-manual` skill), and assigned domain-specific Godot exploration tasks to each agent.*
+   *firstPunch example: For Godot transition, we estimated 2-3 weeks GDScript ramp, created a 12-section manual (`godot-4-manual` skill), and assigned domain-specific Godot exploration tasks to each agent.*
 
 **Output:** Skill transfer matrix, gap analysis, training plan with timelines.
 
@@ -229,7 +229,7 @@ Regardless of engine, every project starts with these:
 
 **Owner:** Jango (Tool Engineer) scaffolds. Solo (Lead) reviews and approves before anyone builds on it.
 
-*SimpsonsKong lesson: We didn't define collision layers upfront. Phase 3 integration revealed incompatible assumptions between Chewie and Lando. Pre-deciding these in Sprint 0 eliminated our most common multi-agent coordination failure.*
+*firstPunch lesson: We didn't define collision layers upfront. Phase 3 integration revealed incompatible assumptions between Chewie and Lando. Pre-deciding these in Sprint 0 eliminated our most common multi-agent coordination failure.*
 
 ---
 
@@ -259,7 +259,7 @@ The squad's roles are genre-agnostic (Principle: Team Adaptability from company.
 - [ ] Update quality gate performance budgets for the target platform
 - [ ] Define cross-review assignments for the new project structure
 
-*SimpsonsKong example: When evaluating art department expansion, we checked which agents had insufficient work before adding roles. Leia and Bossk went on standby during Sprint 0 because there was nothing for them until gameplay existed. Don't activate agents with no work.*
+*firstPunch example: When evaluating art department expansion, we checked which agents had insufficient work before adding roles. Leia and Bossk went on standby during Sprint 0 because there was nothing for them until gameplay existed. Don't activate agents with no work.*
 
 ---
 
@@ -283,7 +283,7 @@ The first research output becomes the team's genre playbook. Two skills, created
 
 **Format:** Follow the existing skill template with frontmatter, When to Use/Not Use, Core Patterns with code examples, Anti-Patterns, and Checklists.
 
-*SimpsonsKong example: We created `beat-em-up-combat/SKILL.md` (attack lifecycle, frame data, hitbox rules, combo systems, enemy archetypes, game feel checklist) and `beat-em-up-patterns` for higher-level design. These weren't theoretical — they were synthesized from 9 reference games and validated against our own shipped code.*
+*firstPunch example: We created `beat-em-up-combat/SKILL.md` (attack lifecycle, frame data, hitbox rules, combo systems, enemy archetypes, game feel checklist) and `beat-em-up-patterns` for higher-level design. These weren't theoretical — they were synthesized from 9 reference games and validated against our own shipped code.*
 
 ---
 
@@ -298,18 +298,18 @@ The first research output becomes the team's genre playbook. Two skills, created
 2. **Scene/node/component structure.** How entities are composed. What the hierarchy looks like. Where shared logic lives vs. instance-specific logic. Document the scene tree (or equivalent) as a diagram.
 
 3. **Integration patterns.** How do modules talk to each other? Signals/events? Direct references? Dependency injection? Define ONE pattern and enforce it. Mixed patterns create bugs.
-   - *SimpsonsKong used both EventBus signals AND direct function calls. This created 40+ direct calls in gameplay.js. Pick ONE. We chose EventBus + typed signals for Godot.*
+   - *firstPunch used both EventBus signals AND direct function calls. This created 40+ direct calls in gameplay.js. Pick ONE. We chose EventBus + typed signals for Godot.*
 
 4. **State machine standards.** Every entity with states gets:
    - A transition table (which states can transition to which)
-   - Exit conditions for EVERY state (the #1 lesson from SimpsonsKong — missing exits caused critical bugs)
+   - Exit conditions for EVERY state (the #1 lesson from firstPunch — missing exits caused critical bugs)
    - A timeout safety net for any state that could potentially get stuck
 
 5. **Naming conventions.** Files, classes, signals, variables, folders — all named consistently. Document in `project-conventions` skill.
 
 6. **Technical decisions pre-table.** Decisions that WILL be debated if not pre-decided. Physics approach, input handling pattern, camera setup, data format for configurations. Write them down with rationale. Sprint 0 is not the time for architecture debates — it's the time for architecture clarity.
 
-   *SimpsonsKong Sprint 0 pre-decided 7 architecture choices (CharacterBody2D, enum state machines, Area2D hitbox/hurtbox, EventBus autoload, Camera2D, Input map actions, flat scene tree). Zero Sprint 0 debates on architecture.*
+   *firstPunch Sprint 0 pre-decided 7 architecture choices (CharacterBody2D, enum state machines, Area2D hitbox/hurtbox, EventBus autoload, Camera2D, Input map actions, flat scene tree). Zero Sprint 0 debates on architecture.*
 
 **Output:** Architecture proposal document reviewed by Chewie and Lando before Phase 2 begins.
 
@@ -341,7 +341,7 @@ The first research output becomes the team's genre playbook. Two skills, created
 6. No crashes, freezes, or dead-end states
 7. Ackbar has playtested and confirmed all criteria met
 
-**The "First Frame" test:** Does it feel like a game in the first second of interaction? If the character responds to input and the core action connects with satisfying feedback, Sprint 0 succeeds. *SimpsonsKong Sprint 0 goal: "Move, punch, damage." Nothing else. That constraint kept us focused.*
+**The "First Frame" test:** Does it feel like a game in the first second of interaction? If the character responds to input and the core action connects with satisfying feedback, Sprint 0 succeeds. *firstPunch Sprint 0 goal: "Move, punch, damage." Nothing else. That constraint kept us focused.*
 
 **Time budget:** 3-4 sessions maximum. If it takes longer, the scope is too big.
 
@@ -410,7 +410,7 @@ Production is where the game gets built. The playbook here is about *rhythm* —
 - Content/QA lane (Tarkin, Ackbar, Yoda)
 - Tooling lane (Jango)
 
-*SimpsonsKong lesson: Lando carrying 50% of the backlog created a critical bottleneck. Phase planning must ensure no agent carries more than 20% of any phase's items. If someone exceeds 20%, split their work or add a parallel contributor.*
+*firstPunch lesson: Lando carrying 50% of the backlog created a critical bottleneck. Phase planning must ensure no agent carries more than 20% of any phase's items. If someone exceeds 20%, split their work or add a parallel contributor.*
 
 ---
 
@@ -438,7 +438,7 @@ Production is where the game gets built. The playbook here is about *rhythm* —
 
 **Cadence:** Skills are living documents. Don't wait for "perfection" — write what you know NOW, refine as you learn more. A skill with 5 patterns is better than no skill while you wait to document 20.
 
-*SimpsonsKong example: After our codebase analysis session, we extracted 5 new skills (state-machine-patterns, multi-agent-coordination, beat-em-up-combat, canvas-2d-optimization, game-qa-testing). Each one traced directly to real bugs and real wins. Skills born from experience, not theory.*
+*firstPunch example: After our codebase analysis session, we extracted 5 new skills (state-machine-patterns, multi-agent-coordination, beat-em-up-combat, canvas-2d-optimization, game-qa-testing). Each one traced directly to real bugs and real wins. Skills born from experience, not theory.*
 
 ---
 
@@ -516,7 +516,7 @@ Questions to answer:
 Based on our Canvas 2D → Godot 4 migration:
 
 **Phase 1: Knowledge Mapping (1 session)**
-Document what we built, what transfers as concepts, and what needs rewriting. Create a two-column table: SimpsonsKong System → New Engine Equivalent.
+Document what we built, what transfers as concepts, and what needs rewriting. Create a two-column table: firstPunch System → New Engine Equivalent.
 
 *Our example:*
 | Our System | Engine Equivalent |
@@ -644,7 +644,7 @@ Bottlenecks are the #1 velocity killer. Every project has them. The goal isn't t
 
 ---
 
-### 6.1 Bottlenecks We Hit in SimpsonsKong (And How to Prevent Them)
+### 6.1 Bottlenecks We Hit in firstPunch (And How to Prevent Them)
 
 | Bottleneck | What Happened | Root Cause | Prevention |
 |-----------|--------------|-----------|-----------|
@@ -700,7 +700,7 @@ Bottlenecks are the #1 velocity killer. Every project has them. The goal isn't t
 | Gap is permanent (every project will need this) | ❌ | ✅ |
 | Adding a role would create coordination overhead > productivity gain | ✅ (absorb it) | ❌ |
 
-**SimpsonsKong examples:**
+**firstPunch examples:**
 - **Added skill, not role:** Canvas 2D optimization — Chewie's domain, natural extension, documented as a skill.
 - **Added role, not skill:** Tool Engineer (Jango) — nobody owned development-time tooling, and distributing it across agents recreated the "everyone owns it, nobody does it" anti-pattern.
 - **Split domain:** Art department (1 → 4 roles) — Boba carrying 17 items across 4 disciplines was unsustainable. Domain was too broad for one owner (Principle #7: split when overloaded).
@@ -785,6 +785,6 @@ Copy this checklist into a new project's `analysis/` directory and check items a
 
 ---
 
-*This playbook is the product of everything SimpsonsKong taught us — every bug, every bottleneck, every breakthrough. It's not theory. It's the pattern we wish we'd had on Day 1 of our first project. Now we do. Use it.*
+*This playbook is the product of everything firstPunch taught us — every bug, every bottleneck, every breakthrough. It's not theory. It's the pattern we wish we'd had on Day 1 of our first project. Now we do. Use it.*
 
 *— Solo, Lead / Chief Architect, First Frame Studios*

@@ -523,8 +523,8 @@ export class Audio {
 
     // --- AAA-A1: Character voice barks (procedural synthesis) ---
 
-    // Homer's "D'oh!" — descending formant with low sine base
-    playDoh() {
+    // Player grunt — descending formant with low sine base
+    playGrunt() {
         const type = 'vocal';
         if (!this.canPlay(type, PRIORITY.PLAYER)) return;
         const now = this.context.currentTime;
@@ -566,8 +566,8 @@ export class Audio {
         this._trackSound(type, dur);
     }
 
-    // Homer's "Woohoo!" — ascending formant with excitement tremolo
-    playWoohoo() {
+    // Player cheer — ascending formant with excitement tremolo
+    playCheer() {
         const type = 'vocal';
         if (!this.canPlay(type, PRIORITY.PLAYER)) return;
         const now = this.context.currentTime;
@@ -622,8 +622,8 @@ export class Audio {
         this._trackSound(type, dur);
     }
 
-    // Homer's "Mmm... donuts" — low sustained hum with pitch wobble
-    playMmmDonuts() {
+    // Player hum — low sustained hum with pitch wobble
+    playHum() {
         const type = 'vocal';
         if (!this.canPlay(type, PRIORITY.PLAYER)) return;
         const now = this.context.currentTime;
@@ -679,8 +679,8 @@ export class Audio {
         this._trackSound(type, dur);
     }
 
-    // Bart's "Ay Caramba!" — sharp ascending noise with high formant sweep
-    playAyCaramba() {
+    // Player exclaim — sharp ascending noise with high formant sweep
+    playExclaim() {
         const type = 'vocal';
         if (!this.canPlay(type, PRIORITY.PLAYER)) return;
         const now = this.context.currentTime;
@@ -752,7 +752,7 @@ export class Audio {
         this.ambienceBus.gain.setValueAtTime(0.08, now);
 
         if (level === 1) {
-            // Downtown Springfield
+            // Downtown district
 
             // 1. Distant traffic: very low-pass filtered looping noise
             const trafficDur = 4;

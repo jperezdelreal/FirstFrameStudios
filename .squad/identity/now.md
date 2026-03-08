@@ -10,16 +10,16 @@ ceo_readiness: 9.7/10
 
 **First Frame Studios is ready to ship our next game.**
 
-We spent the last 24 hours transforming SimpsonsKong from a passion project into something unprecedented: a full-studio knowledge base that works across any genre, any engine, any IP.
+We spent the last 24 hours transforming firstPunch from a passion project into something unprecedented: a full-studio knowledge base that works across any genre, any engine, any IP.
 
 ## The Milestone
 
 We have:
 
-- ✅ **Built and shipped SimpsonsKong** — A fully playable beat 'em up with grab/throw, dodge roll, boss fights, procedural audio, and that unmistakable punch-in-the-gut game feel.
+- ✅ **Built and shipped firstPunch** — A fully playable beat 'em up with grab/throw, dodge roll, boss fights, procedural audio, and that unmistakable punch-in-the-gut game feel.
 - ✅ **Expanded to 13 specialist agents** — From 4 core roles to a complete cross-discipline team covering game design, architecture, gameplay, art (director + 3 artists), audio, enemy AI, QA, UI/UX, and development tooling.
 - ✅ **Documented 20+ skills** spanning every discipline that matters: state machines, combat design, canvas optimization, game feel, audio synthesis, multi-agent coordination, Godot patterns, tool engineering, and more. **~500KB of institutional knowledge.**
-- ✅ **Created company identity** — First Frame Studios, Forged in Play. Not a Simpsons game studio. A *game studio*.
+- ✅ **Created company identity** — First Frame Studios, Forged in Play. Not a beat 'em up game studio. A *game studio*.
 - ✅ **Decided on Godot 4** as our next engine — Scored 8+ points ahead of Phaser in our 9-dimension evaluation matrix. Perfect for 2D/3D hybrids.
 - ✅ **Built the New Project Playbook** — The repeatable, battle-tested process for starting any project. Day 1 for every future game follows this.
 - ✅ **Created the Growth Framework** — A 5-year strategic plan taking us from single-genre (Stage 1: Beat 'Em Ups) to multi-genre (Stage 2+). We don't just build games; we build the capability to build any game.
@@ -33,7 +33,7 @@ First Frame's next game will:
 - Run in Godot 4 with CharacterBody2D, Area2D hitbox/hurtbox, and EventBus autoload architecture.
 - Be built by 13 specialists with zero coordination bottlenecks (architecture pre-decided, file ownership assigned, integration contracts written).
 - Follow the playbook from Day 1 (genre research → sprint planning → quality gates → weekly ceremonies).
-- Transfer everything we learned from SimpsonsKong that isn't Canvas-specific (combat design, state machines, audio synthesis, AI throttling, balance methodology, playtest protocol).
+- Transfer everything we learned from firstPunch that isn't Canvas-specific (combat design, state machines, audio synthesis, AI throttling, balance methodology, playtest protocol).
 - Prove the 70/30 rule: that ~70% of what makes us effective is engine-agnostic.
 
 We're not starting from zero. We're starting from institutional knowledge, proven process, and a team that's worked together at scale.
