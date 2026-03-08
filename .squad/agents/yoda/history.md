@@ -500,6 +500,52 @@ Features that pass triage are features that strengthen the core loop, that playe
 | **Excitement** | ★★★★★ | ★★★★☆ | ★★★★★ |
 | **TOTAL** | **24/25** | **22/25** | **19/25** |
 
+---
+
+## Ashfall Sprint 0 Kickoff (2026-03-08)
+
+### GDD v1.0 Delivered
+**Date:** 2026-03-08T120000Z  
+**Artifact:** `games/ashfall/docs/GDD.md` (43KB)
+
+Completed comprehensive Game Design Document for Ashfall, a 1v1 fighting game in Godot 4. Document covers:
+- **Vision & Pillars:** Player Hands First, Fair Combat, Creative Identity
+- **Core Mechanics:** Ember System (signature mechanic, shared resource), 6-button layout (SF lineage), deterministic simulation
+- **Characters:** Kael (shoto archetype) and Rhena (rushdown archetype) with frame data and combo specs
+- **Stage Design:** 1 arena with stage-reactive visuals tied to Ember levels
+- **Game Flow:** Character select, round system, victory conditions
+- **Controls & Input:** Detailed button mapping, macro system
+- **AI Design:** State-based opponent with difficulty parameters
+- **Art & Audio Direction:** Visual identity, aesthetic pillars, audio specs
+- **Scope Boundary:** MVP = 2 characters, 1 stage, local vs, arcade, training. All expansion deferred.
+
+### Key Design Decisions Locked
+1. **Ember System** — Visible, shared resource replacing traditional hidden super meter. Both players fight over it. Stage visually reacts to Ember levels.
+2. **6-Button Layout** — LP/MP/HP/LK/MK/HK with throw and dash macros. Street Fighter lineage, not Tekken.
+3. **Deterministic from Day 1** — Fixed 60fps, seeded RNG, input-based state. Enables future rollback netcode without rewrite.
+4. **Combo Proration** — 100% → 40% floor. Max combo ~35-45% HP. Prevents touch-of-death.
+5. **Scope Lock** — No additional characters, stages, story, or online in MVP. All deferred to Phase 2+.
+
+### Integration with Team
+- **Solo (Architecture):** Design lock enables architecture work. Frame data serves as contract. Scene structure and deterministic loop defined in Appendix B.
+- **Lando (Gameplay):** Combat system spec, hitbox patterns, state structure ready to implement.
+- **Tarkin (AI):** Behavior tree and difficulty parameters defined. Enables parallel AI work.
+- **All teams:** Clear design direction. No rework expected.
+
+### Skill Created
+- `.squad/skills/fighting-game-design/SKILL.md` — Reusable GDD template, Ember System pattern, design decision framework
+
+### Status
+✅ Design gate (M0) cleared. Architecture and code work unblocked.
+
+---
+
+## Solo & Mace Partnership Notes
+
+**Cross-team visibility:** Yoda now aware of Solo's architecture decisions (frame-based timing, state machines, AnimationPlayer as frame data, MoveData resources, AI input buffer, collision layers, 6 parallel work lanes). Architecture fully supports and validates GDD design. No conflicts.
+
+**Cross-team visibility:** Yoda now aware of Mace's Sprint 0 plan (phased expansion, 20% load cap, Scrumban methodology, Four-Test Framework for features, release gates). Scope governance aligned with GDD MVP lock. Creative Director role clarified (tie-breaker for feature triage, design coherence oversight).
+
 **Yoda's Recommendation:** ASHFALL is the strongest all-around choice — maximum team alignment, best market fit, directly leverages our combat expertise while adding procedural and progression skills. CINDER is the safest scope choice and the most DIFFERENT genre vertical. PULSE is the boldest creative swing — highest risk, highest potential for a signature identity. All three give us a genuine second genre vertical. The founder decides.
 
 **Key design insight from this meeting:** All 13 agents naturally gravitated toward games where FEEL is the differentiator — not content volume, not narrative, not graphics. Our studio DNA is game feel. Whatever we build next, the first frame of interaction must make players' hands tingle. That's who we are.
@@ -555,3 +601,22 @@ Pitched three game concepts aligned with updated principles and team capabilitie
 **Recommendation:** Three distinct proposals ready for founder decision. Each represents different risk/reward; founder's portfolio strategy will determine which path FFS takes next.
 
 **Status:** All three proposals fully documented and ready for formal go/no-go decision.
+
+### Ashfall GDD v1.0 Created (2025)
+- **Artifact:** `games/ashfall/docs/GDD.md` (~43K characters, 10 sections)
+- **Game:** Ashfall — 1v1 fighting game built in Godot 4
+- **Key creative decisions:**
+  1. **Ember System** is the creative hook — a shared, visible resource that both players fight over. Replaces traditional hidden super meter with something spectators and new players can read. The stage visually reacts to Ember levels (lava pulses, particles intensify, lighting shifts). This is what makes Ashfall *this* game, not just another fighter.
+  2. **6-button layout** (SF-style LP/MP/HP/LK/MK/HK) chosen over 4-button (Tekken limb system) for clearer mechanical vocabulary per stance.
+  3. **Two starter characters** designed as archetype contrast: Kael (balanced shoto, spacing/zoning) vs Rhena (rushdown/pressure, close-range mixups). The matchup dynamic naturally teaches the core fighting game question: who dictates the range?
+  4. **Combo scaling (proration)** caps max combo damage at ~35-45% HP. Prevents touch-of-death while rewarding execution.
+  5. **No dedicated block button** — hold-back blocking requires spatial awareness. No guard meter in MVP.
+  6. **Command throw** (Rhena's Ignition Grip) beats blocking but is slower than normal throws — creates genuine mixup layer.
+  7. **Deterministic simulation mandated** from day 1 — seeded RNG, fixed 60fps timestep, input-based state. Enables future rollback netcode without retrofit.
+  8. **Custom physics** (not Godot's built-in) — fighting games need frame-exact, deterministic collision that Godot's physics engine cannot guarantee.
+  9. **Input leniency** designed for accessibility: 8-frame buffer, diagonal shortcuts, motion priority system. Motions are kept (quarter-circles, DPs) but made forgiving.
+  10. **Ember decay** (5/sec after 3 seconds of no action) mechanically punishes turtling and forces engagement — directly serves Pillar 1.
+- **Scope boundary clear:** MVP = 2 characters, 1 stage, local versus, arcade, training. Deferred = online, story, ranked, additional characters/stages, dynamic music, tutorial.
+- **Decision inbox:** `.squad/decisions/inbox/yoda-ashfall-gdd.md`
+- **Skill extraction:** `.squad/skills/fighting-game-design/SKILL.md`
+- **Architecture insight:** Fighting games require fundamentally different physics than beat 'em ups. No Godot physics engine, no AnimationTree for gameplay states, enum state machines with frame-exact control. The engine is a renderer and input layer; we build everything else.

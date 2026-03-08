@@ -2,6 +2,93 @@
 
 ## Active Decisions
 
+### Ashfall GDD v1.0 — Creative Foundation (Yoda)
+**Author:** Yoda (Game Designer / Vision Keeper)  
+**Date:** 2025-07-21  
+**Status:** Proposed  
+**Scope:** Ashfall project — all agents building on this game
+
+Game Design Document for Ashfall (`games/ashfall/docs/GDD.md`), a 1v1 fighting game built in Godot 4. The GDD covers vision/pillars, core mechanics, 2 characters, 1 stage, game flow, controls, AI, art direction, audio direction, and scope boundary.
+
+**Key Creative Decisions:**
+1. **The Ember System** — Ashfall's signature mechanic. A visible, shared resource that replaces traditional hidden super meter. Both players can see and fight over it.
+2. **6-Button Layout** — LP/MP/HP/LK/MK/HK with macro buttons for throw and dash. Street Fighter lineage, not Tekken.
+3. **Kael & Rhena** — Balanced shoto vs rushdown. Classic archetype pairing that naturally teaches fighting game fundamentals.
+4. **Deterministic Simulation from Day 1** — Fixed 60fps, seeded RNG, input-based state. Enables future rollback netcode without rewrite.
+5. **Combo Proration** — Damage scales down per hit in combo (100% → 40% floor). Max combo damage ~35-45% HP.
+6. **Scope Boundary** — MVP = 2 characters, 1 stage, local vs, arcade, training. Everything else deferred.
+
+**Impact on Team:** Scene structure and deterministic game loop defined. Frame data and combat system spec ready. AI behavior tree and difficulty parameters defined. All teams have clear design direction.
+
+**Why:** Design translation of founder directive ("1v1 fighting game, 1 stage + 2 characters"). Scope boundary prevents team from building features outside core loop.
+
+---
+
+### Ashfall Fighting Game Architecture (Solo)
+**Author:** Solo (Lead / Chief Architect)  
+**Date:** 2025-08-03  
+**Status:** Proposed
+
+Technical architecture defined in `games/ashfall/docs/ARCHITECTURE.md`. Key decisions:
+
+1. **Frame-based timing** — Integer frame counters, not float timers. All gameplay in `_physics_process()` at 60 FPS fixed tick.
+2. **Node-based state machine** — Each fighter state is separate Node with independent script.
+3. **AnimationPlayer as frame data** — Hitbox activation driven by AnimationPlayer tracks (startup/active/recovery frames).
+4. **MoveData as Resource** — Moves are `.tres` resource files with frame data, damage, hitstun, knockback. Pure data, no logic.
+5. **AI uses input buffer** — AI injects synthetic inputs; same code path as human fighters.
+6. **Six collision layers** — P1/P2 hitboxes, hurtboxes, pushboxes on separate layers. No self-hits.
+7. **Six parallel work lanes** — File ownership ensures simultaneous work without conflicts.
+
+**Impact:** All agents must read `games/ashfall/docs/ARCHITECTURE.md` before writing Ashfall code. Clear module boundaries enable 6 parallel work streams.
+
+**Why:** Deterministic fighting games require frame-perfect timing. Module separation enables parallel development without cross-dependencies.
+
+---
+
+### Ashfall Sprint 0 Scope & Milestone Decisions (Mace)
+**Author:** Mace (Producer)  
+**Date:** 2026-[Sprint Start Date]  
+**Status:** Active — Governing Sprint 0 execution
+
+Complete Sprint 0 plan in `games/ashfall/docs/SPRINT-0.md` covering scope lock, deliverables, phased expansion, studio methodology, technology selection, feature triage, release gates, and knowledge capture.
+
+**Scope Decisions:**
+1. **MVP Scope (LOCKED):** 1 stage + 2 characters + basic AI + round system + game flow
+2. **Sprint 0 Focus:** Architecture + playable prototype only; no content art, sound, menus
+3. **Phased Content Expansion:** 5 phases (Foundation → Balance → Art → UI/Stage → Audio)
+4. **Studio Methodology:** 20% load cap + Scrumban (3-task WIP limit) for 14-agent parallelism
+5. **Technology Lock:** Godot 4 + GDScript (no re-evaluation this project)
+6. **Feature Triage:** Four-Test Framework (core loop, player impact, cost-to-joy, coherence)
+7. **Release Gates:** Definition of Done requires acceptance criteria, review, integration, docs, git, playtesting
+8. **Knowledge Capture:** Sprint 0 outputs become reusable patterns for future FFS projects
+
+**Governance:** joperezd (final approval), Mace (enforcement), Yoda (design), Solo (architecture), all agents (load discipline).
+
+**Why:** Locked scope + parallel methodology prevents bottlenecks. 14-agent team can work truly parallel with clear role boundaries. Phased approach enables incremental delivery and playtesting feedback.
+
+---
+
+### User Directives (2026-03-08)
+
+#### 2026-03-08T115537Z: Ashfall Game Type Pivot
+**By:** joperezd (via Copilot)  
+
+Ashfall pivots from action roguelike to 1v1 fighting game (Tekken/Street Fighter style) in Godot 4. Scope limited to 1 stage + 2 characters initially. Content expansion deferred.
+
+#### 2026-03-08T10:37: Repository Structure
+**By:** joperezd (via Copilot)  
+
+First Frame Studios uses a single GitHub repository (monorepo). The .squad/ folder lives at root (studio-level). Each game is a subfolder containing its Godot project. Team has access to GitHub Actions, PRs, Dashboards, and all GitHub features.
+
+**Why:** Centralizes studio knowledge, skills, and team state. Each game is a folder, not separate repo.
+
+#### 2026-03-08T10:25: Tool & Skill Development Autonomy
+**By:** joperezd (via Copilot)  
+
+Agents should NOT be limited to existing tools and skills. When performing a task, if an agent detects a gap or needs a specific tool to do better work, they should have the ability to request it and have it developed on the spot.
+
+---
+
 ### Game Architecture (McManus)
 **Date:** 2026-06-03  
 **Status:** Implemented

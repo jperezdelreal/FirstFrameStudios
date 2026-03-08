@@ -1,14 +1,16 @@
 ---
-updated_at: 2025-07-22T16:30:00.000Z
-focus_area: Sprint 0 — Godot 4 Next Project
-team_size: 13 specialists
-current_phase: Pre-Production Complete → Ready for Sprint 0
-ceo_readiness: 9.7/10
+updated_at: 2026-03-08T11:55:00.000Z
+focus_area: Ashfall — 1v1 Fighting Game in Godot 4
+team_size: 15 specialists + Scribe + Ralph
+current_phase: Sprint 0 — GDD + Architecture + Prototype
+genre: Fighting (1v1, Tekken/Street Fighter style)
+engine: Godot 4
+scope: 1 stage, 2 characters (MVP)
 ---
 
 # What We're Doing Right Now
 
-**First Frame Studios is ready to ship our next game.**
+**Ashfall is a 1v1 fighting game.** Tekken meets Street Fighter, built in Godot 4.
 
 We spent the last 24 hours transforming firstPunch from a passion project into something unprecedented: a full-studio knowledge base that works across any genre, any engine, any IP.
 

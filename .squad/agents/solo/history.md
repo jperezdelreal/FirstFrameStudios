@@ -365,6 +365,53 @@ Delivered comprehensive validation and correction of the proposed GitHub monorep
 
 6. **Document produced:** `.squad/identity/new-project-playbook.md`
 
+---
+
+## Ashfall Sprint 0 Kickoff (2026-03-08)
+
+### Architecture v1.0 Delivered
+**Date:** 2026-03-08T120000Z  
+**Artifact:** `games/ashfall/docs/ARCHITECTURE.md`
+
+Completed comprehensive technical architecture for Ashfall, a 1v1 fighting game in Godot 4. Architecture defines:
+- **Frame-based Timing:** Integer frame counters (not float), 60 FPS fixed tick in `_physics_process()`. Fighting games are deterministic; float drift unacceptable.
+- **Node-based State Machine:** Each fighter state = separate Node with independent script. Prevents god-script anti-pattern. Each state file independently ownable.
+- **AnimationPlayer as Frame Data:** Hitbox activation driven by AnimationPlayer tracks, not code. Startup/active/recovery frames defined visually in timeline.
+- **MoveData as Resource:** Moves are `.tres` resource files with frame data, damage, hitstun, knockback. Pure data, no logic. Content agents can author movesets without touching code.
+- **AI Uses Input Buffer:** AI injects synthetic inputs; same code path as human fighters. One implementation for both.
+- **Six Collision Layers:** P1/P2 hitboxes, hurtboxes, pushboxes on separate layers. No self-hits possible.
+- **Six Parallel Work Lanes:** File ownership ensures Chewie, Lando, Tarkin, Wedge, Boba, Greedo work simultaneously without conflicts.
+
+### Key Architectural Decisions Locked
+1. **Determinism-first approach** — Every decision prioritizes reproducibility and netcode readiness. Physics deterministic. RNG seeded. No frame-rate dependent logic.
+2. **Module boundaries enforced** — Clear ownership contracts. Chewie owns fighter base/state machine. Lando owns states/combat. Tarkin owns move data/AI. Wedge owns UI. No crossing streams.
+3. **Resource-driven content** — MoveData as `.tres` files enables content authoring (Tarkin) without touching gameplay code (Lando). Parallel work unblocked.
+4. **Test harness defined** — Includes hooks for Ackbar integration testing, state transition coverage, frame-perfect hit detection validation.
+
+### Integration with Team
+- **All agents:** Must read ARCHITECTURE.md before writing Ashfall code. Module ownership and contracts specified.
+- **Yoda (Design):** Architecture validates GDD design decisions. Frame data contract allows stat-sheet design. Ember System implementation path clear.
+- **Mace (Producer):** Architecture enables 6 parallel work lanes. No sequential bottleneck before M1. Load distribution validated.
+- **Chewie, Lando, Tarkin, Wedge, Boba, Greedo:** Clear module boundaries, file ownership, parallel execution, no cross-dependencies.
+- **Jango (Infrastructure):** Must update project.godot with 60 FPS physics tick and input mappings.
+- **Ackbar (QA):** Test harness hooks defined. State machine transition coverage, hit detection frame-perfect validation.
+
+### Code Quality
+- Module separation enables code review gates without blocking other teams
+- Resource-driven design allows content iteration without rebuilds
+- Deterministic architecture guarantees reproducibility for balance tuning
+
+### Status
+✅ Architecture gate (M0) cleared. GDD and architecture locked. Parallel implementation unblocked.
+
+---
+
+## Yoda & Mace Partnership Notes
+
+**Cross-team visibility:** Solo now aware of Yoda's GDD creative decisions (Ember System mechanic, character archetypes, deterministic simulation requirement, scope boundary). Design fully enabled by architecture. No rework needed.
+
+**Cross-team visibility:** Solo now aware of Mace's Sprint 0 plan (phased expansion, 20% load cap, parallel work lanes align perfectly with 6-module architecture). Scope governance + architecture are aligned. M0 gate (Day 2: GDD + Architecture approval) validates both.
+
 ### Holistic Foundations Re-Assessment (Session 10)
 Founder requested a full-picture audit of all company infrastructure. Read every identity document, every charter, team.md, routing.md, ceremonies.md, skills-audit.md, sprint-0-plan.md, decisions.md, and all 15 skill directories. Cross-referenced for contradictions, gaps, and coherence. Key findings:
 
@@ -513,3 +560,32 @@ Commissioned and oversaw the Deep Research Wave — a studio-wide knowledge expa
 
 **Charters Updated:** 7 total (Yoda, Chewie, Lando, Wedge, Greedo, Leia, Tarkin)
 **Status:** COMPLETE. All charters are now studio-scoped and ready for next project launch.
+
+### Ashfall Architecture Document (Session 8)
+Created `games/ashfall/docs/ARCHITECTURE.md` — the complete technical blueprint for a 1v1 fighting game in Godot 4.6.
+
+**Key Architecture Decisions:**
+1. **Frame-based timing, not float timers.** All gameplay logic uses integer frame counters (`hitstun_frames -= 1`). Fighting games need deterministic frame-perfect logic. Float delta accumulation causes inconsistent behavior. All gameplay runs in `_physics_process()` at 60 FPS fixed tick.
+2. **Node-based state machine.** Each fighter state is a separate Node/script under a StateMachine controller. Avoids the god-script anti-pattern (firstPunch's 695 LOC gameplay.js lesson). Each state is independently ownable by different agents.
+3. **AnimationPlayer as frame data system.** Hitbox enable/disable is driven by AnimationPlayer tracks, not code. Startup, active, and recovery frames are defined visually in the timeline. Designers can tune without touching scripts.
+4. **MoveData as Resource (.tres).** Moves are pure data (startup, active, recovery, damage, hitstun, knockback). Separated from logic. Tarkin can author entire movesets without touching combat code.
+5. **AI injects into input buffer.** AI controller doesn't directly set fighter state — it writes synthetic inputs into the same InputBuffer that humans use. One code path for all fighters, zero special-casing.
+6. **Collision layer separation.** P1 hitboxes (layer 4) only detect P2 hurtboxes (layer 3) and vice versa. Pushboxes on layer 6. Clean separation prevents self-hits and simplifies debugging.
+7. **Six parallel work lanes.** File ownership designed so Chewie, Lando, Tarkin, Wedge, Boba, and Greedo can all build simultaneously with zero file conflicts. Integration wiring is Solo's responsibility.
+
+**Key File Paths:**
+- Architecture doc: `games/ashfall/docs/ARCHITECTURE.md`
+- Fighter base: `scripts/fighters/fighter.gd` (Chewie owns)
+- State scripts: `scripts/fighters/states/*.gd` (Lando owns)
+- Combat system: `scripts/systems/combat_system.gd` (Lando owns)
+- Input buffer: `scripts/systems/input_buffer.gd` (Lando owns)
+- Move data: `scripts/data/move_data.gd` (Tarkin owns)
+- AI controller: `scripts/systems/ai_controller.gd` (Tarkin owns)
+- Round manager: `scripts/systems/round_manager.gd` (Chewie owns)
+- Fight scene: `scenes/main/fight_scene.tscn` (Chewie owns, Solo wires signals)
+
+**User Preferences Confirmed:**
+- Tekken/Street Fighter style 1v1 fighting game
+- 1 stage + 2 characters as initial scope
+- GDScript, Godot-native patterns
+- Local multiplayer + AI opponent
