@@ -13,13 +13,14 @@ config_version=5
 config/name="Ashfall"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
-run/main_scene="res://scenes/main/fight_scene.tscn"
+run/main_scene="res://scenes/ui/main_menu.tscn"
 run/max_fps=60
 
 [autoload]
 
 EventBus="*res://scripts/systems/event_bus.gd"
 GameState="*res://scripts/systems/game_state.gd"
+SceneManager="*res://scripts/systems/scene_manager.gd"
 
 [display]
 
