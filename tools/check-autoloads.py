@@ -19,7 +19,7 @@ class AutoloadAnalyzer:
     def parse_autoloads(self) -> bool:
         """Extract autoload entries from project.godot"""
         if not self.project_godot.exists():
-            print(f"❌ ERROR: project.godot not found at {self.project_godot}")
+            print(f"[FAIL] ERROR: project.godot not found at {self.project_godot}")
             return False
             
         content = self.project_godot.read_text(encoding='utf-8')
@@ -27,7 +27,7 @@ class AutoloadAnalyzer:
         # Find [autoload] section
         autoload_section = re.search(r'\[autoload\](.*?)(?=\[|\Z)', content, re.DOTALL)
         if not autoload_section:
-            print("⚠️  WARNING: No [autoload] section found in project.godot")
+            print("[WARN] WARNING: No [autoload] section found in project.godot")
             return True
             
         # Parse autoload entries
@@ -39,10 +39,10 @@ class AutoloadAnalyzer:
             self.autoloads.append((name, path))
             
         if not self.autoloads:
-            print("⚠️  WARNING: No autoloads defined")
+            print("[WARN] WARNING: No autoloads defined")
             return True
             
-        print(f"📋 Found {len(self.autoloads)} autoload(s):")
+        print(f"[*] Found {len(self.autoloads)} autoload(s):")
         for name, path in self.autoloads:
             print(f"   - {name}: {path}")
         print()
@@ -58,10 +58,10 @@ class AutoloadAnalyzer:
             fs_path = self.project_root / "games" / "ashfall" / path
             
             if not fs_path.exists():
-                print(f"❌ ERROR: Autoload '{name}' references missing file: {path}")
+                print(f"[FAIL] ERROR: Autoload '{name}' references missing file: {path}")
                 all_exist = False
             else:
-                print(f"✅ {name}: File exists")
+                print(f"[OK] {name}: File exists")
                 
         print()
         return all_exist
@@ -103,7 +103,7 @@ class AutoloadAnalyzer:
         # Build position map
         positions = {name: i for i, (name, _) in enumerate(self.autoloads)}
         
-        print("🔍 Dependency Analysis:")
+        print("[*] Dependency Analysis:")
         for name, deps in self.dependencies.items():
             if deps:
                 print(f"   {name} depends on: {', '.join(sorted(deps))}")
@@ -125,13 +125,13 @@ class AutoloadAnalyzer:
         print()
         
         if violations:
-            print("❌ VALIDATION FAILED: Dependency order violations detected")
+            print("[FAIL] VALIDATION FAILED: Dependency order violations detected")
             for v in violations:
                 print(f"   - {v}")
             print()
             return False, violations
         
-        print("✅ Autoload order is valid!")
+        print("[OK] Autoload order is valid!")
         return True, []
     
     def suggest_correct_order(self) -> List[str]:
@@ -160,7 +160,7 @@ class AutoloadAnalyzer:
     def run(self) -> int:
         """Run full analysis. Returns exit code (0 = success, 1 = failure)"""
         print("=" * 60)
-        print("🔧 AUTOLOAD DEPENDENCY ANALYZER")
+        print("[*] AUTOLOAD DEPENDENCY ANALYZER")
         print("=" * 60)
         print()
         
@@ -180,7 +180,7 @@ class AutoloadAnalyzer:
         
         if not is_valid:
             # Suggest correct order
-            print("💡 SUGGESTED ORDER (based on dependencies):")
+            print("[INFO] SUGGESTED ORDER (based on dependencies):")
             correct_order = self.suggest_correct_order()
             for i, name in enumerate(correct_order, 1):
                 # Find the path for this autoload
@@ -190,7 +190,7 @@ class AutoloadAnalyzer:
             return 1
             
         print("=" * 60)
-        print("✅ ALL CHECKS PASSED")
+        print("[OK] ALL CHECKS PASSED")
         print("=" * 60)
         return 0
 

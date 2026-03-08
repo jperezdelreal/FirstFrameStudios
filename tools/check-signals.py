@@ -28,7 +28,7 @@ class SignalAnalyzer:
     def find_gd_files(self) -> List[Path]:
         """Recursively find all .gd files in scripts directory"""
         if not self.scripts_dir.exists():
-            print(f"⚠️  WARNING: Scripts directory not found: {self.scripts_dir}")
+            print(f"[WARN] WARNING: Scripts directory not found: {self.scripts_dir}")
             # Try alternate location
             alt_dir = self.project_root / "games" / "ashfall" / "src"
             if alt_dir.exists():
@@ -38,7 +38,7 @@ class SignalAnalyzer:
                 return []
                 
         gd_files = list(self.scripts_dir.rglob("*.gd"))
-        print(f"📂 Found {len(gd_files)} GDScript file(s)")
+        print(f"[*] Found {len(gd_files)} GDScript file(s)")
         return gd_files
     
     def scan_signals(self, files: List[Path]):
@@ -140,12 +140,12 @@ class SignalAnalyzer:
         """Print a detailed wiring matrix showing all signals"""
         print()
         print("=" * 80)
-        print("📊 SIGNAL WIRING MATRIX")
+        print("[*] SIGNAL WIRING MATRIX")
         print("=" * 80)
         print()
         
         if not self.signals:
-            print("⚠️  No signals found")
+            print("[WARN] No signals found")
             return
         
         # Sort signals by name
@@ -158,55 +158,55 @@ class SignalAnalyzer:
             
             # Status indicator
             if has_emit and has_connect:
-                status = "✅"
+                status = "[OK]"
             elif has_emit and not has_connect:
-                status = "⚠️ "
+                status = "[WARN]"
             elif has_connect and not has_emit:
-                status = "⚠️ "
+                status = "[WARN]"
             else:
-                status = "❓"
+                status = "[?]"
             
             print(f"{status} {sig_name}")
             
             if signal.defined_in:
-                print(f"   📝 Defined in:")
+                print(f"   [DEF] Defined in:")
                 for path in set(signal.defined_in):
                     print(f"      - {path}")
             
             if signal.emitted_in:
-                print(f"   📤 Emitted in:")
+                print(f"   [EMIT] Emitted in:")
                 for path in set(signal.emitted_in):
                     print(f"      - {path}")
             
             if signal.connected_in:
-                print(f"   📥 Connected in:")
+                print(f"   [CONN] Connected in:")
                 for path in set(signal.connected_in):
                     print(f"      - {path}")
             
             if not has_emit:
-                print(f"   ⚠️  WARNING: Signal is connected but never emitted")
+                print(f"   [WARN] WARNING: Signal is connected but never emitted")
             if not has_connect:
-                print(f"   ⚠️  WARNING: Signal is emitted but never connected")
+                print(f"   [WARN] WARNING: Signal is emitted but never connected")
             
             print()
     
     def run(self) -> int:
         """Run full analysis. Returns exit code (0 = success, 1 = warnings found)"""
         print("=" * 80)
-        print("🔌 SIGNAL WIRING VALIDATOR")
+        print("[*] SIGNAL WIRING VALIDATOR")
         print("=" * 80)
         print()
         
         # Find all GDScript files
         gd_files = self.find_gd_files()
         if not gd_files:
-            print("❌ ERROR: No GDScript files found")
+            print("[FAIL] ERROR: No GDScript files found")
             return 1
         
         print()
         
         # Scan for signals
-        print("🔍 Scanning for signals...")
+        print("[*] Scanning for signals...")
         self.scan_signals(gd_files)
         print(f"   Found {len(self.signals)} unique signal(s)")
         print()
@@ -219,23 +219,23 @@ class SignalAnalyzer:
         
         # Summary
         print("=" * 80)
-        print("📈 SUMMARY")
+        print("[*] SUMMARY")
         print("=" * 80)
         print()
-        print(f"✅ Healthy signals (emitted AND connected): {len(healthy)}")
-        print(f"⚠️  Orphaned emissions (emitted but not connected): {len(orphaned_emits)}")
-        print(f"⚠️  Orphaned connections (connected but not emitted): {len(orphaned_connects)}")
+        print(f"[OK] Healthy signals (emitted AND connected): {len(healthy)}")
+        print(f"[WARN] Orphaned emissions (emitted but not connected): {len(orphaned_emits)}")
+        print(f"[WARN] Orphaned connections (connected but not emitted): {len(orphaned_connects)}")
         print()
         
         if orphaned_emits:
-            print("⚠️  ORPHANED EMISSIONS:")
+            print("[WARN] ORPHANED EMISSIONS:")
             for sig in sorted(orphaned_emits):
                 print(f"   - {sig}")
                 print(f"     Emitted in: {', '.join(set(self.signals[sig].emitted_in))}")
             print()
         
         if orphaned_connects:
-            print("⚠️  ORPHANED CONNECTIONS:")
+            print("[WARN] ORPHANED CONNECTIONS:")
             for sig in sorted(orphaned_connects):
                 print(f"   - {sig}")
                 print(f"     Connected in: {', '.join(set(self.signals[sig].connected_in))}")
@@ -244,7 +244,7 @@ class SignalAnalyzer:
         # Return status
         if orphaned_emits or orphaned_connects:
             print("=" * 80)
-            print("⚠️  WARNINGS DETECTED")
+            print("[WARN] WARNINGS DETECTED")
             print("=" * 80)
             print()
             print("Some signals are not properly wired. This may indicate:")
@@ -254,7 +254,7 @@ class SignalAnalyzer:
             return 1
         else:
             print("=" * 80)
-            print("✅ ALL SIGNALS PROPERLY WIRED")
+            print("[OK] ALL SIGNALS PROPERLY WIRED")
             print("=" * 80)
             return 0
 
