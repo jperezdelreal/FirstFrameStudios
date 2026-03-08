@@ -1,14 +1,23 @@
-# First Frame Studios
+<div align="center">
 
-## *Forged in Play*
+# 🎮 First Frame Studios
 
-Small team. Big craft. We believe the first frame tells you everything — and we spend every frame after that proving it.
+### *Small team. Big craft. Forged in Play.*
 
-A 12-person game development studio making experiences that feel *right* in your hands. This monorepo is our workshop — games, tools, shared assets, and the decisions that shape them.
+![Status](https://img.shields.io/badge/Status-Shipping-brightgreen?style=for-the-badge)
+![Engine](https://img.shields.io/badge/Engine-Canvas%202D-blue?style=for-the-badge)
+![Built With](https://img.shields.io/badge/Built%20With-Squad-blueviolet?style=for-the-badge)
+
+We believe the first frame tells you everything — and we spend every frame after that proving it.
+
+An AI-powered game development studio making experiences that feel *right* in your hands.<br/>
+This monorepo is our workshop — games, tools, shared assets, and the decisions that shape them.
+
+</div>
 
 ---
 
-## The Games
+## 🕹️ The Games
 
 | Game | Engine | Status |
 |------|--------|--------|
@@ -17,8 +26,10 @@ A 12-person game development studio making experiences that feel *right* in your
 
 ---
 
-## The Squad
+## 👥 The Squad
 
+| | Agent | Role |
+|---|---|---|
 | 🏗️ | **Solo** | Lead — Vision & Execution |
 | ⚙️ | **Chewie** | Engine Dev — Canvas & Core Systems |
 | ⚔️ | **Lando** | Gameplay Dev — Combat & Feel |
@@ -37,19 +48,29 @@ A 12-person game development studio making experiences that feel *right* in your
 
 ---
 
-## Navigate
+## 📂 Navigate
 
-- **[.squad/](`.squad/`)** — Team charters, decisions, studio identity
-- **[games/](games/)** — Game projects
-- **[shared/](shared/)** — Shared assets and utilities
-- **[docs/](docs/)** — Studio guides and [getting started](docs/GETTING_STARTED.md)
-
----
-
-*"The game tells you what it wants to be if you listen."*
+- **[`.squad/`](.squad/)** — Team charters, decisions, studio identity
+- **[`games/`](games/)** — Game projects
+- **[`shared/`](shared/)** — Shared assets and utilities
+- **[`docs/`](docs/)** — Studio guides and [getting started](docs/GETTING_STARTED.md)
 
 ---
 
-## Built With
+<div align="center">
 
-This studio runs on [**Squad**](https://bradygaster.github.io/squad) by [Brady Gaster](https://github.com/bradygaster) — a multi-agent runtime for GitHub Copilot that lets AI teams fan out, build in parallel, and land work in minutes. Our 15-person squad wouldn't exist without it. 🙏
+> *"The game tells you what it wants to be if you listen."*
+
+</div>
+
+---
+
+<div align="center">
+
+### ⚡ Built With Squad
+
+This studio runs on [**Squad**](https://bradygaster.github.io/squad) by [Brady Gaster](https://github.com/bradygaster) — a multi-agent runtime for GitHub Copilot that lets AI teams fan out, build in parallel, and land work in minutes.
+
+Our entire squad wouldn't exist without it. 🙏
+
+</div>
