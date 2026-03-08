@@ -17,7 +17,7 @@ export class OptionsScene {
             { type: 'button', label: 'BACK' }
         ];
 
-        this.difficultyOptions = ['Couch Mode (Easy)', 'Normal', 'Sideshow Bob (Hard)'];
+        this.difficultyOptions = ['Chill (Easy)', 'Normal', 'Brutal (Hard)'];
         this.difficultyKeys = ['easy', 'normal', 'hard'];
         this.difficultyIndex = 1;
 

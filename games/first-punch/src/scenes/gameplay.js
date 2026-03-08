@@ -14,6 +14,7 @@ import { ParticleSystem, DUST_CLOUD, HIT_SPARKS, DEATH_DEBRIS } from '../engine/
 import { Destructible } from '../entities/destructible.js';
 import { Hazard } from '../entities/hazard.js';
 import { LEVEL_1 } from '../data/levels.js';
+import { CONFIG } from '../config.js';
 
 const WAVE_DATA = [
     { x: 800, enemies: [
@@ -256,8 +257,9 @@ export class GameplayScene {
             this.renderer
         );
         this.score += combatResult.score;
-        if (combatResult.score > 0) {
-            this.game.addHitlag(3);
+        if (combatResult.hits.length > 0) {
+            const hasHeavy = combatResult.hits.some(h => h.intensity === 'heavy');
+            this.game.addHitlag(hasHeavy ? CONFIG.hitlag.playerHit + 2 : CONFIG.hitlag.playerHit);
         }
         for (const hit of combatResult.hits) {
             this.vfx.addEffect(VFX.createHitEffect(hit.x, hit.y, hit.intensity));
@@ -340,7 +342,7 @@ export class GameplayScene {
         const healthBeforeEnemyAttacks = this.player.health;
         Combat.handleEnemyAttacks(this.enemies, this.player, this.audio);
         if (this.player.health < healthBeforeEnemyAttacks) {
-            this.game.addHitlag(2);
+            this.game.addHitlag(CONFIG.hitlag.enemyHit);
             this.audio.playOof();
             // Reset style meter on damage
             this.player.styleTypes.clear();
