@@ -106,3 +106,17 @@ Created universal enemy and encounter design skill — a comprehensive framework
 
 **Confidence:** Medium (beat-em-up encounter design deeply validated; archetype system and boss design framework generalized from industry patterns). Will escalate to High after applying to platformer/RPG enemy design.
 
+### Issue #7 — Ashfall Basic AI Opponent (2025-08-03)
+- **Artifact:** `games/ashfall/scripts/fighters/ai_controller.gd` (298 LOC), PR #17
+- **AIController class:** State-based AI (IDLE, APPROACH, ATTACK, BLOCK, RETREAT) that drives Fighter 2 through synthetic InputBuffer injection — same code path as human player, no special-case logic.
+- **Distance-based decisions:** Far (>300px) → approach. Mid (120-300px) → weighted mix of attack/block/approach/retreat. Close (<120px) → attack/throw/block/retreat.
+- **Reaction delay:** Queued reactions with 8-14 frame delay before executing (simulates human response, not instant). One reaction processed per frame max.
+- **Weighted attack selection:** `attack_weights` dictionary favors light punches (35%) over heavies (20%). Sparring partner feel, not tournament AI.
+- **Combo execution:** Can queue LP → HP → LK target combo with 10-frame gaps between hits (fits within the 12-frame chain window from GDD).
+- **Protected state awareness:** AI checks `state_machine.current_state.name` against protected list (attack, hit, KO, block, launch, intro) and never injects during these states. Resets decision flow on exit.
+- **Reactive layer:** Opponent attacking → block (50% default). Opponent jumping → anti-air attack (30%). Throw tech (40%) supported. All configurable via exports.
+- **No input reading:** Reads only `global_position` and `state_machine.current_state.name` — visual information a human could see. Follows anti-pattern #3 from fighting-game-design skill.
+- **All tuning knobs exported:** `reaction_delay_min/max`, `decision_interval`, `aggression`, `block_chance`, `throw_tech_chance`, `anti_air_chance`. Ready for Easy/Medium/Hard difficulty presets.
+- **Architecture compliance:** Follows ARCHITECTURE.md Section 8 exactly — AI communicates exclusively through `InputBuffer.inject_direction()` and `InputBuffer.inject_button()`. Integer frame counters. Under 300 LOC.
+- **Key insight:** Fighting game AI is fundamentally different from beat-em-up AI. In a beat-em-up, the AI decides *when* to attack from a group. In a fighter, the AI must simulate the RPS triangle (attack/block/throw) with realistic timing. The reaction queue pattern — storing reactions with frame delays before executing — creates the illusion of a thinking opponent without actually being reactive.
+
