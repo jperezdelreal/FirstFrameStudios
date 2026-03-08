@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/move_data.gd" id="1_move_data"]
+
+[resource]
+script = ExtResource("1_move_data")
+character = "Attack_state"
+move_name = "Heavy Punch"
+move_id = "hp"
+damage = 100
+startup_frames = 10
+active_frames = 4
+recovery_frames = 18
+hitstun_frames = 25
+blockstun_frames = 15
+meter_gain = 12
+move_type = "normal"
+notes = "High damage, punishable on block"

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/move_data.gd" id="1_move_data"]
+
+[resource]
+script = ExtResource("1_move_data")
+character = "Attack_state"
+move_name = "Heavy Kick"
+move_id = "hk"
+damage = 110
+startup_frames = 12
+active_frames = 5
+recovery_frames = 22
+hitstun_frames = 30
+blockstun_frames = 18
+meter_gain = 12
+move_type = "normal"
+notes = "Launcher, -6 on block"

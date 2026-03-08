@@ -1,0 +1,25 @@
+character,move_name,move_id,damage,startup,active,recovery,hitstun,blockstun,meter_gain,move_type,notes
+Fighter_base,Light Punch,lp,50,4,2,6,10,6,5,normal,"Fast jab, good for pressure"
+Fighter_base,Medium Punch,mp,70,6,3,10,15,10,8,normal,Mid-range poke
+Fighter_base,Heavy Punch,hp,100,10,4,18,25,15,12,normal,"High damage, punishable on block"
+Fighter_base,Light Kick,lk,60,5,3,8,12,7,5,normal,Low poke
+Fighter_base,Medium Kick,mk,80,7,3,12,18,11,8,normal,Mid-range control
+Fighter_base,Heavy Kick,hk,110,12,5,22,30,18,12,normal,"Launcher, -6 on block"
+Fighter_base,Special Move,special_1,90,15,4,20,35,20,15,special,Requires quarter-circle input
+Fighter_base,Super Move,super,300,8,20,40,60,40,0,super,Costs 100 Ember
+Attack_state,Light Punch,lp,50,4,2,6,10,6,5,normal,"Fast jab, good for pressure"
+Attack_state,Medium Punch,mp,70,6,3,10,15,10,8,normal,Mid-range poke
+Attack_state,Heavy Punch,hp,100,10,4,18,25,15,12,normal,"High damage, punishable on block"
+Attack_state,Light Kick,lk,60,5,3,8,12,7,5,normal,Low poke
+Attack_state,Medium Kick,mk,80,7,3,12,18,11,8,normal,Mid-range control
+Attack_state,Heavy Kick,hk,110,12,5,22,30,18,12,normal,"Launcher, -6 on block"
+Attack_state,Special Move,special_1,90,15,4,20,35,20,15,special,Requires quarter-circle input
+Attack_state,Super Move,super,300,8,20,40,60,40,0,super,Costs 100 Ember
+Block_state,Light Punch,lp,50,4,2,6,10,6,5,normal,"Fast jab, good for pressure"
+Block_state,Medium Punch,mp,70,6,3,10,15,10,8,normal,Mid-range poke
+Block_state,Heavy Punch,hp,100,10,4,18,25,15,12,normal,"High damage, punishable on block"
+Block_state,Light Kick,lk,60,5,3,8,12,7,5,normal,Low poke
+Block_state,Medium Kick,mk,80,7,3,12,18,11,8,normal,Mid-range control
+Block_state,Heavy Kick,hk,110,12,5,22,30,18,12,normal,"Launcher, -6 on block"
+Block_state,Special Move,special_1,90,15,4,20,35,20,15,special,Requires quarter-circle input
+Block_state,Super Move,super,300,8,20,40,60,40,0,super,Costs 100 Ember
