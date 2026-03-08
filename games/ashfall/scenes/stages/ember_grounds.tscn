@@ -1,0 +1,108 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/stages/ember_grounds.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="SubResource_floor"]
+size = Vector2(1400, 40)
+
+[sub_resource type="RectangleShape2D" id="SubResource_left_wall"]
+size = Vector2(20, 800)
+
+[sub_resource type="RectangleShape2D" id="SubResource_right_wall"]
+size = Vector2(20, 800)
+
+[node name="EmberGrounds" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="SkyLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0, 0)
+
+[node name="Sky" type="ColorRect" parent="ParallaxBackground/SkyLayer"]
+offset_left = -200.0
+offset_top = -100.0
+offset_right = 1480.0
+offset_bottom = 720.0
+color = Color(0.12, 0.05, 0.02, 1)
+
+[node name="MidLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.05, 0)
+
+[node name="VolcanoLeft" type="Polygon2D" parent="ParallaxBackground/MidLayer"]
+color = Color(0.07, 0.035, 0.015, 1)
+polygon = PackedVector2Array(-100, 720, 0, 500, 100, 350, 200, 300, 300, 360, 400, 500, 500, 720)
+
+[node name="VolcanoCenter" type="Polygon2D" parent="ParallaxBackground/MidLayer"]
+color = Color(0.07, 0.035, 0.015, 1)
+polygon = PackedVector2Array(350, 720, 450, 480, 540, 280, 620, 150, 660, 140, 740, 260, 830, 460, 930, 720)
+
+[node name="VolcanoRight" type="Polygon2D" parent="ParallaxBackground/MidLayer"]
+color = Color(0.07, 0.035, 0.015, 1)
+polygon = PackedVector2Array(850, 720, 950, 450, 1020, 330, 1080, 280, 1140, 320, 1220, 470, 1380, 720)
+
+[node name="NearLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_scale = Vector2(0.15, 0)
+
+[node name="LavaGlow" type="ColorRect" parent="ParallaxBackground/NearLayer"]
+offset_left = -200.0
+offset_top = 548.0
+offset_right = 1480.0
+offset_bottom = 565.0
+color = Color(0.7, 0.2, 0.0, 0.25)
+
+[node name="RockLeft" type="Polygon2D" parent="ParallaxBackground/NearLayer"]
+color = Color(0.08, 0.06, 0.05, 0.7)
+polygon = PackedVector2Array(100, 558, 120, 542, 145, 546, 160, 558)
+
+[node name="RockCenter" type="Polygon2D" parent="ParallaxBackground/NearLayer"]
+color = Color(0.06, 0.05, 0.04, 0.6)
+polygon = PackedVector2Array(580, 558, 605, 543, 635, 547, 655, 558)
+
+[node name="RockRight" type="Polygon2D" parent="ParallaxBackground/NearLayer"]
+color = Color(0.08, 0.06, 0.05, 0.7)
+polygon = PackedVector2Array(1050, 558, 1075, 540, 1105, 544, 1125, 558)
+
+[node name="GroundSurface" type="ColorRect" parent="."]
+offset_left = 0.0
+offset_top = 560.0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.05, 0.04, 0.035, 1)
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(640, 580)
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("SubResource_floor")
+
+[node name="StageBounds" type="Node2D" parent="."]
+
+[node name="LeftWall" type="StaticBody2D" parent="StageBounds"]
+position = Vector2(-10, 360)
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StageBounds/LeftWall"]
+shape = SubResource("SubResource_left_wall")
+
+[node name="RightWall" type="StaticBody2D" parent="StageBounds"]
+position = Vector2(1290, 360)
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StageBounds/RightWall"]
+shape = SubResource("SubResource_right_wall")
+
+[node name="SpawnPositions" type="Node2D" parent="."]
+
+[node name="P1Spawn" type="Marker2D" parent="SpawnPositions"]
+position = Vector2(320, 560)
+
+[node name="P2Spawn" type="Marker2D" parent="SpawnPositions"]
+position = Vector2(960, 560)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)
