@@ -1,0 +1,52 @@
+name: PR Body Validation
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  check-pr-body:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for issue reference
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prBody = context.payload.pull_request.body || '';
+            const prNumber = context.payload.pull_request.number;
+            
+            // Check for "Closes #N" or "Fixes #N" pattern (case insensitive)
+            const issuePattern = /(closes|fixes|resolves)\s+#\d+/i;
+            const hasIssueRef = issuePattern.test(prBody);
+            
+            if (!hasIssueRef) {
+              // Post a warning comment
+              const comment = `⚠️ **PR Body Warning**
+              
+This PR body should include a reference to close an issue using one of:
+- \`Closes #N\`
+- \`Fixes #N\`
+- \`Resolves #N\`
+
+This helps automatically close related issues when the PR is merged.
+
+**Example:**
+\`\`\`
+This PR implements the new feature.
+
+Closes #123
+\`\`\`
+
+_Note: This is a warning, not a blocker. The PR can still be merged._`;
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: comment
+              });
+              
+              core.warning('PR body does not contain "Closes #N" pattern');
+            } else {
+              core.info('✅ PR body contains issue reference');
+            }
