@@ -8,16 +8,16 @@
 class_name InputBuffer
 extends Node
 
-const BUFFER_SIZE: int = 30          # frames of history (0.5s at 60fps)
-const INPUT_LENIENCY: int = 8        # frames to queue a button press
-const SIMULTANEOUS_WINDOW: int = 3   # frames for simultaneous press detection
+@export var buffer_size: int = 30          # frames of history (0.5s at 60fps)
+@export var input_leniency: int = 8        # frames to queue a button press
+@export var simultaneous_window: int = 3   # frames for simultaneous press detection
 
 var buffer: Array = []               # ring buffer of input snapshots
 var player_id: int = 1
 var facing_right: bool = true
 
 func _ready() -> void:
-	for i in BUFFER_SIZE:
+	for i in buffer_size:
 		buffer.append(_empty_frame())
 
 ## Called each physics frame by the fighter to capture input.
@@ -26,12 +26,12 @@ func update() -> void:
 	var resolved := _resolve_socd(raw)
 	resolved["direction"] = _compute_direction(resolved)
 	buffer.append(resolved)
-	if buffer.size() > BUFFER_SIZE:
+	if buffer.size() > buffer_size:
 		buffer.pop_front()
 
 ## Check if a button was pressed within the leniency window.
 func check_button(button: String) -> bool:
-	var start := maxi(0, buffer.size() - INPUT_LENIENCY)
+	var start := maxi(0, buffer.size() - input_leniency)
 	for i in range(start, buffer.size()):
 		if buffer[i].get(button, false):
 			return true
@@ -44,7 +44,7 @@ func check_motion(motion_name: String) -> bool:
 
 ## Check if multiple buttons were pressed within a small window (throws: LP+LK).
 func check_simultaneous(buttons: Array) -> bool:
-	var start := maxi(0, buffer.size() - SIMULTANEOUS_WINDOW)
+	var start := maxi(0, buffer.size() - simultaneous_window)
 	var found: Dictionary = {}
 	for i in range(start, buffer.size()):
 		for btn in buttons:
@@ -54,7 +54,7 @@ func check_simultaneous(buttons: Array) -> bool:
 
 ## Consume a button press from the buffer to prevent double execution.
 func consume_button(button: String) -> void:
-	for i in range(buffer.size() - 1, maxi(0, buffer.size() - INPUT_LENIENCY) - 1, -1):
+	for i in range(buffer.size() - 1, maxi(0, buffer.size() - input_leniency) - 1, -1):
 		if buffer[i].get(button, false):
 			buffer[i][button] = false
 			return

@@ -27,18 +27,24 @@ color = Color(0.15, 0.12, 0.1, 1)
 
 [node name="Floor" type="StaticBody2D" parent="Stage"]
 position = Vector2(0, 300)
+collision_layer = 8
+collision_mask = 0
 
 [node name="FloorShape" type="CollisionShape2D" parent="Stage/Floor"]
 shape = SubResource("SubResource_floor")
 
 [node name="LeftWall" type="StaticBody2D" parent="Stage"]
 position = Vector2(-310, 0)
+collision_layer = 8
+collision_mask = 0
 
 [node name="LeftWallShape" type="CollisionShape2D" parent="Stage/LeftWall"]
 shape = SubResource("SubResource_left_wall")
 
 [node name="RightWall" type="StaticBody2D" parent="Stage"]
 position = Vector2(950, 0)
+collision_layer = 8
+collision_mask = 0
 
 [node name="RightWallShape" type="CollisionShape2D" parent="Stage/RightWall"]
 shape = SubResource("SubResource_right_wall")

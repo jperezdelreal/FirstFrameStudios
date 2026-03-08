@@ -268,18 +268,18 @@ Uses Godot's `Area2D` with collision layers for clean separation.
 
 | Layer | Name | Purpose |
 |-------|------|---------|
-| 1 | `physics` | CharacterBody2D physics (floor, walls) |
-| 2 | `p1_hurtbox` | Player 1's hurtbox — where P1 can be hit |
-| 3 | `p2_hurtbox` | Player 2's hurtbox — where P2 can be hit |
-| 4 | `p1_hitbox` | Player 1's attack hitboxes — what P1 attacks with |
-| 5 | `p2_hitbox` | Player 2's attack hitboxes — what P2 attacks with |
-| 6 | `pushbox` | Fighter body pushboxes (prevent overlap) |
+| 1 | `Fighters` | Fighter CharacterBody2D physics (shared layer for both players) |
+| 2 | `Hitboxes` | Attack hitboxes — what fighters attack with (shared layer) |
+| 3 | `Hurtboxes` | Hurtboxes — where fighters can be hit (shared layer) |
+| 4 | `Stage` | Stage geometry (floor, walls, platforms) |
 
 **Collision matrix:**
-- P1 hitboxes (layer 4) → detect P2 hurtboxes (mask 3)
-- P2 hitboxes (layer 5) → detect P1 hurtboxes (mask 2)
-- Pushboxes (layer 6) → detect other pushboxes (mask 6)
-- Hitboxes never collide with own hurtboxes
+- Fighter CharacterBody2D: `collision_layer = 1`, `collision_mask = 9` (layers 1+4: detects other fighters and stage)
+- Hitbox Area2D: `collision_layer = 2`, `collision_mask = 4` (detects Hurtboxes on layer 3)
+- Hurtbox Area2D: `collision_layer = 4`, `collision_mask = 2` (detects Hitboxes on layer 2)
+- Stage StaticBody2D: `collision_layer = 8` (layer 4), `collision_mask = 0` (stage doesn't need to detect anything)
+
+**Note:** This is a **shared layer scheme** — both players use the same collision layers. Hitboxes are separated by fighter ownership checks in code, not by layer separation.
 
 #### Hitbox Activation via AnimationPlayer
 

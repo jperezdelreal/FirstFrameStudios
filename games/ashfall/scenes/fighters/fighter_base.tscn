@@ -20,6 +20,7 @@ size = Vector2(30, 60)
 size = Vector2(26, 56)
 
 [node name="FighterBase" type="CharacterBody2D"]
+collision_mask = 9
 script = ExtResource("1_fighter")
 
 [node name="Visual" type="ColorRect" parent="."]
