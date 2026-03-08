@@ -1,0 +1,6 @@
+# Code ownership routing
+# Jango (Lead AI agent) handles all code reviews via the PR approval process
+# No explicit file-based ownership required
+
+games/ashfall/ 
+.squad/
