@@ -1,0 +1,177 @@
+name: Integration Gate
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  integration-gate:
+    name: Run Integration Gate
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Run Integration Gate
+        id: gate
+        run: |
+          python tools/integration-gate.py --json
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true
+      
+      - name: Upload Integration Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-gate-report
+          path: build/integration-gate-report.json
+          if-no-files-found: warn
+      
+      - name: Check Gate Status
+        id: status
+        run: |
+          if [ -f build/integration-gate-report.json ]; then
+            STATUS=$(jq -r '.overall_status' build/integration-gate-report.json)
+            echo "status=$STATUS" >> $GITHUB_OUTPUT
+            echo "Integration Gate Status: $STATUS"
+            
+            if [ "$STATUS" = "FAIL" ]; then
+              echo "create_issue=true" >> $GITHUB_OUTPUT
+            else
+              echo "create_issue=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "status=UNKNOWN" >> $GITHUB_OUTPUT
+            echo "create_issue=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create Issue on Failure
+        if: steps.status.outputs.create_issue == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = 'build/integration-gate-report.json';
+            
+            let report = null;
+            let issueBody = '';
+            
+            if (fs.existsSync(reportPath)) {
+              report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+              
+              issueBody = `## 🚨 Integration Gate Failure
+            
+            **Commit:** ${context.sha.substring(0, 7)}
+            **Timestamp:** ${report.timestamp}
+            **Duration:** ${report.elapsed_seconds.toFixed(1)}s
+            
+            ### Failed Validators
+            
+            `;
+              
+              for (const [name, result] of Object.entries(report.validators)) {
+                if (result.status === 'FAIL') {
+                  issueBody += `#### ❌ ${name}\n\n`;
+                  
+                  if (result.stderr_preview) {
+                    issueBody += `**Error Output:**\n\`\`\`\n${result.stderr_preview}\n\`\`\`\n\n`;
+                  }
+                  
+                  if (result.stdout_preview) {
+                    issueBody += `**Details:**\n\`\`\`\n${result.stdout_preview}\n\`\`\`\n\n`;
+                  }
+                }
+              }
+              
+              issueBody += `\n### Action Required
+            
+            1. Review the failed validators above
+            2. Run the validators locally to see full output:
+               \`\`\`bash
+               python tools/integration-gate.py
+               \`\`\`
+            3. Fix the issues
+            4. Push fixes to main
+            
+            ### Links
+            
+            - [Failed Workflow Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            - [Commit](${{ github.server_url }}/${{ github.repository }}/commit/${context.sha})
+            
+            ---
+            *This issue was automatically created by the Integration Gate workflow.*`;
+            } else {
+              issueBody = `## 🚨 Integration Gate Failure
+            
+            **Commit:** ${context.sha.substring(0, 7)}
+            **Timestamp:** ${new Date().toISOString()}
+            
+            The integration gate failed to run properly. No report was generated.
+            
+            ### Action Required
+            
+            1. Check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details
+            2. Run integration gate locally:
+               \`\`\`bash
+               python tools/integration-gate.py
+               \`\`\`
+            
+            ---
+            *This issue was automatically created by the Integration Gate workflow.*`;
+            }
+            
+            // Check if there's already an open issue for integration gate
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'integration-gate,automated',
+              per_page: 1
+            });
+            
+            if (existingIssues.data.length > 0) {
+              // Update existing issue
+              const issue = existingIssues.data[0];
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `## 🔄 Integration Gate Failed Again\n\n${issueBody}`
+              });
+              
+              console.log(`Updated existing issue #${issue.number}`);
+            } else {
+              // Create new issue
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🚨 Integration Gate Failure (${context.sha.substring(0, 7)})`,
+                body: issueBody,
+                labels: ['integration-gate', 'automated', 'bug', 'priority-high']
+              });
+              
+              console.log(`Created issue #${issue.data.number}`);
+            }
+      
+      - name: Fail Workflow if Gate Failed
+        if: steps.status.outputs.status == 'FAIL' || steps.status.outputs.status == 'UNKNOWN'
+        run: |
+          echo "❌ Integration gate failed. Check the logs above for details."
+          exit 1
+      
+      - name: Success
+        if: steps.status.outputs.status == 'PASS'
+        run: |
+          echo "✅ Integration gate passed!"

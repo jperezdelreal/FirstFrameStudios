@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/move_data.gd" id="1_move_data"]
+
+[resource]
+script = ExtResource("1_move_data")
+character = "Attack_state"
+move_name = "Super Move"
+move_id = "super"
+damage = 300
+startup_frames = 8
+active_frames = 20
+recovery_frames = 40
+hitstun_frames = 60
+blockstun_frames = 40
+meter_gain = 0
+move_type = "super"
+notes = "Costs 100 Ember"

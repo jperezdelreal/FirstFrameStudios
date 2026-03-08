@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="MoveData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/move_data.gd" id="1_move_data"]
+
+[resource]
+script = ExtResource("1_move_data")
+character = "Fighter_base"
+move_name = "Light Punch"
+move_id = "lp"
+damage = 50
+startup_frames = 4
+active_frames = 2
+recovery_frames = 6
+hitstun_frames = 10
+blockstun_frames = 6
+meter_gain = 5
+move_type = "normal"
+notes = "Fast jab, good for pressure"
