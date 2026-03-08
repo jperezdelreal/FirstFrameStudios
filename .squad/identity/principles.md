@@ -202,6 +202,58 @@ Lessons from evaluating frameworks, from discovering a tech stack's ceiling, fro
 
 *SimpsonsKong taught us: Phaser's overhead exceeded its benefit for our scope. Procedural art has a ceiling at ~400 LOC/character. Domain splitting unlocks parallelism. Testing is a team responsibility. These lessons travel with us.*
 
+## 13. Creative Vision Has a Keeper
+
+**Every project has one Vision Keeper — the person who decides not what each system does, but whether all systems feel like the same game.**
+
+Domain owners execute within their domains and own quality within those domains. But without a unifying creative filter, a sound designer's perfect audio, an art director's distinctive style, and a programmer's elegant systems can feel disconnected — like they were made by different teams for different games.
+
+The Vision Keeper is not a bottleneck. They don't touch every asset or make every decision. Instead, they attend key reviews across domains and ask: "Does this feel like *this* game?" Their taste is the unifying force.
+
+**In practice:**
+- Designate a Creative Director per project with explicit authority over aesthetic coherence, narrative voice, and design identity.
+- The Vision Keeper attends milestone reviews from every domain: art, audio, gameplay, UI, animation.
+- When domain owners disagree, the Vision Keeper breaks ties by asking which choice serves the game's identity.
+- The Vision Keeper is not the boss of domain owners — they are the custodian of the game's soul.
+
+**Anti-pattern:** "Everyone is responsible for vision coherence." Consensus-seeking on aesthetic and design identity produces homogenized, committee-designed games. Vision needs a keeper.
+
+---
+
+## 14. Kill Your Darlings With Discipline
+
+**The core loop is sacred. Everything else is a candidate for the cut list.**
+
+Feature creep is the #1 cause of indie game failure. It doesn't matter how elegant a system is or how much work it took — if it doesn't strengthen the core loop, it should be cut ruthlessly. This requires a formal protocol, not just discipline. Without a protocol, features survive based on sunk cost and advocacy, not merit.
+
+**In practice:**
+- Every feature candidate passes four tests before greenlit:
+  1. **Core loop test** — Does it strengthen the core loop or distract from it?
+  2. **Player impact test** — Would a first-time player miss it if we cut it?
+  3. **Cost-to-joy ratio** — Development hours vs. player delight. Is it worth it?
+  4. **Coherence test** — Does it feel like *this* game, or does it feel bolted on?
+- Features that fail two or more tests are cut immediately. Save them for a future game.
+- Playtests are the final arbiter. If players don't notice it, don't understand it, or don't enjoy it, cut it.
+
+**Anti-pattern:** "But we already spent two weeks on this feature." Sunk cost is not justification. Killing a half-built feature early saves 100 hours of polish and integration work. Every shipped game is defined by what was cut, not what was added.
+
+---
+
+## 15. Every Project Requires a Postmortem
+
+**After every project milestone and at the end of every project, run a formal postmortem. Institutionalize the lessons or they will be repeated.**
+
+Postmortems aren't therapy sessions or blame hunts. They are the mechanism by which a studio turns hard-won experience into compounded advantage. Studios that do postmortems ship better games. Studios that skip them repeat the same mistakes.
+
+**In practice:**
+- After every major milestone (Vertical Slice, Beta, Gold), run a "5 things that went right / 5 things that went wrong" postmortem.
+- Every squad member contributes anonymously. This prevents seniority bias and political posturing.
+- Synthesize individual items into studio-level lessons. Look for patterns.
+- Actionable items go into the next project's Sprint 0 checklist. Lessons go into the decision log.
+- Assign owners to lessons. "Communication was poor" is not a lesson. "We need a 30-minute async standup every morning" is.
+
+**Anti-pattern:** "Let's not dwell on what went wrong." That is exactly the mindset that produces repeat failures. Learning requires deliberate reflection.
+
 ---
 
 ## How to Use These Principles

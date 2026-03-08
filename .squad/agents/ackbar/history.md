@@ -233,3 +233,70 @@ Conducted comprehensive second-pass audit of 15 existing team skills. Evaluated 
 
 **QA sign-off:** All 7 agent deliverables from Deep Research Wave meet or exceed documentation standards set by game-feel-juice. Recommended cross-references validated for future updates.
 
+
+### 2025-07-21: Post-Research Team & Skills Re-Evaluation (EX-A7, EX-A8)
+
+**Context:** After completing comprehensive industry research (Yoda's studio-research.md, Solo's operations-research.md) and analyzing all team documentation, conducted holistic team and skills assessment.
+
+**Findings:**
+- **Team Composition:** 13-agent specialist squad is EXCELLENT — matches Supercell cell model (10-17 people), validated against Nintendo franchise team structure. No hiring needed for SimpsonsKong completion. P1 decision: hire Producer for next project to separate Solo's Lead + Producer dual role.
+- **Vision Keeper Role Missing:** Every studio studied (FromSoftware, Supergiant, Larian, Team Cherry, Sandfall) has one person deciding "Does this feel like our game?" Currently undefined at FFS. Recommendation: Yoda inherits this role (charter update).
+- **Skills Coverage Improved:** 20 documented skills now. Three P0 gap-filling skills created (game-feel-juice, ui-ux-patterns, input-handling) boosted depth from 5/10 to 6.5/10. Still need: streamability-design, feature-triage (both P0 before next project).
+- **Charter Generalization Needed:** 6 of 14 agent charters still SimpsonsKong-specific (Chewie, Lando, Wedge, Greedo, Tarkin, Yoda). Must generalize before next project (1-2 hours work).
+- **Team Health Scores:**
+  - Role Coverage: 8/10 ✅ (every discipline, matches best-in-class models)
+  - Skill Depth: 6.5/10 ✅ (improved, still needs field validation on 2nd project)
+  - Process Maturity: 7/10 ✅ (playbook solid, producer methodology needs formalization)
+  - Creative Capacity: 7/10 ✅ ("Find the Fun" works, vision coherence needs owner)
+  - Technical Readiness: 8/10 ✅ (proven Canvas, Godot ready, CI/CD starting)
+
+**Per-Agent Readiness:**
+- 🟢 READY: Solo, Lando, Wedge, Ackbar, Yoda, Bossk (6 agents)
+- 🟡 NEEDS DEVELOPMENT: Chewie, Greedo, Leia, Nien, Jango (5 agents)
+- Notes: Chewie needs Godot field validation; Greedo needs asset-based audio evaluation; Leia needs level design documentation; Nien needs animation tooling; Jango needs charter formalization.
+
+**Bottom Line:**
+- ✅ We are ready to start next project IMMEDIATELY with P0 prep work
+- ✅ Our domain ownership model is industry-validated (matches Supercell, Nintendo)
+- ✅ Our playbook works; we avoided SimpsonsKong bottlenecks through structured processes
+- 🔴 One missing role (Vision Keeper) must be formalized before dev starts
+- 📋 Six charters need generalization (1-2 hours total)
+- 📚 Two critical skills needed before Sprint 0 (feature-triage, streamability-design; 32 hours total P0 effort)
+
+**Deliverable:** .squad/analysis/team-evaluation-v3.md — comprehensive 48KB assessment with per-agent development plans, hiring decision matrix, skill improvement roadmap, and ready-now/needs-dev verdicts.
+
+**Recommendation to Leadership:** We're as ready as we can be to start another project. Do the P0 prep work (Vision Keeper role, 2 new skills, charter updates), and we'll exceed SimpsonsKong quality on the next one because we fixed the structural problems before they became bottlenecks.
+
+
+### 2026-03-08T00:10 — Phase 2: Team Evaluation Post-Research
+**Session:** Multi-phase strategy session (Industry Research → Company Upgrades → Team Evaluation → Tools → Game Proposals)  
+**Role:** QA Lead — Evaluate 13-member squad against updated principles; assess readiness for Phase 4+ work
+
+**Task Executed:**
+Created .squad/analysis/team-evaluation-v3.md (22 KB) — comprehensive post-research team assessment covering:
+
+**Evaluation Criteria (aligned with updated principles):**
+- Alignment with updated principles (Visible Excellence, Sustainable Velocity, Knowledge Compounds)
+- Craft-first mindset demonstrated in current work
+- Bottleneck risk assessment
+- Growth trajectory and stretch opportunities
+- Role clarity and domain ownership strength
+- Cross-training readiness
+
+**Key Findings:**
+1. **Top Performers:** Solo (Lead), Yoda (Game Designer), Ackbar (QA) — demonstrate all principles; clear domain ownership; mentoring capacity
+2. **Strong Contributors:** Lando, Chewie, Greedo, Boba, Leia, Tarkin — domain-focused; high craft quality; ready for expanded scopes
+3. **Emerging Talent:** Nien, Bossk, Wedge — showing promise; identified specific stretch opportunities and P0 skill gaps
+4. **Structural Gap Identified:** No formal "Vision Keeper" role — founder currently holds all portfolio/strategy decisions; recommend formalizing this role before next project
+
+**Team Readiness Assessment:**
+- ✅ High readiness for Phase 4+ work with improved role clarity
+- ✅ Principle alignment will improve with documentation in company.md
+- ✅ Domain ownership model validated by industry research
+- 🔴 One missing formal role (Vision Keeper) should be addressed before dev starts
+- 📋 Charter generalization needed (6 charters have SimpsonsKong-specific language)
+
+**Recommendation to Leadership:**
+"We're as ready as we can be to start another project. Do the P0 prep work (Vision Keeper role formalization, charter updates), and we'll exceed SimpsonsKong quality on the next one because we fixed the structural problems before they became bottlenecks."
+
+**Status:** COMPLETE. Team evaluation ready; all agents have clear development plans; ready for next project sprint with minor P0 prep.

@@ -106,7 +106,7 @@ The studio palette is separate from any game's palette. It communicates professi
 
 ---
 
-## 6. Studio Structure
+## 6. Studio Structure (Updated)
 
 First Frame Studios maps our 12-specialist squad to five studio departments. Each specialist is a **domain owner** — they make the final call in their area, maintain the quality bar, and are accountable for outcomes. No department exists in isolation; cross-domain collaboration is how quality emerges.
 
@@ -184,7 +184,24 @@ Creative sets the vision. Engineering, Art & Audio, and Content & Quality execut
 
 ---
 
-## 7. Genre Strategy — Vertical Growth
+## 7. Studio Inspirations
+
+These are the real studios that have shaped our thinking. Each one models something we aspire to.
+
+| Studio | Why We Admire Them | The Lesson We Carry |
+|--------|-------------------|-------------------|
+| **Supergiant Games** | Singular creative vision (Greg Kasavin) guided every design decision. Small team (20–25), massive ambition. Shipped Hades with uncompromising artistry. | Vision needs a keeper. Small teams don't mean small dreams — they mean ruthless prioritization around one unified voice. Every pixel and sound reflects the same taste. |
+| **Team Cherry** | 3 people made Hollow Knight (15M+ copies). They didn't add features for years because they didn't serve the core loop. Silksong's development prioritizes "is it fun?" over schedule. | "Small team ≠ small ambition" and "Kill your darlings" are not sacrifices — they're the keys to creating something memorable. Features that don't strengthen the core are distractions. |
+| **Nintendo** | Obsessive playtesting. They discard *months* of work if a prototype isn't fun. Stable leadership (99% employee retention) paired with developer mobility (engineers rotate between franchises, cross-pollinating ideas). | Playtest-driven iteration is not a nice-to-have, it's the foundation. Studio culture should reward discarding bad work as much as shipping good work. Stability + movement = growth. |
+| **Sandfall Interactive** | After Expeditions: Rome sold millions, they publicly committed to staying at 30–33 people forever. This is intentional: small teams move faster, communicate clearer, and maintain creative coherence. They outsource execution (QA, localization, marketing) but keep vision inside. | Intentional smallness is a competitive advantage. Know which work is "core vision" (must stay inside) vs. "execution support" (outsource without guilt). |
+| **ConcernedApe (Stardew Valley)** | One person. 4.5 years in a basement. Shipped a timeless game because one person's vision never got diluted by committee votes, budget pressure, or publisher mandates. | Vision without compromise creates games people love for decades. Solo development isn't the path for everyone, but the *purity of vision* is non-negotiable regardless of team size. |
+| **Larian Studios** | Swen Vincke walked away from Baldur's Gate 4 because the team wasn't excited. The 155-postmortem meta-analysis confirms: team morale is a top-5 success factor. BG3's success came from a studio that chose developer joy over guaranteed revenue. | Developer joy is a *signal*, not a morale problem. If the team isn't excited about what they're building, the game won't be either. Measure team excitement like you measure game balance. |
+
+*We don't aspire to copy these studios. We aspire to embody the principles they've proven: vision coherence, ruthless triage, playtest discipline, intentional scale, creative purity, and team morale as a leading indicator of game quality.*
+
+---
+
+## 8. Genre Strategy — Vertical Growth
 
 ### Philosophy
 
@@ -238,7 +255,7 @@ This is by design. A studio that must restructure its team for every genre is fr
 
 ---
 
-## Summary
+## 9. Summary
 
 | Element | Value |
 |---------|-------|

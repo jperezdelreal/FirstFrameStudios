@@ -334,3 +334,50 @@ Commissioned and oversaw the Deep Research Wave — a studio-wide knowledge expa
 
 **Team impact:** 7 agents in parallel, ~1 hour wall-clock time, 292.7 KB documentation created. Quality assurance (Ackbar) audited all deliverables. game-feel-juice remains benchmark (⭐⭐⭐⭐⭐). Most universal skills rated Medium confidence (validated in SimpsonsKong); will escalate to High after cross-project testing.
 
+
+### Studio Operations Research (Session 11)
+**Date:** 2025-07-21
+**Requested by:** joperezd (Founder)
+**Scope:** Industry-wide research on studio organization, development methodology, academic findings, tools/infrastructure, and business sustainability
+
+**What was done:**
+- Conducted 13 web searches across 5 research domains: studio organization models, development methodologies, academic research, tools & infrastructure, business models & sustainability
+- Analyzed organizational patterns from Supercell (cell/pod model), Nintendo (EAD/EPD franchise teams), Valve (Flatland — cautionary tale), Riot Games (feature pods), and successful indie studios
+- Researched development methodologies: Agile/Scrum/Kanban adaptation for games, milestone systems (Concept→Gold), "find the fun" prototyping (Supergiant, Nintendo, Naughty Dog), vertical slice methodology
+- Gathered academic research: psychological safety as predictor of creative team performance, crunch culture causes/effects/avoidance, game quality predictors (iteration count is strongest), knowledge management practices
+- Analyzed tools decisions: build vs buy framework, CI/CD for games (87% bug detection, 75% faster releases), reusable frameworks (30-50% faster project starts)
+- Researched business sustainability: revenue model comparison, portfolio strategy, one-hit-wonder avoidance, between-release survival strategies
+
+**Deliverables:**
+1. .squad/analysis/studio-operations-research.md — 27KB comprehensive research document organized thematically across all 5 domains with cited sources
+2. .squad/analysis/operations-lessons-for-ffs.md — 13KB actionable recommendations document with 7 sections: organizational changes, methodology (Scrumban), tools to evaluate/build, crunch prevention, knowledge management, business model, and 11 prioritized action items
+
+**Key findings for FFS:**
+- Our domain ownership model already aligns with Supercell/Nintendo patterns — validated by research
+- Need to add: explicit decision rights matrix (prevents Valve's "invisible hierarchy" problem), Scrumban methodology (Kanban for pre-production, Scrum sprints for production), game feel tuning tools (our core differentiator)
+- Academic research confirms: iteration quality > iteration quantity; psychological safety is prerequisite for creative performance; crunch is structural failure not personal
+- Portfolio strategy recommendation: 2-3 games in 5 years (12-18 month scopes), never bet studio on single title
+- Immediate P0 actions: document decision rights matrix, adopt Scrumban methodology
+
+**Key insight:** The research validates what SimpsonsKong taught through experience — small teams win through clarity (who decides what), discipline (structured iteration), and compounding knowledge (every project makes the next one better). FFS's existing knowledge management is already a competitive advantage; the gap is operationalizing it into processes and reusable tools.
+
+
+### 2026-03-08T00:10 — Phase 2: Company Incorporation & Skill Creation
+**Session:** Multi-phase strategy session (Industry Research → Company Upgrades → Team Evaluation → Tools → Game Proposals)  
+**Role:** Lead — Incorporate Yoda's studio research into company documentation; create studio-craft skill
+
+**Task Executed:**
+1. Updated .squad/principles.md with 3 new principles grounded in studio research:
+   - **Visible Excellence:** High-bar creative decisions visible at every level
+   - **Sustainable Velocity:** Planning > crunch; institutional health > short-term speed
+   - **Knowledge Compounds:** Intentional skill-building; institutional memory > individual expertise
+
+2. Enhanced .squad/company.md with studio inspirations section — grounding FFS identity in 10 industry exemplars
+
+3. Updated .squad/wisdom.md with principle-aligned guidance on decision-making and team dynamics
+
+4. Created .squad/skills/studio-craft/SKILL.md (32 KB) — 8-section skill encoding production culture best practices
+
+**Key Insight:** Company identity is now explicit in documented principles. Team clarity prevents invisible hierarchy problems. Studio-craft skill encodes how we live out these principles in daily work.
+
+**Status:** COMPLETE. All artifacts ready for team alignment.

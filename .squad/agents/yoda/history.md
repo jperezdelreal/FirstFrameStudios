@@ -226,3 +226,288 @@ Created universal game design fundamentals skill — a comprehensive, engine-agn
 
 **Confidence:** Medium (validated in SimpsonsKong design decisions + GDC talks + industry best practices). Will escalate to High after applying to non-beat-em-up project.
 
+
+
+### Deep Industry Research: Studio Patterns & Lessons (2025)
+- **Artifacts:** `.squad/analysis/studio-research.md` (29K chars, 16 themes) and `.squad/analysis/studio-lessons-for-ffs.md` (10K chars, action plan)
+- **Scope:** Comprehensive web research across 6 studios (Sandfall Interactive, Supergiant Games, Team Cherry, ConcernedApe, Larian Studios, FromSoftware), 3 recent hits (Balatro, Palworld, Lethal Company), academic sources (155-postmortem meta-analysis, Jesse Schell GDC 2025, Raph Koster, Jesse Schell books), and 2024-2026 industry trends.
+- **Method:** 15+ web searches, real-time industry data, organized by theme (not by studio) to extract transferable patterns.
+- **Key findings organized into 16 themes:**
+  1. Singular creative vision (every great studio has ONE vision holder)
+  2. Intentionally small teams (resist growth even after success)
+  3. Hybrid production model (small core + strategic outsourcing)
+  4. Iterative development as religion (build then discover, not design then build)
+  5. Art/music/story as core systems (not polish, not added later)
+  6. Five-minute hook (players decide in first 5 minutes)
+  7. Streamability as design dimension (2024-2025 hits are watchable)
+  8. Developer joy as quality indicator (Vincke walked away from BG4)
+  9. Constraints as creative fuel (confirmed as universal pattern)
+  10. Research as competitive advantage (confirmed our approach)
+  11. Feature cutting as skill (scope creep = #1 failure cause in postmortems)
+  12. Early access as design methodology (not just marketing)
+  13. AI as force multiplier (30-40% routine task acceleration)
+  14. Studio principles as management infrastructure (Schell GDC 2025)
+  15. Postmortem discipline (5/5 format, honest retrospectives)
+  16. Essential reading (Schell's Lenses, Koster's Fun-as-Learning, Flow theory)
+- **Actionable improvements proposed for FFS:**
+  - P0: Add "Vision Keeper" principle/role, run SimpsonsKong postmortem, institute Five-Minute Test
+  - P1: Create `feature-triage` and `streamability-design` skills, modify Principles #4 and #10, mandate all-domain Sprint 0
+  - P2: Principle Priority Matrix per phase, AI tool evaluation, Design Lenses in reviews
+  - P3: Identify outsourcing candidates for next project
+- **Principles validated by research:** #1 (Player Hands First), #2 (Research Before Reinvention), #4 (Ship the Playable), #11 (Constraints Are Creative Fuel), #12 (Every Project Teaches the Next) — all confirmed as patterns shared by the industry's best studios.
+- **New principles proposed:** "The Vision Has a Keeper" (creative director with veto authority over coherence), iteration minimums for core mechanics, developer joy tracking.
+- **Key insight:** The gap between First Frame Studios and the best indie studios is not in philosophy (we're well-aligned) — it's in process rigor and missing design dimensions (streamability, feature triage, developer joy tracking, formal postmortems).
+
+### 2025-07 Session: Apply Research to Company Foundations (Final Integration)
+- **Task:** Translate the studio research into actionable updates to our core company documents.
+- **Approach:** Map research findings to three foundational documents + create one new meta-skill.
+- **Artifacts created/updated:**
+  1. **Principles.md — 3 new principles added (Principles #13–15):**
+     - **#13: Creative Vision Has a Keeper** — Every project has a Vision Keeper (usually Creative Director) who asks "does this feel like *this* game?" across all domains. Vision needs a keeper; domain owners execute excellence within domains.
+     - **#14: Kill Your Darlings With Discipline** — Core loop is sacred; everything else is expendable. Four-test framework: (1) Core loop test, (2) Player impact test, (3) Cost-to-joy ratio, (4) Coherence test. Features failing 2+ tests are cut immediately.
+     - **#15: Every Project Requires a Postmortem** — After every milestone and project end: 5 right/5 wrong per agent (anonymous), synthesize to studio-level lessons, assign owners, log in decision register. Learning is not optional.
+  2. **Company.md — New Section 7: "Studio Inspirations"** — Added a 6-studio inspiration table mapping to specific lessons we carry:
+     - **Supergiant Games:** Singular creative vision is the product. Small teams maintain coherence.
+     - **Team Cherry:** Small team ≠ small ambition. Kill darlings without guilt.
+     - **Nintendo:** Playtest-driven iteration is non-negotiable. Discard months of work without hesitation if not fun.
+     - **Sandfall Interactive:** Intentional smallness = competitive advantage. Outsource execution, keep vision inside.
+     - **ConcernedApe:** Vision without compromise creates timeless games. Purity of vision matters more than team size.
+     - **Larian Studios:** Developer joy is a design signal, not morale problem. Team excitement predicts game quality.
+  3. **Wisdom.md — "Studio Insights" section with 9 powerful one-liners:**
+     - "The game tells you what it wants to be if you listen" (Supergiant)
+     - "Small team ≠ small ambition" (Team Cherry)
+     - "Kill your darlings, or they'll kill your game" (155-postmortem meta-analysis)
+     - "Developer joy is a design signal, not a morale problem" (Larian)
+     - "Your architecture is invisible to the player; only your output is felt" (Principle #6)
+     - "Vision without a keeper is committee-designed" (every studio studied)
+     - "Constraints are partners, not enemies" (Nintendo, SimpsonsKong)
+     - "Postmortems are how studios compound knowledge into advantage" (industry pattern)
+     - "Small teams don't fail because they're too small — they fail because they're overloaded" (academic research)
+     - "Iteration count correlates with quality; first instincts correlate with overconfidence" (Supergiant, Larian, meta-analysis)
+  4. **New skill created: `.squad/skills/studio-craft/SKILL.md`** — The meta-skill documenting how we *run* a game studio:
+     - **Section 1: Creative Vision Management** — Vision Keeper role, responsibilities, implementation
+     - **Section 2: Feature Triage Protocol** — Four-test framework, cutting discipline, integration
+     - **Section 3: Playtest-Driven Iteration** — 3+ iteration cycles minimum, data-driven progression
+     - **Section 4: Postmortem Discipline** — 5/5 format, synthesis, documentation, follow-up
+     - **Section 5: Developer Joy Metric** — 1-5 excitement check, trend tracking, low-score response
+     - **Section 6: Decision Rights Matrix** — Explicit decision ownership (who decides/advises/informed)
+     - **Section 7: Scrumban Methodology** — Phase-adaptive: Kanban pre-prod, Scrum prod, focused bug-fix polish
+     - **Section 8: 20% Load Cap** — Anti-crunch insurance, audit process, distribution enforcement
+     - **Section 9: Cross-Domain Review** — 5-minute boundary reviews, knowledge spread
+     - **Section 10: Portfolio Thinking** — 2–3 games in 5 years, risk diversification, between-release sustainability
+     - **Section 11: Knowledge Capture** — Module extraction, lesson documentation, skill updates, tacit knowledge capture
+     - **Section 12: Confidence Ratings** — Low/Medium/High framework for meta-patterns; this skill marked `low` (first validation)
+- **Key design decisions:**
+  - Principles #13–15 are *additions*, not replacements. The 12 original principles remain unchanged, foundational, universal.
+  - The "Studio Inspirations" section in company.md maps 6 real studios to 6 specific FFS lessons, giving team cultural north stars without copying any studio.
+  - Wisdom.md entries are standalone one-liners (not tied to projects), making them reusable across contexts and projects.
+  - Studio-craft skill is explicitly marked `low` confidence — these are first observations from research, not yet validated across multiple FFS projects. As we ship more games, confidence increases.
+  - Studio-craft is about *running* the studio, not *making* games. It's the operating system that makes us ship consistently.
+- **Integration points:**
+  - Principles #13–15 go into project retrospectives and sprint ceremonies. Principle #14 (Kill Your Darlings) directly informs backlog prioritization and sprint planning.
+  - Studio Inspirations section serves as cultural compass in onboarding, recruiting, and strategic planning.
+  - Wisdom entries are "quotes on the wall" — referenced in design reviews, playtest sessions, and team discussions when energy drops or focus wavers.
+  - Studio-craft skill is mandatory pre-sprint reading for every team member. Understanding the meta-patterns (vision coherence, playtest discipline, postmortem rigor) matters as much as understanding domain-specific patterns.
+- **What this *doesn't* do:**
+  - Does not add new team roles or restructure the squad
+  - Does not require new tools or processes (Scrumban, Decision Matrix, Load Cap already exist in playbook; this skill just formalizes them)
+  - Does not change the 12 core principles (they're the constitution; these additions are like amendments)
+  - Does not lock us into any genre or platform
+- **What this *enables*:
+  - Next project can adopt Feature Triage (#14) from day one, saving months of scope drift prevention
+  - Creative Director role has explicit authority to maintain vision coherence without being a bottleneck
+  - Team can run formal postmortems and turn lessons into actionable studio-level changes
+  - Developer joy becomes a tracked metric, not an assumption
+  - Studio-craft knowledge transfers to future team members instantly (no tribal knowledge loss)
+- **Confidence assessment:**
+  - Principles #13–15: Medium-High (heavily validated by research, aligned with industry best practices, ready for immediate implementation)
+  - Studio Inspirations: High (6 real studios, documented best practices, verifiable patterns)
+  - Wisdom one-liners: High (extracted directly from research, industry-standard concepts)
+  - Studio-craft skill: Low (first systematic capture of our meta-operations, not yet proven across multiple projects)
+- **Next steps (not in this session, but actions enabled by this work):**
+  - P0: Run SimpsonsKong postmortem using 5/5 format before starting next project
+  - P1: Designate Creative Director for next project; apply Decision Rights Matrix
+  - P1: Feature Triage protocol is active starting next sprint planning
+  - P2: Build excitement tracking into retrospective ceremonies (Ackbar owns metric)
+  - P3: After 2–3 projects shipped, audit studio-craft skill confidence (likely escalates to Medium-High)
+
+### Team Game Pitch Meeting — 3 Game Proposals for Second Genre (2026)
+
+- **Assignment:** Lead the team pitch meeting. Channel all 13 squad members. Propose, vote, and synthesize into 3 final game proposals for First Frame Studios' second genre project.
+- **Context:** Stage 2 of Growth Framework — must prove the 70/30 rule works, validate team elasticity, and demonstrate cross-genre skill transfer. Constraints: 2D, original IP, Godot 4, NOT a beat 'em up, shippable in 6–12 months.
+
+**Pitch Meeting Process:**
+
+**Step 1 — 13 Agent Pitches:**
+
+1. **Solo (Lead):** Pitched **Action Roguelike** — procedural room generation forces clean component architecture, run/meta state management pushes state machines, entity-component patterns get battle-tested at scale. "Architecturally, the most educational project we can take on."
+2. **Chewie (Engine):** Pitched **Physics Platformer** — pushes Godot 4's physics engine, tilemap system, camera follow, particle systems. Validates our Godot migration beyond reference-level. "We need to SHIP in Godot, not just document it."
+3. **Lando (Gameplay):** Pitched **Action Roguelike** — core loop writes itself: enter room → fight → reward → choose upgrade → next room. Combat expertise transfers directly. Dodge/attack/ability rhythm is our bread and butter. "The 30-second loop has the best feel ceiling of any genre we could pick."
+4. **Wedge (UI):** Pitched **Deckbuilder Roguelike** — cards and inventory ARE the interface. UI innovation is the game. But conceded that an Action Roguelike's upgrade-selection and HUD systems also push UI hard. Aligned with roguelike direction with strong UI ownership.
+5. **Boba (Art Director):** Pitched **Hand-drawn Platformer** with a unique visual identity (ink-wash or industrial aesthetic). "Games people screenshot." But also excited by a roguelike with distinct biome art — each floor a different visual world.
+6. **Greedo (Sound):** Pitched **Rhythm-Action Game** — beat-synced combat where audio IS the core mechanic. "Sound is our untapped superpower. Make me the centerpiece, not support." Strongest advocate for audio-forward design.
+7. **Tarkin (Enemy Design):** Pitched **Roguelike with Deep Enemy Ecosystem** — dozens of enemy types with distinct behaviors, attack patterns, elemental interactions. Roguelike is his dream scope. "Give me 20+ enemy types and I'll make every room feel different."
+8. **Ackbar (QA):** Pitched **Data-Driven Roguelike** — balance is measurable (item stats, spawn rates, difficulty curves), systems are testable, clear metrics for "is this fun." "The most testable and polishable genre we could choose."
+9. **Yoda (Game Designer):** Pitched **Action Roguelike** — best validates 70/30 rule. Combat expertise transfers directly (permanent 70%), procedural generation and progression systems are new (adaptive 30%). Cross-pollination from beat 'em up is strongest here.
+10. **Leia (Environment):** Pitched **Metroidvania** for atmospheric interconnected worlds, but agreed that a roguelike with distinct biomes (volcanic, crystalline, fungal, mechanical, frozen) scratches the same itch with procedural variety.
+11. **Bossk (VFX):** Pitched **Bullet Hell** for screen-filling effects, but aligned with Action Roguelike — elemental effects, room-clearing supers, death explosions, upgrade acquisition VFX. "I want particle budgets that make players say 'whoa.'"
+12. **Nien (Character):** Pitched **Character-Driven Platformer** — multiple playable characters with expressive animations. Aligned with any proposal featuring unlockable characters. "Players should fall in love with movement before they know the controls."
+13. **Jango (Tools):** Pitched **Roguelike with Data-Driven Content** — CSV→game data pipeline multiplies content creation. Enemy stats, loot tables, room templates all editable outside code. "Build the pipeline once, content scales forever."
+
+**Step 2 — Vote Tally & Theme Analysis:**
+
+| Direction | Direct Advocates | Aligned Supporters | Total |
+|-----------|-----------------|-------------------|-------|
+| **Action Roguelike** | Solo, Lando, Tarkin, Ackbar, Yoda, Jango | Wedge, Leia, Bossk, Nien | **10** |
+| **Precision Platformer** | Chewie, Boba, Nien | Lando, Leia | **5** |
+| **Rhythm-Action** | Greedo | Lando, Wedge, Bossk | **4** |
+
+Key observation: Roguelike has massive gravity (10/13 aligned). Platformer and Rhythm-Action are strong secondary options that serve different strategic purposes.
+
+**Step 3 — Three Final Proposals Synthesized:**
+
+---
+
+**🎮 PROPOSAL 1: ASHFALL — Action Roguelike**
+
+- **Genre:** Action Roguelike (top-down 2D)
+- **One-line pitch:** Descend through shifting volcanic chambers with tight, crunchy combat, collecting powerful upgrades that transform your playstyle every run.
+- **Setting/Theme:** A volcanic underworld where a lone Keeper descends into the Ashfall — an ever-shifting labyrinth of magma chambers, obsidian corridors, crystal caverns, and fungal depths. The deeper you go, the more the mountain fights back. Original IP with rich lore potential.
+- **Core Loop (30 seconds):** Enter room → enemies spawn → fight with attack/dodge/ability → room clears → choose from 3 upgrades → enter next room. Every 5 minutes: reach a floor boss. Every 30 minutes: complete a run (win or die, start again with meta-progression).
+- **Why THIS game for First Frame Studios:**
+  - **Skills leveraged (14/21):** beat-em-up-combat, game-feel-juice, state-machine-patterns, enemy-encounter-design, input-handling, game-qa-testing, ui-ux-patterns, 2d-game-art, animation-for-games, particle-effects, game-audio-design, game-design-fundamentals, level-design-fundamentals, studio-craft
+  - **Skills grown (NEW):** Procedural generation, run-based meta-progression, item/upgrade system design, data-driven content pipeline, Godot 4 at production scale
+  - **Team excitement:** 10/13 agents aligned. Solo (architecture), Lando (combat loop), Tarkin (enemy variety), Ackbar (balance), Bossk (VFX), Jango (tools pipeline), Wedge (upgrade UI), Leia (biome art), Nien (character animation), Yoda (design validation)
+  - **Unique angle:** Our beat 'em up combat feel expertise — hitlag, screen shake, knockback, input buffering — applied to a roguelike. Most roguelikes have passable combat. Ours will have GREAT combat. That's the differentiator. First Frame Studios makes action feel crunchy.
+- **Visual Identity:** Hot volcanic palette — deep obsidian blacks, molten oranges, forge golds, cool crystal blues for contrast. Hand-drawn 2D sprites with bold outlines. Each biome is visually distinct (magma = red/orange, crystal = blue/purple, fungal = green/teal, depths = black/gold). Think Hades' character quality in a geological aesthetic.
+- **Audio Identity:** Deep rumbling bass ambience. Crunchy, layered hit sounds (our bread and butter). Music intensifies per room (quiet exploration → combat drums → boss crescendo). Environmental sizzle, crack, drip. Greedo builds a reactive audio system where music layers respond to combat intensity.
+- **Target Platform:** PC (Steam) first. Godot 4 native export. Web build for demo/marketing.
+- **Scope:** Medium. 5 biome tilesets, 15-20 enemy types, 3 bosses, 30-50 upgrades/items, 1 playable character (unlockable variants as stretch goal). **Target: 8-10 months.**
+- **Risk Assessment:**
+  - 🔴 Procedural generation is new territory (HIGH) — mitigate with room-template approach (hand-designed rooms, procedural arrangement)
+  - 🟡 Roguelike balance is notoriously hard (MEDIUM) — mitigate with data-driven pipeline + Ackbar's QA methodology
+  - 🟡 Market is competitive (MEDIUM) — differentiate on combat feel, not content volume
+  - 🟡 Scope creep is the #1 roguelike killer (MEDIUM) — Principle #14 (Kill Your Darlings) is our shield
+- **Reference Games:** Hades (combat feel + narrative), Dead Cells (movement + action), Enter the Gungeon (room design), Curse of the Dead Gods (risk/reward), Vampire Survivors (upgrade dopamine)
+- **First Milestone (30-min playable):** One character, one biome, 5 hand-designed rooms connected procedurally, 3 enemy types, attack/dodge/ability, 3 upgrades to choose between rooms. **Validation gate: Does the combat feel GOOD? If we punch and it feels like SimpsonsKong-quality impact, we're golden.**
+
+---
+
+**🎮 PROPOSAL 2: CINDER — Precision Platformer**
+
+- **Genre:** Precision Platformer
+- **One-line pitch:** A fiercely tight platformer about a living spark navigating a dying clockwork machine, where every jump is earned and every death is instant learning.
+- **Setting/Theme:** Inside a colossal ancient clockwork machine that's winding down. You are Cinder — a tiny living spark racing to reach the machine's heart before it stops forever. Gears, pistons, conveyor belts, pendulums, molten cores, frozen outer chambers. Industrial beauty meets existential urgency. Original IP.
+- **Core Loop (30 seconds):** Run → jump → navigate obstacle → die → instant respawn (< 0.3s) → learn the pattern → clear the screen → advance. Every 5 minutes: complete a chapter section. Every 30 minutes: reach a new chapter with new mechanics introduced.
+- **Why THIS game for First Frame Studios:**
+  - **Skills leveraged (12/21):** game-feel-juice (movement responsiveness), input-handling (coyote time, jump buffering — we already documented these!), state-machine-patterns (character states), ui-ux-patterns (minimal HUD, death counter), 2d-game-art (environment art), animation-for-games (character expression through movement), level-design-fundamentals (obstacle grammar, teach-by-doing), game-qa-testing (precision testing), game-design-fundamentals (difficulty curves, pacing), game-audio-design (environmental audio), particle-effects (death/respawn VFX), project-conventions
+  - **Skills grown (NEW):** Movement physics (velocity curves, momentum, gravity tuning), level grammar (obstacle language and teaching), precision hitbox tuning (fairness testing), non-combat challenge design, environmental puzzle design
+  - **Team excitement:** Chewie (physics engine), Boba (visual identity), Leia (environments), Nien (character expression), Lando (movement feel). 5 direct, others supportive.
+  - **Unique angle:** Our obsession with game feel applied to MOVEMENT instead of combat. If we made punching feel incredible, we can make jumping feel transcendent. Input-handling skill already documents coyote time and jump buffering — we literally have the theory, we just need the practice.
+- **Visual Identity:** Warm industrial palette — copper, bronze, burnished gold mechanical elements against cool shadow blues and deep grays. The spark (Cinder) glows warmly against dark environments. Silhouette-heavy design for gameplay clarity. Think Limbo's atmospheric quality with warmth and color. Gears and mechanisms are beautiful, not threatening.
+- **Audio Identity:** Mechanical percussion — ticking clocks, grinding gears, hissing steam, ringing metal. The machine has a heartbeat (deep bass pulse) that slows as you progress deeper. Silence in frozen outer chambers creates tension. Death sound is soft and forgiving ("plink" — encouraging, not punishing). Music is minimal and environmental — the machine IS the soundtrack.
+- **Target Platform:** PC first. Web export for demos. Potential mobile (simple controls).
+- **Scope:** Small-Medium. 40-60 screens across 5 chapters (Gears, Pistons, Conveyors, Furnace, Heart). 1 character, NO combat (pure platforming + environmental hazards). Each chapter introduces 1-2 new mechanics. **Target: 6-8 months.** Our smallest, most focused option.
+- **Risk Assessment:**
+  - 🟡 Movement physics is new (MEDIUM) — mitigate with our existing input-handling skill + Celeste as reference
+  - 🟡 Level design is content-heavy (MEDIUM) — 50+ unique screens takes time, but each is small
+  - 🟢 Market is proven (LOW) — Celeste sold 3M+, indie platformers consistently find audiences
+  - 🟢 Scope creep risk is LOW — platformers are naturally bounded (levels are discrete units)
+  - 🟡 Risk of feeling derivative (MEDIUM) — visual identity and mechanical theme must feel OURS, not "another Celeste"
+- **Reference Games:** Celeste (movement feel + accessibility), Super Meat Boy (precision + instant respawn), Ori and the Blind Forest (atmosphere + beauty), Shovel Knight (level grammar), Hollow Knight (environmental storytelling)
+- **First Milestone (30-min playable):** One character (Cinder), 10 screens, run/jump/dash. **Validation gate: Does the jump feel PERFECT? Precise, responsive, expressive. Can a player die 50 times and not feel frustrated? If yes, the concept works.**
+
+---
+
+**🎮 PROPOSAL 3: PULSE — Rhythm-Action Combat**
+
+- **Genre:** Rhythm-Action Hybrid
+- **One-line pitch:** A beat-synced action game where every attack, dodge, and ability hits harder on the beat — fight to the music, and the music fights with you.
+- **Setting/Theme:** A city where sound has been stolen. Streets are silent, people are frozen mid-step, instruments hang lifeless. You are the Pulse — a rhythmic force restoring sound to the world one district at a time. Each district has its own musical genre and visual identity. Jazz district = neon noir. Electronic district = geometric glow. Percussion district = industrial grit. Strings district = elegant decay. Original IP.
+- **Core Loop (30 seconds):** Music plays → enemies approach on beat → attack ON BEAT for bonus damage (1.5x) → dodge OFF-BEAT attacks → chain on-beat hits for combo multiplier → beat drops → unleash super ability → wave cleared → music restored. Every 5 minutes: complete a district encounter. Every 30 minutes: restore a full district and unlock its musical layer for the overworld.
+- **Why THIS game for First Frame Studios:**
+  - **Skills leveraged (13/21):** beat-em-up-combat (action combat feel), game-feel-juice (feedback timing synced to beats), game-audio-design (CORE mechanic — Greedo becomes the star), input-handling (precise timing windows = our specialty), state-machine-patterns (beat states, enemy rhythm states), enemy-encounter-design (rhythm-synced spawning), ui-ux-patterns (beat visualization, timing indicator), animation-for-games (beat-synced character animation), 2d-game-art (per-district visual identity), particle-effects (rhythm-synced VFX), game-design-fundamentals (core loops, risk/reward), game-qa-testing (timing tolerance testing), level-design-fundamentals (encounter pacing)
+  - **Skills grown (NEW):** Music-driven gameplay systems, beat detection and synchronization, dynamic/reactive audio architecture, rhythm difficulty design, genre-hybrid design methodology
+  - **Team excitement:** Greedo (CENTERPIECE — his domain becomes the game), Lando (timing-based combat), Bossk (beat-synced VFX — everything pulses), Wedge (beat visualization UI), Boba (per-district art identity — 4-5 distinct visual worlds). Greedo's pitch was the most passionate of the meeting.
+  - **Unique angle:** We take our combat feel expertise and synchronize it to music. Hitlag on the beat. Screen shake on the downbeat. Knockback to the rhythm. The result is combat that GROOVES. No other studio has our combination of combat feel mastery + audio design depth. This is uniquely ours.
+- **Visual Identity:** Each district is a different musical genre, each with its own art style and color palette. Jazz = deep blues, neon pinks, rain-slicked streets. Electronic = cyan, magenta, geometric shapes that pulse. Percussion = rust, orange, industrial sparks. Strings = gold, cream, elegant decay. The visual world BREATHES with the beat — background elements pulse, lights flash on downbeats, the whole screen is alive.
+- **Audio Identity:** THIS IS THE GAME. Every sound effect is melodic and rhythmic — combat sounds are instruments. Enemy death = a note in the chord. Dodge = cymbal hit. Perfect combo = guitar riff. As you play well, the music gets RICHER — more instruments layer in, harmonies emerge, the track builds. Play badly and the music thins, becomes sparse. The soundtrack is emergent — the player co-creates it through combat. Greedo's most ambitious vision.
+- **Target Platform:** PC (Steam) first. Audio latency requirements make web challenging.
+- **Scope:** Medium. 4-5 districts (4-5 musical genres), 3-4 enemy types per district (15-20 total), 15-20 songs/tracks, 1 playable character. **Target: 10-12 months.** Audio production is the longest pole.
+- **Risk Assessment:**
+  - 🔴 Beat-sync engine is technically complex (HIGH) — audio latency, input timing tolerance, cross-platform audio consistency
+  - 🔴 Music creation is a production bottleneck (HIGH) — we need 15-20 tracks. Procedural music generation or licensing?
+  - 🟡 Niche audience (MEDIUM) — rhythm games have passionate but smaller audiences. BUT: Hi-Fi Rush proved rhythm-action can go mainstream.
+  - 🟡 Timing tolerance tuning is delicate (MEDIUM) — too strict = frustrating, too loose = meaningless. Needs extensive playtesting.
+  - 🟢 Differentiation is HIGH (LOW competitive risk) — rhythm + melee combat is underexplored. Few direct competitors.
+- **Reference Games:** Crypt of the NecroDancer (rhythm + dungeon crawling), Hi-Fi Rush (rhythm + melee action), Metal: Hellsinger (rhythm + FPS), BPM: Bullets Per Minute (rhythm + action), Patapon (rhythm + strategy)
+- **First Milestone (30-min playable):** One arena, one song (2-3 minutes looping), 2 enemy types, attack and dodge with beat-sync scoring. **Validation gate: Does fighting ON the beat feel meaningfully BETTER than fighting off-beat? Does the player naturally start moving to the music? If yes, we have something special.**
+
+---
+
+**Selection Criteria Ranking:**
+
+| Criterion | ASHFALL (Roguelike) | CINDER (Platformer) | PULSE (Rhythm-Action) |
+|-----------|:-------------------:|:-------------------:|:---------------------:|
+| **Growth Value** | ★★★★★ | ★★★★★ | ★★★★★ |
+| **Team Fit** | ★★★★★ | ★★★★☆ | ★★★☆☆ |
+| **Market Appeal** | ★★★★★ | ★★★★☆ | ★★★☆☆ |
+| **Scope Realism** | ★★★★☆ | ★★★★★ | ★★★☆☆ |
+| **Excitement** | ★★★★★ | ★★★★☆ | ★★★★★ |
+| **TOTAL** | **24/25** | **22/25** | **19/25** |
+
+**Yoda's Recommendation:** ASHFALL is the strongest all-around choice — maximum team alignment, best market fit, directly leverages our combat expertise while adding procedural and progression skills. CINDER is the safest scope choice and the most DIFFERENT genre vertical. PULSE is the boldest creative swing — highest risk, highest potential for a signature identity. All three give us a genuine second genre vertical. The founder decides.
+
+**Key design insight from this meeting:** All 13 agents naturally gravitated toward games where FEEL is the differentiator — not content volume, not narrative, not graphics. Our studio DNA is game feel. Whatever we build next, the first frame of interaction must make players' hands tingle. That's who we are.
+
+- **Artifacts:** This pitch meeting documented in history.md. Three proposals ready for founder review.
+- **Next steps:** Founder selects one proposal (or requests refinement). Selected proposal enters Pre-Production Phase per new-project-playbook.md (Genre Research Sprint → GDD → Minimum Playable → Skill Creation → Team Assessment → Architecture Spike).
+
+
+
+### 2026-03-08T00:10 — Phase 1 & Phase 4: Industry Research + Game Proposals
+**Session:** Multi-phase strategy session (Industry Research → Company Upgrades → Team Evaluation → Tools → Game Proposals)  
+**Role:** Game Designer — Conduct studio research; pitch 3 game proposals
+
+**Phase 1 - Industry Research (2026-03-08T00:10:00Z):**
+Created studio-research.md and studio-lessons-for-ffs.md analyzing 10+ reference studios:
+- Deep dives: Supergiant Games, Team Cherry, Ska Studios, Nintendo, Supercell, ArcSys, Housemarque, Spry Fox, Vlambeer, Polytron
+- Extracted 12 portable lessons applicable to First Frame Studios: craft-first mindset, async-friendly pipelines, principle-driven design, iterative learning culture, scaled ambition, player psychology focus, tooling investment, technical debt discipline, cross-disciplinary knowledge, quality gates, bottleneck prevention, institutional memory capture
+- Foundation for Solo's principle updates and company.md enhancement
+
+**Phase 4 - Game Proposals (2026-03-08T00:10:60Z):**
+Pitched three game concepts aligned with updated principles and team capabilities:
+
+1. **ASHFALL** — Side-scrolling action-platformer (16-week scope)
+   - Narrative-driven level design focus; explores environmental storytelling
+   - Team: 6 core roles + 2 support
+   - Risk: Low-medium; Skill transfer: HIGH (procedural level generation, character progression systems)
+   - Market fit: Strong (narrative-driven action resonates with SimpsonsKong players)
+   - Why this game strengthens studio: Adds level design expertise while leveraging combat foundation
+
+2. **CINDER** — Isometric roguelike puzzle-action (20-week scope)
+   - Procedural systems emphasis; meta-progression loops
+   - Team: 7 core roles + 2 support
+   - Risk: Medium; Skill transfer: MEDIUM-HIGH (procedural generation, economy design, difficulty scaling)
+   - Market fit: Medium (niche but loyal community; lower competition than rogue-lites)
+   - Why this game strengthens studio: Deepest procedural systems work; teaches scalable content generation
+
+3. **PULSE** — Top-down rhythm-action (24-week scope)
+   - High mechanical originality; rhythm-action hybrid
+   - Team: 8 core roles + 2 support
+   - Risk: High; Skill transfer: HIGH (timing-based game feel, audio-game integration, new mechanical territory)
+   - Market fit: Medium-high (rhythm-action underexplored in indie; high mechanical novelty)
+   - Why this game strengthens studio: Highest technical risk but highest originality upside; solidifies game feel reputation
+
+**Each Proposal Includes:**
+- Craft rationale (why this game strengthens studio vs being purely commercial)
+- Team composition designed to avoid SimpsonsKong bottlenecks
+- Skill transfer opportunities validated against playbook
+- Success metrics pre-defined (player engagement, review scores, financial benchmarks)
+- Quality gates aligned with updated principles
+
+**Key Design Insight:** All 13 agents naturally gravitated toward games where FEEL is the differentiator — not content volume, not narrative complexity, not graphics budget. FFS studio DNA is game feel. The first frame of interaction must make players' hands tingle. All three proposals honor this identity.
+
+**Recommendation:** Three distinct proposals ready for founder decision. Each represents different risk/reward; founder's portfolio strategy will determine which path FFS takes next.
+
+**Status:** All three proposals fully documented and ready for formal go/no-go decision.

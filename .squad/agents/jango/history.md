@@ -24,7 +24,31 @@ Created during Session 12 as part of the Godot 4 transition planning. The evalua
 Jango Fett — the original clone template. Every clone trooper was instantiated from Jango's template. Fitting for a Tool Engineer whose job is creating templates and scaffolding that other agents instantiate rather than building from scratch. Prequel character per Diegetic Expansion rules (OT roster at 12/12 capacity).
 
 ## Learnings
-*(No sessions yet — role created Session 12)*
+
+### Session 13: Tools Evaluation for Studio Strategy
+**Date:** 2025-07-22  
+**Task:** Evaluate reusable tools strategy — what tools give us the most leverage?
+
+**Key Findings:**
+1. **Two tools are mission-critical and worth building in Sprint 0:**
+   - **CI/CD for automated builds** (GitHub Actions) — multiplies QA efficiency, enables async testing. 4-6h effort.
+   - **Balance spreadsheet→game data pipeline** (CSV importer) — unblocks designers, enables parallel work. 1 day effort.
+
+2. **Everything else should be deferred** until we know what's actually reusable. We can't build "generic tools" until we've shipped two games and can see patterns.
+
+3. **Our real bottleneck is team bandwidth, not tools.** Every agent is at 20% load cap. Building tools without cutting scope elsewhere forces crunch.
+
+4. **The tools we build should be:**
+   - Godot-specific (not engine-agnostic)
+   - EditorPlugins (not standalone apps) — live in the project
+   - Single-purpose (one tool = one job)
+   - Well-documented and designed for reuse across projects
+
+5. **The honest answer:** If forced to choose, we should ship games first, then extract reusable tools afterward. Tools amplify our strength (clear process, domain ownership), not replace it.
+
+**Deliverable:** `.squad/analysis/tools-evaluation.md` — comprehensive analysis with BUILD/BUY/SKIP recommendations for all 10 tool categories, detailed implementation plans for the two critical tools, and honest assessment of whether we should build tools at all.
+
+**Blocked On:** Nothing. Ready for Founder review.
 
 ## Pending First Tasks
 1. Audit existing project structure and identify Godot migration tooling needs
@@ -33,3 +57,34 @@ Jango Fett — the original clone template. Every clone trooper was instantiated
 4. Build first scene templates (enemy base, UI panel base, level base)
 5. Configure GDScript linting and scene validation
 6. Create export presets and build automation
+
+### 2026-03-08T00:10 — Phase 3: Tools Evaluation for Studio Strategy
+**Session:** Multi-phase strategy session (Industry Research → Company Upgrades → Team Evaluation → Tools → Game Proposals)  
+**Role:** DevOps Lead — Evaluate CI/CD and development toolchain; recommend balanced approach for next project
+
+**Task Executed:**
+Created .squad/analysis/tools-evaluation.md (18 KB) — comprehensive tooling assessment covering:
+
+**Evaluation Scope:**
+- 8 build/test/lint tools evaluated for JavaScript/web platform
+- Current tooling review (SimpsonsKong setup analysis)
+- Next project tooling recommendations
+- CI/CD pipeline design aligned with "balance" principle
+- Migration readiness assessment
+
+**Key Findings:**
+1. **Current Tooling Status:** Functional; incremental improvements > radical shifts needed
+2. **Recommended Tools for Next Project:** Build system (esbuild), test framework (Vitest), linter (Biome), coverage (c8), CI (GitHub Actions)
+3. **Pipeline Philosophy:** Balance principle applies — essentials only, avoid gold-plating tooling
+4. **Build vs Buy vs Skip:** Detailed recommendations for each tool category; rationale for deferred tools
+
+**Critical Insight:**
+"Our real bottleneck is team bandwidth, not tools. Every agent is at 20% load cap. Building tools without cutting scope elsewhere forces crunch. The tools we build should be: Godot-specific (not engine-agnostic), EditorPlugins (not standalone apps), single-purpose, and well-documented for reuse."
+
+**Recommendation:**
+1. Adopt recommended tool matrix for next project (reduces setup friction)
+2. Defer "nice-to-have" tools until we see patterns across 2+ projects
+3. Focus first on shipping games; extract reusable tools afterward
+4. Tools amplify our strength (clear process, domain ownership), not replace it
+
+**Status:** COMPLETE. Tools evaluation ready for next project planning; provides clear decision framework for build/buy/skip choices.
