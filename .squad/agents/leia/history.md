@@ -6,6 +6,40 @@
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Current state:** Downtown background with Factory, Quick Stop, Joe's Bar, parallax layers, foreground elements.
 
+## Ashfall Work
+
+### Issue #8 — Ember Grounds Stage Scene (squad/8-stage-scene)
+**Date:** 2025-07-22
+**PR:** #18
+**Branch:** squad/8-stage-scene (from squad/1-godot-scaffold)
+
+Built the Ember Grounds arena — Ashfall's first fighting stage. Created `scenes/stages/ember_grounds.tscn` and `scripts/stages/ember_grounds.gd`.
+
+**What was built:**
+- Ground plane: StaticBody2D + CollisionShape2D at Y=560, full-width RectangleShape2D (1400×40)
+- Stage boundaries: Invisible left (X=0) and right (X=1280) walls on physics layer 4
+- ParallaxBackground with 3 depth layers:
+  - Sky layer (static): dark volcanic amber ColorRect
+  - Mid layer (0.05× parallax): 3 Polygon2D volcano silhouettes
+  - Near layer (0.15× parallax): lava glow strip + 3 rock debris polygons
+- Ember system tie-in: `EventBus.ember_changed` drives color lerps on sky, lava glow, and silhouettes (calm → intense)
+- Spawn markers: P1 at (320, 560), P2 at (960, 560)
+- Camera2D centered at (640, 360) for standalone testing
+
+**Key decisions:**
+- Used 1280×720 coordinate space (2× GDD base 640×360) to match project viewport settings
+- Floor collision top surface at Y=560 — body centered at Y=580 with 40px height
+- All stage collision on layer 4 ("Stage"), mask=0 — fighters need layer 4 in their mask to collide
+- Placeholder visuals (solid colors, simple polygons) — art pass deferred to M2
+- Camera2D included in stage for testability; FightScene will manage the real camera
+
+**Learnings:**
+- Godot ParallaxBackground needs an active Camera2D to function — must include one for standalone testing
+- StaticBody2D collision_layer is 1-indexed (layer 4 = bitmask value 8)
+- RectangleShape2D is centered on its CollisionShape2D parent — position the body so the shape's top surface aligns with visual ground
+- ColorRect under ParallaxLayer inherits parallax transform — works for simple background fills
+- Polygon2D is ideal for M1 placeholder silhouettes — no textures needed, ember-reactive via color property
+
 ## Learnings
 
 - Building pattern array in background.js tiles across the world; adding new types requires: array entry, switch case, draw method — all three.
