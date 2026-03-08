@@ -24,6 +24,12 @@ func _ready() -> void:
 
 	GameState.reset_match()
 
+	# Wire hit_landed signal for damage application
+	EventBus.hit_landed.connect(_on_hit_landed)
+
+	# Start the round system
+	RoundManager.start_match(fighter1, fighter2)
+
 func _physics_process(_delta: float) -> void:
 	_update_camera()
 
@@ -47,3 +53,10 @@ func _on_fighter_damaged(fighter_node, amount: int, remaining_hp: int) -> void:
 
 func _on_fighter_ko(fighter_node) -> void:
 	EventBus.fighter_ko.emit(fighter_node)
+
+func _on_hit_landed(attacker, target, move: Dictionary) -> void:
+	if not target or not is_instance_valid(target):
+		return
+	var damage: int = move.get("damage", 10)
+	if target.has_method("take_damage"):
+		target.take_damage(damage)
