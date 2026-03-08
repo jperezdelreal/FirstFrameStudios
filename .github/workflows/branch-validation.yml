@@ -1,0 +1,26 @@
+name: Branch Validation
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+
+jobs:
+  validate-base-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR base branch is main
+        run: |
+          BASE_BRANCH="${{ github.event.pull_request.base.ref }}"
+          
+          if [[ "$BASE_BRANCH" != "main" ]]; then
+            echo "❌ ERROR: PR targets branch '$BASE_BRANCH' instead of 'main'"
+            echo ""
+            echo "This PR is targeting the wrong branch. All PRs should target 'main'."
+            echo "If this is intentional (e.g., integration branch), add the 'allow-branch-target' label."
+            echo ""
+            echo "Current base: $BASE_BRANCH"
+            echo "Expected: main"
+            exit 1
+          fi
+          
+          echo "✅ PR correctly targets 'main' branch"
