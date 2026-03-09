@@ -36,8 +36,22 @@ var pal: Dictionary:
 ## All valid pose names
 const POSES := [
 	"idle", "walk", "walk_2",
+	"crouch",
+	"jump_up", "jump_peak", "jump_fall",
+	"dash", "backdash",
 	"attack_lp", "attack_mp", "attack_hp",
-	"hit", "ko"
+	"attack_lk", "attack_mk", "attack_hk",
+	"crouch_lp", "crouch_mp", "crouch_hp",
+	"crouch_lk", "crouch_mk", "crouch_hk",
+	"jump_lp", "jump_mp", "jump_hp",
+	"jump_lk", "jump_mk", "jump_hk",
+	"block_standing", "block_crouching",
+	"hit", "ko",
+	"throw_execute", "throw_victim",
+	"wakeup",
+	"special_1", "special_2", "special_3", "special_4",
+	"ignition",
+	"win", "lose",
 ]
 
 
@@ -53,26 +67,92 @@ func _init_palettes() -> void:
 
 func _draw() -> void:
 	match pose:
-		"idle":      _draw_idle()
-		"walk":      _draw_walk()
-		"walk_2":    _draw_walk_2()
-		"attack_lp": _draw_attack_lp()
-		"attack_mp": _draw_attack_mp()
-		"attack_hp": _draw_attack_hp()
-		"hit":       _draw_hit()
-		"ko":        _draw_ko()
-		_:           _draw_idle()
+		"idle":             _draw_idle()
+		"walk":             _draw_walk()
+		"walk_2":           _draw_walk_2()
+		"crouch":           _draw_crouch()
+		"jump_up":          _draw_jump_up()
+		"jump_peak":        _draw_jump_peak()
+		"jump_fall":        _draw_jump_fall()
+		"dash":             _draw_dash()
+		"backdash":         _draw_backdash()
+		"attack_lp":        _draw_attack_lp()
+		"attack_mp":        _draw_attack_mp()
+		"attack_hp":        _draw_attack_hp()
+		"attack_lk":        _draw_attack_lk()
+		"attack_mk":        _draw_attack_mk()
+		"attack_hk":        _draw_attack_hk()
+		"crouch_lp":        _draw_crouch_lp()
+		"crouch_mp":        _draw_crouch_mp()
+		"crouch_hp":        _draw_crouch_hp()
+		"crouch_lk":        _draw_crouch_lk()
+		"crouch_mk":        _draw_crouch_mk()
+		"crouch_hk":        _draw_crouch_hk()
+		"jump_lp":          _draw_jump_lp()
+		"jump_mp":          _draw_jump_mp()
+		"jump_hp":          _draw_jump_hp()
+		"jump_lk":          _draw_jump_lk()
+		"jump_mk":          _draw_jump_mk()
+		"jump_hk":          _draw_jump_hk()
+		"block_standing":   _draw_block_standing()
+		"block_crouching":  _draw_block_crouching()
+		"hit":              _draw_hit()
+		"ko":               _draw_ko()
+		"throw_execute":    _draw_throw_execute()
+		"throw_victim":     _draw_throw_victim()
+		"wakeup":           _draw_wakeup()
+		"special_1":        _draw_special_1()
+		"special_2":        _draw_special_2()
+		"special_3":        _draw_special_3()
+		"special_4":        _draw_special_4()
+		"ignition":         _draw_ignition()
+		"win":              _draw_win()
+		"lose":             _draw_lose()
+		_:                  _draw_idle()
 
 
 # --- Virtual pose methods (override in subclass) ---
 func _draw_idle() -> void: pass
 func _draw_walk() -> void: pass
 func _draw_walk_2() -> void: pass
+func _draw_crouch() -> void: pass
+func _draw_jump_up() -> void: pass
+func _draw_jump_peak() -> void: pass
+func _draw_jump_fall() -> void: pass
+func _draw_dash() -> void: pass
+func _draw_backdash() -> void: pass
 func _draw_attack_lp() -> void: pass
 func _draw_attack_mp() -> void: pass
 func _draw_attack_hp() -> void: pass
+func _draw_attack_lk() -> void: pass
+func _draw_attack_mk() -> void: pass
+func _draw_attack_hk() -> void: pass
+func _draw_crouch_lp() -> void: pass
+func _draw_crouch_mp() -> void: pass
+func _draw_crouch_hp() -> void: pass
+func _draw_crouch_lk() -> void: pass
+func _draw_crouch_mk() -> void: pass
+func _draw_crouch_hk() -> void: pass
+func _draw_jump_lp() -> void: pass
+func _draw_jump_mp() -> void: pass
+func _draw_jump_hp() -> void: pass
+func _draw_jump_lk() -> void: pass
+func _draw_jump_mk() -> void: pass
+func _draw_jump_hk() -> void: pass
+func _draw_block_standing() -> void: pass
+func _draw_block_crouching() -> void: pass
 func _draw_hit() -> void: pass
 func _draw_ko() -> void: pass
+func _draw_throw_execute() -> void: pass
+func _draw_throw_victim() -> void: pass
+func _draw_wakeup() -> void: pass
+func _draw_special_1() -> void: pass
+func _draw_special_2() -> void: pass
+func _draw_special_3() -> void: pass
+func _draw_special_4() -> void: pass
+func _draw_ignition() -> void: pass
+func _draw_win() -> void: pass
+func _draw_lose() -> void: pass
 
 
 # =========================================================================
