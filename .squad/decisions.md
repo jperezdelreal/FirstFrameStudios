@@ -883,3 +883,68 @@ Tag push (v0.1.0) → GitHub Actions → Install Godot + templates
 **Status:** Captured for team memory. Requires workflow expansion after Sprint 1.
 
 
+
+---
+
+### 2026-03-09T1257Z: User Directive — Release Naming Convention
+
+**By:** joperezd (via Copilot)
+
+**What:** All releases (tags and downloadable GitHub Releases) must always reference the game name and version. 
+
+**Format:**
+- Tag: {game}-v{version} (e.g., shfall-v0.1.0)
+- Release Title: {Game} v{version} (e.g., Ashfall v0.1.0)
+- Zip: {Game}-v{version}-{platform}.zip (e.g., Ashfall-v0.1.0-windows.zip)
+
+**Why:** User request — captured for team memory. The repo (FirstFrameStudios) may host multiple games, so releases must be unambiguous about which game they belong to.
+
+**Governance:** Enforce in GitHub Actions workflows and release notes templates.
+
+---
+
+### 2026-03-09T1150Z: Build Pipeline — Automated Godot Releases (Jango)
+
+**Status:** IMPLEMENTED — PR #111
+
+**What:** Complete build pipeline architecture for Ashfall:
+
+**Workflow:**
+1. Developer pushes version tag (e.g., shfall-v0.1.0) to GitHub
+2. GitHub Actions workflow triggers: .github/workflows/godot-release.yml
+3. CI installs Godot 4.6 + export templates
+4. Exports Windows .exe from games/ashfall/ directory
+5. Creates GitHub Release with downloadable zip package
+
+**Key Decisions:**
+1. **Export Presets Versioned** — games/ashfall/export_presets.cfg committed to git (non-standard, but necessary for CI/CD reproducibility)
+2. **Manual Godot Installation** — wget for explicit Godot 4.6 version control
+3. **Tag-Triggered Releases** — Tag format {game}-v{version} per release naming directive
+4. **Windows Desktop Only** — Initially. Linux/Mac/Web can be added later.
+5. **Cross-Compilation on Ubuntu** — Linux runner exports Windows .exe for broad platform compatibility
+
+**Architecture:**
+`
+Tag push (ashfall-v0.1.0) 
+  → GitHub Actions detected
+  → Download Godot 4.6 + templates
+  → Export to .exe 
+  → Package as zip 
+  → Create GitHub Release with download
+`
+
+**Deliverables:**
+- games/ashfall/export_presets.cfg — Windows Desktop export preset (Godot 4.6)
+- .github/workflows/godot-release.yml — Automated build + release workflow
+- Root .gitignore updated to allow export_presets.cfg, ignore builds/
+
+**Impact:**
+- Developers: Create releases by pushing tag (zero friction)
+- Players: Download and play without Godot installed
+- QA: Manual workflow dispatch for testing
+- Future: Pipeline reusable template for additional projects
+
+**Next Steps:**
+- Test manual workflow dispatch
+- Create v0.0.1-test tag to validate build output
+- Document release process for team

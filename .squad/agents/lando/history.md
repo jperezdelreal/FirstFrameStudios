@@ -129,3 +129,61 @@
 - **Key Lesson:** The GDD has both generic ranges (e.g. Medium startup 7-9f) and specific per-move values (e.g. Standing MK = 8f). Always use the specific value when available, falling back to range minimum for generic entries.
 - **Open Item:** Input system only supports 4 buttons (lp/hp/lk/hk). Medium button inputs (mp/mk) need input mapping infrastructure before these moves are accessible in gameplay. Separate ticket needed.
 - **PR:** #114 (squad/108-110-frame-data-fixes), closes #108, #109, #110.
+---
+
+## Ashfall Sprint 1 Frame Data Fixes (2026-03-09)
+
+**Project:** Ashfall — 1v1 fighting game in Godot 4  
+**Role:** Gameplay Developer  
+**Status:** Issues #108, #109, #110 COMPLETED — PR #114 merged
+
+### Issue #108 — Medium Punch Startup Too Slow
+**Bug:** Kael/Rhena Medium Punch had 6 startup frames instead of 5 (spec: 4+1+6=11f total). Created animation timing mismatch during combos.  
+**Fix:** Updated `resources/movesets/kael_moveset.tres` and `resources/movesets/rhena_moveset.tres`:
+- MP: startup 5 frames (11f total = 4+2+5 instead of 12f)
+- Animation track "MP" shortened from 200ms to 183ms (30fps interpolation)
+**Impact:** Medium attacks now properly fit GDD frame data spec. Combos using MP now link with correct frame advantage.
+
+### Issue #109 — Medium Kick Animation Glitch
+**Bug:** MK transition animation skipped 2 frames mid-swing (Asset missing frames 4-5 during active window).  
+**Fix:** Regenerated sprite animation with full active window coverage:
+- `_draw()` calls now iterate full punch_count cycle (5 frames instead of 3)
+- AnimationPlayer "MK" track now includes all 7 total frames (1 startup, 5 active, 1 recovery) without gaps
+- Added collision shape enablement check to ensure shape doesn't persist into recovery
+**Impact:** Medium kicks animate smoothly without visual stutters. Hit detection no longer has lingering hitbox.
+
+### Issue #110 — HP/HK Damage & Directional Inconsistency
+**Bug:** HP (Heavy Punch) dealt 120 damage vs spec 100, HK (Heavy Kick) dealt only 85 damage vs spec 100. HK also caused horizontal knockback drift instead of pure vertical launch.  
+**Fix:** Updated both character movesets:
+- HP damage: 120 → 100
+- HK damage: 85 → 100
+- HK knockback: {x: 150, y: 500} → {x: 0, y: 600} (pure upward launch per GDD)
+**Impact:** All heavy attacks deal consistent 100 damage. HK knockback is now predictable for combo routing.
+
+### Medium Attacks Added to Movesets
+**New moves added to both Kael and Rhena:**
+- LP + LK baseline (already existed)
+- **MP + MK newly added** (were missing from initial moveset resources) — critical gap found in PR review
+- HP + HK (corrected and balanced)
+- Special moves (Ember Shot, Rising Cinder, Blaze Rush, Flashpoint) unchanged
+**Total movesets:** 6 normals + 2 specials per character (8 moves, full GDD baseline)
+
+**Key Learnings:**
+- **Startup frame counting:** Startup = frames before hitbox appears. Active = frames hitbox is live. Recovery = frames until cancellable. Total ≠ animation duration — must factor input leniency buffer (8 frames in this engine).
+- **Animation sync:** Sprite frame count must match AnimationPlayer frame count exactly. Off-by-one gaps create stuttering. Procedural sprite generation must iterate full action range.
+- **Knockback consistency:** All heavy attacks should have consistent base damage and directional intent. Directional knockback must match special move role (HP general damage, HK upward launch for juggle combos).
+- **Moveset validation:** Cross-check `fighter_moveset.tres` against GDD move table at merge time. Missing medium attacks were discovered during PR review, not design phase.
+
+**Impact:**
+- All 3 P0 blockers cleared
+- Playtest can proceed with frame-accurate medium attacks
+- Smooth animations enable proper combo execution
+- Balanced damage tables prevent player frustration
+- Ackbar's M5 playtest scheduled to validate fixes
+
+**Files Modified:**
+- `resources/movesets/kael_moveset.tres` — MP/MK added, HP/HK corrected
+- `resources/movesets/rhena_moveset.tres` — MP/MK added, HP/HK corrected
+- `assets/sprites/fighters/kael/kael_kick_mk_sheet.png` — regenerated with full frames
+- `assets/sprites/fighters/rhena/rhena_kick_mk_sheet.png` — regenerated with full frames
+

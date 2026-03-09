@@ -1,12 +1,12 @@
 # Boba — History
 
 ## Project Context
-- **Project:** firstPunch — Browser-based game beat 'em up
+- **Project:** firstPunch — Browser-based game beat 'em up; Ashfall — 1v1 fighting game in Godot 4
 - **User:** joperezd
-- **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
-- **Visual approach:** All art is procedural Canvas 2D drawing — no external images
-- **Current state:** Characters are basic geometric shapes (programmer art). Visual quality scored 30% in gap analysis. Animation is ad-hoc sine-wave arm bobbing. No particle system exists.
-- **Key gap:** User explicitly requested "visually modern" and "clean, modern 2D look." This is the biggest quality gap.
+- **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API (firstPunch); Godot 4.6 GDScript (Ashfall)
+- **Visual approach:** All art is procedural drawing — no external images
+- **Current state:** firstPunch has visual polish complete; Ashfall art direction established and validated
+- **Key role:** Art Director — visual standards, character design philosophy, VFX signature language, art asset oversight
 
 ## Learnings
 
@@ -323,3 +323,53 @@ Created universal animation principles skill — a comprehensive, engine-agnosti
 - Accent color IS identity: Kael=blue, Rhena=orange — carries through VFX, damage numbers, ember aura
 - Outlined the PNG export naming convention for future use even though current art is procedural _draw()
 - Locked document status — changes require Art Director sign-off
+---
+
+## Ashfall Sprint 1 Art Direction (2026-03-09)
+
+**Project:** Ashfall — 1v1 fighting game in Godot 4  
+**Role:** Art Director  
+**Status:** Issue #102 COMPLETED — PR #113 merged
+
+**Delivered:** `games/ashfall/docs/ART-DIRECTION.md` (634 lines)
+
+**Sections:**
+1. **Visual Identity** — Hand-drawn, expressive, high-contrast fighting game aesthetics. Influences: Street Fighter hand-draw style, Persona UI clarity, Wildermyth hand-painted look.
+2. **Color Palette** — Primary (skin, cloth base), Secondary (accents, UI), Highlight/Shadow system, character differentiation through palette variations.
+3. **Character Design** — Kael (composed, controlled, tied ponytail), Rhena (explosive, wild, spiky tufts). Proportions (heads 1/6 body height), facial expression as primary readability marker.
+4. **Animation Philosophy** — Procedural sprites (no pre-drawn frames), state-driven poses, exaggeration for impact, personality in attack timing, 12 FPS baseline for smooth readable action.
+5. **VFX & Juicing** — Hit effects (flash + particles), special move VFX language (Ember Shot vs Blaze Rush visually distinct), status effects (hitstun, blocking, knockdown).
+6. **UI/HUD** — Health bar design, combo counter style, round/match UI, menus, fonts, layout grid. All using consistent #222222 outlines from firstPunch.
+7. **Implementation Roadmap** — Phase 1 (fighters + 1 stage), Phase 2 (additional stages + effects), Phase 3+ (menu polish, cinematics).
+
+**Key Decisions:**
+- Procedural Canvas 2D approach from firstPunch ports directly to Godot `_draw()` API
+- Character silhouette differentiation via hair shape as primary readability strategy (Kael ponytail vs Rhena spiky tufts)
+- Palette system enables P1/P2 color variants without duplicating character code
+- VFX "signature language" — each special move has visually distinct effect pattern (Ember Shot concentric circles, Blaze Rush trailing particles, etc)
+- 128×128 character sprite bounding box standardized for stage layout
+- All color hex values cross-checked against firstPunch established palette for cross-project consistency
+
+**Impact:**
+- Establishes visual standards for all future Ashfall art assets (stages, effects, UI, menus)
+- Nien's character animation work (#99, #100) and sprite completion directly reference these specs
+- Ready for stage artist onboarding in Phase 2
+- Foundation for UI specialist to build menus/HUD without guessing visual intent
+
+**Blocked on:** None — standalone deliverable that other agents now build on
+
+---
+
+## Sprint 1 Completion Summary (2026-03-09)
+
+**Session Focus:** Sprint 1 debt resolution + infrastructure  
+**Status:** All 6 outstanding issues closed before sprint boundary
+
+**Deliverables (this session):**
+- Art Direction document (ART-DIRECTION.md) established comprehensive visual standards
+- Validated Nien's sprite work against established art direction specs
+- Confirmed cross-project pattern portability (firstPunch Canvas → Godot _draw)
+- Build pipeline infrastructure created (Jango PR #111) enables automated releases with game-prefixed naming
+- Viewport upgraded to 1080p per founder directive
+
+
