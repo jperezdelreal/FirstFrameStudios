@@ -51,6 +51,13 @@ jobs:
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "tag_clean=${TAG#ashfall-}" >> $GITHUB_OUTPUT
       
+      - name: Import project
+        working-directory: games/ashfall
+        run: |
+          godot --headless --import
+          # Wait for import to complete
+          sleep 2
+
       - name: Export Windows build
         working-directory: games/ashfall
         run: |
