@@ -14,6 +14,16 @@
 - Redesigned Brawler's ears from simple arcs to defined C-shaped ellipses with inner ear detail strokes.
 - Enemy visual identity pass: normal gets purple baseball cap with brim, tough gets goatee, fast gets sneaker lace dots, heavy/boss get thick visible neck, boss gets open vest with lapels and white undershirt V-neck.
 - All new shapes use smooth arcs, ellipses, and quadraticCurveTo for anti-aliased rendering. Existing round lineJoin/lineCap settings preserved.
+- **Ashfall procedural sprites:** Godot's `_draw()` API maps 1:1 with Canvas 2D patterns from firstPunch. `draw_line`, `draw_circle`, `draw_colored_polygon`, `draw_arc`, `draw_ellipse` (custom helper) cover all character art needs. Limb-based procedural approach ports cleanly across engines.
+- **Silhouette differentiation strategy:** Hair shape is the #1 readability differentiator at fighting game scale. Kael's tied-back ponytail vs Rhena's wild spiky tufts create instantly recognizable silhouettes even at 128×128.
+- **Palette system for P1/P2:** Store palettes as `Array[Dictionary]` with color keys (skin, hair, outfit_primary, accent, etc). `palette_index` export lets scenes swap variants without code changes.
+- **SpriteStateBridge pattern:** Polling `StateMachine.current_state.name` each physics frame is reliable when no `state_changed` signal exists. Avoids needing to modify gameplay scripts from art side.
+- **Character scene architecture:** Character-specific `.tscn` files (kael.tscn, rhena.tscn) extend fighter_base by adding the procedural sprite + bridge nodes. Keeps fighter_base generic.
+- **Key file paths for Ashfall character art:**
+  - Scripts: `games/ashfall/scripts/fighters/sprites/` (character_sprite.gd, kael_sprite.gd, rhena_sprite.gd, sprite_state_bridge.gd)
+  - Scenes: `games/ashfall/scenes/fighters/` (kael.tscn, rhena.tscn)
+  - PNG output: `games/ashfall/assets/sprites/fighters/{character}/`
+  - Generator: `games/ashfall/scripts/tools/sprite_sheet_generator.gd`
 
 ---
 
@@ -21,7 +31,7 @@
 
 **Project:** Ashfall — 1v1 fighting game in Godot 4 (Sprite-based)  
 **Role:** Character/Enemy Artist  
-**Status:** Phase 2 Prep — Issue #9 In Progress  
+**Status:** Issue #9 COMPLETED — PR #90 opened
 
 **Context:** Ashfall started with placeholder character sprites (stick figures). Phase 2 will introduce polished character art. Nien assigned to create Kael and Rhena character sprites with proper animation states.
 
