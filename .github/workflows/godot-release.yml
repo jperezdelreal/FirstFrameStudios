@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'
+      - 'sprint-*-shipped'
   workflow_dispatch:
     inputs:
       version:
@@ -58,6 +59,16 @@ jobs:
             echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           fi
       
+      - name: Check if sprint release
+        id: sprint_check
+        run: |
+          TAG="${{ steps.version.outputs.tag }}"
+          if [[ $TAG =~ ^sprint-.*-shipped$ ]]; then
+            echo "is_sprint=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_sprint=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
@@ -73,4 +84,4 @@ jobs:
           files: |
             games/ashfall/builds/windows/Ashfall-Windows.zip
           draft: false
-          prerelease: false
+          prerelease: ${{ steps.sprint_check.outputs.is_sprint == 'true' }}
