@@ -2,7 +2,7 @@
 updated_at: 2026-03-20T18:00:00.000Z
 focus_area: Ashfall — 1v1 Fighting Game in Godot 4
 team_size: 15 specialists + Scribe + Ralph
-current_phase: Sprint 1 Complete — Sprint 2 Planning Next
+current_phase: Sprint 2 Phase 5 — Integration testing and ship prep. All feature work complete.
 genre: Fighting (1v1, Tekken/Street Fighter style)
 engine: Godot 4
 scope: 1 stage, 2 characters (MVP)
@@ -11,12 +11,12 @@ scope: 1 stage, 2 characters (MVP)
 # Now
 
 ## Current Focus
-Ashfall — Sprint 2 (UI/Polish Phase) Planning; Character select upgrade, HUD polish, P2 animation states, post-playtest follow-ups
+Sprint 2 Phase 5 — Integration testing and ship prep. All feature work complete.
 
 ## Status
 - Sprint 0 (Foundation): ✅ SHIPPED — All 5 PRs merged; M0-M4 gates passed; playable 1v1 prototype (tag: sprint-0-shipped)
 - Sprint 1 (Art Phase): ✅ SHIPPED — All 3 PRs merged (#103, #104, #105); Character sprites, stage art, VFX complete; playable with final art (tag: sprint-1-shipped)
-- Sprint 2 (UI/Polish Phase): 🔜 NEXT — Character select visual upgrade, HUD alignment, P2 animation polish, post-playtest follow-ups
+- Sprint 2 (Visual Quality & Code Hardening): 🔜 SHIPPING — All 10 feature PRs merged (#122-#150); Camera, sprites, stage, HUD, AI complete; integration testing in progress
 
 ## Sprint 0 Complete — Foundation Shipped (2026-03-09)
 

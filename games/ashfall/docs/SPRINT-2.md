@@ -29,8 +29,8 @@ Transform Ashfall from a functional prototype into a visually compelling fightin
 - Ember Grounds art upgrade (PR #145) — cracked obsidian floor, lava channels, 3-round progression, parallax
 - Hit feedback VFX (PR #146) — hit sparks (light/medium/heavy), screen shake, KO slow-mo, Ember stage integration
 
-### Phase 3: HUD & UI Polish 🔄 IN PROGRESS
-- Health bar redesign with ghost damage
+### Phase 3: HUD & UI Polish ✅ COMPLETE
+- Health bar redesign with ghost damage (PR #149)
 - Round indicators (best of 3)
 - Timer with urgency at <10s
 - Combo counter
@@ -38,13 +38,13 @@ Transform Ashfall from a functional prototype into a visually compelling fightin
 - Ember meter display
 - Owner: Wedge
 
-### Phase 4: AI & Game Feel 🔄 IN PROGRESS
+### Phase 4: AI & Game Feel ✅ COMPLETE
 - AI aggressiveness with 3 difficulty levels (Easy/Normal/Hard) — Owner: Tarkin ✅ DONE (PR #148)
-- Combat feel tuning (hitstun, knockback, input validation) — Owner: Lando 🔄
-- Frame data validation — Owner: Yoda + Jango
+- Combat feel tuning (hitstun, knockback, input validation) — Owner: Lando ✅ DONE (PR #150)
+- Frame data validation — Owner: Yoda + Jango ✅ DONE
 
-### Phase 5: Integration & Ship
-- Full integration test (Ackbar)
+### Phase 5: Integration & Ship 🔄 IN PROGRESS
+- Full integration test (Ackbar) 🔄 IN PROGRESS
 - Playtest verdict
 - Windows export test
 - Release tag: ashfall-v0.3.0
