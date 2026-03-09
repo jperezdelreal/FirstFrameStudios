@@ -301,3 +301,25 @@ Created universal animation principles skill — a comprehensive, engine-agnosti
 
 **Confidence:** Medium (firstPunch experience + industry best practices). Low for 3D motion capture section (not yet applied to game project).
 
+
+### Sprint 1 M0 — Issue #102 (Art Direction Finalization)
+
+**Delivered:**
+- `games/ashfall/docs/ART-DIRECTION.md` — Complete art direction document (634 lines) covering:
+  - Visual references (Guilty Gear XX, The Last Blade 2) and 5 style pillars
+  - Character silhouettes with full body proportion specs (Kael lean/zoner vs Rhena muscular/rushdown)
+  - Color palettes with Godot Color values AND hex codes for both P1/P2 per character (12+ palette keys each)
+  - VFX character themes with particle parameters (spread, velocity, gravity, damping, colors)
+  - Procedural asset naming convention for all 45+ _draw() poses
+  - Animation timing guide synced with frame-data.csv (60fps, all attack and non-attack frame counts)
+  - EmberGrounds stage art direction with 3-round volcanic escalation (Dormant/Warming/Eruption) and exact color values
+- PR #113 opened, Issue #102 closed
+
+**Key decisions:**
+- Defined 5 style pillars: Silhouette First, Readable Emotion, Warm-Dominant Palette, Procedural Elegance, Escalating Intensity
+- Mandated squint test at 64x64px as binary pass/fail for silhouette distinctness
+- Banned pure black (#000000) and pure white (#FFFFFF) from all palettes — keeps everything in warm volcanic range
+- Documented P2 palettes exist only for mirror matches, P1 is always canon
+- Accent color IS identity: Kael=blue, Rhena=orange — carries through VFX, damage numbers, ember aura
+- Outlined the PNG export naming convention for future use even though current art is procedural _draw()
+- Locked document status — changes require Art Director sign-off
