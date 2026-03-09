@@ -11,15 +11,16 @@ scope: 1 stage, 2 characters (MVP)
 # Now
 
 ## Current Focus
-Ashfall — Sprint 0 Closure Ceremony; Sprint 1 Planning Next
+Ashfall — Sprint 1 (Art Phase) Kickoff; Character sprites → Stage art → VFX → Integration
 
 ## Status
-- Sprint 0 (Foundation): ✅ SHIPPED — All 5 PRs merged; M0-M4 gates passed; playable 1v1 prototype
-- M0 (GDD + Architecture): ✅ COMPLETE — Design locked, architecture approved
-- M1 (Buildable Scaffold): ✅ COMPLETE — Core systems, project scaffold, fixed timestep
-- M2 (Movement + Attacks): ✅ COMPLETE — Fighter controller, hitbox system, knockback, AI
-- M3 (HUD + Game Flow): ✅ COMPLETE — Main menu, character select, fight scene, HUD, round manager, victory screen
-- M4 (Stable Build & Ship): ✅ COMPLETE — Integration gate passed, all P0 bugs fixed, ship criteria met
+- Sprint 0 (Foundation): ✅ SHIPPED — All 5 PRs merged; M0-M4 gates passed; playable 1v1 prototype (tag: sprint-0-shipped)
+- Sprint 1 (Art Phase): 🔄 IN PROGRESS (kickoff 2026-03-10) — Character sprites, stage backgrounds, VFX integration
+- M0 (Art Direction): 🔜 NEXT — Boba locks silhouettes, palettes, naming convention (Day 1–2)
+- M1 (Character Sprites): 🔜 NEXT — Nien creates ~45 states per fighter (Day 3–12)
+- M2 (VFX Palettes): 🔜 NEXT — Bossk character-specific effects (Day 8–15)
+- M3 (AnimationPlayer Integration): 🔜 NEXT — Chewie wires sprites to engine (Day 10–17)
+- M4 (Visual Playtest): 🔜 NEXT — Ackbar PASS verdict required (Day 19–20)
 
 ## Sprint 0 Complete — Foundation Shipped (2026-03-09)
 

@@ -10,6 +10,80 @@
 
 ## Learnings
 
+### Sprint 1 Kickoff — Art Phase Planning (2026-03-10)
+
+**Outcome:** Sprint 1 (Art Phase) plan locked and documented. Team ready to replace procedural placeholder art with HD pixel art. Definition of Success framework applied to next sprint.
+
+**What Was Delivered:**
+1. **SPRINT-1.md** — Comprehensive 2-week sprint plan covering:
+   - Sprint goal: Replace placeholder art with HD pixel art
+   - Scope lock: Character sprites (all ~45 states), stage backgrounds, VFX, AnimationPlayer integration
+   - Work breakdown: Nien (sprites), Leia (stage), Boba (art direction), Bossk (VFX), Chewie (animation wiring), Ackbar (playtest)
+   - M0–M4 milestone gates with clear dependencies
+   - Open issues addressed (#91, #50, #55)
+   - Out-of-scope items deferred (audio Sprint 3, UI polish Sprint 2)
+
+2. **SPRINT-1-SUCCESS.md** — Definition of Success template filled:
+   - Functional criteria: All animation states render, stage progresses, VFX differentiate
+   - Technical criteria: M0–M4 gates, integration gate, 60 FPS, asset naming enforced
+   - Quality criteria: Silhouette test, Ackbar PASS verdict, no visual glitches
+   - Documentation criteria: Art Direction doc, agent histories, now.md, decision documents
+   - Ship criteria: All boxes ✅ + Founder approval + Git tag
+
+3. **mace-sprint-1-kickoff.md** — Decision document with:
+   - Scope lock rationale (why these boundaries, why not audio, why not UI)
+   - Load analysis (140h planned, 96h capacity, 44h over — mitigated via P2 de-scope)
+   - Milestone gates M0–M4 with dependencies
+   - Risk mitigation (sprite overruns, animation timing, VFX performance, stage clipping)
+   - Change control protocol during sprint
+   - Communication plan (daily async, blocker escalation, playtest schedule)
+
+4. **now.md updated** — Sprint 1 marked 🔄 IN PROGRESS with M0–M4 gates visible
+
+**Key Decisions Locked:**
+1. **Scope is bounded:** P0+P1 animation states are required; P2 (throw/pose) de-scopable if Nien hits capacity. Audio deferred to Sprint 3; UI polish to Sprint 2.
+2. **M0 is critical path:** Art direction must be locked Day 1–2 before content creation can start. No content rework due to direction ambiguity.
+3. **Parallel execution:** M1 (sprites) + M1b (stage) + M2 (VFX) all parallel after M0. No sequential bottleneck. Chewie starts AnimationPlayer wiring once first batch of sprites available.
+4. **Playtest is gate:** Ackbar PASS verdict required to close sprint. PASS WITH NOTES acceptable only if critical follow-ups documented for Sprint 2.
+5. **Load cap enforced:** Even though planned work exceeds 20% per agent, parallelization + scope flexibility keeps risk MEDIUM (manageable).
+
+**Process Pattern Applied:**
+- Definition of Success framework from Sprint 0 now reused for Sprint 1
+- Milestone gates (M0–M4) are explicit deliverables, not vague checkpoints
+- Verification checklist prepared upfront (to be filled at sprint end)
+- Scope boundaries clarified before work starts (vs. retroactively managing scope creep)
+- Risk mitigation strategies documented with clear acceptance criteria
+
+**Why This Matters:**
+- **Founder visibility:** Clear scope + Definition of Success + milestone gates = confidence in sprint execution
+- **Team clarity:** All 6 agents know exact deliverables, gates, and success criteria before starting
+- **Risk management:** Load analysis + dependency graph + mitigation strategies prevent surprises
+- **Knowledge capture:** Sprint 1 plan structure can be templated for Sprint 2+ (consistent methodology)
+
+**Comparison to Sprint 0 Planning:**
+- Sprint 0: Scope locked via SPRINT-0.md, but Definition of Success created retroactively
+- Sprint 1: Scope locked + Definition of Success created upfront (process improvement)
+- Both use M0–M4 terminology; Sprint 1 makes gates even more explicit with acceptance criteria per gate
+- Both emphasize parallel execution and risk mitigation; Sprint 1 adds load cap governance with explicit de-scope fallback
+
+**Risks Identified & Mitigated:**
+1. **Sprite frame count exceeds 45/char:** Mitigated by P2 de-scope (throw/pose moves to Sprint 2)
+2. **Animation timing mismatch (hitstun/knockback):** Mitigated by daily sync with Lando frame data + Chewie testing
+3. **VFX perf below 60 FPS:** Mitigated by capping particle count + M2 profiling
+4. **Stage clips fighters:** Mitigated by boundary testing in M3 integration
+5. **Over capacity (140h > 96h):** Mitigated by P2 de-scope (~20h saved) + Leia parallelizing with Nien
+
+**Pattern Learned:**
+Scope lock is not about predicting perfect capacity — it's about identifying the critical path and de-scope fallbacks upfront. "If X gets delayed, we de-scope Y" is more valuable than "this won't take long." Explicit de-scope criteria remove last-minute panic.
+
+**What's Next (Sprint 1 Execution):**
+- Boba starts M0 art direction immediately (Day 1–2)
+- Nien + Leia + Bossk + Chewie parallel execute M1–M3 (Day 3–18)
+- Ackbar playtest Day 20; verdict required to close sprint
+- Planning resumes for Sprint 2 (UI Phase) once Sprint 1 M4 passes
+
+
+
 ### Sprint 0 Closure & Definition of Success Framework (2026-03-09)
 
 **Outcome:** Sprint 0 officially closed. Definition of Success framework created and locked for Ashfall + future FFS projects.
