@@ -6,6 +6,8 @@ extends Node2D
 @onready var fighter2: Fighter = $Fighters/Fighter2
 @onready var camera: CameraController = $Camera2D
 
+var combo_tracker: Node
+
 func _ready() -> void:
 	# Cross-reference opponents
 	fighter1.opponent = fighter2
@@ -32,6 +34,9 @@ func _ready() -> void:
 	# Wire hit_landed signal for damage application
 	EventBus.hit_landed.connect(_on_hit_landed)
 
+	# Combo tracker — counts consecutive hits per fighter
+	_setup_combo_tracker()
+
 	# Start the round system
 	RoundManager.start_match(fighter1, fighter2)
 
@@ -47,3 +52,12 @@ func _on_hit_landed(attacker, target, move: Dictionary) -> void:
 	var damage: int = move.get("damage", 10)
 	if target.has_method("take_damage"):
 		target.take_damage(damage)
+
+func _setup_combo_tracker() -> void:
+	var script := load("res://scripts/systems/combo_tracker.gd")
+	combo_tracker = Node.new()
+	combo_tracker.set_script(script)
+	combo_tracker.name = "ComboTracker"
+	add_child(combo_tracker)
+	combo_tracker.register_fighter(fighter1)
+	combo_tracker.register_fighter(fighter2)

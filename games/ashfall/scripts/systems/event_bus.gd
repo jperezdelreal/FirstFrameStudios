@@ -7,6 +7,7 @@ extends Node
 signal hit_landed(attacker, target, move)
 signal hit_blocked(attacker, target, move)
 signal hit_confirmed(attacker, target, move, combo_count: int)
+signal combo_updated(fighter, combo_count: int)
 signal combo_ended(fighter, total_hits: int, total_damage: int)
 
 # --- Fighter signals ---
