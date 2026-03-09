@@ -1,9 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/fight_scene.gd" id="1_scene"]
 [ext_resource type="PackedScene" path="res://scenes/fighters/fighter_base.tscn" id="2_fighter"]
 [ext_resource type="Resource" path="res://resources/movesets/kael_moveset.tres" id="3_kael"]
 [ext_resource type="Resource" path="res://resources/movesets/rhena_moveset.tres" id="4_rhena"]
+
+[ext_resource type="Script" path="res://scripts/systems/camera_controller.gd" id="5_camera"]
 
 [sub_resource type="WorldBoundaryShape2D" id="SubResource_floor"]
 
@@ -79,3 +81,7 @@ moveset = ExtResource("4_rhena")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(320, 180)
+script = ExtResource("5_camera")
+stage_left = -300.0
+stage_right = 940.0
+camera_y = 180.0
