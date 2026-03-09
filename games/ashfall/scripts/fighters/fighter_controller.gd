@@ -19,8 +19,8 @@ var moveset: FighterMoveset
 
 # Motion priority: most complex first. DP must beat QCF overlap.
 const MOTION_PRIORITY: Array = ["double_qcf", "hcf", "hcb", "dp", "qcf", "qcb"]
-# Button priority within normals: heavies before lights
-const BUTTON_PRIORITY: Array = ["hk", "hp", "lk", "lp"]
+# Button priority within normals: heavies > mediums > lights (6-button per GDD §6)
+const BUTTON_PRIORITY: Array = ["hk", "hp", "mk", "mp", "lk", "lp"]
 
 func _physics_process(_delta: float) -> void:
 	if not fighter or not input_buffer or not moveset:

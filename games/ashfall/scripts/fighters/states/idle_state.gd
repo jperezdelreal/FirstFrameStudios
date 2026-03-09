@@ -53,6 +53,8 @@ func physics_update() -> void:
 
 func _any_attack_pressed() -> bool:
 	return (fighter.is_input_just_pressed("light_punch")
+		or fighter.is_input_just_pressed("medium_punch")
 		or fighter.is_input_just_pressed("heavy_punch")
 		or fighter.is_input_just_pressed("light_kick")
+		or fighter.is_input_just_pressed("medium_kick")
 		or fighter.is_input_just_pressed("heavy_kick"))

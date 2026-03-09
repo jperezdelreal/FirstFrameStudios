@@ -119,10 +119,12 @@ func _read_raw_input() -> Dictionary:
 		"just_down": Input.is_action_just_pressed(prefix + "down"),
 		"just_left": Input.is_action_just_pressed(prefix + "left"),
 		"just_right": Input.is_action_just_pressed(prefix + "right"),
-		# Attack buttons (one-frame press)
+		# Attack buttons (one-frame press) — 6-button layout per GDD §6
 		"lp": Input.is_action_just_pressed(prefix + "light_punch"),
+		"mp": Input.is_action_just_pressed(prefix + "medium_punch"),
 		"hp": Input.is_action_just_pressed(prefix + "heavy_punch"),
 		"lk": Input.is_action_just_pressed(prefix + "light_kick"),
+		"mk": Input.is_action_just_pressed(prefix + "medium_kick"),
 		"hk": Input.is_action_just_pressed(prefix + "heavy_kick"),
 		# Block held state
 		"block": Input.is_action_pressed(prefix + "block"),
@@ -158,7 +160,8 @@ func _empty_frame() -> Dictionary:
 	return {
 		"up": false, "down": false, "left": false, "right": false,
 		"just_up": false, "just_down": false, "just_left": false, "just_right": false,
-		"lp": false, "hp": false, "lk": false, "hk": false,
+		"lp": false, "mp": false, "hp": false,
+		"lk": false, "mk": false, "hk": false,
 		"block": false,
 		"direction": 5,
 	}

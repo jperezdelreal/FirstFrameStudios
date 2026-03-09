@@ -7,6 +7,9 @@ extends FighterState
 
 const DEFAULT_HITSTUN: int = 12
 const MAX_HITSTUN: int = 60
+## Horizontal knockback deceleration (px/sec per frame).
+## Tuned so lights stop in ~5f and heavies slide ~12f for visual impact.
+const KNOCKBACK_DECEL: float = 18.0
 
 var _hitstun_remaining: int = 0
 
@@ -21,13 +24,15 @@ func physics_update() -> void:
 	if not fighter:
 		return
 
-	# Decelerate knockback
-	fighter.velocity.x = move_toward(fighter.velocity.x, 0.0, 15.0)
+	# Decelerate horizontal knockback
+	fighter.velocity.x = move_toward(fighter.velocity.x, 0.0, KNOCKBACK_DECEL)
 
 	if not fighter.is_on_floor():
 		fighter.velocity.y += fighter.gravity / 60.0
 	else:
-		fighter.velocity.y = 0
+		# Kill vertical velocity on landing, prevent bouncing
+		if fighter.velocity.y > 0.0:
+			fighter.velocity.y = 0
 
 	fighter.move_and_slide()
 

@@ -61,12 +61,15 @@ func _on_hit_landed(attacker, target, move: Dictionary) -> void:
 	if not target or not is_instance_valid(target):
 		return
 
-	# Blocked hits emit hit_blocked and deal chip damage only
+	# Blocked hits emit hit_blocked, apply chip damage + blockstun
 	if _is_blocking(target):
 		EventBus.hit_blocked.emit(attacker, target, move)
-		var chip: int = maxi(1, move.get("damage", 10) / 10)
-		if target.has_method("take_damage"):
-			target.take_damage(chip, Vector2.ZERO, 0)
+		var base_damage: int = move.get("damage", 10)
+		var chip: int = maxi(1, base_damage / 10)
+		var blockstun: int = move.get("blockstun_duration", 8)
+		var knockback: Vector2 = move.get("knockback_force", Vector2.ZERO)
+		if target.has_method("take_block_damage"):
+			target.take_block_damage(chip, knockback, blockstun)
 		return
 
 	var base_damage: int = move.get("damage", 10)

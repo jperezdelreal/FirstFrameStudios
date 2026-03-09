@@ -80,7 +80,7 @@ func _update_facing() -> void:
 	else:
 		facing_direction = -1
 	sprite.flip_h = facing_direction < 0
-	attack_origin.position.x = abs(attack_origin.position.x) * facing_direction
+	attack_origin.position.x = absf(attack_origin.position.x) * facing_direction
 
 
 # --- Damage interface ---
@@ -94,6 +94,22 @@ func take_damage(amount: int, knockback: Vector2, hitstun_frames: int) -> void:
 		state_machine.transition_to("ko", {})
 	else:
 		state_machine.transition_to("hit", {"hitstun_frames": hitstun_frames})
+
+
+## Applies chip damage and blockstun when an attack is blocked.
+## Keeps the fighter in block state with proper pushback and stun duration.
+func take_block_damage(chip: int, knockback: Vector2, blockstun_frames: int) -> void:
+	health = maxi(0, health - chip)
+	took_damage.emit(self, chip, health)
+	if health <= 0:
+		knocked_out.emit(self)
+		state_machine.transition_to("ko", {})
+	else:
+		state_machine.transition_to("block", {
+			"blockstun_frames": blockstun_frames,
+			"knockback": knockback,
+			"crouching": is_input_pressed("down"),
+		})
 
 
 # --- Round lifecycle ---
@@ -125,8 +141,10 @@ func is_input_just_pressed(action: String) -> bool:
 		"left": return input_buffer.check_button("just_left")
 		"right": return input_buffer.check_button("just_right")
 		"light_punch": return input_buffer.check_button("lp")
+		"medium_punch": return input_buffer.check_button("mp")
 		"heavy_punch": return input_buffer.check_button("hp")
 		"light_kick": return input_buffer.check_button("lk")
+		"medium_kick": return input_buffer.check_button("mk")
 		"heavy_kick": return input_buffer.check_button("hk")
 	return false
 
