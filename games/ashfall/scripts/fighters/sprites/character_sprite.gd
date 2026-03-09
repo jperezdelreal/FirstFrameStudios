@@ -33,7 +33,9 @@ var pal: Dictionary:
 			return {}
 		return palettes[clampi(palette_index, 0, palettes.size() - 1)]
 
-## All valid pose names
+## All valid pose names — covers every fighter state.
+## Subclasses override the _draw_*() methods for character-specific art.
+## Poses without a dedicated drawing fall back to the closest match.
 const POSES := [
 	"idle", "walk", "walk_2",
 	"crouch",
@@ -51,6 +53,21 @@ const POSES := [
 	"wakeup",
 	"special_1", "special_2", "special_3", "special_4",
 	"ignition",
+	# Stance
+	"idle", "walk", "walk_2", "crouch",
+	# Air
+	"jump_up", "jump_peak", "jump_fall",
+	# Attacks (punches)
+	"attack_lp", "attack_mp", "attack_hp",
+	# Attacks (kicks) — fall back to punch equivalents until drawn
+	"attack_lk", "attack_mk", "attack_hk",
+	# Block
+	"block_standing", "block_crouching",
+	# Damage
+	"hit", "ko",
+	# Throw
+	"throw_startup", "throw_execute", "throw_whiff",
+	# Win/Lose
 	"win", "lose",
 ]
 
@@ -67,6 +84,7 @@ func _init_palettes() -> void:
 
 func _draw() -> void:
 	match pose:
+		# Stance
 		"idle":             _draw_idle()
 		"walk":             _draw_walk()
 		"walk_2":           _draw_walk_2()
@@ -108,10 +126,37 @@ func _draw() -> void:
 		"ignition":         _draw_ignition()
 		"win":              _draw_win()
 		"lose":             _draw_lose()
+		# Air
+		"jump_up":          _draw_jump_up()
+		"jump_peak":        _draw_jump_peak()
+		"jump_fall":        _draw_jump_fall()
+		# Attacks — punches
+		"attack_lp":        _draw_attack_lp()
+		"attack_mp":        _draw_attack_mp()
+		"attack_hp":        _draw_attack_hp()
+		# Attacks — kicks (fallback to punch equivalents)
+		"attack_lk":        _draw_attack_lk()
+		"attack_mk":        _draw_attack_mk()
+		"attack_hk":        _draw_attack_hk()
+		# Block
+		"block_standing":   _draw_block_standing()
+		"block_crouching":  _draw_block_crouching()
+		# Damage
+		"hit":              _draw_hit()
+		"ko":               _draw_ko()
+		# Throw
+		"throw_startup":    _draw_throw_startup()
+		"throw_execute":    _draw_throw_execute()
+		"throw_whiff":      _draw_throw_whiff()
+		# Win/Lose
+		"win":              _draw_win()
+		"lose":             _draw_lose()
+		# Unknown pose → idle fallback
 		_:                  _draw_idle()
 
 
 # --- Virtual pose methods (override in subclass) ---
+# Core poses
 func _draw_idle() -> void: pass
 func _draw_walk() -> void: pass
 func _draw_walk_2() -> void: pass
@@ -153,13 +198,40 @@ func _draw_special_4() -> void: pass
 func _draw_ignition() -> void: pass
 func _draw_win() -> void: pass
 func _draw_lose() -> void: pass
+func _draw_hit() -> void: pass
+func _draw_ko() -> void: pass
+
+# Attack poses
+func _draw_attack_lp() -> void: pass
+func _draw_attack_mp() -> void: pass
+func _draw_attack_hp() -> void: pass
+
+# Kick poses — default to punch equivalents
+func _draw_attack_lk() -> void: _draw_attack_lp()
+func _draw_attack_mk() -> void: _draw_attack_mp()
+func _draw_attack_hk() -> void: _draw_attack_hp()
+
+# Stance poses — default to idle until Nien draws dedicated art
+func _draw_crouch() -> void: _draw_idle()
+func _draw_jump_up() -> void: _draw_idle()
+func _draw_jump_peak() -> void: _draw_idle()
+func _draw_jump_fall() -> void: _draw_idle()
+func _draw_block_standing() -> void: _draw_idle()
+func _draw_block_crouching() -> void: _draw_crouch()
+
+# Throw poses — default to attack_hp until dedicated art
+func _draw_throw_startup() -> void: _draw_attack_hp()
+func _draw_throw_execute() -> void: _draw_attack_hp()
+func _draw_throw_whiff() -> void: _draw_idle()
+
+# Win/Lose — default to idle/ko
+func _draw_win() -> void: _draw_idle()
+func _draw_lose() -> void: _draw_ko()
 
 
-# =========================================================================
-#  Common drawing helpers — coordinates relative to node origin (0,0).
+# ==================================================================#  Common drawing helpers — coordinates relative to node origin (0,0).
 #  Character fits in roughly 30×60 px to match the collision box.
-# =========================================================================
-
+# ==================================================================
 ## Outlined ellipse via polygon approximation
 func draw_ellipse(center: Vector2, radius: Vector2, color: Color,
 		outline_color: Color = Color.TRANSPARENT, outline_width: float = 1.0,

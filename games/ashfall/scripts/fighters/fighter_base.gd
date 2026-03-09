@@ -1,5 +1,6 @@
 ## Base class for all playable fighters. Owns health, facing, movement
-## constants, input buffer, fighter controller, and state-machine wiring.
+## constants, input buffer, fighter controller, animation controller,
+## and state-machine wiring.
 ## Character-specific scripts extend this to override constants or add moves.
 class_name Fighter
 extends CharacterBody2D
@@ -35,6 +36,7 @@ var facing_right: bool:
 @onready var attack_origin: Marker2D = $AttackOrigin
 @onready var input_buffer: InputBuffer = $InputBuffer
 @onready var controller: FighterController = $FighterController
+@onready var anim_player: AnimationPlayer = $AnimationPlayer
 
 
 func _ready() -> void:
