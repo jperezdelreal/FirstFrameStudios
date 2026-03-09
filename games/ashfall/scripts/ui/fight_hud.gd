@@ -79,6 +79,8 @@ func _wire_signals() -> void:
 	EventBus.timer_updated.connect(_on_timer_updated)
 	EventBus.announce.connect(_on_announce)
 	EventBus.ember_changed.connect(_on_ember_changed)
+	EventBus.combo_updated.connect(_on_combo_updated)
+	EventBus.combo_ended.connect(_on_combo_ended)
 
 
 func _process(delta: float) -> void:
@@ -248,6 +250,16 @@ func _on_ember_changed(player_id: int, new_value: int) -> void:
 		p1_ember = float(new_value)
 	else:
 		p2_ember = float(new_value)
+
+
+func _on_combo_updated(_fighter: Variant, combo_count: int) -> void:
+	if combo_count >= 2:
+		_on_announce("%d HIT" % combo_count)
+
+
+func _on_combo_ended(_fighter: Variant, total_hits: int, _total_damage: int) -> void:
+	if total_hits >= 3:
+		_on_announce("%d HIT COMBO!" % total_hits)
 
 
 # ── Round dots ───────────────────────────────────────────

@@ -314,3 +314,27 @@ Created .squad/analysis/team-evaluation-v3.md (22 KB) — comprehensive post-res
 
 **Playtesting Impact:**
 Gate is unblocked. Team can proceed with M4 playtesting phase without CI friction. Ackbar can now focus on critical QA coverage, balance validation, and player experience iteration.
+### 2025-07-25: Ashfall M4 Gate Playtest (Sprint 0 Ship Verification)
+- **Verdict:** PASS WITH NOTES. Game flow works end-to-end (menu->select->fight->victory->rematch). Infrastructure is architecturally excellent.
+- **P0 Bugs Found:**
+  1. Empty Hitbox Geometry (#92) — Hitboxes Node2D has no Area2D children. Normal attacks animate but deal zero damage. Only throws connect.
+  2. take_damage Signature Mismatch (#93) — fight_scene.gd calls take_damage(amount) with 1 arg but fighter_base.gd requires 3 (amount, knockback, hitstun_frames). Latent crash.
+- **P1 Bugs Found:**
+  3. GameState.scores Never Updated (#94) — RoundManager has own scores, never syncs to GameState. HUD round dots and victory screen always show 0-0.
+  4. Equal-HP Timer Draw Infinite Loop (#95) — When timer expires with equal HP, no score increments. _check_match_over loops forever.
+  5. MP/MK buttons defined in input map but not wired through InputBuffer or movesets. 4 of 6 buttons work.
+- **Balance Observations:**
+  - Kael vs Rhena frame data is structurally sound. Rhena slightly favored in raw damage (+5 to +10 per move) with marginally more recovery.
+  - LP identical for both (4/2/6, 30 dmg) — good baseline. HK Rhena 120 vs Kael 110.
+  - Rhena Blaze Rush is +2 on block — too safe for 80-damage special. Recommend -2.
+  - Kael's zoner identity is underserved. Ember Shot has no projectile behavior.
+  - Walk speed differentiation is good: Rhena 10% faster (220 vs 200).
+  - Combo proration math is correct: [1.0, 0.8, 0.65, 0.5, 0.4] floor.
+  - 1000 HP pools with 30-120 damage normals = 20-40 second rounds. Good pacing.
+- **Feel Calibration:**
+  - Input system: 8/10. 8-frame buffer, proper SOCD, motion priority (DP>QCF).
+  - Attack feel: 4/10 (broken by missing hitboxes). Frame data structure is excellent.
+  - Movement feel: 7/10. Asymmetric walk speeds, proper jump commitment.
+  - State machine robustness: 9/10. Safety timeouts on all states, proper enter/exit.
+  - VFX/Audio: 8/10. Properly wired to EventBus, procedural audio with pitch jitter.
+- **Key Insight:** The damage pipeline has two sequential blockers — empty hitbox geometry prevents hit_landed, and even if fixed, the take_damage call will crash. Must fix both in sequence. Throw_state.gd is the only path that correctly calls take_damage(3 args) and works today.

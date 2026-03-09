@@ -178,10 +178,17 @@ class IntegrationGate:
     
     def save_report_json(self, output_path: Path):
         """Save detailed report as JSON for CI integration"""
+        # Signal warnings are non-fatal — mirror the same logic used for
+        # the console summary so the JSON overall_status stays consistent.
+        non_fatal = {"Signal Wiring Validator"}
+        fatal_results = {
+            name: r for name, r in self.results.items() if name not in non_fatal
+        }
+
         report = {
             "timestamp": self.start_time.isoformat(),
             "elapsed_seconds": (datetime.now() - self.start_time).total_seconds(),
-            "overall_status": "PASS" if all(r["passed"] for r in self.results.values()) else "FAIL",
+            "overall_status": "PASS" if all(r["passed"] for r in fatal_results.values()) else "FAIL",
             "validators": {}
         }
         

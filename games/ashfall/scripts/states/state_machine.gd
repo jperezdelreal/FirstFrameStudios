@@ -4,6 +4,8 @@
 class_name StateMachine
 extends Node
 
+signal state_changed(new_state_name: String)
+
 @export var initial_state: Node
 
 var current_state: Node
@@ -31,3 +33,4 @@ func transition_to(target_state_name: String, args: Dictionary = {}) -> void:
 		current_state.exit()
 	current_state = target
 	current_state.enter(args)
+	state_changed.emit(target_state_name)

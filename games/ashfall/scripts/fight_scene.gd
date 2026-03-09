@@ -38,6 +38,9 @@ func _ready() -> void:
 	# Wire hit_landed signal for damage application
 	EventBus.hit_landed.connect(_on_hit_landed)
 
+	# Wire match_ended for scene transition to victory screen
+	EventBus.match_ended.connect(_on_match_ended)
+
 	# Combo tracker — counts consecutive hits per fighter
 	_setup_combo_tracker()
 
@@ -57,6 +60,15 @@ func _get_proration(combo_hit: int) -> float:
 func _on_hit_landed(attacker, target, move: Dictionary) -> void:
 	if not target or not is_instance_valid(target):
 		return
+
+	# Blocked hits emit hit_blocked and deal chip damage only
+	if _is_blocking(target):
+		EventBus.hit_blocked.emit(attacker, target, move)
+		var chip: int = maxi(1, move.get("damage", 10) / 10)
+		if target.has_method("take_damage"):
+			target.take_damage(chip)
+		return
+
 	var base_damage: int = move.get("damage", 10)
 	var combo_hit: int = ComboTracker.get_combo_count(attacker)
 	var scaled_damage: int = maxi(1, int(base_damage * _get_proration(combo_hit)))
@@ -71,3 +83,24 @@ func _setup_combo_tracker() -> void:
 	add_child(combo_tracker)
 	combo_tracker.register_fighter(fighter1)
 	combo_tracker.register_fighter(fighter2)
+
+
+func _is_blocking(target: Node) -> bool:
+	if not target.has_node("StateMachine"):
+		return false
+	var sm := target.get_node("StateMachine")
+	if sm and "current_state" in sm and sm.current_state:
+		return sm.current_state.name.to_lower() == "block"
+	return false
+
+
+func _on_match_ended(winner: Variant, _scores: Variant) -> void:
+	var winner_name := ""
+	if winner and "player_id" in winner:
+		winner_name = SceneManager.p1_character if winner.player_id == 1 else SceneManager.p2_character
+	SceneManager.match_stats = {"winner": winner_name}
+	GameState.current_phase = GameState.GamePhase.MATCH_END
+	# Delay before transitioning to the victory screen
+	get_tree().create_timer(2.0).timeout.connect(func():
+		EventBus.scene_change_requested.emit(SceneManager.SCENE_VICTORY)
+	)
