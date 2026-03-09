@@ -2,6 +2,10 @@
 ## EventBus, and manages the fight lifecycle.
 extends Node2D
 
+# Combo damage proration: multiplier per hit number (index 0 = hit 1).
+# Hit 5+ uses the last value (40% floor).
+const COMBO_PRORATION: Array[float] = [1.0, 0.8, 0.65, 0.5, 0.4]
+
 @onready var fighter1: Fighter = $Fighters/Fighter1
 @onready var fighter2: Fighter = $Fighters/Fighter2
 @onready var camera: CameraController = $Camera2D
@@ -46,12 +50,18 @@ func _on_fighter_damaged(fighter_node, amount: int, remaining_hp: int) -> void:
 func _on_fighter_ko(fighter_node) -> void:
 	EventBus.fighter_ko.emit(fighter_node)
 
+func _get_proration(combo_hit: int) -> float:
+	var idx: int = clampi(combo_hit - 1, 0, COMBO_PRORATION.size() - 1)
+	return COMBO_PRORATION[idx]
+
 func _on_hit_landed(attacker, target, move: Dictionary) -> void:
 	if not target or not is_instance_valid(target):
 		return
-	var damage: int = move.get("damage", 10)
+	var base_damage: int = move.get("damage", 10)
+	var combo_hit: int = ComboTracker.get_combo_count(attacker)
+	var scaled_damage: int = maxi(1, int(base_damage * _get_proration(combo_hit)))
 	if target.has_method("take_damage"):
-		target.take_damage(damage)
+		target.take_damage(scaled_damage)
 
 func _setup_combo_tracker() -> void:
 	var script := load("res://scripts/systems/combo_tracker.gd")

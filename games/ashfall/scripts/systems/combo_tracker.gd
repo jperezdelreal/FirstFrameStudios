@@ -27,6 +27,13 @@ func register_fighter(fighter: Node) -> void:
 		_combos[id] = ComboData.new()
 
 
+func get_combo_count(fighter: Node) -> int:
+	var id := fighter.get_instance_id()
+	if _combos.has(id):
+		return (_combos[id] as ComboData).count
+	return 0
+
+
 func reset_all() -> void:
 	for id in _combos:
 		var data: ComboData = _combos[id]
@@ -70,7 +77,7 @@ func _on_hit_landed(attacker: Variant, target: Variant, move: Variant) -> void:
 		return
 	register_fighter(attacker)
 
-	var id := attacker.get_instance_id()
+	var id: int = attacker.get_instance_id()
 	var data: ComboData = _combos[id]
 	var damage: int = move.get("damage", 10) if move is Dictionary else 10
 
@@ -87,7 +94,7 @@ func _on_hit_landed(attacker: Variant, target: Variant, move: Variant) -> void:
 func _on_hit_blocked(attacker: Variant, _target: Variant, _move: Variant) -> void:
 	if not attacker or not is_instance_valid(attacker):
 		return
-	var id := attacker.get_instance_id()
+	var id: int = attacker.get_instance_id()
 	if not _combos.has(id):
 		return
 	var data: ComboData = _combos[id]

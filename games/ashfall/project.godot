@@ -24,6 +24,7 @@ RoundManager="*res://scripts/systems/round_manager.gd"
 VFXManager="*res://scripts/systems/vfx_manager.gd"
 AudioManager="*res://scripts/systems/audio_manager.gd"
 SceneManager="*res://scripts/systems/scene_manager.gd"
+ComboTracker="*res://scripts/systems/combo_tracker.gd"
 
 [display]
 
