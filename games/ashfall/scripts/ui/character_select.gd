@@ -51,8 +51,7 @@ func _on_character_selected(index: int) -> void:
 	p1_index = index
 	_sync_cpu()
 	_update_display()
-	fight_btn.visible = true
-	fight_btn.grab_focus()
+	_on_fight()
 
 
 func _on_fight() -> void:
