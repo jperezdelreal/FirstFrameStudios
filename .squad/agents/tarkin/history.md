@@ -106,3 +106,10 @@ Created universal enemy and encounter design skill — a comprehensive framework
 
 **Confidence:** Medium (beat-em-up encounter design deeply validated; archetype system and boss design framework generalized from industry patterns). Will escalate to High after applying to platformer/RPG enemy design.
 
+### Issue #129 — ai_controller.gd Type Annotations (2026-03-09)
+- **PR:** #138 (`squad/129-ai-type-hints`)
+- **`_weighted_pick` loop variables:** Added `for w: int` and `for key: String` typed iteration — untyped `for` loops over Dictionary values/keys produce Variant in Godot 4.6, same as the `:=` inference bug from Sprint 1.
+- **`abs()` → `absf()`:** `_distance_to_opponent` used generic `abs()` which returns Variant (GDSCRIPT-STANDARDS Rule 2). Replaced with `absf()` for explicit float return.
+- **StateMachine typed access:** `_in_protected_state` and `_opponent_state_name` had `var sm = fighter.state_machine` with no type. Changed to `var sm: StateMachine = fighter.get("state_machine") as StateMachine` — uses safe `.get()` already present in the guard clause, plus `as` cast for compile-time type safety.
+- **Key insight:** When `fighter` is typed as `CharacterBody2D` (base class), accessing script-added properties like `.state_machine` directly is a dynamic dispatch. Using `.get()` + `as` cast is both safer and more explicit about the Variant→concrete conversion.
+

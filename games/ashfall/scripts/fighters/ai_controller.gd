@@ -261,7 +261,7 @@ func _has_valid_refs() -> bool:
 func _in_protected_state() -> bool:
 	if not fighter or not fighter.get("state_machine"):
 		return false
-	var sm = fighter.state_machine
+	var sm: StateMachine = fighter.get("state_machine") as StateMachine
 	if not sm or not sm.current_state:
 		return false
 	return sm.current_state.name.to_lower() in PROTECTED_STATES
@@ -269,12 +269,12 @@ func _in_protected_state() -> bool:
 func _distance_to_opponent() -> float:
 	if not fighter or not opponent:
 		return 9999.0
-	return abs(fighter.global_position.x - opponent.global_position.x)
+	return absf(fighter.global_position.x - opponent.global_position.x)
 
 func _opponent_state_name() -> String:
 	if not opponent or not opponent.get("state_machine"):
 		return ""
-	var sm = opponent.state_machine
+	var sm: StateMachine = opponent.get("state_machine") as StateMachine
 	if not sm or not sm.current_state:
 		return ""
 	return sm.current_state.name.to_lower()
@@ -287,11 +287,11 @@ func _randi_range(low: int, high: int) -> int:
 
 func _weighted_pick(weights: Dictionary) -> String:
 	var total: int = 0
-	for w in weights.values():
+	for w: int in weights.values():
 		total += w
 	var roll: int = randi() % total
 	var cumulative: int = 0
-	for key in weights:
+	for key: String in weights:
 		cumulative += weights[key]
 		if roll < cumulative:
 			return key
