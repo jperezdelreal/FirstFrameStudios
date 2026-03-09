@@ -41,6 +41,7 @@ var _timer_ticking: bool = false
 
 
 func _ready() -> void:
+	assert(EventBus != null, "AudioManager requires EventBus to load first")
 	_setup_buses()
 	_generate_all_sounds()
 	_create_players()

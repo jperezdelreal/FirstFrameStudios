@@ -22,6 +22,8 @@ const SCENE_VICTORY := "res://scenes/ui/victory_screen.tscn"
 
 
 func _ready() -> void:
+	assert(EventBus != null, "SceneManager requires EventBus to load first")
+	assert(GameState != null, "SceneManager requires GameState to load first")
 	layer = 100
 	_create_fade_overlay()
 	EventBus.scene_change_requested.connect(_on_scene_change_requested)
