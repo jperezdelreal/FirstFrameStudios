@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://scripts/fighters/fighter_base.gd" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/states/state_machine.gd" id="2_sm"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://scripts/fighters/states/ko_state.gd" id="10_ko"]
 [ext_resource type="Script" path="res://scripts/systems/input_buffer.gd" id="11_input"]
 [ext_resource type="Script" path="res://scripts/fighters/fighter_controller.gd" id="12_ctrl"]
+[ext_resource type="Script" path="res://scripts/fighters/states/throw_state.gd" id="13_throw"]
 
 [sub_resource type="RectangleShape2D" id="SubResource_body"]
 size = Vector2(30, 60)
@@ -83,3 +84,6 @@ script = ExtResource("9_hit")
 
 [node name="KO" type="Node" parent="StateMachine"]
 script = ExtResource("10_ko")
+
+[node name="Throw" type="Node" parent="StateMachine"]
+script = ExtResource("13_throw")
