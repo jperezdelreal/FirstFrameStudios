@@ -4,13 +4,12 @@
 ##
 ## State flow: INTRO → READY → FIGHT → KO → ROUND_RESET → INTRO (or MATCH_END)
 ## All timing is frame-based (deterministic at 60 FPS).
-class_name RoundManager
 extends Node
 
 # --- Signals (wired to UI and other systems via fight_scene.gd) ---
 signal round_started(round_number: int)
-signal round_ended(winner: Fighter, round_number: int)
-signal match_ended(winner: Fighter, scores: Array[int])
+signal round_ended(winner: CharacterBody2D, round_number: int)
+signal match_ended(winner: CharacterBody2D, scores: Array[int])
 signal timer_updated(seconds_remaining: int)
 signal announce(text: String)
 
@@ -35,7 +34,7 @@ var p1_spawn: Vector2 = Vector2(-200, 0)
 var p2_spawn: Vector2 = Vector2(200, 0)
 
 
-func start_match(fighter1: Fighter, fighter2: Fighter) -> void:
+func start_match(fighter1: CharacterBody2D, fighter2: CharacterBody2D) -> void:
 	fighters = [fighter1, fighter2]
 	scores = [0, 0]
 	current_round = 1
@@ -93,7 +92,7 @@ func _physics_process(_delta: float) -> void:
 
 # --- External events ---
 
-func _on_fighter_ko(fighter: Fighter) -> void:
+func _on_fighter_ko(fighter: CharacterBody2D) -> void:
 	if round_state != "FIGHT":
 		return
 	var winner_index: int = 1 if fighter == fighters[0] else 0

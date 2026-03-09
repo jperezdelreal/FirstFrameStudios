@@ -20,14 +20,14 @@ var _music_bus_idx: int = -1
 var _announcer_bus_idx: int = -1
 
 # --- Sound libraries ---
-var _light_hit_sounds: Array[AudioStreamWav] = []
-var _heavy_hit_sounds: Array[AudioStreamWav] = []
-var _block_sound: AudioStreamWav
-var _whiff_sound: AudioStreamWav
-var _timer_tick_sound: AudioStreamWav
-var _ignition_sound: AudioStreamWav
+var _light_hit_sounds: Array[AudioStreamWAV] = []
+var _heavy_hit_sounds: Array[AudioStreamWAV] = []
+var _block_sound: AudioStreamWAV
+var _whiff_sound: AudioStreamWAV
+var _timer_tick_sound: AudioStreamWAV
+var _ignition_sound: AudioStreamWAV
 var _announcer_sounds: Dictionary = {}
-var _bg_music_stream: AudioStreamWav
+var _bg_music_stream: AudioStreamWAV
 
 # --- Player nodes ---
 var _sfx_pool: Array[AudioStreamPlayer] = []
@@ -244,7 +244,7 @@ func get_announcer_volume() -> float:
 # INTERNAL PLAYBACK HELPERS
 # =========================================================================
 
-func _play_sfx(stream: AudioStreamWav, pitch_scale: float = 1.0) -> void:
+func _play_sfx(stream: AudioStreamWAV, pitch_scale: float = 1.0) -> void:
 	if stream == null:
 		return
 	var player := _get_next_sfx_player()
@@ -331,7 +331,7 @@ func _generate_heavy_hits() -> void:
 
 
 func _gen_layered_hit(base_freq: float, duration: float, volume: float,
-		noise_decay: float) -> AudioStreamWav:
+		noise_decay: float) -> AudioStreamWAV:
 	var num_samples := int(SAMPLE_RATE * duration)
 	var data := PackedByteArray()
 	data.resize(num_samples * 2)
@@ -360,7 +360,7 @@ func _gen_layered_hit(base_freq: float, duration: float, volume: float,
 
 
 func _gen_heavy_hit(freq_start: float, freq_end: float, duration: float,
-		volume: float) -> AudioStreamWav:
+		volume: float) -> AudioStreamWAV:
 	var num_samples := int(SAMPLE_RATE * duration)
 	var data := PackedByteArray()
 	data.resize(num_samples * 2)
@@ -398,7 +398,7 @@ func _gen_heavy_hit(freq_start: float, freq_end: float, duration: float,
 
 # --- Block: metallic ring + dull thud (must sound different from hits) ---
 
-func _generate_block() -> AudioStreamWav:
+func _generate_block() -> AudioStreamWAV:
 	var num_samples := int(SAMPLE_RATE * 0.12)
 	var data := PackedByteArray()
 	data.resize(num_samples * 2)
@@ -425,7 +425,7 @@ func _generate_block() -> AudioStreamWav:
 
 # --- Whiff: breathy air-cutting whoosh ---
 
-func _generate_whiff() -> AudioStreamWav:
+func _generate_whiff() -> AudioStreamWAV:
 	var num_samples := int(SAMPLE_RATE * 0.08)
 	var data := PackedByteArray()
 	data.resize(num_samples * 2)
@@ -441,7 +441,7 @@ func _generate_whiff() -> AudioStreamWav:
 
 # --- Timer tick: sharp 1kHz click ---
 
-func _generate_tick() -> AudioStreamWav:
+func _generate_tick() -> AudioStreamWAV:
 	var num_samples := int(SAMPLE_RATE * 0.03)
 	var data := PackedByteArray()
 	data.resize(num_samples * 2)
@@ -457,7 +457,7 @@ func _generate_tick() -> AudioStreamWav:
 
 # --- Ignition: rising flame whoosh + power burst ---
 
-func _generate_ignition() -> AudioStreamWav:
+func _generate_ignition() -> AudioStreamWAV:
 	var num_samples := int(SAMPLE_RATE * 0.35)
 	var data := PackedByteArray()
 	data.resize(num_samples * 2)
@@ -526,7 +526,7 @@ func _generate_announcer_sounds() -> void:
 	], 0.75)
 
 
-func _gen_announcer_notes(notes: Array, volume: float = 0.7) -> AudioStreamWav:
+func _gen_announcer_notes(notes: Array, volume: float = 0.7) -> AudioStreamWAV:
 	var gap := 0.03
 	var total_dur := 0.0
 	for note in notes:
@@ -568,7 +568,7 @@ func _gen_announcer_notes(notes: Array, volume: float = 0.7) -> AudioStreamWav:
 
 # --- Background music: ember drone — looping ambient for Ember Grounds ---
 
-func _generate_background_music() -> AudioStreamWav:
+func _generate_background_music() -> AudioStreamWAV:
 	var bpm := 112.0
 	var beat_dur := 60.0 / bpm
 	var total_beats := 16  # 4 bars × 4 beats
@@ -616,7 +616,7 @@ func _generate_background_music() -> AudioStreamWav:
 		_write_sample(data, i, bass + drone + kick + hat)
 
 	var stream := _make_stream(data)
-	stream.loop_mode = AudioStreamWav.LOOP_FORWARD
+	stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	stream.loop_begin = 0
 	stream.loop_end = num_samples
 	return stream
@@ -626,9 +626,9 @@ func _generate_background_music() -> AudioStreamWav:
 # PCM UTILITIES
 # =========================================================================
 
-func _make_stream(pcm_data: PackedByteArray) -> AudioStreamWav:
-	var stream := AudioStreamWav.new()
-	stream.format = AudioStreamWav.FORMAT_16_BITS
+func _make_stream(pcm_data: PackedByteArray) -> AudioStreamWAV:
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
 	stream.mix_rate = SAMPLE_RATE
 	stream.stereo = false
 	stream.data = pcm_data
