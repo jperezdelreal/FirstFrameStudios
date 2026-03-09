@@ -2,7 +2,6 @@
 .godot/
 *.import
 *.uid
-export_presets.cfg
 
 # OS
 .DS_Store
@@ -21,6 +20,7 @@ node_modules/
 *.x86_64
 *.pck
 *.apk
+builds/
 
 # Temp
 *.tmp
