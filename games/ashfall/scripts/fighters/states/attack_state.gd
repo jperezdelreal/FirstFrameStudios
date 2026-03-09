@@ -55,9 +55,8 @@ func physics_update() -> void:
 		return
 
 	# Gravity still applies (especially for air attacks)
-	# Frame-based integer math: gravity is per-second, divide by 60 with int()
 	if not fighter.is_on_floor():
-		fighter.velocity.y += int(fighter.gravity) / 60
+		fighter.velocity.y += fighter.gravity / 60.0
 	else:
 		fighter.velocity.y = 0
 
