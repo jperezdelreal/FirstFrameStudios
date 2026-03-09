@@ -295,6 +295,148 @@ Fixed integration issues:
 
 ---
 
+## Sprint 0 Closure Decisions (2026-03-09)
+
+### M4 Gate Playtest Verdict (Ackbar)
+**Author:** Ackbar (QA/Playtester)
+**Date:** 2026-03-09
+**Status:** Accepted
+**Scope:** Ashfall Sprint 0 M4 gate — ship verification
+
+**Decision:** **PASS WITH NOTES** for M4 gate.
+
+**Rationale:**
+The Sprint 0 prototype passes because:
+- Full game flow works end-to-end (main menu → character select → fight → victory → rematch/menu)
+- 9 fighter states implemented and transitioning correctly with safety timeouts
+- Frame-based determinism is solid (integer counters, 60 FPS locked)
+- Input system uses proper FGC conventions (8f buffer, SOCD, motion priority)
+- EventBus decoupling between all 7 autoloads is clean
+- Balance data is reasonable for shoto vs rushdown archetypes
+- Audio/VFX/HUD integration is correctly signal-wired
+
+**Conditions (Must-Fix Before M5):**
+1. **P0 #92:** Add hitbox geometry to fighter scenes (attacks currently deal no damage)
+2. **P0 #93:** Fix take_damage signature (fight_scene passes 1 arg, needs 3)
+3. **P1 #94:** Sync RoundManager scores to GameState (HUD/victory show 0-0)
+4. **P1 #95:** Handle equal-HP timer draw (currently loops forever)
+
+**Impact:** Sprint 0 M4 gate is cleared. The team can proceed to M5 planning. The 4 bugs above are blocking for any gameplay-focused milestone and should be the first items in the next sprint.
+
+---
+
+### P0 Combat Pipeline Integration Fix (Lando)
+**Author:** Lando (Gameplay Developer)
+**Date:** 2026-03-09
+**Status:** Accepted
+**Scope:** Ashfall combat system — affects all agents touching hit/damage pipeline
+
+**Decision:** The combat damage pipeline (hitbox → EventBus.hit_landed → fight_scene → take_damage) was broken at two independent points: missing collision geometry and mismatched function signatures. Both bugs existed since the initial implementation because hitbox.gd, fight_scene.gd, and fighter_base.gd were authored by different agents without a live integration test.
+
+**Key Fixes:**
+1. **Hitbox geometry** must be defined in the scene file, not left empty. CollisionShape2D with RectangleShape2D (36x24) added under Hitboxes/Hitbox.
+2. **take_damage signature** aligned: fight_scene.gd now passes all 3 args (damage, knockback_force, hitstun_frames) from the hit_data dictionary.
+
+**Team Impact:**
+- **All agents:** When building cross-module pipelines (emitter → signal → consumer), the full chain must be tested end-to-end before the PR merges. Signal signatures and scene node hierarchies are the most common mismatch points.
+- **Tarkin:** When wiring AnimationPlayer-driven hitbox activation, the Hitbox node + CollisionShape2D now exist in fighter_base.tscn. Per-move hitbox sizing can override the default 36x24 shape via MoveData or AnimationPlayer tracks.
+- **Ackbar:** The hit_data dictionary keys used are `knockback_force` and `hitstun_duration` (matching hitbox.gd's emit). Any future additions to hit_data should be documented.
+
+**Why:** Two P0 bugs blocking Sprint 0 ship. Both were integration seams — individually correct modules that failed when connected. This is our most common bug pattern in multi-agent development.
+
+---
+
+### Equal-HP Draw State Handling (Chewie)
+**Author:** Chewie (Engine/Systems)
+**Date:** 2026-03-09
+**Status:** Accepted
+**Scope:** Ashfall RoundManager — draw state logic and signals
+
+**Decision:** When both fighters reach 0 HP simultaneously, round_manager must declare round_draw (not loop forever). Dual new signals (round_draw, match_draw) clarify game rule implementation.
+
+**Key Changes:**
+1. **Draw State Logic:** RoundManager.check_round_end() now checks if both fighters' HP ≤ 0, emits `round_draw` signal instead of entering KO state.
+2. **Signal Architecture:** New `round_draw` signal for per-round draws; new `match_draw` signal for full match draws (future tournament logic).
+3. **GDD Alignment:** Per GDD: "Equal HP = mutual KO = draw round" — now correctly implemented.
+
+**Team Impact:**
+- Rules encoded as signals improve code clarity (testable, debuggable)
+- New team members can read signals as game rule documentation
+- Draw states properly handled for 1v1, tournament, and network play future
+
+**Why:** Game rules must be explicit in code. The GDD said "equal HP = draw," but the round_manager logic only knew about KO.
+
+---
+
+### HUD Score Sync Architecture (Wedge)
+**Author:** Wedge (UI/Frontend)
+**Date:** 2026-03-09
+**Status:** Accepted
+**Scope:** Ashfall UI — score tracking and GameState integration
+
+**Decision:** GameState is the single source of truth for all score state. RoundManager syncs scores to GameState after each round, and FightHUD reads from GameState every frame.
+
+**Key Architecture:**
+1. **Score Sync:** After `round_end`, RoundManager calls `GameState.set_scores(scores)`.
+2. **GameState Enhancement:** New `set_scores()` and `get_scores()` methods ensure persistence and read access.
+3. **FightHUD Integration:** HUD reads from `GameState.scores` (not local copies), preventing drift.
+
+**Team Impact:**
+- Autoload state is the source of truth (prevents local state drift)
+- HUD is data-driven (easier to test, debug, extend)
+- Foundation for multiplayer sync (GameState → network replication path)
+
+**Why:** Local state (RoundManager.scores) can drift from global state (GameState.scores). Always push updates to single source of truth.
+
+---
+
+### Procedural Sprite System for Ashfall Characters (Nien)
+**Author:** Nien (Character Artist)
+**Date:** 2026-03-09
+**Status:** Proposed
+**Scope:** Ashfall character art pipeline
+
+**Decision:** Character placeholders use Godot's `_draw()` API via a `CharacterSprite` base class (Node2D) instead of pre-rendered PNG sprite sheets. Each character has its own sprite script (kael_sprite.gd, rhena_sprite.gd) that overrides pose methods.
+
+**Key Points:**
+1. **Procedural-first pipeline:** Characters are drawn at runtime using Godot draw primitives. A `SpriteSheetGenerator` @tool script can bake these into PNGs for AnimationPlayer when needed.
+2. **Palette system:** P1/P2 variants are `Array[Dictionary]` of named colors. `palette_index` export swaps palettes without code changes. Extensible to additional costumes.
+3. **State bridge pattern:** `SpriteStateBridge` polls `StateMachine.current_state.name` each physics frame to sync poses. No modifications to gameplay scripts required — respects ownership boundaries.
+4. **Character-specific scenes:** `kael.tscn` and `rhena.tscn` extend fighter_base.tscn structure, adding procedural sprite + bridge as new nodes. `fight_scene.tscn` updated to instance these instead of generic fighter_base.
+5. **Silhouette differentiation:** Kael = ponytail + lean upright stance + controlled extensions. Rhena = wild spiky hair + wide low stance + overshooting messy swings. Distinct at any scale.
+
+**Impact:**
+- **Boba (Art Director):** Review silhouettes and palettes for style guide compliance
+- **Chewie/Lando (Engine/Gameplay):** fight_scene.tscn now instances kael.tscn/rhena.tscn instead of fighter_base.tscn. Sprite2D node preserved for future texture loading.
+- **Solo (Architect):** New `scripts/fighters/sprites/` module. SpriteStateBridge adds polling load (one string comparison per fighter per frame — negligible).
+- **Future characters:** Extend `CharacterSprite`, override 8 pose methods, add to palettes array. ~400-500 LOC per character.
+
+**Why:** Procedural art eliminates the external tool dependency for placeholder iteration. The team can tweak proportions, palettes, and poses directly in GDScript without a pixel art editor. The bake-to-PNG path preserves compatibility with AnimationPlayer for production art later.
+
+---
+
+### Documentation & Terminology Clarity (2026-03-09T10:11Z)
+**By:** joperezd (via Copilot)
+**Date:** 2026-03-09
+**Status:** Directive
+
+**What:** All public-facing documentation (wiki, devblog, README) must clearly distinguish between Milestone Gates (M0-M4 within a sprint) and Sprints (Sprint 0 = Foundation, Sprint 1 = Art, etc.). No ambiguity — readers should understand at a glance where the project stands without confusing "M3" with "Sprint 3". Use consistent terminology everywhere.
+
+**Why:** User experienced confusion from docs mixing milestone gate numbers with sprint/phase numbers. This caused incorrect assumptions about project status. Accuracy and clarity in documentation is a top priority.
+
+---
+
+### Sprint Definition of Success (2026-03-09T10:14Z)
+**By:** joperezd (via Copilot)
+**Date:** 2026-03-09
+**Status:** Directive
+
+**What:** Every sprint must have a clear "Definition of Success" — specific, measurable criteria that determine whether the sprint can be closed satisfactorily. This applies retroactively to Sprint 0 and must be defined upfront for all future sprints (Sprint 1+). The criteria should answer: "What must be true for us to close this sprint satisfied?" Not just "tasks done" but quality gates, feel checks, and ship readiness.
+
+**Why:** Without explicit success criteria, sprints drift — you can't tell if you're done or just out of time. The founder wants clarity on what "done" means for each sprint so the team knows the goal and can celebrate when they hit it.
+
+---
+
 ### Jango — M1+M2 Retrospective Action Items (2026-03-08)
 **Author:** Jango (Lead)  
 **Status:** Proposed  
