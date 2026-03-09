@@ -95,6 +95,12 @@ func _activate_hitboxes() -> void:
 			var shape := child.get_child(0) as CollisionShape2D
 			if shape:
 				shape.disabled = false
+			# Wire current move's frame data into the hitbox for accurate hit_data
+			if _current_move and child is Hitbox:
+				child.damage = _current_move.damage
+				child.knockback_force = _current_move.knockback
+				child.hitstun_duration = _current_move.hitstun_frames
+				child.blockstun_duration = _current_move.blockstun_frames
 
 
 func _deactivate_hitboxes() -> void:

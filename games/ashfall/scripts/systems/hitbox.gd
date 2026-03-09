@@ -12,6 +12,7 @@ enum HitType { LIGHT, MEDIUM, HEAVY }
 @export var damage: int = 50
 @export var knockback_force: Vector2 = Vector2(300, -50)
 @export var hitstun_duration: int = 12
+@export var blockstun_duration: int = 8
 @export var hit_type: HitType = HitType.LIGHT
 
 ## Fighter that owns this hitbox — set by fighter_base.gd or scene wiring.
@@ -71,6 +72,7 @@ func _on_area_entered(area: Area2D) -> void:
 		"damage": damage,
 		"knockback_force": _get_directional_knockback(target),
 		"hitstun_duration": hitstun_duration,
+		"blockstun_duration": blockstun_duration,
 		"hit_type": hit_type,
 	}
 	EventBus.hit_landed.emit(owner_fighter, target, hit_data)
