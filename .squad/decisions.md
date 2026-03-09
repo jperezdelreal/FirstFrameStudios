@@ -863,4 +863,23 @@ Tag push (v0.1.0) → GitHub Actions → Install Godot + templates
 
 **Testing:** Merge PR #111 → test manual dispatch → create v0.0.1-test tag → validate
 
+---
+
+### 2026-03-09T1253Z: User Directive — Auto-Release at Sprint End
+
+**By:** joperezd (via Copilot)  
+**Status:** PENDING IMPLEMENTATION
+
+**What:** Releases should happen automatically at sprint end. When a sprint is shipped (tagged `sprint-N-shipped`), a versioned release (v0.N.0 or similar) should be created automatically with the built .exe.
+
+**Why:** Zero-friction release flow tied to sprint cadence. Founder wants automatic versioning tied to sprint milestones.
+
+**Implementation Approach:** 
+- GitHub Actions workflow triggers on `sprint-N-shipped` tag push
+- Automatically creates v0.N.0 release
+- Builds .exe and attaches to release
+- Integrates with existing godot-release.yml
+
+**Status:** Captured for team memory. Requires workflow expansion after Sprint 1.
+
 
