@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/character_select.gd" id="1_script"]
 
@@ -13,6 +13,54 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.4, 0.3, 0.15, 0.5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+bg_color = Color(0.12, 0.08, 0.08, 0.9)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1.0, 0.45, 0.08, 0.4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(0.2, 0.1, 0.05, 0.95)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1.0, 0.6, 0.15, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fight_normal"]
+bg_color = Color(0.15, 0.08, 0.02, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1.0, 0.5, 0.1, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fight_hover"]
+bg_color = Color(0.25, 0.12, 0.03, 0.95)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1.0, 0.65, 0.2, 0.9)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
 bg_color = Color(0.04, 0.03, 0.06, 1)
@@ -68,7 +116,7 @@ anchors_preset = -1
 anchor_left = 0.05
 anchor_top = 0.17
 anchor_right = 0.95
-anchor_bottom = 0.88
+anchor_bottom = 0.85
 alignment = 1
 
 [node name="P1Panel" type="PanelContainer" parent="Panels"]
@@ -92,12 +140,41 @@ theme_override_font_sizes/font_size = 18
 layout_mode = 2
 custom_minimum_size = Vector2(0, 12)
 
-[node name="P1Portrait" type="ColorRect" parent="Panels/P1Panel/P1VBox"]
+[node name="KaelButton" type="Button" parent="Panels/P1Panel/P1VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-custom_minimum_size = Vector2(200, 260)
+custom_minimum_size = Vector2(200, 100)
 size_flags_horizontal = 4
-color = Color(0.31, 0.765, 0.969, 1)
+text = "KAEL — Balanced"
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_colors/font_hover_color = Color(1, 0.7, 0.2, 1)
+theme_override_colors/font_focus_color = Color(1, 0.7, 0.2, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.7, 0.2, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
+
+[node name="ButtonSpacer" type="Control" parent="Panels/P1Panel/P1VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 8)
+
+[node name="RhenaButton" type="Button" parent="Panels/P1Panel/P1VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(200, 100)
+size_flags_horizontal = 4
+text = "RHENA — Rushdown"
+theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
+theme_override_colors/font_hover_color = Color(1, 0.7, 0.2, 1)
+theme_override_colors/font_focus_color = Color(1, 0.7, 0.2, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.7, 0.2, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
 
 [node name="Spacer2" type="Control" parent="Panels/P1Panel/P1VBox"]
 layout_mode = 2
@@ -106,7 +183,7 @@ custom_minimum_size = Vector2(0, 12)
 [node name="P1NameLabel" type="Label" parent="Panels/P1Panel/P1VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Kael"
+text = "?"
 horizontal_alignment = 1
 theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
 theme_override_font_sizes/font_size = 28
@@ -114,7 +191,7 @@ theme_override_font_sizes/font_size = 28
 [node name="P1ArchetypeLabel" type="Label" parent="Panels/P1Panel/P1VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Balanced"
+text = "Choose your fighter"
 horizontal_alignment = 1
 theme_override_colors/font_color = Color(0.7, 0.65, 0.55, 0.7)
 theme_override_font_sizes/font_size = 16
@@ -126,7 +203,7 @@ custom_minimum_size = Vector2(0, 8)
 [node name="P1StatusLabel" type="Label" parent="Panels/P1Panel/P1VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "← →  Enter to Confirm"
+text = "Pick a character above"
 horizontal_alignment = 1
 theme_override_colors/font_color = Color(1, 0.7, 0.2, 0.7)
 theme_override_font_sizes/font_size = 14
@@ -210,18 +287,37 @@ custom_minimum_size = Vector2(0, 8)
 [node name="P2StatusLabel" type="Label" parent="Panels/P2Panel/P2VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "← →  Numpad 4 to Confirm"
+text = "CPU"
 horizontal_alignment = 1
 theme_override_colors/font_color = Color(1, 0.7, 0.2, 0.7)
 theme_override_font_sizes/font_size = 14
+
+[node name="FightButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.3
+anchor_top = 0.87
+anchor_right = 0.7
+anchor_bottom = 0.93
+text = "FIGHT!"
+theme_override_colors/font_color = Color(1, 0.85, 0.5, 1)
+theme_override_colors/font_hover_color = Color(1, 0.95, 0.6, 1)
+theme_override_colors/font_focus_color = Color(1, 0.95, 0.6, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.95, 0.6, 1)
+theme_override_font_sizes/font_size = 28
+theme_override_styles/normal = SubResource("StyleBoxFlat_fight_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fight_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_fight_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_fight_hover")
 
 [node name="HintLabel" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.0
-anchor_top = 0.92
+anchor_top = 0.95
 anchor_right = 1.0
-anchor_bottom = 0.98
+anchor_bottom = 0.99
 horizontal_alignment = 1
 vertical_alignment = 1
 text = "ESC — Back"
