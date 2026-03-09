@@ -97,6 +97,7 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
   - Tech stack (Pure HTML/CSS/JS, ES modules, HTML5 Canvas, Web Audio API)
   - Project structure showing src/engine, src/entities, src/systems, src/scenes, src/ui organization
   - 30-minute scope note explaining what was included (playable level, combat, enemy waves) vs. scoped out (multiple characters, power-ups, save system, multiple levels, sprite sheets, proper audio)
+- **UI _process vs _physics_process (#122, #123, #126):** Gameplay-affecting HUD (fight_hud) must use `_physics_process` for frame-synced updates per Rule 7. Cosmetic-only animations (menu glow, victory glow) can stay `_process` since delta is acceptable for visual interpolation. When converting timers to frame-based, replace float constants with integer frame counts (e.g., `GHOST_DELAY: float = 0.5` → `GHOST_DELAY_FRAMES: int = 30` at 60 FPS). Use `git worktree` when multiple squad agents are concurrently modifying the same repo to avoid branch-switching conflicts.
 
 - Implemented localStorage high score persistence (P0-1):
   - Created `src/ui/highscore.js` utility with `getHighScore()`, `saveHighScore(score)`, `isNewHighScore(score)`
