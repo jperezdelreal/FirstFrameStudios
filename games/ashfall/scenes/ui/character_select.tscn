@@ -126,7 +126,7 @@ custom_minimum_size = Vector2(0, 8)
 [node name="P1StatusLabel" type="Label" parent="Panels/P1Panel/P1VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "← A/D →  [U] Confirm"
+text = "← →  Enter to Confirm"
 horizontal_alignment = 1
 theme_override_colors/font_color = Color(1, 0.7, 0.2, 0.7)
 theme_override_font_sizes/font_size = 14
@@ -210,7 +210,7 @@ custom_minimum_size = Vector2(0, 8)
 [node name="P2StatusLabel" type="Label" parent="Panels/P2Panel/P2VBox"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "← ←/→ →  [Num4] Confirm"
+text = "← →  Numpad 4 to Confirm"
 horizontal_alignment = 1
 theme_override_colors/font_color = Color(1, 0.7, 0.2, 0.7)
 theme_override_font_sizes/font_size = 14
