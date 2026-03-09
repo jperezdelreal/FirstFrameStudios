@@ -168,3 +168,7 @@
 - **Attack animation naming:** `attack_` + move_name (from MoveData.move_name). Lazy-created on first use for dynamically loaded moves.
 - **AttackState.get_current_move() and get_current_move_name():** Added these accessors so SpriteStateBridge and FighterAnimationController can query the active MoveData. The bridge's `has_method("get_current_move_name")` check was already in place but the method didn't exist — now it does.
 - **PR #106 created, closes #101.**
+### 2026-03-09 — Sprint 1 Audit Results: Type Safety & Standards
+
+**Cross-Agent Update:** Sprint 1 analysis identified systematic type inference bugs. All Ashfall developers now required to follow GDSCRIPT-STANDARDS.md (16 rules) starting Sprint 2 Day 1. See decision in .squad/decisions/decisions.md. Key impact for Chewie: add explicit type annotations to all variables.
+

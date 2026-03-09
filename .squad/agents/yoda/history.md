@@ -620,3 +620,8 @@ Pitched three game concepts aligned with updated principles and team capabilitie
 - **Decision inbox:** `.squad/decisions/inbox/yoda-ashfall-gdd.md`
 - **Skill extraction:** `.squad/skills/fighting-game-design/SKILL.md`
 - **Architecture insight:** Fighting games require fundamentally different physics than beat 'em ups. No Godot physics engine, no AnimationTree for gameplay states, enum state machines with frame-exact control. The engine is a renderer and input layer; we build everything else.
+
+### 2026-03-09 — Sprint 1 Audit Results: Design & Standards
+
+**Cross-Agent Update:** Sprint 1 analysis complete. 35 bugs cataloged with 7 process improvements for Sprint 2. GDD references now mandatory in code (GDSCRIPT-STANDARDS.md rule). Frame data validation tool coming Sprint 2 Week 2. All Ashfall developers required to follow standards starting Sprint 2 Day 1. See .squad/decisions/decisions.md.
+

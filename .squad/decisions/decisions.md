@@ -1034,3 +1034,128 @@ All 7 new universal skills interlink:
 
 *Deep Research Wave — 2026-03-07, Session concluded 2026-03-07T23:52:00Z UTC*
 
+
+---
+
+## Decision: Sprint 1 Bug Catalog — Process Improvements for Sprint 2
+
+**Author:** Solo (Lead / Chief Architect)  
+**Date:** 2026-03-09  
+**Status:** Proposed  
+**Scope:** Ashfall Sprint 2 and all future sprints  
+**Artifact:** games/ashfall/docs/SPRINT-1-BUG-CATALOG.md
+
+---
+
+### Summary
+
+Comprehensive analysis of **35 bugs** cataloged across 9 categories during Sprint 1, with **16 P0/P1 severity issues**. Every bug was preventable with better processes: integration checkpoints, explicit type enforcement, signal contracts, export testing, branch hygiene, and edge case testing.
+
+### Seven Mandatory Process Changes for Sprint 2
+
+1. **Integration Checkpoint at End of Every Sprint** ✅ CRITICAL — Catch integration bugs within sprint, not deferred
+2. **Enforce Explicit Type Annotations** ✅ CRITICAL — Prevent runtime type errors, catch bugs at compile time
+3. **Signal Contract Testing** ✅ CRITICAL — Prevent VFX/audio/HUD failing during integration
+4. **Frame Data Validation Tool** ✅ HIGH PRIORITY — Prevent balance inconsistencies, ensure GDD sync
+5. **Export Testing in CI/CD** ✅ HIGH PRIORITY — Catch platform-specific bugs before merge
+6. **Branch Hygiene Enforcement** ✅ HIGH PRIORITY — Prevent work getting lost on dead branches
+7. **Edge Case Test Matrix** ✅ MEDIUM PRIORITY — Prevent edge case bugs in round/match management
+
+### Key Metrics
+
+- **35 bugs total:** 7 P0, 9 P1, 10 P2, 9 unrated
+- **66% found by humans**, 34% by automation
+- **46% are P0/P1 severity** (should be caught before merge)
+- **Average lag time: 1 day** (introduced → discovered)
+
+### Verdict
+
+**APPROVED for mandatory Sprint 2 enforcement.**
+
+---
+
+## Decision: Code Quality Audit — Process vs Physics Process Timing
+
+**Author:** Ackbar (QA/Playtester)  
+**Date:** 2026-03-09  
+**Status:** Proposed  
+**Type:** Code Quality / Standards Enforcement  
+**Artifact:** games/ashfall/docs/SPRINT-1-CODE-AUDIT.md
+
+---
+
+### Summary
+
+Sprint 1 code audit revealed **5 files using _process(delta) for timing-sensitive animations** instead of _physics_process. GDD requires deterministic "Frame Data Is Law" at 60 FPS. Float delta timing creates non-deterministic behavior, framerate-dependent drift, and replay desync issues.
+
+### Decision Matrix
+
+| System | Uses _physics_process? | Rationale |
+|--------|------------------------|-----------|
+| VFX timing (shake, flash, slowmo) | ✅ YES | Affects player input timing |
+| HUD animations (health bar, timer) | ✅ YES | Round timer is gameplay-critical |
+| UI menu animations (title glow) | ❌ NO | Pure cosmetic, no gameplay impact |
+
+### Priority Changes
+
+**Priority 1 (Critical):** vfx_manager.gd → use _physics_process with frame counters
+
+**Priority 2 (Should fix):** fight_hud.gd → use _physics_process
+
+**Priority 3 (Cosmetic):** victory_screen.gd, main_menu.gd → leave as _process
+
+### Verdict
+
+**APPROVED.** Enforce _physics_process for all gameplay-affecting timing via lint rule.
+
+---
+
+## Decision: Sprint 1 Lessons Learned & GDScript Standards
+
+**Author:** Jango (Tool Engineer)  
+**Date:** 2026-03-09  
+**Status:** Proposed  
+**Type:** Standards / Process Enforcement  
+**Artifacts:**
+- games/ashfall/docs/SPRINT-1-LESSONS-LEARNED.md
+- games/ashfall/docs/GDSCRIPT-STANDARDS.md
+- .squad/skills/gdscript-godot46/SKILL.md
+
+---
+
+### Summary
+
+Sprint 1 revealed systematic bugs in Godot 4.6 type inference, input handling, and frame data management. **23 fix commits** were required. Bugs weren't isolated — they followed **patterns**:
+
+1. **Type inference failure:** := from dict/array/abs() produces Variant (10 fixes)
+2. **Input export divergence:** Custom _input() works in editor, breaks in Windows exports (6 PRs)
+3. **Frame data drift:** Three sources of truth diverged silently (3 P1 bugs)
+4. **Integration gate reactive:** Tool existed but ran after merge, not before (2 PRs)
+
+### Decision: MANDATORY for Sprint 2+
+
+**Enforcement mechanisms:**
+1. Integration gate runs on every PR — GitHub Action blocks merge if failed
+2. Pre-commit type safety check — Grep for risky := patterns
+3. Code review checklist — Validate against GDSCRIPT-STANDARDS.md
+4. Windows export testing — Required for all UI/input changes
+
+### Success Criteria for Sprint 2
+
+- Zero := with dict/array/abs() in merged PRs
+- Zero input export failures
+- Fewer than 3 fix commits (down from 23 in Sprint 1)
+
+### Why Mandatory?
+
+**Sprint 1 evidence:** 10 type bugs followed same pattern; 6 input bugs made same mistake. If agents don't know the pattern, they'll repeat it.
+
+**Productivity:** 10 days lost to character select debugging; 3-4 hours hunting type inference issues; emergency releases disrupted work.
+
+**Future risk:** Sprint 2 is combo system (high complexity, low tolerance for bugs).
+
+### Verdict
+
+**APPROVED for mandatory Sprint 2 enforcement.** Every rule traces to real bug. Evidence is overwhelming.
+
+---

@@ -373,3 +373,34 @@ Created universal animation principles skill — a comprehensive, engine-agnosti
 - Viewport upgraded to 1080p per founder directive
 
 
+
+### v0.2.0 Visual Review (Art Director Assessment)
+
+**Screenshots Reviewed:** menu.jpg, character_select.jpg, fight_scene.jpg, fight_winscreen.jpg
+
+**What's Working:**
+- Warm gold/amber UI typography correctly establishes volcanic world aesthetic
+- Kael (blue/white) and Rhena (red/orange) color identities are immediately distinguishable
+- Procedural character sprites show correct silhouette differentiation (Kael lean, Rhena wider)
+- Menu/win screen buttons use consistent amber border language
+- Clean, readable font choices across all screens
+
+**Critical Gap — Character Scale:**
+The single biggest issue: characters are ~40-50px on a 1920×1080 screen. Art direction specifies 128×128 canvas scaled to ~200px on-screen. Current implementation is **25% of target size**. This is a camera/zoom configuration issue, NOT a sprite problem. The sprites themselves look correct at their rendered size — they're just tiny in the viewport.
+
+**Other Gaps vs Art Direction:**
+1. **Stage is empty** — no EmberGrounds volcanic environment, no ground crack patterns, no ambient embers, no lava pools. Fight scene is flat dark space.
+2. **No HUD visible** — no health bars, round indicators, timer, or combo counter during fight.
+3. **No VFX visible** — no ember particles, hit sparks, or character auras in fight screenshot.
+4. **Character select shows placeholder** — red rectangle for Rhena instead of character portrait/sprite.
+
+**Sprint 1 Compliance Assessment:**
+For a Sprint 1 that focused on core gameplay mechanics (movement, hitboxes, game loop), this is **expected baseline**. The procedural character art is implemented and functional. However, the camera zoom issue should have been caught — it makes the game feel like a tech demo rather than a fighting game. This is a quick fix but high impact.
+
+**Sprint 2 Visual Priorities (Boba's recommendation):**
+1. **Camera/viewport zoom** — Characters must display at ~200px height. This is a 30-minute fix with massive visual impact. Non-negotiable.
+2. **EmberGrounds stage floor** — At minimum: gradient ground plane, 3-4 procedural crack lines, ground color per art direction specs. No floating-in-void feeling.
+3. **Fight HUD** — Health bars with ember theme, round indicators. Essential for game feel.
+
+**On Character Portraits for Select Screen:**
+The red placeholder rectangle is functional for now. Character portraits can wait for Sprint 3 — gameplay readability is more urgent.
