@@ -57,7 +57,7 @@ func _sync_pose_from_state() -> void:
 	var state_name := fighter.state_machine.current_state.name.to_lower()
 
 	# For states with dynamic poses that depend on per-frame conditions
-	# (jump velocity, block stance), override the AnimationPlayer pose.
+	# (jump velocity, block stance, hit type), override the AnimationPlayer pose.
 	# For static states, let AnimationPlayer handle it when present.
 	var new_pose := ""
 	match state_name:
@@ -67,9 +67,15 @@ func _sync_pose_from_state() -> void:
 			new_pose = _get_block_pose()
 		"throw":
 			new_pose = _get_throw_pose()
+		"hit":
+			new_pose = _get_hit_pose()
+		"ko":
+			new_pose = _get_ko_pose()
+		"attack":
+			new_pose = _get_attack_pose()
 		_:
 			if _has_anim_controller:
-				# AnimationPlayer is driving these poses — don't override
+				# AnimationPlayer is driving these poses -- don't override
 				return
 			new_pose = _state_to_pose(state_name)
 
@@ -86,22 +92,11 @@ func _state_to_pose(state_name: String) -> String:
 		"jump":   return _get_jump_pose()
 		"attack": return _get_attack_pose()
 		"block":  return _get_block_pose()
-		"hit":    return "hit"
-		"ko":     return "ko"
-		"throw":  return "throw_execute"
+		"hit":    return _get_hit_pose()
+		"ko":     return _get_ko_pose()
+		"throw":  return _get_throw_pose()
 		"launch": return "jump_up"
 		"wakeup": return "wakeup"
-		_:        return "idle"
-
-
-func _get_jump_pose() -> String:
-	if not fighter:
-		return "jump_peak"
-	var vel_y := fighter.velocity.y
-	if vel_y < -20.0:
-		return "jump_up"
-	elif vel_y > 20.0:
-		"throw":  return _get_throw_pose()
 		_:        return "idle"
 
 
@@ -117,6 +112,7 @@ func _get_jump_pose() -> String:
 		return "jump_peak"
 
 
+## Block pose depends on standing vs crouching
 func _get_block_pose() -> String:
 	if not fighter:
 		return "block_standing"
@@ -131,13 +127,50 @@ func _is_crouching() -> bool:
 	return false
 
 
+## Hit pose depends on airborne, crouching, or heavy attack
+func _get_hit_pose() -> String:
+	if not fighter:
+		return "hit"
+	if not fighter.is_on_floor():
+		return "hit_air"
+	if _is_crouching():
+		return "hit_crouching"
+	var hit_state = fighter.state_machine.current_state
+	if hit_state and hit_state.has_method("is_heavy_hit") and hit_state.is_heavy_hit():
+		return "hit_heavy"
+	return "hit"
+
+
+## KO pose: airborne = knockdown_fall, grounded = ko
+func _get_ko_pose() -> String:
+	if not fighter:
+		return "ko"
+	if not fighter.is_on_floor():
+		return "knockdown_fall"
+	return "ko"
+
+
+## Throw pose depends on current phase
+func _get_throw_pose() -> String:
+	var throw_state := fighter.state_machine.current_state
+	if throw_state and "_phase" in throw_state:
+		match throw_state._phase:
+			0:  return "throw_startup"    # STARTUP
+			1:  return "throw_startup"    # ACTIVE
+			2:  return "throw_execute"    # EXECUTE
+			3:  return "throw_whiff"      # WHIFF
+			4:  return "throw_startup"    # TECH
+	return "attack_hp"
+
+
+## Determine attack pose from the current MoveData
 func _get_attack_pose() -> String:
-	var attack_state = fighter.state_machine.current_state
+	var attack_state := fighter.state_machine.current_state
 	if not attack_state or not attack_state.has_method("get_current_move_name"):
 		return "attack_mp"
 	var move_name: String = attack_state.get_current_move_name()
 
-	# Special / super moves
+	# Special / super moves -- check first (highest priority)
 	if "ignition" in move_name or "super" in move_name:
 		return "ignition"
 	if "special_4" in move_name:
@@ -153,7 +186,7 @@ func _get_attack_pose() -> String:
 	var is_air := not fighter.is_on_floor()
 	var is_crouch := _is_crouching()
 
-	# Determine strength + type from move name
+	# Determine strength + type (check HK before LK to avoid substring match)
 	if "hk" in move_name or "heavy_kick" in move_name:
 		if is_air: return "jump_hk"
 		if is_crouch: return "crouch_hk"
@@ -178,57 +211,4 @@ func _get_attack_pose() -> String:
 		if is_air: return "jump_lp"
 		if is_crouch: return "crouch_lp"
 		return "attack_lp"
-## Block pose depends on standing vs crouching
-func _get_block_pose() -> String:
-	var block_state := fighter.state_machine.current_state
-	if block_state and "_is_crouching" in block_state:
-		if block_state._is_crouching:
-			return "block_crouching"
-	return "block_standing"
-
-
-## Throw pose depends on current phase
-func _get_throw_pose() -> String:
-	var throw_state := fighter.state_machine.current_state
-	if throw_state and "_phase" in throw_state:
-		match throw_state._phase:
-			0:  return "throw_startup"    # STARTUP
-			1:  return "throw_startup"    # ACTIVE
-			2:  return "throw_execute"    # EXECUTE
-			3:  return "throw_whiff"      # WHIFF
-			4:  return "throw_startup"    # TECH
-	return "attack_hp"
-
-
-## Determine attack pose from the current MoveData
-func _get_attack_pose() -> String:
-	var attack_state := fighter.state_machine.current_state
-	if attack_state and attack_state.has_method("get_current_move_name"):
-		var move_name: String = attack_state.get_current_move_name()
-		return _move_name_to_pose(move_name)
-	return "attack_mp"
-
-
-## Parse a move name string into a sprite pose name
-func _move_name_to_pose(move_name: String) -> String:
-	if move_name == "":
-		return "attack_mp"
-	# Check for specific button references
-	var lower := move_name.to_lower()
-	if "lp" in lower:
-		return "attack_lp"
-	elif "hp" in lower:
-		return "attack_hp"
-	elif "lk" in lower:
-		return "attack_lk"
-	elif "hk" in lower:
-		return "attack_hk"
-	elif "mk" in lower:
-		return "attack_mk"
-	elif "mp" in lower:
-		return "attack_mp"
-	elif "light" in lower:
-		return "attack_lp"
-	elif "heavy" in lower:
-		return "attack_hp"
 	return "attack_mp"

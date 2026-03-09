@@ -32,6 +32,11 @@
   - PNG output: `games/ashfall/assets/sprites/fighters/{character}/`
   - Generator: `games/ashfall/scripts/tools/sprite_sheet_generator.gd`
 
+- **Sprint 2 animation completion (Issues #99/#100, PR #115):** Added 6 final GDD-spec poses per character (throw_startup, throw_whiff, hit_heavy, hit_crouching, hit_air, knockdown_fall), bringing total from 41 to 47 per fighter. Each pose maintains character personality: Kael's are controlled/composed (open-hand grab, composed stumble, precise body curl), Rhena's are explosive/messy (predatory wide grab, angry stumble, ragdoll tumble).
+- **Hit variant routing pattern:** SpriteStateBridge now routes hit poses contextually: airborne -> hit_air, crouching -> hit_crouching, heavy attack -> hit_heavy (via is_heavy_hit() method check), default -> hit. Same pattern for KO: airborne -> knockdown_fall, grounded -> ko. This lets one state machine state produce multiple visual poses.
+- **Duplicate function cleanup:** character_sprite.gd and sprite_state_bridge.gd had duplicate function definitions from Sprint 1 merge artifacts. GDScript uses last-definition-wins, but duplicates create confusion and potential Godot parse issues. Cleaned up during this pass since the files were being modified anyway.
+- **File I/O gotcha:** The edit tool's virtual filesystem may not sync to disk in all environments. When in doubt, use Python file I/O through PowerShell to make changes directly to the actual filesystem.
+
 ---
 
 ## Ashfall Sprint 0 — Character Art (2026-03-09)

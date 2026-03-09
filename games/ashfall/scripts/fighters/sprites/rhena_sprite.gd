@@ -1586,6 +1586,245 @@ func _draw_lose() -> void:
 	draw_line(hc + Vector2(2, 3), hc + Vector2(2, 4.5), Color(0.9, 0.9, 0.85), 1.0)
 
 
+# =========================================================================
+#  THROW STARTUP -- Wide aggressive grab. Both arms reaching, screaming.
+# =========================================================================
+func _draw_throw_startup() -> void:
+	var p := pal
+	var ol := p.outline
+
+	# Legs -- explosive forward lunge
+	draw_limb(Vector2(-7, HIP_Y), Vector2(-14, KNEE_Y + 3), LEG_THICK + 0.5, p.outfit_secondary, ol)
+	draw_limb(Vector2(-14, KNEE_Y + 3), Vector2(-16, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(-16, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+	draw_limb(Vector2(6, HIP_Y), Vector2(12, KNEE_Y - 3), LEG_THICK + 0.5, p.outfit_secondary, ol)
+	draw_limb(Vector2(12, KNEE_Y - 3), Vector2(14, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(14, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+
+	# Torso -- leaning aggressively forward
+	var top_pts := PackedVector2Array([
+		Vector2(-TORSO_W + 4, TORSO_TOP + 2), Vector2(TORSO_W + 2, TORSO_TOP - 2),
+		Vector2(TORSO_W * 0.9 + 1, TORSO_BOT), Vector2(-TORSO_W * 0.9 + 3, TORSO_BOT)
+	])
+	draw_colored_polygon(top_pts, p.outfit_primary)
+	draw_polyline(top_pts, ol, 1.0, true)
+	draw_rect(Rect2(-TORSO_W * 0.9 + 2, WAIST_Y - 2, TORSO_W * 1.7, 4), p.belt)
+
+	# Both arms reaching wide -- predatory grab
+	draw_limb(Vector2(SHOULDER_W + 2, SHOULDER_Y - 2), Vector2(20, SHOULDER_Y - 8), ARM_THICK + 0.5, p.skin, ol)
+	_draw_burn_scars(Vector2(SHOULDER_W + 2, SHOULDER_Y - 2), Vector2(20, SHOULDER_Y - 8))
+	draw_limb(Vector2(20, SHOULDER_Y - 8), Vector2(24, SHOULDER_Y - 12), ARM_THICK + 0.5, p.wrap, ol)
+	draw_circle_outlined(Vector2(24, SHOULDER_Y - 12), FIST_R + 0.5, p.skin, ol)
+	draw_limb(Vector2(-SHOULDER_W + 4, SHOULDER_Y + 2), Vector2(8, SHOULDER_Y - 4), ARM_THICK + 0.5, p.skin, ol)
+	draw_limb(Vector2(8, SHOULDER_Y - 4), Vector2(16, SHOULDER_Y - 6), ARM_THICK + 0.5, p.wrap, ol)
+	draw_circle_outlined(Vector2(16, SHOULDER_Y - 6), FIST_R + 0.5, p.skin, ol)
+
+	_draw_head_screaming(Vector2(5, HEAD_Y + 1))
+
+
+# =========================================================================
+#  THROW WHIFF -- Overcommitted missed grab. Stumbling forward, furious.
+# =========================================================================
+func _draw_throw_whiff() -> void:
+	var p := pal
+	var ol := p.outline
+
+	# Legs -- stumbling, overextended
+	draw_limb(Vector2(-7, HIP_Y), Vector2(-16, KNEE_Y + 5), LEG_THICK, p.outfit_secondary, ol)
+	draw_limb(Vector2(-16, KNEE_Y + 5), Vector2(-18, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(-18, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+	draw_limb(Vector2(6, HIP_Y), Vector2(14, KNEE_Y), LEG_THICK, p.outfit_secondary, ol)
+	draw_limb(Vector2(14, KNEE_Y), Vector2(16, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(16, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+
+	# Torso -- lurching forward
+	var top_pts := PackedVector2Array([
+		Vector2(-TORSO_W + 6, TORSO_TOP + 5), Vector2(TORSO_W + 3, TORSO_TOP + 3),
+		Vector2(TORSO_W * 0.9 + 2, TORSO_BOT + 3), Vector2(-TORSO_W * 0.9 + 5, TORSO_BOT + 3)
+	])
+	draw_colored_polygon(top_pts, p.outfit_primary)
+	draw_polyline(top_pts, ol, 1.0, true)
+	draw_rect(Rect2(-TORSO_W * 0.9 + 4, WAIST_Y + 1, TORSO_W * 1.7, 4), p.belt)
+
+	# Arms -- swinging through empty air
+	draw_limb(Vector2(SHOULDER_W + 3, SHOULDER_Y + 3), Vector2(22, SHOULDER_Y), ARM_THICK, p.skin, ol)
+	_draw_burn_scars(Vector2(SHOULDER_W + 3, SHOULDER_Y + 3), Vector2(22, SHOULDER_Y))
+	draw_circle_outlined(Vector2(22, SHOULDER_Y), FIST_R, p.skin, ol)
+	draw_limb(Vector2(-SHOULDER_W + 6, SHOULDER_Y + 5), Vector2(10, SHOULDER_Y + 8), ARM_THICK, p.skin, ol)
+	draw_circle_outlined(Vector2(10, SHOULDER_Y + 8), FIST_R, p.skin, ol)
+
+	# Head -- angry at the whiff
+	var hc := Vector2(6, HEAD_Y + 4)
+	draw_circle_outlined(hc, HEAD_R, p.skin, ol, 1.0)
+	_draw_wild_hair(hc)
+	draw_line(hc + Vector2(-4, -2), hc + Vector2(-2, 0), p.eye, 2.0)
+	draw_line(hc + Vector2(1, -2), hc + Vector2(3, 0), p.eye, 2.0)
+	draw_line(hc + Vector2(-3, 3), hc + Vector2(0, 4), p.eye, 1.5)
+	draw_line(hc + Vector2(0, 4), hc + Vector2(3, 3), p.eye, 1.5)
+
+
+# =========================================================================
+#  HIT HEAVY -- Violent recoil. Body snapping back, arms flung wide.
+# =========================================================================
+func _draw_hit_heavy() -> void:
+	var p := pal
+	var ol := p.outline
+
+	# Legs -- thrown off balance dramatically
+	draw_limb(Vector2(-6, HIP_Y), Vector2(-14, KNEE_Y + 5), LEG_THICK, p.outfit_secondary, ol)
+	draw_limb(Vector2(-14, KNEE_Y + 5), Vector2(-18, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(-18, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+	draw_limb(Vector2(6, HIP_Y), Vector2(0, KNEE_Y + 3), LEG_THICK, p.outfit_secondary, ol)
+	draw_limb(Vector2(0, KNEE_Y + 3), Vector2(-6, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(-6, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+
+	# Torso -- violently arched back
+	var top_pts := PackedVector2Array([
+		Vector2(-TORSO_W - 5, TORSO_TOP + 8), Vector2(TORSO_W - 6, TORSO_TOP + 5),
+		Vector2(TORSO_W * 0.9 - 4, TORSO_BOT + 2), Vector2(-TORSO_W * 0.9 - 3, TORSO_BOT + 2)
+	])
+	draw_colored_polygon(top_pts, p.outfit_primary)
+	draw_polyline(top_pts, ol, 1.0, true)
+
+	# Arms -- flung out wildly
+	draw_limb(Vector2(-SHOULDER_W - 5, SHOULDER_Y + 8), Vector2(-26, SHOULDER_Y + 2), ARM_THICK, p.skin, ol)
+	_draw_burn_scars(Vector2(-SHOULDER_W - 3, SHOULDER_Y + 8), Vector2(-26, SHOULDER_Y + 2))
+	draw_limb(Vector2(-26, SHOULDER_Y + 2), Vector2(-28, SHOULDER_Y + 10), ARM_THICK, p.wrap, ol)
+	draw_fist(Vector2(-28, SHOULDER_Y + 10), FIST_R, p.skin, ol)
+	draw_limb(Vector2(SHOULDER_W - 6, SHOULDER_Y + 5), Vector2(16, SHOULDER_Y + 18), ARM_THICK, p.skin, ol)
+	draw_fist(Vector2(16, SHOULDER_Y + 18), FIST_R, p.skin, ol)
+
+	# Head -- snapping back, furious pain
+	var hc := Vector2(-5, HEAD_Y + 7)
+	draw_circle_outlined(hc, HEAD_R, p.skin, ol, 1.0)
+	_draw_wild_hair(hc)
+	draw_line(hc + Vector2(-5, -1), hc + Vector2(-2, 1), p.eye, 2.0)
+	draw_line(hc + Vector2(1, -1), hc + Vector2(4, 1), p.eye, 2.0)
+	draw_ellipse(hc + Vector2(0, 4), Vector2(3, 2), Color(0.3, 0.1, 0.1))
+
+
+# =========================================================================
+#  HIT CROUCHING -- Low hit reaction. Compressed, rocking back, snarling.
+# =========================================================================
+func _draw_hit_crouching() -> void:
+	var p := pal
+	var ol := p.outline
+	var co := 14.0
+
+	# Legs -- crouched, sliding back
+	draw_limb(Vector2(-6, HIP_Y + co), Vector2(-14, KNEE_Y + co + 4), LEG_THICK, p.outfit_secondary, ol)
+	draw_limb(Vector2(-14, KNEE_Y + co + 4), Vector2(-12, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(-12, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+	draw_limb(Vector2(5, HIP_Y + co), Vector2(0, KNEE_Y + co + 2), LEG_THICK, p.outfit_secondary, ol)
+	draw_limb(Vector2(0, KNEE_Y + co + 2), Vector2(-4, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(-4, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+
+	# Torso -- compressed, rocking back
+	var top_pts := PackedVector2Array([
+		Vector2(-TORSO_W - 3, TORSO_TOP + co + 4), Vector2(TORSO_W - 4, TORSO_TOP + co + 3),
+		Vector2(TORSO_W * 0.9 - 3, TORSO_BOT + co), Vector2(-TORSO_W * 0.9 - 2, TORSO_BOT + co)
+	])
+	draw_colored_polygon(top_pts, p.outfit_primary)
+	draw_polyline(top_pts, ol, 1.0, true)
+
+	# Arms -- flailing out
+	draw_limb(Vector2(-SHOULDER_W - 3, SHOULDER_Y + co + 4), Vector2(-18, SHOULDER_Y + co + 2), ARM_THICK, p.skin, ol)
+	_draw_burn_scars(Vector2(-SHOULDER_W, SHOULDER_Y + co + 4), Vector2(-18, SHOULDER_Y + co + 2))
+	draw_fist(Vector2(-18, SHOULDER_Y + co + 2), FIST_R, p.skin, ol)
+	draw_limb(Vector2(SHOULDER_W - 4, SHOULDER_Y + co + 3), Vector2(10, SHOULDER_Y + co + 12), ARM_THICK, p.skin, ol)
+	draw_fist(Vector2(10, SHOULDER_Y + co + 12), FIST_R, p.skin, ol)
+
+	# Head -- snarling in pain
+	var hc := Vector2(-3, HEAD_Y + co + 4)
+	draw_circle_outlined(hc, HEAD_R, p.skin, ol, 1.0)
+	_draw_wild_hair(hc)
+	draw_line(hc + Vector2(-4, -1), hc + Vector2(-2, 1), p.eye, 2.0)
+	draw_line(hc + Vector2(1, -1), hc + Vector2(3, 1), p.eye, 2.0)
+	draw_line(hc + Vector2(-3, 4), hc + Vector2(0, 5), p.eye, 1.5)
+	draw_line(hc + Vector2(0, 5), hc + Vector2(3, 4), p.eye, 1.5)
+
+
+# =========================================================================
+#  HIT AIR -- Airborne hit reaction. Flailing wildly, hair everywhere.
+# =========================================================================
+func _draw_hit_air() -> void:
+	var p := pal
+	var ol := p.outline
+	var lift := -12.0
+
+	# Legs -- flailing in air
+	draw_limb(Vector2(-5, HIP_Y + lift), Vector2(-10, KNEE_Y + lift - 5), LEG_THICK, p.outfit_secondary, ol)
+	draw_limb(Vector2(-10, KNEE_Y + lift - 5), Vector2(-8, FOOT_Y + lift - 12), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(-8, FOOT_Y + lift - 12), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+	draw_limb(Vector2(5, HIP_Y + lift), Vector2(4, KNEE_Y + lift - 2), LEG_THICK, p.outfit_secondary, ol)
+	draw_limb(Vector2(4, KNEE_Y + lift - 2), Vector2(2, FOOT_Y + lift - 8), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(2, FOOT_Y + lift - 8), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+
+	# Torso -- arched back in air
+	var top_pts := PackedVector2Array([
+		Vector2(-TORSO_W - 3, TORSO_TOP + lift + 4), Vector2(TORSO_W - 4, TORSO_TOP + lift + 2),
+		Vector2(TORSO_W * 0.9 - 3, TORSO_BOT + lift), Vector2(-TORSO_W * 0.9 - 2, TORSO_BOT + lift)
+	])
+	draw_colored_polygon(top_pts, p.outfit_primary)
+	draw_polyline(top_pts, ol, 1.0, true)
+
+	# Arms -- wild flailing
+	draw_limb(Vector2(-SHOULDER_W - 3, SHOULDER_Y + lift + 4), Vector2(-22, SHOULDER_Y + lift - 2), ARM_THICK, p.skin, ol)
+	_draw_burn_scars(Vector2(-SHOULDER_W, SHOULDER_Y + lift + 4), Vector2(-22, SHOULDER_Y + lift - 2))
+	draw_fist(Vector2(-22, SHOULDER_Y + lift - 2), FIST_R, p.skin, ol)
+	draw_limb(Vector2(SHOULDER_W - 4, SHOULDER_Y + lift + 2), Vector2(16, SHOULDER_Y + lift + 10), ARM_THICK, p.skin, ol)
+	draw_fist(Vector2(16, SHOULDER_Y + lift + 10), FIST_R, p.skin, ol)
+
+	# Head -- screaming in air
+	var hc := Vector2(-3, HEAD_Y + lift + 4)
+	draw_circle_outlined(hc, HEAD_R, p.skin, ol, 1.0)
+	_draw_wild_hair(hc)
+	draw_circle(hc + Vector2(-3, -1), 2.0, p.eye)
+	draw_circle(hc + Vector2(2, -1), 2.0, p.eye)
+	draw_ellipse(hc + Vector2(0, 4), Vector2(3, 2), Color(0.3, 0.1, 0.1))
+
+
+# =========================================================================
+#  KNOCKDOWN FALL -- Wild ragdoll fall. Legs up, flailing. Undignified.
+# =========================================================================
+func _draw_knockdown_fall() -> void:
+	var p := pal
+	var ol := p.outline
+
+	# Legs -- trailing, one kicked up
+	draw_limb(Vector2(-4, HIP_Y + 6), Vector2(-10, KNEE_Y + 10), LEG_THICK, p.outfit_secondary, ol)
+	draw_limb(Vector2(-10, KNEE_Y + 10), Vector2(-16, FOOT_Y + 4), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(-16, FOOT_Y + 4), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+	draw_limb(Vector2(5, HIP_Y + 6), Vector2(4, KNEE_Y + 12), LEG_THICK, p.outfit_secondary, ol)
+	draw_limb(Vector2(4, KNEE_Y + 12), Vector2(-2, FOOT_Y + 6), LEG_THICK, p.outfit_secondary, ol)
+	draw_boot(Vector2(-2, FOOT_Y + 6), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+
+	# Torso -- tumbling
+	var top_pts := PackedVector2Array([
+		Vector2(-TORSO_W - 5, TORSO_TOP + 10), Vector2(TORSO_W - 6, TORSO_TOP + 8),
+		Vector2(TORSO_W * 0.9 - 4, TORSO_BOT + 6), Vector2(-TORSO_W * 0.9 - 3, TORSO_BOT + 6)
+	])
+	draw_colored_polygon(top_pts, p.outfit_primary)
+	draw_polyline(top_pts, ol, 1.0, true)
+
+	# Arms -- flailing wildly
+	draw_limb(Vector2(-SHOULDER_W - 5, SHOULDER_Y + 10), Vector2(-22, SHOULDER_Y + 6), ARM_THICK, p.skin, ol)
+	_draw_burn_scars(Vector2(-SHOULDER_W - 3, SHOULDER_Y + 10), Vector2(-22, SHOULDER_Y + 6))
+	draw_fist(Vector2(-22, SHOULDER_Y + 6), FIST_R, p.skin, ol)
+	draw_limb(Vector2(SHOULDER_W - 6, SHOULDER_Y + 8), Vector2(12, SHOULDER_Y + 18), ARM_THICK, p.skin, ol)
+	draw_fist(Vector2(12, SHOULDER_Y + 18), FIST_R, p.skin, ol)
+
+	# Head -- dazed, wide-eyed falling
+	var hc := Vector2(-6, HEAD_Y + 10)
+	draw_circle_outlined(hc, HEAD_R, p.skin, ol, 1.0)
+	_draw_wild_hair(hc)
+	draw_circle(hc + Vector2(-3, -1), 1.8, p.eye)
+	draw_circle(hc + Vector2(2, -1), 1.8, p.eye)
+	draw_circle(hc + Vector2(-2.5, -1.5), 0.6, Color.WHITE)
+	draw_circle(hc + Vector2(2.5, -1.5), 0.6, Color.WHITE)
+	draw_ellipse(hc + Vector2(0, 4), Vector2(2.5, 1.8), Color(0.3, 0.1, 0.1))
+
+
 ## Burn scars — jagged lines on upper arms
 func _draw_burn_scars(from: Vector2, to: Vector2) -> void:
 	var p := pal
