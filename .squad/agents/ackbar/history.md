@@ -338,3 +338,20 @@ Gate is unblocked. Team can proceed with M4 playtesting phase without CI frictio
   - State machine robustness: 9/10. Safety timeouts on all states, proper enter/exit.
   - VFX/Audio: 8/10. Properly wired to EventBus, procedural audio with pitch jitter.
 - **Key Insight:** The damage pipeline has two sequential blockers — empty hitbox geometry prevents hit_landed, and even if fixed, the take_damage call will crash. Must fix both in sequence. Throw_state.gd is the only path that correctly calls take_damage(3 args) and works today.
+
+
+### 2025-07-22: Sprint 1 Art Phase — Visual Quality Playtest (M4)
+- **Verdict: PASS WITH NOTES** — Sprint 1 art deliverables meet quality bar for shipping.
+- **PRs Reviewed:** #103 (EmberGrounds stage art), #104 (41 animation states), #105 (Character VFX), #106 (AnimationPlayer integration)
+- **Scope:** Code-level review of all art deliverables against GDD v1.0 and ARCHITECTURE.md
+- **Report:** `games/ashfall/docs/PLAYTEST-REPORT-SPRINT1.md`
+- **Sprite Coverage:** 41/41 poses implemented per character (Kael + Rhena). All 4 specials have distinct `_draw()` — not routed to ignition. Kicks have distinct art from punches. Base class fallbacks exist but are properly overridden.
+- **Silhouette Test:** PASS. Kael (narrow, controlled, blue-ember) vs Rhena (wide, chaotic, orange-ember) are immediately distinguishable. Body proportions, spark spread, and particle behavior all reinforce character identity.
+- **VFX Integration:** PASS. VFXManager connects to 7 EventBus signals (hit_landed, hit_blocked, hit_confirmed, fighter_ko, ember_changed, ember_spent, round_started). 10+ VFX types spawned with character-specific palettes. Zero direct coupling.
+- **Stage Visuals:** PASS. EmberGrounds escalation wired to round_started signal with 3 states (dormant/warming/eruption). Dual-axis reactivity (round + ember gauge). 5 parallax layers. Lava, embers, smoke, vignette all interpolate independently.
+- **AnimationPlayer:** PASS. FighterAnimationController builds Animation resources from MoveData with frame-perfect hitbox sync via CollisionShape.disabled + Area2D.monitoring keyframes. Process mode = PHYSICS.
+- **Frame Data Issues Found:**
+  1. P1-001: MP/MK base .tres startup is 1f faster than GDD spec (6f/7f vs 7f/8f minimum).
+  2. P1-002: Medium attacks (MP, MK) missing from character moveset .tres files. Only 6 moves per character.
+  3. P1-003: Frame data drift between base .tres and character moveset .tres (HP startup 10f vs 12f).
+- **Key Insight:** The art pipeline is architecturally excellent — procedural 2D drawing with parametric palettes, EventBus-decoupled VFX, and data-driven animation building. The gaps are numerical (frame data values) not structural. Fix the numbers, not the system.
