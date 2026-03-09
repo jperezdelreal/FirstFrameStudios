@@ -29,12 +29,13 @@ var _transitioning: bool = false
 
 
 func _ready() -> void:
+	set_process_input(true)
 	_update_display()
 	var mode_text := "VS CPU" if SceneManager.game_mode == "vs_cpu" else "VS PLAYER"
 	mode_label.text = mode_text
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if _transitioning:
 		return
 	if not event is InputEventKey or not event.pressed or event.echo:
