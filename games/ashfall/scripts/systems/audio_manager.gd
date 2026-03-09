@@ -285,17 +285,20 @@ func _is_heavy_move(move: Variant) -> bool:
 	if move == null:
 		return false
 	if move is Resource:
-		var dmg = move.get("damage") if move.has_method("get") else 0
+		# Resource extends Object — get() is always available, no has_method check needed
+		var res: Resource = move as Resource
+		var dmg: Variant = res.get("damage")
 		if dmg is int or dmg is float:
 			return dmg > 80
-		var move_name = move.get("name") if move.has_method("get") else ""
+		var move_name: Variant = res.get("name")
 		if move_name is String:
 			return "heavy" in move_name.to_lower() or "hp" in move_name.to_lower() or "hk" in move_name.to_lower()
 	if move is Dictionary:
-		var dmg = move.get("damage", 0)
+		var dict: Dictionary = move as Dictionary
+		var dmg: int = dict.get("damage", 0)
 		if dmg > 80:
 			return true
-		var move_name: String = move.get("name", "")
+		var move_name: String = dict.get("name", "")
 		return "heavy" in move_name.to_lower() or "hp" in move_name.to_lower() or "hk" in move_name.to_lower()
 	return false
 
