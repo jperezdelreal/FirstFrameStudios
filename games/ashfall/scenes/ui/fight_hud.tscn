@@ -272,3 +272,81 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_colors/font_outline_color = Color(0.05, 0.02, 0.02, 1)
 theme_override_constants/outline_size = 8
 theme_override_font_sizes/font_size = 72
+
+[node name="P1ComboHits" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+offset_left = 60.0
+offset_top = 120.0
+offset_right = 300.0
+offset_bottom = 158.0
+mouse_filter = 2
+text = ""
+theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 30
+
+[node name="P1ComboDmg" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+offset_left = 60.0
+offset_top = 158.0
+offset_right = 300.0
+offset_bottom = 182.0
+mouse_filter = 2
+text = ""
+theme_override_colors/font_color = Color(1, 0.7, 0.3, 0.85)
+theme_override_colors/font_outline_color = Color(0.1, 0.05, 0.0, 0.8)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 16
+
+[node name="P2ComboHits" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+offset_left = 980.0
+offset_top = 120.0
+offset_right = 1220.0
+offset_bottom = 158.0
+mouse_filter = 2
+horizontal_alignment = 2
+text = ""
+theme_override_colors/font_color = Color(1, 0.95, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0.1, 0.05, 0.0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 30
+
+[node name="P2ComboDmg" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+offset_left = 980.0
+offset_top = 158.0
+offset_right = 1220.0
+offset_bottom = 182.0
+mouse_filter = 2
+horizontal_alignment = 2
+text = ""
+theme_override_colors/font_color = Color(1, 0.7, 0.3, 0.85)
+theme_override_colors/font_outline_color = Color(0.1, 0.05, 0.0, 0.8)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 16
+
+[node name="FinalRoundLabel" type="Label" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = -1
+offset_left = 560.0
+offset_top = 98.0
+offset_right = 720.0
+offset_bottom = 116.0
+mouse_filter = 2
+horizontal_alignment = 1
+text = "FINAL ROUND"
+theme_override_colors/font_color = Color(1, 0.3, 0.15, 0.9)
+theme_override_colors/font_outline_color = Color(0.12, 0.02, 0.02, 0.8)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 12

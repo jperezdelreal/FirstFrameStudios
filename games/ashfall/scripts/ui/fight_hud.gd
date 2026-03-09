@@ -1,6 +1,57 @@
-## Fight HUD — health bars, round timer, round counter, ember meters, announcements.
+## Fight HUD — polished health bars with ghost damage, round indicators,
+## timer with urgency, combo counter, enhanced announcer with FINAL ROUND,
+## and Ember meter with EX/Ignition threshold markers.
 ## Wired to EventBus signals for fully decoupled updates.
 extends CanvasLayer
+
+# ── Constants ────────────────────────────────────────────
+const GHOST_DELAY_FRAMES: int = 30       # 0.5s at 60 FPS
+const GHOST_SPEED: float = 400.0
+const HP_LERP: float = 10.0
+const EMBER_LERP: float = 8.0
+const ROUNDS_TO_WIN: int = 2
+
+const ANNOUNCE_DURATION_FRAMES: int = 90  # 1.5s total
+const ANNOUNCE_SCALE_IN_FRAMES: int = 9   # 0.15s punch-in
+const ANNOUNCE_FADE_OUT_FRAMES: int = 18  # 0.3s fade
+
+const COMBO_FADE_FRAMES: int = 60         # 1s fade after combo ends
+const COMBO_MIN_DISPLAY: int = 2          # min hits before showing counter
+
+const TIMER_WARN_SECONDS: int = 10
+
+# ── Colour palette ───────────────────────────────────────
+const CLR_HP_HIGH := Color(0.298, 0.686, 0.314)
+const CLR_HP_MID := Color(0.976, 0.847, 0.208)
+const CLR_HP_LOW := Color(0.937, 0.325, 0.314)
+const CLR_EMBER := Color(1.0, 0.596, 0.0)
+const CLR_EMBER_HOT := Color(1.0, 0.82, 0.28)
+const CLR_P1 := Color(0.31, 0.765, 0.969)
+const CLR_P2 := Color(0.937, 0.325, 0.314)
+const CLR_TIMER := Color(1.0, 0.96, 0.76)
+const CLR_TIMER_WARN := Color(1.0, 0.2, 0.2)
+const CLR_DOT_OFF := Color(0.35, 0.35, 0.42)
+const CLR_COMBO := Color(1.0, 0.95, 0.4)
+const CLR_COMBO_DMG := Color(1.0, 0.7, 0.3, 0.85)
+const CLR_FINAL := Color(1.0, 0.3, 0.15)
+const CLR_FIGHT := Color(1.0, 0.95, 0.4)
+const CLR_THRESH := Color(1.0, 1.0, 1.0, 0.4)
+
+# ── Node references (unique names from scene) ───────────
+@onready var p1_bar: ProgressBar = %P1HealthBar
+@onready var p1_ghost: ProgressBar = %P1GhostBar
+@onready var p2_bar: ProgressBar = %P2HealthBar
+@onready var p2_ghost: ProgressBar = %P2GhostBar
+@onready var p1_ember_bar: ProgressBar = %P1EmberBar
+@onready var p2_ember_bar: ProgressBar = %P2EmberBar
+@onready var timer_label: Label = %TimerLabel
+@onready var round_dots: HBoxContainer = %RoundDots
+@onready var announcer: Label = %AnnouncerLabel
+@onready var p1_combo_hits: Label = %P1ComboHits
+@onready var p1_combo_dmg: Label = %P1ComboDmg
+@onready var p2_combo_hits: Label = %P2ComboHits
+@onready var p2_combo_dmg: Label = %P2ComboDmg
+@onready var final_round_label: Label = %FinalRoundLabel
 
 # ── Health state ─────────────────────────────────────────
 var p1_hp: float = 1000.0
@@ -26,50 +77,30 @@ var current_round: int = 1
 var p1_rounds_won: int = 0
 var p2_rounds_won: int = 0
 
+# ── Combo state ──────────────────────────────────────────
+var _combo_active: bool = false
+var _combo_player_id: int = 0
+var _combo_count: int = 0
+var _combo_damage: int = 0
+var _combo_fade_frames: int = 0
+var _last_hit_damage: int = 0
+
 # ── Announcement state ──────────────────────────────────
 var _announce_elapsed: int = 0
 var _announcing: bool = false
 
-# ── Tuning ───────────────────────────────────────────────
-const GHOST_DELAY_FRAMES: int = 30   # 30 frames = 0.5s at 60 FPS
-const GHOST_SPEED: float = 400.0
-const HP_LERP: float = 10.0
-const EMBER_LERP: float = 8.0
-const ANNOUNCE_DURATION_FRAMES: int = 90    # 90 frames = 1.5s at 60 FPS
-const ANNOUNCE_SCALE_IN_FRAMES: int = 9     # 9 frames = 0.15s at 60 FPS
-const ANNOUNCE_FADE_OUT_FRAMES: int = 18    # 18 frames = 0.3s at 60 FPS
-const ROUNDS_TO_WIN: int = 2
-
-# ── Colour palette ───────────────────────────────────────
-const CLR_HP_HIGH := Color(0.298, 0.686, 0.314)
-const CLR_HP_MID := Color(0.976, 0.847, 0.208)
-const CLR_HP_LOW := Color(0.937, 0.325, 0.314)
-const CLR_EMBER := Color(1.0, 0.596, 0.0)
-const CLR_EMBER_HOT := Color(1.0, 0.82, 0.28)
-const CLR_P1 := Color(0.31, 0.765, 0.969)
-const CLR_P2 := Color(0.937, 0.325, 0.314)
-const CLR_TIMER := Color(1.0, 0.96, 0.76)
-const CLR_TIMER_WARN := Color(1.0, 0.2, 0.2)
-const CLR_DOT_OFF := Color(0.35, 0.35, 0.42)
-
-# ── Node references (unique names from scene) ───────────
-@onready var p1_bar: ProgressBar = %P1HealthBar
-@onready var p1_ghost: ProgressBar = %P1GhostBar
-@onready var p2_bar: ProgressBar = %P2HealthBar
-@onready var p2_ghost: ProgressBar = %P2GhostBar
-@onready var p1_ember_bar: ProgressBar = %P1EmberBar
-@onready var p2_ember_bar: ProgressBar = %P2EmberBar
-@onready var timer_label: Label = %TimerLabel
-@onready var round_dots: HBoxContainer = %RoundDots
-@onready var announcer: Label = %AnnouncerLabel
+# ── Timer urgency ────────────────────────────────────────
+var _timer_is_warn: bool = false
+var _timer_warn_frame: int = 0
 
 
 func _ready() -> void:
 	_wire_signals()
 	_rebuild_dots()
-	announcer.text = ""
-	announcer.modulate.a = 0.0
-	_announcing = false
+	_hide_announcer()
+	_hide_combo()
+	final_round_label.visible = false
+	call_deferred("_setup_ember_thresholds")
 
 
 func _wire_signals() -> void:
@@ -90,6 +121,8 @@ func _physics_process(delta: float) -> void:
 	_tick_health(delta)
 	_tick_ember(delta)
 	_tick_announcer()
+	_tick_combo()
+	_tick_timer_warn()
 
 
 # ── Health bars ──────────────────────────────────────────
@@ -122,12 +155,11 @@ func _color_hp(bar: ProgressBar, ratio: float) -> void:
 	var style := _ensure_own_fill(bar)
 	if not style:
 		return
+	# Smooth continuous gradient: green (1.0) → yellow (0.5) → red (0.0)
 	if ratio > 0.5:
-		style.bg_color = CLR_HP_HIGH
-	elif ratio > 0.25:
-		style.bg_color = CLR_HP_MID.lerp(CLR_HP_HIGH, (ratio - 0.25) / 0.25)
+		style.bg_color = CLR_HP_MID.lerp(CLR_HP_HIGH, (ratio - 0.5) / 0.5)
 	else:
-		style.bg_color = CLR_HP_LOW.lerp(CLR_HP_MID, ratio / 0.25)
+		style.bg_color = CLR_HP_LOW.lerp(CLR_HP_MID, ratio / 0.5)
 
 
 # ── Ember bars ───────────────────────────────────────────
@@ -166,14 +198,14 @@ func _tick_announcer() -> void:
 	var hold_end: int = ANNOUNCE_DURATION_FRAMES - ANNOUNCE_FADE_OUT_FRAMES
 
 	if _announce_elapsed < ANNOUNCE_SCALE_IN_FRAMES:
-		# Phase 1: punch-in scale
+		# Phase 1: punch-in scale (2.5x → 1x with ease curve)
 		var t: float = float(_announce_elapsed) / float(ANNOUNCE_SCALE_IN_FRAMES)
 		var s: float = lerpf(2.5, 1.0, ease(t, -2.0))
 		announcer.pivot_offset = announcer.size * 0.5
 		announcer.scale = Vector2(s, s)
 		announcer.modulate.a = t
 	elif _announce_elapsed < hold_end:
-		# Phase 2: hold
+		# Phase 2: hold at full opacity
 		announcer.scale = Vector2.ONE
 		announcer.modulate.a = 1.0
 	elif _announce_elapsed < ANNOUNCE_DURATION_FRAMES:
@@ -186,18 +218,81 @@ func _tick_announcer() -> void:
 		announcer.modulate.a = 0.0
 
 
+# ── Combo counter ───────────────────────────────────────
+
+func _tick_combo() -> void:
+	if _combo_active and _combo_count >= COMBO_MIN_DISPLAY:
+		_show_combo(_combo_player_id, _combo_count, _combo_damage, 1.0)
+	elif _combo_fade_frames > 0:
+		_combo_fade_frames -= 1
+		var alpha: float = float(_combo_fade_frames) / float(COMBO_FADE_FRAMES)
+		_show_combo(_combo_player_id, _combo_count, _combo_damage, alpha)
+	else:
+		_hide_combo()
+
+
+func _show_combo(pid: int, hit_count: int, damage: int, alpha: float) -> void:
+	var hits_label: Label = p1_combo_hits if pid == 1 else p2_combo_hits
+	var dmg_label: Label = p1_combo_dmg if pid == 1 else p2_combo_dmg
+	var other_hits: Label = p2_combo_hits if pid == 1 else p1_combo_hits
+	var other_dmg: Label = p2_combo_dmg if pid == 1 else p1_combo_dmg
+
+	other_hits.modulate.a = 0.0
+	other_dmg.modulate.a = 0.0
+
+	hits_label.text = "%d HITS" % hit_count
+	hits_label.modulate.a = alpha
+
+	dmg_label.text = "%d DMG" % damage
+	dmg_label.modulate.a = alpha * 0.85
+
+	# Scale punch grows with combo length during active combos
+	if _combo_active:
+		var s: float = minf(1.0 + float(hit_count) * 0.04, 1.4)
+		hits_label.pivot_offset = hits_label.size * 0.5
+		hits_label.scale = Vector2(s, s)
+	else:
+		hits_label.scale = Vector2.ONE
+
+
+func _hide_combo() -> void:
+	p1_combo_hits.modulate.a = 0.0
+	p1_combo_dmg.modulate.a = 0.0
+	p2_combo_hits.modulate.a = 0.0
+	p2_combo_dmg.modulate.a = 0.0
+
+
+# ── Timer urgency ────────────────────────────────────────
+
+func _tick_timer_warn() -> void:
+	if not _timer_is_warn:
+		return
+	_timer_warn_frame += 1
+	# ~4 Hz sine pulse using frame counter for deterministic visuals
+	var pulse: float = (sin(float(_timer_warn_frame) * 0.42) + 1.0) * 0.5
+	timer_label.add_theme_color_override("font_color",
+		CLR_TIMER.lerp(CLR_TIMER_WARN, pulse))
+
+
 # ── Signal handlers ──────────────────────────────────────
 
-func _on_fighter_damaged(fighter: Variant, _amount: int, remaining_hp: int) -> void:
-	var pid := 1
+func _on_fighter_damaged(fighter: Variant, amount: int, remaining_hp: int) -> void:
+	var pid: int = 1
 	if fighter and "player_id" in fighter:
 		pid = fighter.player_id
+
+	_last_hit_damage = amount
+
 	if pid == 1:
 		p1_hp = float(remaining_hp)
 		p1_ghost_delay = GHOST_DELAY_FRAMES
 	else:
 		p2_hp = float(remaining_hp)
 		p2_ghost_delay = GHOST_DELAY_FRAMES
+
+	# Accumulate damage during active combo (this fighter is the defender)
+	if _combo_active and _combo_player_id != pid:
+		_combo_damage += amount
 
 
 func _on_fighter_ko(_fighter: Variant) -> void:
@@ -206,6 +301,8 @@ func _on_fighter_ko(_fighter: Variant) -> void:
 
 func _on_round_started(round_number: int) -> void:
 	current_round = round_number
+
+	# Reset all HP and display values
 	p1_hp = p1_max_hp
 	p2_hp = p2_max_hp
 	p1_display_hp = p1_max_hp
@@ -222,7 +319,24 @@ func _on_round_started(round_number: int) -> void:
 	p2_ghost.value = 100.0
 	p1_ember_bar.value = 0.0
 	p2_ember_bar.value = 0.0
+
+	# Reset combo state
+	_combo_active = false
+	_combo_fade_frames = 0
+	_hide_combo()
+
+	# Reset timer urgency
+	_timer_is_warn = false
+	_timer_warn_frame = 0
+	timer_label.add_theme_color_override("font_color", CLR_TIMER)
+
 	_rebuild_dots()
+
+	# Show FINAL ROUND indicator when either player is one win from victory
+	var is_final: bool = (
+		p1_rounds_won >= ROUNDS_TO_WIN - 1 or p2_rounds_won >= ROUNDS_TO_WIN - 1
+	)
+	final_round_label.visible = is_final
 
 
 func _on_round_ended(_winner: Variant, _round_number: int) -> void:
@@ -243,16 +357,33 @@ func _on_match_ended(_winner: Variant, _scores: Array) -> void:
 
 func _on_timer_updated(seconds_remaining: int) -> void:
 	timer_label.text = str(seconds_remaining)
-	if seconds_remaining <= 10:
-		var pulse := (sin(Time.get_ticks_msec() * 0.01) + 1.0) * 0.5
-		timer_label.add_theme_color_override("font_color",
-			CLR_TIMER.lerp(CLR_TIMER_WARN, pulse))
-	else:
+	_timer_is_warn = seconds_remaining <= TIMER_WARN_SECONDS
+	if not _timer_is_warn:
+		_timer_warn_frame = 0
 		timer_label.add_theme_color_override("font_color", CLR_TIMER)
 
 
 func _on_announce(text: String) -> void:
-	announcer.text = text
+	var display_text: String = text
+
+	# Replace round announcement with FINAL ROUND when at match point
+	if text.begins_with("ROUND") or text.begins_with("Round"):
+		var is_final: bool = (
+			p1_rounds_won >= ROUNDS_TO_WIN - 1 or p2_rounds_won >= ROUNDS_TO_WIN - 1
+		)
+		if is_final:
+			display_text = "FINAL ROUND"
+			announcer.add_theme_color_override("font_color", CLR_FINAL)
+		else:
+			announcer.add_theme_color_override("font_color", Color.WHITE)
+	elif text == "K.O.!" or text == "K.O.":
+		announcer.add_theme_color_override("font_color", CLR_HP_LOW)
+	elif text == "FIGHT!":
+		announcer.add_theme_color_override("font_color", CLR_FIGHT)
+	else:
+		announcer.add_theme_color_override("font_color", Color.WHITE)
+
+	announcer.text = display_text
 	_announce_elapsed = 0
 	_announcing = true
 	announcer.scale = Vector2(2.5, 2.5)
@@ -266,14 +397,32 @@ func _on_ember_changed(player_id: int, new_value: int) -> void:
 		p2_ember = float(new_value)
 
 
-func _on_combo_updated(_fighter: Variant, combo_count: int) -> void:
-	if combo_count >= 2:
-		_on_announce("%d HIT" % combo_count)
+func _on_combo_updated(fighter: Variant, combo_count: int) -> void:
+	var pid: int = 1
+	if fighter and "player_id" in fighter:
+		pid = fighter.player_id
+
+	if combo_count >= 1:
+		if not _combo_active:
+			# New combo — include the first hit's damage
+			_combo_damage = _last_hit_damage
+			_combo_active = true
+			_combo_player_id = pid
+		_combo_count = combo_count
+		_combo_fade_frames = 0
 
 
-func _on_combo_ended(_fighter: Variant, total_hits: int, _total_damage: int) -> void:
-	if total_hits >= 3:
-		_on_announce("%d HIT COMBO!" % total_hits)
+func _on_combo_ended(fighter: Variant, total_hits: int, total_damage: int) -> void:
+	var pid: int = 1
+	if fighter and "player_id" in fighter:
+		pid = fighter.player_id
+
+	if total_hits >= COMBO_MIN_DISPLAY:
+		_combo_player_id = pid
+		_combo_count = total_hits
+		_combo_damage = total_damage
+		_combo_fade_frames = COMBO_FADE_FRAMES
+	_combo_active = false
 
 
 # ── Round dots ───────────────────────────────────────────
@@ -308,7 +457,40 @@ func _make_dot(filled: bool, color: Color) -> Label:
 	return dot
 
 
+# ── Ember threshold markers ─────────────────────────────
+
+func _setup_ember_thresholds() -> void:
+	# EX at 25 Ember, Ignition at 50 Ember (max 100)
+	_add_threshold_marker(p1_ember_bar, 0.25, false)
+	_add_threshold_marker(p1_ember_bar, 0.50, false)
+	_add_threshold_marker(p2_ember_bar, 0.25, true)
+	_add_threshold_marker(p2_ember_bar, 0.50, true)
+
+
+func _add_threshold_marker(bar: ProgressBar, fraction: float, reversed: bool) -> void:
+	var marker := ColorRect.new()
+	marker.color = CLR_THRESH
+	marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var bar_size: Vector2 = bar.size
+	var x_pos: float
+	if reversed:
+		x_pos = bar_size.x * (1.0 - fraction)
+	else:
+		x_pos = bar_size.x * fraction
+
+	marker.position = Vector2(x_pos - 1.0, 0.0)
+	marker.size = Vector2(2.0, bar_size.y)
+	bar.add_child(marker)
+
+
 # ── Helpers ──────────────────────────────────────────────
+
+func _hide_announcer() -> void:
+	announcer.text = ""
+	announcer.modulate.a = 0.0
+	_announcing = false
+
 
 func _ensure_own_fill(bar: ProgressBar) -> StyleBoxFlat:
 	## Duplicate the shared sub-resource so per-bar colour mutation is safe.

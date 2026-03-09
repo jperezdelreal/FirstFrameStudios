@@ -248,3 +248,11 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
   - Fix: Added `GameState.scores` sync in RoundManager after every score mutation (KO, time-over winner, and draw paths).
   - Also wired `EventBus.round_draw` to the HUD — draw rounds previously had no HUD handler, so dots wouldn't update on draws either.
   - **Lesson:** When two systems track the same data (RoundManager.scores vs GameState.scores), the authoritative source must sync to the shared singleton. UI should always read from the single source of truth (GameState), never from system-local state.
+
+- **HUD Polish — Sprint 2 Phase 3 (PR #149):**
+  - Separated combo counter from announcer into dedicated per-player labels (P1ComboHits/P1ComboDmg, P2ComboHits/P2ComboDmg). Combo damage tracking captures `_last_hit_damage` before `_combo_active` is set since `fighter_damaged` fires before `combo_updated`, then accumulates subsequent hits. `combo_ended` signal provides authoritative `total_damage`.
+  - Timer urgency pulse moved from `_on_timer_updated` (fires once/sec) into `_tick_timer_warn()` running every `_physics_process` frame for smooth 60fps animation.
+  - Ember threshold markers (EX=25, IGN=50) created programmatically via `call_deferred("_setup_ember_thresholds")` to ensure bar dimensions are resolved before positioning.
+  - FINAL ROUND detection intercepts announcer text beginning with "ROUND" and checks `p1_rounds_won >= ROUNDS_TO_WIN - 1` — replaces round text + adds persistent label below dots.
+  - Health bar gradient changed from 3-tier stepped (flat green > 50%) to smooth 2-segment continuous lerp (green↔yellow↔red).
+  - **Lesson:** Signal ordering matters for combo tracking — `fighter_damaged` fires before `combo_updated` for the same hit, so damage must be captured in a temp var and applied when the combo is recognized. Use `call_deferred` when creating child nodes that depend on parent layout dimensions.
