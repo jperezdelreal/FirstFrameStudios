@@ -17,6 +17,7 @@ func _ready() -> void:
 	rematch_btn.grab_focus()
 
 
+# Cosmetic-only glow — _process is acceptable (Rule 7: delta OK for visual interpolation).
 func _process(delta: float) -> void:
 	_glow_time += delta
 	var pulse := (sin(_glow_time * 2.5) + 1.0) * 0.5
