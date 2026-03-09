@@ -241,3 +241,9 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
   - Set `ctx.imageSmoothingEnabled = true` at start of HUD render
   - Pre-computed `hw = Math.round(w / 2)` in title.js for consistent centered text alignment
   - Increased BRAWLER label font from 13px → 14px, health text from 11px → 12px, SCORE label from 11px → 12px
+
+- **Bug #94 — HUD round dots not syncing (PR #98):**
+  - Root cause: RoundManager maintained its own `scores` array but never synced to `GameState.scores`. The HUD reads `GameState.scores` via `_on_round_ended`, so dots always showed 0-0.
+  - Fix: Added `GameState.scores` sync in RoundManager after every score mutation (KO, time-over winner, and draw paths).
+  - Also wired `EventBus.round_draw` to the HUD — draw rounds previously had no HUD handler, so dots wouldn't update on draws either.
+  - **Lesson:** When two systems track the same data (RoundManager.scores vs GameState.scores), the authoritative source must sync to the shared singleton. UI should always read from the single source of truth (GameState), never from system-local state.
