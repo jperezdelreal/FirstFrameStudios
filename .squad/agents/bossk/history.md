@@ -14,3 +14,10 @@
 - Screen-sized effects (flash, speed lines, boss intro) use `ctx.canvas.width/height` for dimensions — no hardcoded canvas size.
 - Telegraph ring expanding outward uses the same progress-based alpha pattern as spawn effects. Keeping visual language consistent across warning indicators.
 - Sparkle particles on motion trails use cubic bezier interpolation (`mt³·P0 + 3·mt²·t·P1 + ...`) to position along the outer arc edge — avoids needing a second render pass.
+- **Ashfall VFXManager** (`games/ashfall/scripts/systems/vfx_manager.gd`) is a Godot 4 autoload that connects exclusively to EventBus signals. All VFX is decoupled — no direct fighter references.
+- Character identification for VFX uses `fighter.player_id` → `SceneManager.p1_character` / `SceneManager.p2_character`. VFXManager loads before SceneManager in autoload order, but character lookup only happens in signal callbacks (after all autoloads ready), so it's safe.
+- Character VFX palettes use a `CHARACTER_PALETTES` dictionary keyed by character name (e.g. "Kael", "Rhena") with a `DEFAULT_PALETTE` fallback. Adding a new character's VFX = adding one dictionary entry. All palette-consuming methods accept `char_name: String = ""` for backward compatibility.
+- Kael's palette uses negative gravity (`Vector3(0, -60, 0)`) so embers float upward — key to his fire/meditation identity. Rhena's uses high velocity (160-350) and wide spread (90°) for explosive shards.
+- KO effects chain: freeze-frame (6 frames at `time_scale=0`) → slow-motion (`time_scale=0.3` for 0.5s) → restore. `_tick_freeze()` runs per-frame in `_process()` since `process_mode = PROCESS_MODE_ALWAYS` still fires during `time_scale=0` (delta is 0 but frame counter decrements).
+- Damage number popups use a `Node2D` marker with a `Label` child, tweened upward with fade-out. Font size scales with damage (20/24/28). `_auto_free` handles cleanup after 1s.
+- Screen shake now scales by damage: `intensity *= clampf(dmg / 80.0, 0.6, 2.0)`. Duration also scales: `0.15 + clampf(intensity / 50.0, 0, 0.1)`. This makes LP jabs feel crisp and HP/specials feel heavy.

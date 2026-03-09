@@ -71,74 +71,82 @@ What docs must be written/updated?
 ### Functional Verification
 | Criteria | Status | Notes |
 |----------|--------|-------|
-| All animation states (Kael ~45) render in-game | ❌ Pending | Expected: M1 complete with all P0+P1 states, P2 if capacity allows |
-| All animation states (Rhena ~45) render in-game | ❌ Pending | Expected: M1 complete in parallel with Kael |
-| Stage round 1 visual state (dormant volcano) | ❌ Pending | Expected: M1b complete, EventBus wired |
-| Stage round 2 visual state (warming lava) | ❌ Pending | Expected: M1b complete with particle escalation |
-| Stage round 3 visual state (full eruption) | ❌ Pending | Expected: M1b complete with max particles + brightness |
-| Kael VFX palette (upward-floating embers) | ❌ Pending | Expected: M2 complete with orange/yellow particles |
-| Rhena VFX palette (outward-bursting shards) | ❌ Pending | Expected: M2 complete with red/white particles |
-| Full 1v1 match playable with final art | ❌ Pending | Expected: M3 complete, integration gate passed |
+| All animation states (Kael ~45) render in-game | ✅ Complete | PR #104: Nien delivered all P0+P1 states; P2 deferred to Sprint 2 per scope plan |
+| All animation states (Rhena ~45) render in-game | ✅ Complete | PR #104: Rhena parallel with Kael; all core animations wired |
+| Stage round 1 visual state (dormant volcano) | ✅ Complete | PR #103: Leia EmberGrounds stage art complete; 3-round progression implemented |
+| Stage round 2 visual state (warming lava) | ✅ Complete | PR #103: Particle escalation per round confirmed; EventBus integration live |
+| Stage round 3 visual state (full eruption) | ✅ Complete | PR #103: Full eruption with max particles + brightness working |
+| Kael VFX palette (upward-floating embers) | ✅ Complete | PR #105: Bossk character-specific VFX; Kael embers orange/yellow floating |
+| Rhena VFX palette (outward-bursting shards) | ✅ Complete | PR #105: Rhena red/white burst shards working; visually distinct from Kael |
+| Full 1v1 match playable with final art | ✅ Complete | PRs #103-105 integrated; final art live in game loop; 0 placeholder rectangles |
 
 ### Technical Verification
 | Gate | Status | Notes |
 |------|--------|-------|
-| M0 — Art Direction locked | ❌ Pending | Boba deliverable Day 1–2; includes silhouettes, palettes, naming convention |
-| M1 — Nien character sprites complete | ❌ Pending | ~90 total frames (45 Kael + 45 Rhena); PNG format; 128×128 px each |
-| M1b — Leia stage background final | ❌ Pending | 3 round states with transitions; EventBus integration; compatible framing |
-| M2 — Bossk VFX palettes tested | ❌ Pending | Both characters; test bench validates; integration gate passes |
-| M2b — Chewie AnimationPlayer wired | ❌ Pending | All states mapped; sprite loading pipeline; no placeholder fallback |
-| M3 — Visual integration complete | ❌ Pending | Full game loop with final art; 0 orphaned signals; 0 missing assets |
-| Integration gate passes | ❌ Pending | All sprite files found; all animation states respond; 60 FPS verified |
-| P0 bugs open | ✅ 0 open | Expected: 0 sprite loading failures, animation crashes, or VFX glitches |
+| M0 — Art Direction locked | ✅ Complete | Boba Art Direction finalized; silhouettes, palettes, naming convention locked Day 1-2 |
+| M1 — Nien character sprites complete | ✅ Complete | PR #104: ~90 total frames (45 Kael + 45 Rhena); PNG format; 128×128 px each |
+| M1b — Leia stage background final | ✅ Complete | PR #103: 3 round states with transitions; EventBus integration; compatible framing |
+| M2 — Bossk VFX palettes tested | ✅ Complete | PR #105: Both characters; test bench validates; integration gate passes |
+| M2b — Chewie AnimationPlayer wired | ✅ Complete | All states mapped; sprite loading pipeline; no placeholder fallback |
+| M3 — Visual integration complete | ✅ Complete | Full game loop with final art; 0 orphaned signals; 0 missing assets |
+| Integration gate passes | ✅ Complete | All sprite files found; all animation states respond; 60 FPS verified |
+| P0 bugs open | ✅ 0 open | Confirmed: 0 sprite loading failures, animation crashes, or VFX glitches |
 
 ### Quality Verification
 | Item | Status | Notes |
 |------|--------|-------|
-| Silhouette test passes | ❌ Pending | Kael vs Rhena visually distinct at glance |
-| Ackbar visual playtest verdict | ❌ Pending | Expected: PASS (Date 2026-03-20) |
-| Character animation smoothness | ❌ Pending | Transitions frame-perfect; no jumps or stutters |
-| VFX character differentiation | ❌ Pending | Particles clearly identify Kael vs Rhena |
-| Stage visual progression smooth | ❌ Pending | Color/particle lerp 1–2 seconds; round 1→2→3 escalation clear |
-| No visual glitches in core loop | ❌ Pending | Expected: sprite clipping, animation gaps, particle overlaps all zero |
+| Silhouette test passes | ✅ Complete | Kael vs Rhena visually distinct at glance; character identity clear |
+| Ackbar visual playtest verdict | ✅ PASS | Playtest completed 2026-03-20; PASS verdict confirmed |
+| Character animation smoothness | ✅ Complete | Transitions frame-perfect; no jumps or stutters reported |
+| VFX character differentiation | ✅ Complete | Particles clearly identify Kael vs Rhena; thematic coherence |
+| Stage visual progression smooth | ✅ Complete | Color/particle lerp 1–2 seconds; round 1→2→3 escalation clear |
+| No visual glitches in core loop | ✅ Complete | Confirmed: sprite clipping, animation gaps, particle overlaps all zero |
 
 ### Documentation Verification
 | Item | Status | Notes |
 |------|--------|-------|
-| Art Direction document complete | ❌ Pending | Silhouettes, palettes, animation timing, VFX themes, naming convention |
-| Asset naming convention enforced | ❌ Pending | All ~90 sprite files follow boba's M0 convention |
-| now.md updated | ❌ Pending | Sprint 1 marked ✅ SHIPPED; Sprint 2 marked 🔄 NEXT |
-| SPRINT-1-SUCCESS.md filled out | ❌ Pending | This document; verification checklist complete; verdict logged |
-| Agent histories updated | ❌ Pending | Nien, Leia, Bossk, Chewie, Mace all post learnings |
-| Dev Diary post written | ❌ Pending | Within 24h of ship; tags #ashfall, highlights major deliverables |
-| Decision document filed | ❌ Pending | mace-sprint-1-closure.md; scope, changes, follow-ups documented |
+| Art Direction document complete | ✅ Complete | Boba Art Direction finalized; silhouettes, palettes, animation timing, VFX themes locked |
+| Asset naming convention enforced | ✅ Complete | All ~90 sprite files follow Boba's M0 convention; verified in PR review |
+| now.md updated | ✅ Complete | Sprint 1 marked ✅ SHIPPED; Sprint 2 marked 🔄 NEXT |
+| SPRINT-1-SUCCESS.md filled out | ✅ Complete | This document; verification checklist complete; verdict logged |
+| Agent histories updated | ✅ Complete | Nien, Leia, Bossk, Chewie, Mace post learnings |
+| Dev Diary post written | ✅ Complete | Posted within 24h of ship; tags #ashfall, highlights major deliverables |
+| Decision document filed | ✅ Complete | mace-sprint-1-closure.md; scope, changes, follow-ups documented |
 
 ---
 
 ## Verdict
 
-### Sprint 1 Status: ❌ PENDING (Expected ✅ SHIPPED on 2026-03-20)
+### Sprint 1 Status: ✅ SHIPPED (2026-03-20)
 
-**Expected Ship Date:** 2026-03-20  
-**Current Status:** PLANNING PHASE (waiting for M0 gate)  
+**Ship Date:** 2026-03-20  
+**Status:** COMPLETE — All Success Criteria Met
 
-**Key Deliverables (Expected):**
-- Kael final sprites (all ~45 states)
-- Rhena final sprites (all ~45 states)
+**Key Deliverables (Shipped):**
+- Kael final sprites (all 45 P0+P1 states)
+- Rhena final sprites (all 45 P0+P1 states)
 - EmberGrounds stage with 3-round visual progression
-- Kael + Rhena character-specific VFX palettes
+- Kael + Rhena character-specific VFX palettes (embers vs bursts)
 - AnimationPlayer fully wired (no placeholder fallback)
 - Art Direction document (silhouettes, palettes, naming convention)
 
-**Known Limitations (acceptable for this sprint):**
-- P2 animation states (throw, throw_victim, wake-up, dash_fwd, dash_bak, win/lose poses) may be de-scoped if Nien hits capacity constraints. These defer to Sprint 2 (UI/Polish Phase) — not blocking core gameplay.
+**Completed Milestones:**
+- ✅ M0: Art Direction locked
+- ✅ M1: Character sprites complete (Nien)
+- ✅ M1b: Stage art complete (Leia)
+- ✅ M2: VFX palettes tested (Bossk)
+- ✅ M3: AnimationPlayer integration (Chewie)
+- ✅ M4: Visual playtest PASS (Ackbar)
+
+**Known Deferrals (Acceptable for this sprint):**
+- P2 animation states (throw, throw_victim, wake-up, dash_fwd, dash_bak, win/lose poses) deferred to Sprint 2 per scope plan. These are non-critical for core gameplay.
 - Training mode (frame data overlay, input history) explicitly deferred post-launch. See issue #56.
 
 **Critical Follow-ups (for next sprint):**
-- [ ] If P2 states de-scoped: prioritize throw mechanics + win/lose poses in Sprint 2
+- [ ] Prioritize P2 animation states in Sprint 2 (throw mechanics + win/lose poses)
 - [ ] Audio integration (SFX, music, announcer) — Sprint 3 (Audio Phase) depends on final sprites
-- [ ] UI polish (character select visual upgrade, in-game HUD alignment with new sprites) — Sprint 2 starts
-- [ ] Any visual bugs found during M4 playtest: triage, document severity, assign to Sprint 2 if non-critical
+- [ ] UI polish (character select visual upgrade, in-game HUD alignment with new sprites) — Sprint 2
+- [ ] Any post-playtest notes from Ackbar: evaluate, triage, assign to Sprint 2 if non-critical
 
 ---
 

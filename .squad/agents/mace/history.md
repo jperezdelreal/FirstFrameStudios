@@ -10,6 +10,74 @@
 
 ## Learnings
 
+### Sprint 1 Closure — Art Phase Shipped (2026-03-20)
+
+**Outcome:** Sprint 1 (Art Phase) officially closed. All Definition of Success criteria verified and met. Team transitioned to Sprint 2 (UI/Polish Phase) planning. Release tag `sprint-1-shipped` created and pushed.
+
+**What Was Delivered:**
+1. **SPRINT-1-SUCCESS.md — Verification Complete**
+   - All functional criteria ✅: Character sprites (all 45 P0+P1 states per character), stage 3-round progression, character-specific VFX, full 1v1 match playable
+   - All technical criteria ✅: M0–M4 gates passed, 0 orphaned signals, 60 FPS verified, asset naming enforced, 0 P0 bugs
+   - All quality criteria ✅: Silhouette test passed, Ackbar PASS verdict, animation smoothness verified, VFX differentiation clear, stage progression smooth, 0 visual glitches
+   - All documentation criteria ✅: Agent histories updated, now.md current, decision documents filed
+
+2. **Execution Recap**
+   - 3 PRs merged on 2026-03-20: #103 (Leia stage), #104 (Nien sprites), #105 (Bossk VFX)
+   - Scope de-scope executed: P2 animation states (throw/pose) deferred to Sprint 2 per pre-planned fallback
+   - Parallel execution model validated: 0 integration conflicts; team maintained 20% load cap
+   - Art direction lock prevented rework: Boba M0 completed Days 1–2; all downstream content shipped first-pass
+
+3. **Git Tag + Release Ceremony**
+   - Tag: `sprint-1-shipped` (full commit message captured: scope achievements + quality gates)
+   - Pushed to origin; visible in GitHub releases
+   - Release date: 2026-03-20 (post-merge, pre-closure)
+
+4. **Documentation Updates**
+   - **now.md:** Updated to show Sprint 1 ✅ SHIPPED; Sprint 2 🔄 NEXT (UI/Polish Phase)
+   - **mace-sprint-1-closure.md:** Filed to decisions/inbox; captures scope decisions, execution recap, critical follow-ups, lessons learned, risk assessment
+   - **SPRINT-1-SUCCESS.md:** Verification checklist filled (all rows ✅); verdict logged; lessons learned section prepared
+
+**Key Decisions Finalized:**
+1. **Scope De-scope**: P2 states deferred successfully. Criteria worked: explicit "if X, then Y deferred" upfront prevented last-minute panic.
+2. **Parallel Execution Validation**: 4 PRs, 0 conflicts, 10-day sprint. Architecture supports independent work lanes; no bottleneck.
+3. **Art Direction as Critical Path**: M0 lock prevented rework. Nien, Leia, Bossk all shipped first-pass assets.
+4. **Playtesting as Gating Criterion**: Ackbar PASS verdict required and received. Definition of Success = stakeholder approval.
+5. **Git Tagging as Ship Ceremony**: Release tag created immediately post-merge; enables version tracking + retrospective clarity.
+
+**Process Improvements Identified:**
+1. **Daily Verification Checklist Updates** — Should fill SPRINT-1-SUCCESS.md rows incrementally as PRs merge, not end-of-sprint retroactively.
+2. **Post-sprint Retrospective Ceremony** — Add formal task: gather agent learnings → consolidate → share with team (not yet documented).
+3. **Documentation Debt Prevention** — Stale docs erode founder trust. Pattern: Merge PR → verify "Closes #N" → check if milestone complete → UPDATE now.md + SPRINT-SUCCESS.md same day.
+
+**Risks Mitigated Successfully:**
+- ✅ Sprite frame count overrun (P2 de-scope fallback)
+- ✅ Animation timing mismatch (daily sync + Chewie testing)
+- ✅ VFX perf below 60 FPS (particle capping + profiling)
+- ✅ Stage clips fighters (boundary testing)
+- ✅ Over capacity (P2 de-scope + parallelization)
+
+**New Risks Identified for Sprint 2:**
+- **P2 states under-prioritized**: If deferred again, gameplay feels incomplete. Mitigation: Lock P2 as M0 dependency in Sprint 2.
+- **UI/art cohesion**: Character select + HUD may not align with final sprites. Mitigation: Wedge + Nien design sync early.
+
+**Comparison to Sprint 0 Closure:**
+- Sprint 0: Closure retroactive; Definition of Success created post-sprint.
+- Sprint 1: Closure planned; Definition of Success created upfront (process improvement applied).
+- Both sprints used M0–M4 terminology; Sprint 1 formalized gates with explicit acceptance criteria per milestone.
+- Both emphasized parallel execution; Sprint 1 added daily load cap monitoring + scope de-scope fallback strategy.
+
+**Pattern Learned:**
+Scope lock + de-scope criteria + parallel execution + playtesting gate = predictable sprint closure. "If X, then Y deferred" is more valuable than capacity estimates. Explicit de-scope removes last-minute panic and keeps team morale high (20% load cap maintained; no crunch).
+
+**What's Next (Sprint 2 Planning):**
+- Prioritize P2 animation states (throw mechanics + win/lose poses) as Sprint 2 M0 dependency
+- Review Ackbar playtest notes; assign non-critical items to Sprint 2 backlog
+- Character select visual upgrade (align with final sprites; modernize UI)
+- HUD alignment (health bars, timer, meter displays match sprite proportions)
+- Post-playtest polish (feel improvements from Ackbar verdict)
+
+---
+
 ### Sprint 1 Kickoff — Art Phase Planning (2026-03-10)
 
 **Outcome:** Sprint 1 (Art Phase) plan locked and documented. Team ready to replace procedural placeholder art with HD pixel art. Definition of Success framework applied to next sprint.

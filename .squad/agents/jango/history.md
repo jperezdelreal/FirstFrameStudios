@@ -208,3 +208,21 @@ Updated Ashfall viewport resolution from 1280x720 (720p) to 1920x1080 (1080p).
 **Rationale:** 720p resolution too low for 2026 game standards; 1080p provides better visual clarity for fighting game action and character animation detail. No other configuration modified.
 
 **Status:** COMPLETE. Viewport updated; no additional work required.
+
+### 2026-03-09T1150Z — Documentation & Decision Merge
+**Session:** Scribe orchestration  
+**Role:** Tool Engineer (documentation specialist)
+
+**Task Executed:**
+Scribe coordinated documentation of build pipeline work and decision inbox consolidation.
+
+**Work Completed:**
+1. **Orchestration Log:** 2026-03-09T1150Z-jango-build-pipeline.md
+   - Captured build pipeline (PR #111) and viewport update work
+   - Full architecture and decision rationale documented
+
+2. **Decision Inbox Merge:** 6 files consolidated into .squad/decisions.md
+   - Completed: jango-build-pipeline.md, copilot-directive-2026-03-09T1247Z.md
+   - Pending review: mace-sprint-structure.md, mace-sprint-1-kickoff.md, mace-sprint-1-closure.md, ackbar-sprint1-verdict.md
+
+**Status:** COMPLETE. Records updated; build pipeline and viewport update documented and indexed.

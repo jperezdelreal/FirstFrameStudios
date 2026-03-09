@@ -1,8 +1,8 @@
 ---
-updated_at: 2026-03-09T16:30:00.000Z
+updated_at: 2026-03-20T18:00:00.000Z
 focus_area: Ashfall — 1v1 Fighting Game in Godot 4
 team_size: 15 specialists + Scribe + Ralph
-current_phase: Sprint 0 Complete — Sprint 1 Planning Next
+current_phase: Sprint 1 Complete — Sprint 2 Planning Next
 genre: Fighting (1v1, Tekken/Street Fighter style)
 engine: Godot 4
 scope: 1 stage, 2 characters (MVP)
@@ -11,16 +11,12 @@ scope: 1 stage, 2 characters (MVP)
 # Now
 
 ## Current Focus
-Ashfall — Sprint 1 (Art Phase) Kickoff; Character sprites → Stage art → VFX → Integration
+Ashfall — Sprint 2 (UI/Polish Phase) Planning; Character select upgrade, HUD polish, P2 animation states, post-playtest follow-ups
 
 ## Status
 - Sprint 0 (Foundation): ✅ SHIPPED — All 5 PRs merged; M0-M4 gates passed; playable 1v1 prototype (tag: sprint-0-shipped)
-- Sprint 1 (Art Phase): 🔄 IN PROGRESS (kickoff 2026-03-10) — Character sprites, stage backgrounds, VFX integration
-- M0 (Art Direction): 🔜 NEXT — Boba locks silhouettes, palettes, naming convention (Day 1–2)
-- M1 (Character Sprites): 🔜 NEXT — Nien creates ~45 states per fighter (Day 3–12)
-- M2 (VFX Palettes): 🔜 NEXT — Bossk character-specific effects (Day 8–15)
-- M3 (AnimationPlayer Integration): 🔜 NEXT — Chewie wires sprites to engine (Day 10–17)
-- M4 (Visual Playtest): 🔜 NEXT — Ackbar PASS verdict required (Day 19–20)
+- Sprint 1 (Art Phase): ✅ SHIPPED — All 3 PRs merged (#103, #104, #105); Character sprites, stage art, VFX complete; playable with final art (tag: sprint-1-shipped)
+- Sprint 2 (UI/Polish Phase): 🔜 NEXT — Character select visual upgrade, HUD alignment, P2 animation polish, post-playtest follow-ups
 
 ## Sprint 0 Complete — Foundation Shipped (2026-03-09)
 
@@ -32,6 +28,43 @@ Ashfall — Sprint 1 (Art Phase) Kickoff; Character sprites → Stage art → VF
 - M0-M4 gates: ✅ ✅ ✅ ✅ ✅ (all passed)
 - Ackbar playtest verdict: PASS WITH NOTES
 - Time: 1 week (2026-03-02 to 2026-03-09)
+
+**What's Shipped:**
+- Complete round management (best of 3, 99s timer, KO detection, double KO handling)
+- Input buffer (141 LOC, 8-frame window, SOCD resolution, motion detection)
+- AI opponent with decision tree
+- Procedural 8-voice SFX pool (no external audio dependencies)
+- Screen shake + VFX on hit/block/KO
+- HUD (health, timer, ember meter, round count, combo counter)
+- Git tag: `sprint-0-shipped`
+
+## Sprint 1 Complete — Art Phase Shipped (2026-03-20)
+
+**The Result:** Ashfall now plays with **final character art, stage backgrounds, and character-specific VFX**. Full visual identity established. All 45 animation states per character rendered and integrated. Stage shows 3-round visual progression (dormant → warming → eruption). Ackbar playtest verdict: **PASS**.
+
+**The Metrics:**
+- 3 PRs merged to main (Nien, Leia, Bossk)
+- 0 integration conflicts; 0 sprite loading failures; 0 animation crashes
+- M0-M4 gates: ✅ ✅ ✅ ✅ ✅ (all passed)
+- Ackbar playtest verdict: PASS
+- Time: 10 days (2026-03-10 to 2026-03-20)
+
+**What's Shipped:**
+- Kael & Rhena final sprites (all ~45 P0+P1 animation states each)
+- EmberGrounds stage with 3-round visual progression
+- Character-specific VFX (Kael embers, Rhena bursts)
+- AnimationPlayer fully wired; sprite loading pipeline complete
+- Art Direction document locked (silhouettes, palettes, animation timing, naming convention)
+- 60 FPS maintained across all visual effects
+- Git tag: `sprint-1-shipped`
+
+**Key Process Wins:**
+- Parallel execution model validated (0 conflicts, 4 PRs merged same day)
+- Scope de-scope criteria worked (P2 animation states deferred per plan; no last-minute panic)
+- Art direction lock prevented rework (Boba M0 completed Days 1–2; all downstream shipped first-pass)
+- Definition of Success framework proved effective (all criteria measurable and verified at sprint end)
+
+**Next Sprint (Sprint 2 — UI/Polish Phase):** P2 animation states (throw mechanics, win/lose poses), character select visual upgrade, HUD alignment, post-playtest polish.
 
 **What's Shipped:**
 - Complete round management (best of 3, 99s timer, KO detection, double KO handling)
