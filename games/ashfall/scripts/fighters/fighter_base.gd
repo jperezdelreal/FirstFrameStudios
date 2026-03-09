@@ -70,8 +70,8 @@ func _update_facing() -> void:
 	if not opponent or not state_machine.current_state:
 		return
 	var state_name := state_machine.current_state.name.to_lower()
-	# Don't flip mid-attack, mid-hitstun, or when KO'd
-	if state_name in ["attack", "hit", "ko"]:
+	# Don't flip mid-attack, mid-hitstun, mid-throw, or when KO'd
+	if state_name in ["attack", "hit", "ko", "throw"]:
 		return
 	if global_position.x < opponent.global_position.x:
 		facing_direction = 1

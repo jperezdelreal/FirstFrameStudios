@@ -29,7 +29,7 @@ func _physics_process(_delta: float) -> void:
 	var current_state: String = _get_current_state()
 
 	# Don't process input during uninterruptible states
-	if current_state in ["hit", "ko", "launch", "block", "attack"]:
+	if current_state in ["hit", "ko", "launch", "block", "attack", "throw"]:
 		return
 
 	# Only ground attacks for M1 (no air specials)
@@ -49,7 +49,7 @@ func _try_throw() -> bool:
 	if input_buffer.check_simultaneous(["lp", "lk"]):
 		input_buffer.consume_button("lp")
 		input_buffer.consume_button("lk")
-		# TODO: transition to throw state when implemented
+		fighter.state_machine.transition_to("throw", {})
 		return true
 	return false
 
