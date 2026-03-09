@@ -295,6 +295,89 @@ Fixed integration issues:
 
 ---
 
+## Ashfall Art Sprint Directives (2026-03-09)
+
+### 2026-03-09T220139Z: Game Resolution is 1080p
+**By:** joperezd (via Copilot)  
+**What:** Game resolution is 1920×1080 (1080p), NOT 720p. This affects sprite dimension scaling: at 1080p, characters render larger, so 512×512 may need validation for proportions.  
+**Why:** User correction — critical data for sprite sizing and oversampling calculation.
+
+---
+
+### 2026-03-09T215832Z: FLUX for Stage Backgrounds
+**By:** joperezd (via Copilot)  
+**What:** FLUX models are used for generating stage art (backgrounds, parallax layers, round progression visuals), not just character sprites. Stages are simpler: no frame-to-frame consistency required, only style coherence. ~10-15 images per stage vs ~1,000 for characters.  
+**Why:** User insight — expands art sprint scope to cover full visual system, not isolated character assets.
+
+---
+
+### 2026-03-09T220815Z: FLUX for HUD Art + Inspiration References
+**By:** joperezd (via Copilot)  
+**What:** HUD elements are also FLUX-generated: life bar frames, character portraits, ember meter decorations, UI backgrounds. Text and dynamic data render in-engine. Founder added inspiration screenshots in `docs/screenshots/Inspiration` (Tekken, Street Fighter, etc.) for style reference in prompts.  
+**Why:** User input — extends FLUX scope to complete visual ecosystem and provides real industry references for consistent AI generation.
+
+---
+
+### Sprite Brief v3 — Three-Model FLUX Pipeline Validated
+**Author:** Boba (Art Director)  
+**Date:** 2026-03-11  
+**Status:** Final  
+**Scope:** Ashfall art asset production — all FLUX-based generation
+
+Complete specification for multi-model AI sprite production in `games/ashfall/docs/SPRITE-ART-BRIEF.md` v3. Three FLUX models validated end-to-end on Azure AI Foundry with confirmed authentication, rate limits, and capabilities.
+
+**Key Decisions Locked:**
+
+1. **Three-Model Pipeline:**
+   - **FLUX 2 Pro** (4 req/min, 4.0 MP) → Hero frames only (1024×1024 identity reference per character)
+   - **FLUX 1 Kontext Pro** (30 req/min, 1.0 MP) → Production sprites (512×512 with character consistency via reference images)
+   - **FLUX 1.1 Pro** (30 req/min, 1.6 MP) → Non-character assets (backgrounds, VFX, projectiles, HUD, UI)
+
+2. **512×512 Resolution Confirmed for 1080p:**
+   - Game renders at 1920×1080
+   - Sprites at 512×512 = 3.3× oversampling at typical viewport distance
+   - Risk: LOW — proportions safe, no aliasing risk
+
+3. **Character Consistency Upgrade:**
+   - v2 used prompt anchoring only (weakest technique)
+   - v3 uses Kontext Pro's `input_image` parameter for visual reference propagation (proven technique)
+   - Risk assessment: proportions drift downgraded from High to Medium; costume detail loss from Medium to Low
+
+4. **Hero Frame Gate (Single QC Point):**
+   - No pose production begins without Boba approval of character hero frame
+   - Hero frames generated at 1024×1024, downscaled to 512×512 for reference input
+   - This is the pipeline's only quality control checkpoint
+
+5. **Production Estimates:**
+   - ~1,020 total frames (51 poses × 2 characters × ~10 avg frames/pose)
+   - Raw generation: ~34 minutes at Kontext Pro's 30 req/min
+   - With QA cycles: ~2 hours total
+   - Tier: Modern Indie Fighter (510 frames/character equivalent)
+
+6. **Infrastructure:**
+   - All models on same Azure AI Foundry resource
+   - Auth: Entra ID Bearer token (API key auth disabled by org policy)
+   - Token refresh: ~1 hour expiry, auto-refresh for batch sessions
+
+7. **Asset Scope (Full Visual System):**
+   - Character sprites: ~1,020 frames (Kontext Pro, consistency critical)
+   - Stage backgrounds: ~10-15 per stage (FLUX 1.1 Pro, style coherence only)
+   - HUD elements: ~30-50 UI assets (FLUX 1.1 Pro with inspiration references)
+   - Title screen: 1-2 cinematic frames (FLUX 2 Pro for quality)
+
+**Impact on Team:**
+- **All agents:** SPRITE-ART-BRIEF.md v3 is master reference for sprite generation. No further revisions needed for P0/P1.
+- **Mace (Producer):** Production timeline confirmed realistic — 2 hours for full sprite set generation.
+- **Chewie/Bossk (Gameplay/VFX):** File naming convention and Godot import settings locked. Can begin integration in parallel.
+- **Coordinator:** Infrastructure validation complete. All three models tested end-to-end.
+
+**Why:**
+v1 and v2 were written against assumptions about FLUX capabilities. v3 is written against validated infrastructure — three models tested end-to-end with confirmed endpoints, rate limits, and capabilities. The three-model pipeline leverages each model's strengths rather than forcing one model to do everything.
+
+**This document is the single source of truth for all art asset generation for the remainder of the Ashfall sprint.**
+
+---
+
 ## Sprint 0 Closure Decisions (2026-03-09)
 
 ### M4 Gate Playtest Verdict (Ackbar)
