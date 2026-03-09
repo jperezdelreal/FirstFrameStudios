@@ -58,7 +58,9 @@ func deactivate() -> void:
 
 
 func _on_area_entered(area: Area2D) -> void:
-	var target := area.get_parent()
+	var target: Node = area.get_parent()
+	if not is_instance_valid(target):
+		return
 	if target == owner_fighter:
 		return
 	if target in _hit_targets:
