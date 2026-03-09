@@ -301,6 +301,19 @@ Created .squad/analysis/team-evaluation-v3.md (22 KB) — comprehensive post-res
 
 **Status:** COMPLETE. Team evaluation ready; all agents have clear development plans; ready for next project sprint with minor P0 prep.
 
+---
+
+## 2026-03-09: Integration Gate Passing — Ready for Playtesting
+
+**Update from Solo (Lead/Architect):**
+- ✅ Fixed integration gate failure #88 (P0 blocker for M4)
+- ✅ Wired 6 orphaned signals across fight_hud, vfx_manager, fight_scene, game_state, state_machine
+- ✅ Hardened signal validator to exclude Godot built-ins and test files
+- ✅ All 4 validators now passing on CI
+- ✅ PR #89 open targeting main
+
+**Playtesting Impact:**
+Gate is unblocked. Team can proceed with M4 playtesting phase without CI friction. Ackbar can now focus on critical QA coverage, balance validation, and player experience iteration.
 ### 2025-07-25: Ashfall M4 Gate Playtest (Sprint 0 Ship Verification)
 - **Verdict:** PASS WITH NOTES. Game flow works end-to-end (menu->select->fight->victory->rematch). Infrastructure is architecturally excellent.
 - **P0 Bugs Found:**
