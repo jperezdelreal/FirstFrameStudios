@@ -23,6 +23,8 @@ var _ember_emitters: Dictionary = {}  # player_id -> GPUParticles2D
 
 
 func _ready() -> void:
+	assert(EventBus != null, "VFXManager requires EventBus to load first")
+	assert(GameState != null, "VFXManager requires GameState to load first")
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_wire_signals()
 

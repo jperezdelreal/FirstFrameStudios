@@ -6,6 +6,12 @@
 ## All timing is frame-based (deterministic at 60 FPS).
 extends Node
 
+
+func _ready() -> void:
+	assert(EventBus != null, "RoundManager requires EventBus to load first")
+	assert(GameState != null, "RoundManager requires GameState to load first")
+
+
 # --- Signals (wired to UI and other systems via fight_scene.gd) ---
 signal round_started(round_number: int)
 signal round_ended(winner: CharacterBody2D, round_number: int)
