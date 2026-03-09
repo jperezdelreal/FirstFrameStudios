@@ -17,7 +17,9 @@ signal fighter_ko(fighter)
 # --- Round signals ---
 signal round_started(round_number: int)
 signal round_ended(winner, round_number: int)
+signal round_draw(round_number: int)
 signal match_ended(winner, scores: Array)
+signal match_draw(scores: Array)
 signal timer_updated(seconds_remaining: int)
 signal announce(text: String)
 

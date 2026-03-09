@@ -15,7 +15,9 @@ func _ready() -> void:
 # --- Signals (wired to UI and other systems via fight_scene.gd) ---
 signal round_started(round_number: int)
 signal round_ended(winner: CharacterBody2D, round_number: int)
+signal round_draw(round_number: int)
 signal match_ended(winner: CharacterBody2D, scores: Array[int])
+signal match_draw(scores: Array[int])
 signal timer_updated(seconds_remaining: int)
 signal announce(text: String)
 
@@ -115,17 +117,34 @@ func _on_fighter_ko(fighter: CharacterBody2D) -> void:
 func _time_over() -> void:
 	var f0_hp: int = fighters[0].health if fighters[0] else 0
 	var f1_hp: int = fighters[1].health if fighters[1] else 0
-	var winner_index: int = 0 if f0_hp >= f1_hp else 1
-	if f0_hp != f1_hp:
-		scores[winner_index] += 1
 	_transition_to("KO")
 	announce.emit("TIME!")
 	EventBus.announce.emit("TIME!")
-	round_ended.emit(fighters[winner_index], current_round)
-	EventBus.round_ended.emit(fighters[winner_index], current_round)
+
+	if f0_hp == f1_hp:
+		# GDD: equal HP = draw, both lose the round (forces aggression)
+		scores[0] += 1
+		scores[1] += 1
+		round_draw.emit(current_round)
+		EventBus.round_draw.emit(current_round)
+	else:
+		var winner_index: int = 0 if f0_hp > f1_hp else 1
+		scores[winner_index] += 1
+		round_ended.emit(fighters[winner_index], current_round)
+		EventBus.round_ended.emit(fighters[winner_index], current_round)
 
 
 func _check_match_over() -> void:
+	var p1_won := scores[0] >= rounds_to_win
+	var p2_won := scores[1] >= rounds_to_win
+	if p1_won and p2_won:
+		# Double draw-out: both reached rounds_to_win simultaneously
+		_transition_to("MATCH_END")
+		announce.emit("DRAW GAME!")
+		EventBus.announce.emit("DRAW GAME!")
+		match_draw.emit(scores)
+		EventBus.match_draw.emit(scores)
+		return
 	for i in 2:
 		if scores[i] >= rounds_to_win:
 			_transition_to("MATCH_END")
