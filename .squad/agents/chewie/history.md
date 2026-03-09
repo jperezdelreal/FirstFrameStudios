@@ -172,3 +172,13 @@
 
 **Cross-Agent Update:** Sprint 1 analysis identified systematic type inference bugs. All Ashfall developers now required to follow GDSCRIPT-STANDARDS.md (16 rules) starting Sprint 2 Day 1. See decision in .squad/decisions/decisions.md. Key impact for Chewie: add explicit type annotations to all variables.
 
+
+### Dynamic Camera Zoom System (Sprint 2 Phase 1)
+- Enhanced `camera_controller.gd` with Guilty Gear-style dynamic framing for 2-fighter combat.
+- **Dynamic zoom:** Maps horizontal fighter distance to zoom level via `clampf` + `lerp`. Close = tight (zoom_max 1.3), far = wide (zoom_min 0.75). Distance thresholds tunable via `@export`.
+- **Vertical compensation:** Camera blends toward highest fighter (lowest Y) using `vertical_follow_weight` (0.35). Only activates when a fighter is above `camera_y` baseline — grounded fights stay stable.
+- **Fighting game framing:** `_enforce_framing_margins()` calculates required visible width from fighter distance + `margin_horizontal` padding, divided by `framing_ratio` (0.65). If distance-based zoom would place fighters outside the middle 65% of screen, zoom widens automatically.
+- **Vertical edge clamping:** Added `_clamp_to_stage_y()` with `stage_ceiling_y` / `stage_floor_y` boundaries, mirroring the existing X-axis clamp logic.
+- **GDSCRIPT-STANDARDS compliance:** Replaced all `:=` with explicit type annotations (`var x: float =`). Used `absf()`, `clampf()`, `minf()` instead of generic `abs/clamp/min`. All functions have explicit `-> Type` return annotations. Zero Variant inference.
+- Renamed `position_smoothing` → `follow_speed`, `zoom_smoothing` → `zoom_speed` for clarity. No external callers found.
+- **PR #144 created.**
