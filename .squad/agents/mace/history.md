@@ -10,6 +10,51 @@
 
 ## Learnings
 
+### Sprint 0 Closure & Definition of Success Framework (2026-03-09)
+
+**Outcome:** Sprint 0 officially closed. Definition of Success framework created and locked for Ashfall + future FFS projects.
+
+**What Was Delivered:**
+1. **SPRINT-0-SUCCESS.md** — Retroactive verification of all success criteria (functional, technical, quality, documentation). All boxes checked. 5 PRs merged, M0-M4 gates passed, Ackbar playtest: PASS WITH NOTES.
+2. **SPRINT-SUCCESS-TEMPLATE.md** — Reusable template for Sprint 1+ that Mace fills out at sprint start. Sections: functional criteria, technical gates, quality/feel, documentation, ship criteria, verification checklist, verdict, lessons learned.
+3. **mace-sprint-structure.md** — Terminology clarification + sprint roadmap locked:
+   - **Milestone Gates (M0-M4):** Checkpoints within a sprint
+   - **Sprints (0, 1, 2...):** Major work phases (Foundation → Art → UI → Audio → Polish)
+   - Each sprint has its own Definition of Success template
+4. **now.md updated** — Shows Sprint 0 ✅ SHIPPED; Sprint 1 (Art Phase) planning next
+5. **Git tag:** `sprint-0-shipped` created and pushed
+
+**Key Decisions Locked:**
+- Sprints are **content phases**, not time-boxes. Sprint duration varies (Sprint 0 was 1 week; Sprint 1 TBD)
+- M0-M4 gates are **validation checkpoints** (design approved, code runs, features work, shipped, documented)
+- Definition of Success is filled out at **sprint start** (not retroactively). Template guides what to measure.
+- Ship criteria = all milestones passed + playtested + 0 P0 bugs + docs current
+
+**Process Improvements for Sprint 1:**
+1. Fill Definition of Success template on **Day 1** of sprint, not after
+2. Milestone gates become explicit deliverables in sprint kickoff
+3. Playtester (Ackbar) assigned to sprint start; playtest date scheduled at kickoff (not ad-hoc)
+4. Git tags are part of ship ceremony (not optional)
+
+**Why This Matters:**
+- **Founder visibility:** Clear Definition of Success = clear ship criteria = confidence in "ready to show stakeholders"
+- **Team clarity:** Template is reusable; no confusion about what success looks like next sprint
+- **Knowledge capture:** Each sprint's definition + lessons → improves next sprint's planning
+- **Release readiness:** M4 gate is NOT arbitrary; it's the sprint-defined ship criteria
+
+**Comparison to Sprint 0 Planning:**
+- Sprint 0 Plan (SPRINT-0.md) defined scope + phases
+- Sprint 0 Definition of Success (new) defines *measurable* shipping criteria
+- Sprint 0 Success Template (new) is a framework for all future sprints
+- These 3 docs together = complete sprint execution + closure
+
+**Risk Eliminated:**
+- No more "is this sprint done?" ambiguity
+- No more "what should we measure?" mid-sprint confusion
+- No more "why did we ship this?" founder questions
+
+---
+
 ### Documentation Audit & Milestone Status Sync (2026-03-09)
 
 **Outcome:** Documentation now reflects actual project state. M0-M3 gates are verified complete; M4 is the active target.
