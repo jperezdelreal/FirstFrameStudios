@@ -41,6 +41,16 @@ func _init_palettes() -> void:
 		"boots": Color(0.22, 0.15, 0.10),            # dark combat boots
 		"sole": Color(0.12, 0.08, 0.05),
 		"torn_edge": Color(0.35, 0.20, 0.15),        # torn sleeve edges
+		"skin_shadow": Color(0.60, 0.42, 0.30),
+		"skin_highlight": Color(0.85, 0.65, 0.50),
+		"hair_highlight": Color(0.80, 0.35, 0.18),
+		"eyebrow": Color(0.20, 0.10, 0.06),
+		"nose_shadow": Color(0.65, 0.45, 0.35, 0.5),
+		"eye_white": Color(0.90, 0.88, 0.85),
+		"muscle_line": Color(0.58, 0.38, 0.28, 0.4),
+		"tank_shadow": Color(0.12, 0.06, 0.04),
+		"tank_highlight": Color(0.30, 0.18, 0.15),
+		"teeth": Color(0.90, 0.88, 0.82),
 	})
 	# P2: Cool shift — blue-black attire, cyan-frost accents
 	palettes.append({
@@ -58,6 +68,16 @@ func _init_palettes() -> void:
 		"boots": Color(0.12, 0.14, 0.22),
 		"sole": Color(0.06, 0.07, 0.12),
 		"torn_edge": Color(0.18, 0.22, 0.35),
+		"skin_shadow": Color(0.56, 0.42, 0.32),
+		"skin_highlight": Color(0.82, 0.68, 0.55),
+		"hair_highlight": Color(0.25, 0.30, 0.60),
+		"eyebrow": Color(0.12, 0.15, 0.30),
+		"nose_shadow": Color(0.60, 0.50, 0.42, 0.5),
+		"eye_white": Color(0.88, 0.88, 0.90),
+		"muscle_line": Color(0.50, 0.42, 0.38, 0.4),
+		"tank_shadow": Color(0.05, 0.06, 0.14),
+		"tank_highlight": Color(0.16, 0.18, 0.30),
+		"teeth": Color(0.88, 0.88, 0.85),
 	})
 
 
@@ -69,52 +89,40 @@ func _draw_idle() -> void:
 	var p := pal
 	var ol: Color = p.outline
 
-	# --- Legs — wide, bent, springy ---
-	draw_limb(Vector2(-7, HIP_Y), Vector2(-12, KNEE_Y), LEG_THICK, p.outfit_secondary, ol)
-	draw_limb(Vector2(-12, KNEE_Y), Vector2(-10, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
-	draw_boot(Vector2(-10, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
-	draw_limb(Vector2(6, HIP_Y), Vector2(10, KNEE_Y), LEG_THICK, p.outfit_secondary, ol)
-	draw_limb(Vector2(10, KNEE_Y), Vector2(9, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
-	draw_boot(Vector2(9, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
+	# --- Legs with muscle definition ---
+	_draw_detailed_leg(Vector2(-7, HIP_Y), Vector2(-12, KNEE_Y), Vector2(-10, FOOT_Y))
+	_draw_detailed_boot(Vector2(-10, FOOT_Y))
+	_draw_detailed_leg(Vector2(6, HIP_Y), Vector2(10, KNEE_Y), Vector2(9, FOOT_Y))
+	_draw_detailed_boot(Vector2(9, FOOT_Y))
 
-	# --- Torso (tank top — wider, muscular) ---
+	# --- Torso (detailed tank top with muscle definition) ---
 	var top_pts := PackedVector2Array([
 		Vector2(-TORSO_W, TORSO_TOP), Vector2(TORSO_W, TORSO_TOP),
 		Vector2(TORSO_W * 0.95, TORSO_BOT), Vector2(-TORSO_W * 0.95, TORSO_BOT)
 	])
-	draw_colored_polygon(top_pts, p.outfit_primary)
-	draw_polyline(top_pts, ol, 1.0, true)
-	# Torn sleeveless edges
-	draw_line(Vector2(-TORSO_W, TORSO_TOP), Vector2(-TORSO_W - 2, TORSO_TOP + 4), p.torn_edge, 2.0)
-	draw_line(Vector2(TORSO_W, TORSO_TOP), Vector2(TORSO_W + 2, TORSO_TOP + 4), p.torn_edge, 2.0)
-	# Belt
-	draw_rect(Rect2(-TORSO_W * 0.95, WAIST_Y - 2, TORSO_W * 1.9, 4), p.belt)
-	draw_line(Vector2(-TORSO_W * 0.95, WAIST_Y), Vector2(TORSO_W * 0.95, WAIST_Y), p.accent, 1.5)
+	_draw_tank_torso(top_pts)
+	_draw_detailed_belt(WAIST_Y, TORSO_W * 0.95)
 
-	# --- Arms — wide guard, fists out to sides (brawler stance) ---
-	# Left arm
+	# --- Arms with muscle contour and scars ---
 	var l_shoulder := Vector2(-SHOULDER_W, SHOULDER_Y)
 	var l_elbow := Vector2(-18, SHOULDER_Y + 6)
 	var l_hand := Vector2(-14, SHOULDER_Y)
-	draw_limb(l_shoulder, l_elbow, ARM_THICK, p.skin, ol)
-	_draw_burn_scars(l_shoulder, l_elbow)
-	draw_limb(l_elbow, l_hand, ARM_THICK, p.wrap, ol)
+	_draw_detailed_arm(l_shoulder, l_elbow, l_hand, true, true)
 	draw_fist(l_hand, FIST_R, p.skin, ol)
 
-	# Right arm
 	var r_shoulder := Vector2(SHOULDER_W, SHOULDER_Y)
 	var r_elbow := Vector2(18, SHOULDER_Y + 4)
 	var r_hand := Vector2(12, SHOULDER_Y - 2)
-	draw_limb(r_shoulder, r_elbow, ARM_THICK, p.skin, ol)
-	_draw_burn_scars(r_shoulder, r_elbow)
-	draw_limb(r_elbow, r_hand, ARM_THICK, p.wrap, ol)
+	_draw_detailed_arm(r_shoulder, r_elbow, r_hand, true, false)
 	draw_fist(r_hand, FIST_R, p.skin, ol)
 
-	# --- Head ---
+	# --- Head (fully detailed fierce expression) ---
 	_draw_head_fierce(Vector2(0, HEAD_Y))
 
-	# Accent ember glow on fists
+	# Layered ember glow on fists
+	draw_circle(l_hand, FIST_R + 3.5, Color(p.accent_glow, 0.12))
 	draw_circle(l_hand, FIST_R + 1.5, p.accent_glow)
+	draw_circle(r_hand, FIST_R + 3.5, Color(p.accent_glow, 0.12))
 	draw_circle(r_hand, FIST_R + 1.5, p.accent_glow)
 
 
@@ -133,16 +141,13 @@ func _draw_walk() -> void:
 	draw_limb(Vector2(10, KNEE_Y - 2), Vector2(14, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
 	draw_boot(Vector2(14, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
 
-	# Torso — leaning forward aggressively
+	# Torso — detailed tank top, leaning forward aggressively
 	var top_pts := PackedVector2Array([
 		Vector2(-TORSO_W + 2, TORSO_TOP - 1), Vector2(TORSO_W + 2, TORSO_TOP - 2),
 		Vector2(TORSO_W * 0.95 + 1, TORSO_BOT), Vector2(-TORSO_W * 0.95 + 1, TORSO_BOT)
 	])
-	draw_colored_polygon(top_pts, p.outfit_primary)
-	draw_polyline(top_pts, ol, 1.0, true)
-	draw_line(Vector2(-TORSO_W + 2, TORSO_TOP), Vector2(-TORSO_W, TORSO_TOP + 4), p.torn_edge, 2.0)
-	draw_line(Vector2(TORSO_W + 2, TORSO_TOP), Vector2(TORSO_W + 4, TORSO_TOP + 4), p.torn_edge, 2.0)
-	draw_rect(Rect2(-TORSO_W * 0.95, WAIST_Y - 2, TORSO_W * 1.9, 4), p.belt)
+	_draw_tank_torso(top_pts, 2.0)
+	_draw_detailed_belt(WAIST_Y, TORSO_W * 0.95)
 
 	# Arms — swinging with stride
 	draw_limb(Vector2(-SHOULDER_W + 2, SHOULDER_Y), Vector2(-18, SHOULDER_Y + 10), ARM_THICK, p.skin, ol)
@@ -282,16 +287,12 @@ func _draw_attack_hp() -> void:
 	draw_limb(Vector2(14, KNEE_Y - 4), Vector2(20, FOOT_Y), LEG_THICK, p.outfit_secondary, ol)
 	draw_boot(Vector2(20, FOOT_Y), BOOT_W, BOOT_H, p.boots, p.sole, ol)
 
-	# Torso — massive forward lean, overcommitted
+	# Torso — massive forward lean, detailed tank top
 	var top_pts := PackedVector2Array([
 		Vector2(-TORSO_W + 7, TORSO_TOP + 5), Vector2(TORSO_W + 2, TORSO_TOP - 4),
 		Vector2(TORSO_W * 0.9 + 1, TORSO_BOT), Vector2(-TORSO_W * 0.8 + 6, TORSO_BOT)
 	])
-	draw_colored_polygon(top_pts, p.outfit_primary)
-	draw_polyline(top_pts, ol, 1.0, true)
-	# Torn sleeve edge extra tattered
-	draw_line(Vector2(TORSO_W + 2, TORSO_TOP - 4), Vector2(TORSO_W + 5, TORSO_TOP), p.torn_edge, 2.5)
-	draw_line(Vector2(TORSO_W + 2, TORSO_TOP - 3), Vector2(TORSO_W + 6, TORSO_TOP + 2), p.torn_edge, 1.5)
+	_draw_tank_torso(top_pts, 5.0)
 
 	# Back arm — fully wound back behind body
 	draw_limb(Vector2(-SHOULDER_W + 7, SHOULDER_Y + 5), Vector2(-10, SHOULDER_Y + 16), ARM_THICK, p.skin, ol)
@@ -302,10 +303,16 @@ func _draw_attack_hp() -> void:
 	_draw_burn_scars(Vector2(SHOULDER_W + 2, SHOULDER_Y - 4), Vector2(30, SHOULDER_Y - 12))
 	draw_limb(Vector2(30, SHOULDER_Y - 12), Vector2(42, SHOULDER_Y - 8), ARM_THICK + 1.5, p.wrap, ol)
 	draw_fist(Vector2(42, SHOULDER_Y - 8), FIST_R + 2.0, p.skin, ol)
-	# Massive ember burst
-	draw_circle(Vector2(42, SHOULDER_Y - 8), FIST_R + 7.0, p.accent_glow)
-	draw_circle(Vector2(42, SHOULDER_Y - 8), FIST_R + 4.0, Color(p.accent, 0.5))
-	draw_circle(Vector2(42, SHOULDER_Y - 8), FIST_R + 2.0, Color(1.0, 0.9, 0.7, 0.3))
+	# Massive ember burst (layered explosion effect)
+	draw_circle(Vector2(42, SHOULDER_Y - 8), FIST_R + 12.0, Color(p.accent_glow, 0.06))
+	draw_circle(Vector2(42, SHOULDER_Y - 8), FIST_R + 8.0, Color(p.accent_glow, 0.15))
+	draw_circle(Vector2(42, SHOULDER_Y - 8), FIST_R + 5.0, Color(p.accent, 0.5))
+	draw_circle(Vector2(42, SHOULDER_Y - 8), FIST_R + 2.5, Color(1.0, 0.9, 0.7, 0.4))
+	draw_circle(Vector2(42, SHOULDER_Y - 8), FIST_R + 1.0, Color(1.0, 1.0, 0.95, 0.5))
+	# Impact sparks
+	draw_circle(Vector2(38, SHOULDER_Y - 12), 1.5, Color(p.accent, 0.4))
+	draw_circle(Vector2(45, SHOULDER_Y - 5), 1.5, Color(p.accent, 0.3))
+	draw_circle(Vector2(35, SHOULDER_Y - 4), 1.0, Color(p.accent, 0.25))
 
 	_draw_head_screaming(Vector2(6, HEAD_Y + 3))
 
@@ -344,16 +351,21 @@ func _draw_hit() -> void:
 	draw_limb(Vector2(14, SHOULDER_Y + 14), Vector2(10, SHOULDER_Y + 18), ARM_THICK, p.wrap, ol)
 	draw_fist(Vector2(10, SHOULDER_Y + 18), FIST_R, p.skin, ol)
 
-	# Head — angry pain grimace
+	# Head — angry pain grimace, detailed
 	var hc := Vector2(-3, HEAD_Y + 4)
-	draw_circle_outlined(hc, HEAD_R, p.skin, ol, 1.0)
-	_draw_wild_hair(hc)
-	# Angry squint
-	draw_line(hc + Vector2(-4, -2), hc + Vector2(-2, 0), p.eye, 2.0)
-	draw_line(hc + Vector2(0, -2), hc + Vector2(2, 0), p.eye, 2.0)
-	# Snarling mouth
-	draw_line(hc + Vector2(-3, 3), hc + Vector2(0, 4), p.eye, 1.5)
-	draw_line(hc + Vector2(0, 4), hc + Vector2(3, 3), p.eye, 1.5)
+	_draw_rhena_head_base(hc)
+	# Pain brows (asymmetric, furious)
+	draw_line(hc + Vector2(-5.5, -4), hc + Vector2(-1, -2), p.eyebrow, 2.0)
+	draw_line(hc + Vector2(1, -3), hc + Vector2(5, -5), p.eyebrow, 1.8)
+	# Angry squinted eyes with visible whites
+	draw_line(hc + Vector2(-4.5, -2), hc + Vector2(-1, 0), p.eye_white, 1.5)
+	draw_circle(hc + Vector2(-2.5, -1), 0.8, p.eye)
+	draw_line(hc + Vector2(0.5, -2), hc + Vector2(3.5, 0), p.eye_white, 1.5)
+	draw_circle(hc + Vector2(2, -1), 0.8, p.eye)
+	# Snarling mouth with teeth
+	draw_line(hc + Vector2(-3, 3), hc + Vector2(0, 4.2), p.eye, 1.5)
+	draw_line(hc + Vector2(0, 4.2), hc + Vector2(3, 3), p.eye, 1.5)
+	draw_line(hc + Vector2(-1.5, 3.5), hc + Vector2(1.5, 3.5), p.teeth, 0.8)
 
 
 # =========================================================================
@@ -386,18 +398,25 @@ func _draw_ko() -> void:
 	draw_limb(Vector2(SHOULDER_W - 8, SHOULDER_Y + 12), Vector2(10, SHOULDER_Y + 24), ARM_THICK, p.skin, ol)
 	draw_fist(Vector2(10, SHOULDER_Y + 24), FIST_R, p.skin, ol)
 
-	# Head — X eyes, tongue out (more dramatic KO than Kael)
+	# Head — dramatic KO with full detail
 	var hc := Vector2(-7, HEAD_Y + 14)
 	draw_circle_outlined(hc, HEAD_R, p.skin, ol, 1.0)
+	# Jaw shadow
+	draw_arc(hc, HEAD_R - 1, deg_to_rad(15), deg_to_rad(165), 8, Color(p.skin_shadow, 0.4), 2.0, true)
+	# Disheveled wild hair (even wilder from impact)
 	_draw_wild_hair(hc)
-	# X eyes
-	draw_line(hc + Vector2(-5, -2), hc + Vector2(-3, 0), p.eye, 2.0)
-	draw_line(hc + Vector2(-5, 0), hc + Vector2(-3, -2), p.eye, 2.0)
-	draw_line(hc + Vector2(1, -2), hc + Vector2(3, 0), p.eye, 2.0)
-	draw_line(hc + Vector2(1, 0), hc + Vector2(3, -2), p.eye, 2.0)
-	# Open mouth with tongue
-	draw_ellipse_outlined(hc + Vector2(0, 4), Vector2(3, 2), Color(0.3, 0.1, 0.1))
-	draw_ellipse_outlined(hc + Vector2(1, 5), Vector2(2, 1.2), Color(0.8, 0.3, 0.3))
+	# Extra messy strands from impact
+	draw_line(hc + Vector2(-4, -5), hc + Vector2(-8, -9), p.hair, 2.0, true)
+	draw_line(hc + Vector2(5, -4), hc + Vector2(9, -8), p.hair_highlight, 1.5, true)
+	# Bold X eyes
+	draw_line(hc + Vector2(-5, -2.5), hc + Vector2(-2, 0.5), p.eye, 2.5)
+	draw_line(hc + Vector2(-5, 0.5), hc + Vector2(-2, -2.5), p.eye, 2.5)
+	draw_line(hc + Vector2(1, -2.5), hc + Vector2(4, 0.5), p.eye, 2.5)
+	draw_line(hc + Vector2(1, 0.5), hc + Vector2(4, -2.5), p.eye, 2.5)
+	# Wide open mouth with tongue hanging out
+	draw_ellipse_outlined(hc + Vector2(0, 4.5), Vector2(3.5, 2.5), Color(0.25, 0.08, 0.06))
+	draw_line(hc + Vector2(-2, 4), hc + Vector2(2, 4), p.teeth, 1.0)
+	draw_ellipse_outlined(hc + Vector2(1, 6), Vector2(2.5, 1.5), Color(0.75, 0.28, 0.22))
 
 
 # =========================================================================
@@ -407,18 +426,139 @@ func _draw_ko() -> void:
 ## Wild spiky short hair — Rhena's defining feature
 func _draw_wild_hair(center: Vector2) -> void:
 	var p := pal
-	# Base hair cap
-	draw_arc(center, HEAD_R, deg_to_rad(180), deg_to_rad(420), 16, p.hair, 3.5, true)
-	# Spiky tufts (what makes her silhouette distinct from Kael)
+	# Base hair cap (thicker, more volume)
+	draw_arc(center, HEAD_R + 1, deg_to_rad(175), deg_to_rad(425), 20, p.hair, 4.5, true)
+	draw_arc(center, HEAD_R, deg_to_rad(185), deg_to_rad(415), 16, p.hair_highlight, 1.5, true)
+	# Spiky tufts (more spikes, varied thickness for wild energy)
 	var spikes := [
-		Vector2(-5, -6), Vector2(-7, -10),
-		Vector2(-2, -7), Vector2(-1, -12),
-		Vector2(2, -7), Vector2(4, -11),
-		Vector2(5, -5), Vector2(8, -8),
-		Vector2(6, -3), Vector2(10, -5),
+		Vector2(-6, -5), Vector2(-9, -11),
+		Vector2(-3, -6), Vector2(-2, -13),
+		Vector2(-1, -7), Vector2(1, -12),
+		Vector2(2, -6), Vector2(5, -12),
+		Vector2(4, -5), Vector2(8, -10),
+		Vector2(6, -3), Vector2(11, -7),
+		Vector2(7, -1), Vector2(12, -4),
 	]
 	for i in range(0, spikes.size(), 2):
-		draw_line(center + spikes[i], center + spikes[i + 1], p.hair, 2.5, true)
+		draw_line(center + spikes[i], center + spikes[i + 1], p.hair, 2.8, true)
+	# Highlight strands for volume
+	draw_line(center + Vector2(-2, -7), center + Vector2(-1, -11), p.hair_highlight, 1.0, true)
+	draw_line(center + Vector2(3, -6), center + Vector2(5, -10), p.hair_highlight, 1.0, true)
+	draw_line(center + Vector2(6, -3), center + Vector2(10, -5), p.hair_highlight, 0.8, true)
+
+
+# =========================================================================
+#  Enhanced drawing helpers — Sprint 2 quality upgrade
+# =========================================================================
+
+## Draw detailed tank top torso with muscle definition and torn edges
+func _draw_tank_torso(pts: PackedVector2Array, lean: float = 0.0) -> void:
+	var p := pal
+	var ol: Color = p.outline
+	# Shadow layer (left/back side)
+	var shadow_pts := PackedVector2Array([
+		pts[0], Vector2(pts[0].x + (pts[1].x - pts[0].x) * 0.3, pts[0].y + (pts[1].y - pts[0].y) * 0.3),
+		Vector2(pts[3].x + (pts[2].x - pts[3].x) * 0.3, pts[3].y + (pts[2].y - pts[3].y) * 0.3), pts[3]
+	])
+	draw_colored_polygon(pts, p.outfit_primary)
+	draw_colored_polygon(shadow_pts, p.tank_shadow)
+	# Highlight (right side catch light)
+	var hl_pts := PackedVector2Array([
+		Vector2(pts[1].x - 3, pts[1].y), pts[1],
+		pts[2], Vector2(pts[2].x - 3, pts[2].y)
+	])
+	draw_colored_polygon(hl_pts, p.tank_highlight)
+	draw_polyline(pts, ol, 1.0, true)
+	# Torn sleeveless edges (more ragged than before)
+	var top_l := pts[0]
+	var top_r := pts[1]
+	draw_line(top_l, top_l + Vector2(-2, 4), p.torn_edge, 2.5)
+	draw_line(top_l + Vector2(-1, 2), top_l + Vector2(-3, 6), p.torn_edge, 1.5)
+	draw_line(top_r, top_r + Vector2(2, 4), p.torn_edge, 2.5)
+	draw_line(top_r + Vector2(1, 2), top_r + Vector2(3, 6), p.torn_edge, 1.5)
+	# Chest muscle definition (visible through tight tank top)
+	var mid_x: float = (pts[0].x + pts[1].x) * 0.5 + lean
+	var mid_y: float = (pts[0].y + pts[1].y) * 0.5
+	# Pec line
+	draw_line(Vector2(mid_x, mid_y + 4), Vector2(mid_x - 6, mid_y + 8), p.muscle_line, 0.7)
+	draw_line(Vector2(mid_x, mid_y + 4), Vector2(mid_x + 6, mid_y + 8), p.muscle_line, 0.7)
+	# Ab definition hints
+	var bot_y: float = (pts[2].y + pts[3].y) * 0.5
+	draw_line(Vector2(mid_x, mid_y + 10), Vector2(mid_x, bot_y - 2), p.muscle_line, 0.6)
+
+
+## Draw enhanced belt with combat buckle
+func _draw_detailed_belt(y: float, half_w: float, co: float = 0.0) -> void:
+	var p := pal
+	var by: float = y + co
+	draw_rect(Rect2(-half_w, by - 2.5, half_w * 2.0, 5), p.belt)
+	draw_line(Vector2(-half_w, by), Vector2(half_w, by), p.accent, 1.5)
+	# Heavy buckle
+	draw_rect(Rect2(-2.5, by - 2.5, 5, 5), p.accent)
+	draw_rect(Rect2(-1.5, by - 1.5, 3, 3), p.belt)
+
+
+## Draw shoulder joint with muscle cap (bigger than Kael)
+func _draw_shoulder_joint(pos: Vector2) -> void:
+	var p := pal
+	draw_circle_outlined(pos, 3.5, p.skin, p.skin_shadow, 1.0)
+	# Deltoid cap highlight
+	draw_arc(pos, 3.0, deg_to_rad(200), deg_to_rad(340), 6, Color(p.skin_highlight, 0.3), 1.5, true)
+
+
+## Draw detailed muscular arm with scars
+func _draw_detailed_arm(shoulder: Vector2, elbow: Vector2, hand: Vector2,
+		show_scars: bool = true, is_back_arm: bool = false) -> void:
+	var p := pal
+	var ol: Color = p.outline
+	var arm_t: float = ARM_THICK if not is_back_arm else ARM_THICK - 0.5
+	# Upper arm
+	draw_limb(shoulder, elbow, arm_t, p.skin, ol)
+	# Bicep muscle contour (pronounced)
+	var bicep_mid := shoulder + (elbow - shoulder) * 0.35
+	var arm_dir := (elbow - shoulder).normalized()
+	var arm_perp := arm_dir.rotated(PI * 0.5)
+	draw_line(shoulder + arm_perp * (arm_t * 0.35), bicep_mid + arm_perp * (arm_t * 0.5),
+		p.muscle_line, 1.0, true)
+	# Shoulder cap
+	_draw_shoulder_joint(shoulder)
+	# Burn scars
+	if show_scars:
+		_draw_burn_scars(shoulder, elbow)
+	# Forearm with wraps
+	draw_limb(elbow, hand, arm_t, p.wrap, ol)
+	# Elbow definition
+	draw_circle(elbow, 2.0, p.skin_shadow)
+
+
+## Draw detailed muscular leg
+func _draw_detailed_leg(hip: Vector2, knee: Vector2, foot: Vector2) -> void:
+	var p := pal
+	var ol: Color = p.outline
+	draw_limb(hip, knee, LEG_THICK, p.outfit_secondary, ol)
+	# Knee joint (more prominent for combat pants)
+	draw_circle_outlined(knee, 3.0, p.outfit_secondary, p.outline, 0.7)
+	draw_limb(knee, foot, LEG_THICK, p.outfit_secondary, ol)
+	# Thigh muscle contour
+	var thigh_mid := hip + (knee - hip) * 0.4
+	var thigh_perp := (knee - hip).normalized().rotated(PI * 0.5)
+	draw_line(hip + thigh_perp * (LEG_THICK * 0.3), thigh_mid + thigh_perp * (LEG_THICK * 0.45),
+		Color(p.outline, 0.25), 0.7, true)
+
+
+## Draw enhanced combat boot with treads and buckle
+func _draw_detailed_boot(pos: Vector2) -> void:
+	var p := pal
+	var ol: Color = p.outline
+	draw_boot(pos, BOOT_W, BOOT_H, p.boots, p.sole, ol)
+	# Ankle strap
+	draw_line(Vector2(pos.x - BOOT_W * 0.35, pos.y - BOOT_H + 1),
+		Vector2(pos.x + BOOT_W * 0.35, pos.y - BOOT_H + 1), p.sole, 1.0)
+	# Boot buckle
+	draw_rect(Rect2(pos.x - 1, pos.y - BOOT_H * 0.6, 2, 2), p.accent)
+	# Tread lines
+	draw_line(Vector2(pos.x - BOOT_W * 0.4, pos.y - 1),
+		Vector2(pos.x + BOOT_W * 0.4, pos.y - 1), p.sole, 0.6)
 
 
 # =========================================================================
@@ -1516,22 +1656,21 @@ func _draw_win() -> void:
 		Vector2(-TORSO_W, TORSO_TOP - 2), Vector2(TORSO_W, TORSO_TOP - 2),
 		Vector2(TORSO_W * 0.95, TORSO_BOT), Vector2(-TORSO_W * 0.95, TORSO_BOT)
 	])
-	draw_colored_polygon(top_pts, p.outfit_primary)
-	draw_polyline(top_pts, ol, 1.0, true)
-	draw_line(Vector2(-TORSO_W, TORSO_TOP - 2), Vector2(-TORSO_W - 2, TORSO_TOP + 2), p.torn_edge, 2.0)
-	draw_line(Vector2(TORSO_W, TORSO_TOP - 2), Vector2(TORSO_W + 2, TORSO_TOP + 2), p.torn_edge, 2.0)
-	draw_rect(Rect2(-TORSO_W * 0.95, WAIST_Y - 2, TORSO_W * 1.9, 4), p.belt)
+	_draw_tank_torso(top_pts)
+	_draw_detailed_belt(WAIST_Y, TORSO_W * 0.95)
 
 	# Arms — raised in victory, fists up
 	draw_limb(Vector2(-SHOULDER_W, SHOULDER_Y - 2), Vector2(-18, SHOULDER_Y - 14), ARM_THICK, p.skin, ol)
 	_draw_burn_scars(Vector2(-SHOULDER_W, SHOULDER_Y - 2), Vector2(-18, SHOULDER_Y - 14))
 	draw_limb(Vector2(-18, SHOULDER_Y - 14), Vector2(-14, SHOULDER_Y - 24), ARM_THICK, p.wrap, ol)
 	draw_fist(Vector2(-14, SHOULDER_Y - 24), FIST_R + 0.5, p.skin, ol)
+	draw_circle(Vector2(-14, SHOULDER_Y - 24), FIST_R + 6.0, Color(p.accent_glow, 0.1))
 	draw_circle(Vector2(-14, SHOULDER_Y - 24), FIST_R + 3.0, p.accent_glow)
 	draw_limb(Vector2(SHOULDER_W, SHOULDER_Y - 2), Vector2(18, SHOULDER_Y - 14), ARM_THICK, p.skin, ol)
 	_draw_burn_scars(Vector2(SHOULDER_W, SHOULDER_Y - 2), Vector2(18, SHOULDER_Y - 14))
 	draw_limb(Vector2(18, SHOULDER_Y - 14), Vector2(14, SHOULDER_Y - 24), ARM_THICK, p.wrap, ol)
 	draw_fist(Vector2(14, SHOULDER_Y - 24), FIST_R + 0.5, p.skin, ol)
+	draw_circle(Vector2(14, SHOULDER_Y - 24), FIST_R + 6.0, Color(p.accent_glow, 0.1))
 	draw_circle(Vector2(14, SHOULDER_Y - 24), FIST_R + 3.0, p.accent_glow)
 
 	# Head — roaring in victory
@@ -1568,22 +1707,30 @@ func _draw_lose() -> void:
 	draw_limb(Vector2(SHOULDER_W, SHOULDER_Y + co + 3), Vector2(14, SHOULDER_Y + co + 14), ARM_THICK + 0.5, p.skin, ol)
 	_draw_burn_scars(Vector2(SHOULDER_W, SHOULDER_Y + co + 3), Vector2(14, SHOULDER_Y + co + 14))
 	draw_fist(Vector2(14, SHOULDER_Y + co + 14), FIST_R + 0.5, p.skin, ol)
-	# Frustration crack on ground
-	draw_line(Vector2(14, SHOULDER_Y + co + 16), Vector2(18, SHOULDER_Y + co + 20), p.accent, 1.5, true)
-	draw_line(Vector2(14, SHOULDER_Y + co + 16), Vector2(10, SHOULDER_Y + co + 20), p.accent, 1.5, true)
+	# Frustration crack on ground (more dramatic)
+	draw_line(Vector2(14, SHOULDER_Y + co + 16), Vector2(20, SHOULDER_Y + co + 22), p.accent, 2.0, true)
+	draw_line(Vector2(14, SHOULDER_Y + co + 16), Vector2(8, SHOULDER_Y + co + 22), p.accent, 2.0, true)
+	draw_line(Vector2(14, SHOULDER_Y + co + 16), Vector2(16, SHOULDER_Y + co + 24), p.accent, 1.0, true)
+	# Impact ember sparks
+	draw_circle(Vector2(14, SHOULDER_Y + co + 16), 3.0, Color(p.accent_glow, 0.3))
+	draw_circle(Vector2(18, SHOULDER_Y + co + 20), 1.5, Color(p.accent, 0.25))
 
-	# Head — frustrated, teeth bared
+	# Head — frustrated, teeth bared, full detail
 	var hc := Vector2(1, HEAD_Y + co + 6)
-	draw_circle_outlined(hc, HEAD_R, p.skin, ol, 1.0)
-	_draw_wild_hair(hc)
-	# Angry squinted eyes
-	draw_line(hc + Vector2(-4, -1), hc + Vector2(-2, 0), p.eye, 2.0)
-	draw_line(hc + Vector2(1, -1), hc + Vector2(3, 0), p.eye, 2.0)
-	# Gritted teeth
-	draw_line(hc + Vector2(-3, 3), hc + Vector2(3, 3), p.eye, 1.5)
-	draw_line(hc + Vector2(-2, 3), hc + Vector2(-2, 4.5), Color(0.9, 0.9, 0.85), 1.0)
-	draw_line(hc + Vector2(0, 3), hc + Vector2(0, 4.5), Color(0.9, 0.9, 0.85), 1.0)
-	draw_line(hc + Vector2(2, 3), hc + Vector2(2, 4.5), Color(0.9, 0.9, 0.85), 1.0)
+	_draw_rhena_head_base(hc)
+	# Furious defeat brows
+	draw_line(hc + Vector2(-5.5, -5), hc + Vector2(-1, -2.5), p.eyebrow, 2.2)
+	draw_line(hc + Vector2(1, -2.5), hc + Vector2(5.5, -5), p.eyebrow, 2.2)
+	# Angry squinted eyes (burning with frustration)
+	draw_line(hc + Vector2(-4.5, -1.5), hc + Vector2(-1, 0), p.eye_white, 1.5)
+	draw_circle(hc + Vector2(-2.5, -0.8), 0.8, p.eye)
+	draw_line(hc + Vector2(1, -1.5), hc + Vector2(4.5, 0), p.eye_white, 1.5)
+	draw_circle(hc + Vector2(2.5, -0.8), 0.8, p.eye)
+	# Gritted teeth (more visible)
+	draw_line(hc + Vector2(-3.5, 3), hc + Vector2(3.5, 3), p.eye, 1.8)
+	draw_line(hc + Vector2(-2.5, 3), hc + Vector2(-2.5, 4.8), p.teeth, 1.0)
+	draw_line(hc + Vector2(-0.5, 3), hc + Vector2(-0.5, 4.8), p.teeth, 1.0)
+	draw_line(hc + Vector2(1.5, 3), hc + Vector2(1.5, 4.8), p.teeth, 1.0)
 
 
 # =========================================================================
@@ -1829,56 +1976,108 @@ func _draw_knockdown_fall() -> void:
 func _draw_burn_scars(from: Vector2, to: Vector2) -> void:
 	var p := pal
 	var mid := (from + to) * 0.5
-	var perp := (to - from).normalized().rotated(PI * 0.5)
-	# 3-4 jagged scar marks
-	for i in 3:
-		var offset := (float(i) - 1.0) * 3.0
-		var scar_center := mid + (to - from).normalized() * offset
+	var dir := (to - from).normalized()
+	var perp := dir.rotated(PI * 0.5)
+	# Multiple jagged scar marks with varied intensity
+	for i in 4:
+		var offset := (float(i) - 1.5) * 3.5
+		var scar_center := mid + dir * offset
+		# Scar base (darker)
 		draw_line(
-			scar_center + perp * 2.5,
-			scar_center - perp * 2.5,
-			p.scar, 1.5, true
+			scar_center + perp * 3.0,
+			scar_center - perp * 3.0,
+			p.scar, 2.0, true
+		)
+		# Scar highlight (lighter edge for raised tissue)
+		draw_line(
+			scar_center + perp * 2.5 + dir * 0.5,
+			scar_center - perp * 2.5 + dir * 0.5,
+			Color(p.scar, 0.3), 1.0, true
 		)
 
 
 ## Fierce/ready expression
+func _draw_rhena_head_base(center: Vector2) -> void:
+	var p := pal
+	var ol: Color = p.outline
+	# Neck (thicker than Kael, muscular)
+	draw_line(center + Vector2(-3, HEAD_R - 2), center + Vector2(-3, HEAD_R + 4), p.skin_shadow, 5.0, true)
+	draw_line(center + Vector2(3, HEAD_R - 2), center + Vector2(3, HEAD_R + 4), p.skin, 5.0, true)
+	draw_line(center + Vector2(0, HEAD_R - 1), center + Vector2(0, HEAD_R + 5), p.skin, 6.0, true)
+	# Neck muscle line (sternocleidomastoid)
+	draw_line(center + Vector2(-2, HEAD_R), center + Vector2(-4, HEAD_R + 4), p.muscle_line, 0.8, true)
+	# Head shape
+	draw_circle_outlined(center, HEAD_R, p.skin, ol, 1.0)
+	# Cheek highlight
+	draw_arc(center + Vector2(1, -1), HEAD_R * 0.4, deg_to_rad(200), deg_to_rad(330), 6, Color(p.skin_highlight, 0.3), 2.0, true)
+	# Jaw shadow (sharper than Kael, more angular)
+	draw_arc(center, HEAD_R - 1, deg_to_rad(15), deg_to_rad(165), 8, Color(p.skin_shadow, 0.4), 2.5, true)
+	# Ear
+	draw_ellipse_outlined(center + Vector2(HEAD_R - 0.5, 1), Vector2(1.5, 2.5), p.skin, p.skin_shadow, 0.8)
+	# Wild hair
+	_draw_wild_hair(center)
+	# Nose (slightly broader than Kael)
+	draw_line(center + Vector2(0, -0.5), center + Vector2(0, 2), p.nose_shadow, 0.8)
+	draw_line(center + Vector2(-1, 2), center + Vector2(1, 2), p.nose_shadow, 1.0)
+
+
 func _draw_head_fierce(center: Vector2) -> void:
 	var p := pal
-	draw_circle_outlined(center, HEAD_R, p.skin, p.outline, 1.0)
-	_draw_wild_hair(center)
-	# Intense eyes (angled brows via line direction)
-	draw_line(center + Vector2(-4, -2), center + Vector2(-2, -1), p.eye, 2.0)
-	draw_line(center + Vector2(1, -2), center + Vector2(3, -1), p.eye, 2.0)
-	# Slight snarl
-	draw_line(center + Vector2(-2, 3), center + Vector2(0, 3.5), p.eye, 1.0)
-	draw_line(center + Vector2(0, 3.5), center + Vector2(2, 3), p.eye, 1.0)
+	_draw_rhena_head_base(center)
+	# Aggressive angled brows (sharply angled down toward center)
+	draw_line(center + Vector2(-5, -4.5), center + Vector2(-1.5, -2.5), p.eyebrow, 2.0)
+	draw_line(center + Vector2(1.5, -2.5), center + Vector2(5, -4.5), p.eyebrow, 2.0)
+	# Intense eyes (white + dark iris, wider than Kael)
+	draw_line(center + Vector2(-4.5, -2), center + Vector2(-0.5, -1), p.eye_white, 2.0)
+	draw_circle(center + Vector2(-2.5, -1.5), 1.0, p.eye)
+	draw_line(center + Vector2(0.5, -2), center + Vector2(4.5, -1), p.eye_white, 2.0)
+	draw_circle(center + Vector2(2.5, -1.5), 1.0, p.eye)
+	# Snarl (with tooth glint)
+	draw_line(center + Vector2(-2.5, 3), center + Vector2(0, 3.8), p.eye, 1.0)
+	draw_line(center + Vector2(0, 3.8), center + Vector2(2.5, 3), p.eye, 1.0)
+	draw_line(center + Vector2(-0.5, 3.2), center + Vector2(0.5, 3.2), p.teeth, 0.7)
 
 
 ## Attacking expression — teeth bared
 func _draw_head_attacking(center: Vector2) -> void:
 	var p := pal
-	draw_circle_outlined(center, HEAD_R, p.skin, p.outline, 1.0)
-	_draw_wild_hair(center)
-	# Wide angry eyes
-	draw_line(center + Vector2(-4, -3), center + Vector2(-1, -1), p.eye, 2.0)
-	draw_line(center + Vector2(1, -3), center + Vector2(4, -1), p.eye, 2.0)
-	# Open screaming mouth
-	draw_ellipse_outlined(center + Vector2(0, 4), Vector2(3, 2), Color(0.3, 0.1, 0.1))
-	# Teeth line
-	draw_line(center + Vector2(-2, 3.5), center + Vector2(2, 3.5), Color(0.9, 0.9, 0.85), 1.0)
+	_draw_rhena_head_base(center)
+	# Furious brows (steeply angled, almost touching)
+	draw_line(center + Vector2(-5.5, -5), center + Vector2(-1, -2), p.eyebrow, 2.2)
+	draw_line(center + Vector2(1, -2), center + Vector2(5.5, -5), p.eyebrow, 2.2)
+	# Wide furious eyes (with visible whites, sharp iris)
+	draw_line(center + Vector2(-5, -2.5), center + Vector2(-0.5, -0.5), p.eye_white, 2.5)
+	draw_circle(center + Vector2(-2.5, -1.5), 1.2, p.eye)
+	draw_circle(center + Vector2(-2.2, -1.8), 0.4, Color.WHITE)
+	draw_line(center + Vector2(0.5, -2.5), center + Vector2(5, -0.5), p.eye_white, 2.5)
+	draw_circle(center + Vector2(2.5, -1.5), 1.2, p.eye)
+	draw_circle(center + Vector2(2.8, -1.8), 0.4, Color.WHITE)
+	# Open screaming mouth with teeth
+	draw_ellipse_outlined(center + Vector2(0, 4), Vector2(3.5, 2.5), Color(0.25, 0.08, 0.06))
+	draw_line(center + Vector2(-2.5, 3.5), center + Vector2(2.5, 3.5), p.teeth, 1.2)
 
 
 ## Full scream — for heavy attacks
 func _draw_head_screaming(center: Vector2) -> void:
 	var p := pal
-	draw_circle_outlined(center, HEAD_R, p.skin, p.outline, 1.0)
-	_draw_wild_hair(center)
-	# Wide furious eyes
-	draw_circle(center + Vector2(-3, -1), 2.0, p.eye)
-	draw_circle(center + Vector2(2, -1), 2.0, p.eye)
-	# Highlight dots in eyes
-	draw_circle(center + Vector2(-2.5, -1.5), 0.8, Color.WHITE)
-	draw_circle(center + Vector2(2.5, -1.5), 0.8, Color.WHITE)
-	# Huge open mouth
-	draw_ellipse_outlined(center + Vector2(0, 4), Vector2(4, 3), Color(0.3, 0.1, 0.1))
-	draw_line(center + Vector2(-3, 3), center + Vector2(3, 3), Color(0.9, 0.9, 0.85), 1.0)
+	_draw_rhena_head_base(center)
+	# Extreme brows (pushed to max fury)
+	draw_line(center + Vector2(-6, -5.5), center + Vector2(-1, -2), p.eyebrow, 2.5)
+	draw_line(center + Vector2(1, -2), center + Vector2(6, -5.5), p.eyebrow, 2.5)
+	# Wide blazing eyes (full circles with bright highlights)
+	draw_circle(center + Vector2(-3, -1), 2.2, p.eye)
+	draw_circle(center + Vector2(2, -1), 2.2, p.eye)
+	draw_circle(center + Vector2(-2.5, -1.5), 1.0, Color.WHITE)
+	draw_circle(center + Vector2(2.5, -1.5), 1.0, Color.WHITE)
+	# Tiny pupil dots (rage pinpoints)
+	draw_circle(center + Vector2(-2.8, -1.3), 0.4, p.eye)
+	draw_circle(center + Vector2(2.2, -1.3), 0.4, p.eye)
+	# Huge screaming mouth with teeth and tongue
+	draw_ellipse_outlined(center + Vector2(0, 4.5), Vector2(4.5, 3.5), Color(0.25, 0.08, 0.06))
+	draw_line(center + Vector2(-3.5, 3.5), center + Vector2(3.5, 3.5), p.teeth, 1.5)
+	# Individual teeth hints
+	draw_line(center + Vector2(-2, 3.5), center + Vector2(-2, 4.5), p.teeth, 0.8)
+	draw_line(center + Vector2(0, 3.5), center + Vector2(0, 4.5), p.teeth, 0.8)
+	draw_line(center + Vector2(2, 3.5), center + Vector2(2, 4.5), p.teeth, 0.8)
+	# Tongue
+	draw_ellipse_outlined(center + Vector2(0.5, 5.5), Vector2(1.8, 1.0), Color(0.75, 0.28, 0.22))
