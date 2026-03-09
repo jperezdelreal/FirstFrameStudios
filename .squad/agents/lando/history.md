@@ -187,3 +187,20 @@
 - `assets/sprites/fighters/kael/kael_kick_mk_sheet.png` — regenerated with full frames
 - `assets/sprites/fighters/rhena/rhena_kick_mk_sheet.png` — regenerated with full frames
 
+### Character Select P0 Fix v2 (2026-03-09)
+- **Context:** v0.1.1 shipped with broken character select — no keys worked. PR #116 (Wedge) added `ui_accept`/`ui_left`/`ui_right` action references to character_select.gd but never added those actions to project.godot. Godot 4 built-in defaults don't work reliably in exported builds.
+- **Root Cause:** project.godot `[input]` section only had `p1_*` and `p2_*` fight actions. No `ui_accept`, `ui_cancel`, `ui_left`, `ui_right`. `Input.is_action_just_pressed("ui_accept")` silently returned false every frame.
+- **Fix — Fundamentally Different Approach:**
+  - Rewrote character_select.gd to use direct `InputEventKey` keycode matching via `_unhandled_input()` — zero dependency on input action map
+  - Uses `event.physical_keycode` (layout-independent) with fallback to `event.keycode`
+  - KEY_LEFT/KEY_A to navigate, KEY_ENTER/KEY_SPACE to confirm, KEY_ESCAPE to back
+  - Removed `_process()` polling approach entirely — cleaner, more responsive
+  - Added `_sync_cpu()` helper to centralize CPU auto-mirror logic
+- **Additional Fixes:**
+  - Added explicit `ui_accept`, `ui_cancel`, `ui_left`, `ui_right`, `ui_up`, `ui_down` to project.godot — main menu Button focus system now works with keyboard
+  - Removed VS Player button from main menu (singleplayer only per founder)
+  - Fixed main menu focus neighbor chain after button removal
+- **Key Lesson:** Never rely on Godot 4's "built-in" UI actions existing in the InputMap at runtime — if project.godot has a custom `[input]` section, always define ui_* actions explicitly. Better yet, for critical UI screens, use direct key event handling that bypasses the action system entirely.
+- **Key Lesson:** When a previous fix for the same bug fails, don't iterate on the same approach — audit the entire pipeline and find what assumption was wrong. PR #116 assumed ui_* actions existed; the fix was to eliminate that assumption.
+- **PR:** #118 (squad/fix-charselect-v2), supersedes PR #116
+
