@@ -74,7 +74,36 @@ Upgraded EmberGrounds from placeholder to final-quality procedural stage art wit
 - `create_tween()` returns a Tween that auto-destroys when done — must store reference to `.kill()` if transition is interrupted
 - Const arrays of Color work fine in GDScript 4 — good for palette definitions
 
-- Building pattern array in background.js tiles across the world; adding new types requires: array entry, switch case, draw method — all three.
+### Sprint 2 Phase 2 — Stage Floor & Background Art Upgrade
+**Date:** 2026-07-22
+**PR:** #145
+**Branch:** squad/phase2-stage-art
+
+Upgraded Ember Grounds from placeholder-quality to rich procedural stage art with depth, atmosphere, and 3-round visual escalation.
+
+**What was upgraded:**
+- Floor: depth gradient (dark bottom → lighter top), 32 texture patches, 22 branching cracks with 3-layer glow (halo/main/hot core), 7 lava pools with 4-layer rendering, lava channels at left/right edges, 16 rock debris fragments, top-surface highlight line for grounding fighters
+- Embers: round-reactive core color, trail afterglow on 40% of particles, 3-layer glow (halo/bloom/core), frame-based spawning with SPAWN_INTERVAL
+- Smoke: 28 wisps with depth layering (3 layer groups), 5 horizontal haze bands at horizon, round-reactive tinting with warm inner highlights in later rounds
+- Vignette: cinematic corner darkening (always-on), round-reactive glow color, 10-step gradient (up from 8), bottom heat shimmer band at high intensity
+- Main controller: 7 new round palette arrays (floor base, crack glow, highlight, ember core, smoke tint calm/hot, vignette color), expanded set_visual_data() API to sub-effects
+
+**Key decisions:**
+- Converted all sub-effects from `_process(delta)` with float timers to `_physics_process(_delta)` with integer frame counters — derives time as `float(_frame) / 60.0` for deterministic animation
+- Kept backward-compatible setter methods (`set_intensity`, `set_emission_rate`, `set_density`, `set_strength`) alongside new `set_visual_data()` API
+- Used explicit type casts (`as float`, `as int`, `as bool`, `as Rect2`) for all Dictionary access per GDSCRIPT-STANDARDS Rule 1
+- Lava channels at floor edges framed with 3 rendering layers (outer halo, main channel, bright core strip) — same pattern as cracks
+
+**Learnings:**
+- Top-surface highlight line on the floor is critical for visual grounding — without it fighters appear to float even if the floor has rich detail
+- Depth gradient on floor (darker bottom → lighter top surface) reads much better than flat-color obsidian — simulates overhead/ambient lighting
+- Branching cracks add significant visual complexity cheaply — one branch per crack at 50% probability adds organic feel
+- Frame-based particle spawning with modulo interval (`_frame % SPAWN_INTERVAL == 0`) is cleaner than accumulator-based delta spawning
+- Horizon haze bands (simple rect draws) add enormous depth to parallax scenes — cheap atmospheric layering
+- Round-reactive smoke tinting (cool gray → warm amber → volcanic red-brown) sells temperature escalation more effectively than density alone
+- Cinematic corner darkening on vignette provides consistent framing even in Round 1 when heat glow strength is 0
+
+- Building pattern array in background.jstiles across the world; adding new types requires: array entry, switch case, draw method — all three.
 - Far layer uses `cameraX * 0.8` offset with `PLANT_SPACING` to tile; new far-layer elements (billboards, signs) should anchor relative to plant positions to avoid overlap.
 - `seededRandom(x * factor + offset)` keeps frame-stable randomness for per-building variation (graffiti, window lighting, car colors).
 - Easter eggs work best as conditional draws inside existing building methods or as spaced elements in `_ground()` — keeps them discoverable but not cluttering.
