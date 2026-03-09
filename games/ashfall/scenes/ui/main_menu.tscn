@@ -103,25 +103,6 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
 layout_mode = 2
 custom_minimum_size = Vector2(0, 8)
 
-[node name="VsPlayerButton" type="Button" parent="VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-custom_minimum_size = Vector2(300, 50)
-focus_mode = 2
-text = "VS  PLAYER"
-theme_override_colors/font_color = Color(0.95, 0.9, 0.8, 1)
-theme_override_colors/font_hover_color = Color(1, 0.7, 0.2, 1)
-theme_override_colors/font_focus_color = Color(1, 0.7, 0.2, 1)
-theme_override_font_sizes/font_size = 24
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
-theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_hover")
-
-[node name="Spacer3" type="Control" parent="VBox"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 8)
-
 [node name="OptionsButton" type="Button" parent="VBox"]
 unique_name_in_owner = true
 layout_mode = 2
