@@ -43,6 +43,7 @@ func _wire_signals() -> void:
 	EventBus.hit_confirmed.connect(_on_hit_confirmed)
 	EventBus.fighter_ko.connect(_on_fighter_ko)
 	EventBus.ember_changed.connect(_on_ember_changed)
+	EventBus.ember_spent.connect(_on_ember_spent)
 	EventBus.round_started.connect(_on_round_started)
 
 
@@ -94,6 +95,15 @@ func _on_fighter_ko(fighter: Variant) -> void:
 
 func _on_ember_changed(player_id: int, new_value: int) -> void:
 	_update_ember_trail(player_id, new_value)
+
+
+# ── Ember spent: burst flash feedback ───────────────────
+
+func _on_ember_spent(player_id: int, _amount: int, _action: String) -> void:
+	var fighter := _find_fighter(player_id)
+	if fighter and fighter is Node2D:
+		_spawn_hit_sparks(fighter.global_position + Vector2(0, -30), "special")
+		_apply_screen_shake("light")
 
 
 # ── Round started: reset VFX state ──────────────────────

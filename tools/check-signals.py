@@ -11,6 +11,40 @@ from pathlib import Path
 from typing import Dict, List, Set, Tuple
 from dataclasses import dataclass, field
 
+# Godot engine built-in signals that should not be flagged as orphaned.
+# These are emitted by the engine itself (Area2D, Button, Timer, etc.)
+# and do not require explicit .emit() calls in user scripts.
+GODOT_BUILTIN_SIGNALS: Set[str] = {
+    # Node lifecycle
+    "ready", "renamed", "tree_entered", "tree_exited", "tree_exiting",
+    "child_entered_tree", "child_exiting_tree", "child_order_changed",
+    # Physics bodies & areas
+    "area_entered", "area_exited", "area_shape_entered", "area_shape_exited",
+    "body_entered", "body_exited", "body_shape_entered", "body_shape_exited",
+    # Control / UI
+    "pressed", "released", "toggled", "button_down", "button_up",
+    "focus_entered", "focus_exited", "mouse_entered", "mouse_exited",
+    "gui_input", "input_event", "resized", "size_changed",
+    "minimum_size_changed", "theme_changed",
+    # Range / Slider / ScrollBar
+    "value_changed", "changed",
+    # LineEdit / TextEdit
+    "text_changed", "text_submitted", "text_set",
+    # ItemList / OptionButton / Tree
+    "item_selected", "item_activated", "item_clicked",
+    # Timer
+    "timeout",
+    # CanvasItem
+    "draw", "visibility_changed", "hidden", "item_rect_changed",
+    # Animation
+    "finished", "animation_finished", "animation_changed",
+    "animation_started", "current_animation_changed",
+    # Camera / Viewport
+    "screen_entered", "screen_exited",
+    # Tween
+    "tween_completed", "loop_finished", "step_finished",
+}
+
 @dataclass
 class Signal:
     name: str
@@ -37,8 +71,13 @@ class SignalAnalyzer:
             else:
                 return []
                 
-        gd_files = list(self.scripts_dir.rglob("*.gd"))
-        print(f"[*] Found {len(gd_files)} GDScript file(s)")
+        all_files = list(self.scripts_dir.rglob("*.gd"))
+        # Exclude test helper scripts — they use engine signals (pressed,
+        # value_changed) on programmatically-created UI widgets and emit
+        # legacy test-only signals that are not part of the game wiring.
+        gd_files = [f for f in all_files if "test" not in f.parent.name.lower()]
+        excluded = len(all_files) - len(gd_files)
+        print(f"[*] Found {len(gd_files)} GDScript file(s) ({excluded} test file(s) excluded)")
         return gd_files
     
     def scan_signals(self, files: List[Path]):
@@ -123,6 +162,10 @@ class SignalAnalyzer:
         healthy = []
         
         for sig_name, signal in self.signals.items():
+            # Skip Godot built-in signals — the engine emits them internally
+            if sig_name in GODOT_BUILTIN_SIGNALS:
+                continue
+
             has_emit = bool(signal.emitted_in)
             has_connect = bool(signal.connected_in)
             has_definition = bool(signal.defined_in)
