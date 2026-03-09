@@ -665,7 +665,7 @@ func _spawn_ko_flash(char_name: String) -> void:
 	layer.layer = 100
 
 	var rect := ColorRect.new()
-	var fc := palette.flash_color
+	var fc: Color = palette.flash_color
 	rect.color = Color(minf(fc.r / 5.0, 1.0), minf(fc.g / 5.0, 1.0), minf(fc.b / 5.0, 1.0), 0.8)
 	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(rect)
