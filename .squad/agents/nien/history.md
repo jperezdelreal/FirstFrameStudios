@@ -7,6 +7,13 @@
 - **Current characters:** Brawler with bezier curves, M-hair, stubble, overbite. 4 enemy variants (normal/fast/heavy/tough) + Bruiser boss. All Canvas 2D procedural art.
 
 ## Learnings
+- **Sprint 1 full animation pass (Issue #91, PR #104):** Added 33 new procedural poses per character, bringing total from 8 to 41 per fighter. Covers all GDD-spec states: crouch, jump phases, dash/backdash, 3 standing kicks, all 6 crouching attacks, all 6 jump attacks, both block types, throw execute/victim, wakeup, 4 specials each, ignition super, win, and lose poses.
+- **Crouch offset pattern:** Using a `co` (crouch offset) variable to shift the entire body downward while keeping feet at FOOT_Y=0 creates consistent crouching poses without duplicating all the body math.
+- **Jump lift pattern:** Similarly, a `lift` offset variable shifts the body upward for jump states while maintaining relative proportions.
+- **SpriteStateBridge expanded:** Now handles jump velocity-based pose selection (up/peak/fall), crouch detection via state method, and full attack routing including kicks, crouching attacks, air attacks, specials, and ignition. The `_is_crouching()` helper checks the state for a method rather than assuming.
+- **Attack routing order matters:** In `_get_attack_pose()`, checking "hk" before "lk" prevents "lk" substring matching on "heavy_kick". Special moves checked first since they take priority.
+- **Character personality through pose exaggeration:** Kael's kicks use controlled side-kick technique; Rhena's use explosive roundhouses and axe kicks. Same functional hitbox, completely different read. Heavy attacks always get screaming head for Rhena but focused head for Kael.
+- **Specials need unique VFX language:** Kael's Ember Shot uses concentric circles (projectile energy), Rising Cinder uses vertically-spaced trail dots (rising motion). Rhena's Blaze Rush uses trailing particles (forward rush), Flashpoint uses explosive burst (launcher impact). Each special reads differently even as procedural shapes.
 - Added Brawler walk-cycle leg framing, expression-based face drawing, and enemy death spin/launch fades with X eyes.
 - Upgraded Brawler's fists from plain circles to game-style 4-finger fists with palm, knuckle row, and thumb using ellipses.
 - Added shoe soles (darker brown line at bottom) to both player and all enemy variants for grounding detail.
