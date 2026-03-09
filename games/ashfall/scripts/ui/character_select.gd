@@ -1,7 +1,6 @@
-## Character select — two-panel selection with intuitive UI controls.
-## P1: Arrow keys / A,D to navigate, Enter/Space to confirm (also accepts fight keys).
-## P2 (vs_player): Arrow keys to navigate, Numpad Enter to confirm.
-## In vs_cpu mode P2 auto-mirrors P1. Transitions to fight when both confirm.
+## Character select — direct key-event driven (no dependency on input action map).
+## Uses InputEventKey keycodes so Enter/Space/Arrows/Escape always work regardless
+## of whether ui_* actions exist in project.godot.
 extends Control
 
 const CHARACTERS := [
@@ -35,62 +34,58 @@ func _ready() -> void:
 	mode_label.text = mode_text
 
 
-func _process(_delta: float) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if _transitioning:
 		return
-	_handle_p1_input()
-	_handle_p2_input()
-	_check_ready()
+	if not event is InputEventKey or not event.pressed or event.echo:
+		return
 
+	# Resolve key — prefer physical_keycode (layout-independent), fall back to keycode
+	var key: int = event.physical_keycode if event.physical_keycode != KEY_NONE else event.keycode
+	if key == KEY_NONE:
+		return
 
-func _handle_p1_input() -> void:
-	if p1_confirmed:
-		if Input.is_action_just_pressed("p1_block") or Input.is_action_just_pressed("ui_cancel"):
+	# --- ESCAPE: back / un-confirm ---
+	if key == KEY_ESCAPE:
+		if p1_confirmed:
 			p1_confirmed = false
+			_sync_cpu()
 			_update_display()
+		else:
+			SceneManager.goto_main_menu()
+		get_viewport().set_input_as_handled()
 		return
 
-	var nav_left := Input.is_action_just_pressed("p1_left")
-	var nav_right := Input.is_action_just_pressed("p1_right")
-	# In vs_cpu mode arrow keys also control P1 (no P2 conflict)
-	if SceneManager.game_mode == "vs_cpu":
-		nav_left = nav_left or Input.is_action_just_pressed("ui_left")
-		nav_right = nav_right or Input.is_action_just_pressed("ui_right")
-
-	if nav_left:
+	# --- NAVIGATION: Left / Right (arrows or A / D) ---
+	if key in [KEY_LEFT, KEY_A] and not p1_confirmed:
 		p1_index = wrapi(p1_index - 1, 0, CHARACTERS.size())
+		_sync_cpu()
 		_update_display()
-	elif nav_right:
+		get_viewport().set_input_as_handled()
+		return
+
+	if key in [KEY_RIGHT, KEY_D] and not p1_confirmed:
 		p1_index = wrapi(p1_index + 1, 0, CHARACTERS.size())
+		_sync_cpu()
 		_update_display()
+		get_viewport().set_input_as_handled()
+		return
 
-	# Accept Enter/Space (ui_accept) or fight button (p1_light_punch) to confirm
-	if Input.is_action_just_pressed("ui_accept") or Input.is_action_just_pressed("p1_light_punch"):
+	# --- CONFIRM: Enter / Space / KP Enter / U (p1_light_punch legacy) ---
+	if key in [KEY_ENTER, KEY_SPACE, KEY_KP_ENTER, KEY_U] and not p1_confirmed:
 		p1_confirmed = true
+		_sync_cpu()
 		_update_display()
+		_check_ready()
+		get_viewport().set_input_as_handled()
+		return
 
 
-func _handle_p2_input() -> void:
-	if SceneManager.game_mode == "vs_cpu":
-		# CPU auto-picks opponent character
-		p2_index = 1 if p1_index == 0 else 0
-		p2_confirmed = p1_confirmed
-		_update_display()
+func _sync_cpu() -> void:
+	if SceneManager.game_mode != "vs_cpu":
 		return
-	if p2_confirmed:
-		if Input.is_action_just_pressed("p2_block"):
-			p2_confirmed = false
-			_update_display()
-		return
-	if Input.is_action_just_pressed("p2_left"):
-		p2_index = wrapi(p2_index - 1, 0, CHARACTERS.size())
-		_update_display()
-	elif Input.is_action_just_pressed("p2_right"):
-		p2_index = wrapi(p2_index + 1, 0, CHARACTERS.size())
-		_update_display()
-	if Input.is_action_just_pressed("p2_light_punch"):
-		p2_confirmed = true
-		_update_display()
+	p2_index = 1 if p1_index == 0 else 0
+	p2_confirmed = p1_confirmed
 
 
 func _check_ready() -> void:
@@ -98,7 +93,6 @@ func _check_ready() -> void:
 		_transitioning = true
 		SceneManager.p1_character = CHARACTERS[p1_index].name
 		SceneManager.p2_character = CHARACTERS[p2_index].name
-		# Brief delay before transition
 		get_tree().create_timer(0.5).timeout.connect(SceneManager.goto_fight)
 
 
@@ -108,28 +102,11 @@ func _update_display() -> void:
 	p1_portrait.color = p1.color
 	p1_name_label.text = p1.name
 	p1_archetype_label.text = p1.archetype
-	if SceneManager.game_mode == "vs_cpu":
-		p1_status_label.text = "READY!" if p1_confirmed else "← →  Enter to Confirm"
-	else:
-		p1_status_label.text = "READY!" if p1_confirmed else "← A/D →  Enter to Confirm"
+	p1_status_label.text = "READY!" if p1_confirmed else "← →  Enter to Confirm"
 
 	p2_portrait.color = p2.color
 	p2_name_label.text = p2.name
 	p2_archetype_label.text = p2.archetype
-	if SceneManager.game_mode == "vs_cpu":
-		p2_status_label.text = "CPU"
-	else:
-		p2_status_label.text = "READY!" if p2_confirmed else "← →  Numpad 4 to Confirm"
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if _transitioning:
-		return
-	# Global back — go to main menu
-	if event.is_action_pressed("ui_cancel"):
-		if p1_confirmed:
-			p1_confirmed = false
-			_update_display()
-		else:
-			SceneManager.goto_main_menu()
-		get_viewport().set_input_as_handled()
+	p2_status_label.text = "CPU" if SceneManager.game_mode == "vs_cpu" else (
+		"READY!" if p2_confirmed else "← →  Enter to Confirm"
+	)
