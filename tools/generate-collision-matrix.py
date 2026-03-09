@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import sys, io
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+#!/usr/bin/env python3
 """
 Tool 11: Collision Layer Matrix Generator (#42)
 Generates collision layer interaction matrix from project.godot and scenes.
