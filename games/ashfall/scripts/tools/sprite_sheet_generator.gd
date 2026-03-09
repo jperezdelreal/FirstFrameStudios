@@ -36,12 +36,18 @@ const POSE_FILENAMES := {
 
 
 func _ready() -> void:
-	if Engine.is_editor_hint() and generate_on_ready:
+	if not Engine.is_editor_hint():
+		return
+	if generate_on_ready:
 		generate_sheets()
 
 
 ## Generate all pose PNGs for the configured character and palette
 func generate_sheets() -> void:
+	if not Engine.is_editor_hint():
+		push_warning("SpriteSheetGenerator: Refusing to run outside the editor.")
+		return
+
 	var sprite_node: CharacterSprite = _create_sprite_instance()
 	if not sprite_node:
 		push_error("SpriteSheetGenerator: Could not create sprite for '%s'" % character_type)

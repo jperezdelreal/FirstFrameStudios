@@ -77,7 +77,7 @@ func _physics_process(_delta: float) -> void:
 
 		"FIGHT":
 			timer_frames -= 1
-			var seconds := ceili(timer_frames / 60.0)
+			var seconds: int = timer_frames / 60
 			if seconds != _last_displayed_seconds:
 				_last_displayed_seconds = seconds
 				timer_updated.emit(seconds)

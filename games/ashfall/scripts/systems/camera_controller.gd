@@ -35,7 +35,7 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-	if not fighter1 or not fighter2:
+	if not is_instance_valid(fighter1) or not is_instance_valid(fighter2):
 		return
 
 	var target_pos := _calculate_target_position()
