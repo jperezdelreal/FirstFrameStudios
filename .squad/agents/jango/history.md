@@ -226,3 +226,78 @@ Scribe coordinated documentation of build pipeline work and decision inbox conso
    - Pending review: mace-sprint-structure.md, mace-sprint-1-kickoff.md, mace-sprint-1-closure.md, ackbar-sprint1-verdict.md
 
 **Status:** COMPLETE. Records updated; build pipeline and viewport update documented and indexed.
+
+### 2026-03-09T1253Z — Sprint Tag Auto-Release Workflow
+**Session:** Continuous release enhancement  
+**Role:** Tool Engineer — CI/CD pipeline automation
+
+**Task Executed:**
+Enhanced godot-release.yml workflow to automatically trigger releases when sprint tags are pushed.
+
+**Changes Made:**
+1. **Workflow Trigger Update (.github/workflows/godot-release.yml):**
+   - Added `sprint-*-shipped` pattern to `on.push.tags` array alongside existing `v*` pattern
+   - Workflow now triggers on both version tags and sprint milestone tags
+
+2. **Sprint Release Logic:**
+   - Added new step: "Check if sprint release" that detects sprint tags via regex `^sprint-.*-shipped$`
+   - Sets `is_sprint` output flag based on tag pattern
+   - Updated GitHub Release action to use `prerelease: ${{ steps.sprint_check.outputs.is_sprint == 'true' }}`
+
+3. **Release Naming:**
+   - Both `v*` and `sprint-*-shipped` tags use the tag itself as release name
+   - e.g., "v0.1.0" for stable releases, "sprint-2-shipped" for sprint milestones
+   - Sprint releases automatically marked as pre-release (development milestone designation)
+
+**Branch:** `squad/auto-release-sprint`  
+**PR:** #112  
+**Commit:** e5de228 + 3ab1334 (includes push)
+
+**Architecture:**
+```
+Tag push (v0.1.0 or sprint-2-shipped)
+  ↓
+GitHub Actions triggers on matching pattern
+  ↓
+[v* tags] → prerelease: false (stable)
+[sprint-*-shipped tags] → prerelease: true (development)
+  ↓
+Build and release with appropriate classification
+```
+
+**Status:** COMPLETE. Sprint tag auto-release now enabled. Developers can trigger releases by pushing sprint tags.
+
+### 2026-03-10 — Release Tag Naming Convention (Game-Prefixed)
+**Session:** Release workflow update  
+**Role:** Tool Engineer — CI/CD pipeline configuration
+
+**Task Executed:**
+Updated godot-release.yml workflow to prefix all release tags with game name (ashfall-).
+
+**Changes Made:**
+1. **Tag Trigger Patterns (.github/workflows/godot-release.yml):**
+   - Version tags: `v*` → `ashfall-v*` (e.g., `ashfall-v0.1.0`)
+   - Sprint tags: `sprint-*-shipped` → `ashfall-sprint-*-shipped` (e.g., `ashfall-sprint-2-shipped`)
+
+2. **Version Extraction Logic:**
+   - New step outputs `tag` (full tag with prefix) and `tag_clean` (prefix stripped)
+   - For `ashfall-v0.1.0`: `tag` = full, `tag_clean` = `v0.1.0`
+   - For `ashfall-sprint-2-shipped`: `tag` = full, `tag_clean` = `sprint-2-shipped`
+   - Uses bash parameter expansion `${TAG#ashfall-}` to strip prefix
+
+3. **Release Names and Artifacts:**
+   - Release name: `Ashfall ${{ steps.version.outputs.tag_clean }}` (clean name without prefix)
+   - Zip filename: `Ashfall-${tag_clean}-windows.zip` (includes version in filename)
+   - Example: `Ashfall-v0.1.0-windows.zip` or `Ashfall-sprint-2-shipped-windows.zip`
+
+4. **Sprint Detection Regex:**
+   - Updated from `^sprint-.*-shipped$` to `^ashfall-sprint-.*-shipped$` (accounts for new prefix)
+
+5. **workflow_dispatch Default:**
+   - Changed default version input from `v0.0.0-dev` to `ashfall-v0.0.0-dev` (matches new pattern)
+
+**Rationale:** Game-prefixed tags enable multi-game monorepo release distinction. Same tag pattern works for all games (`game-name-v*`, `game-name-sprint-*-shipped`). Cleaner release naming and artifacts than generic versioning.
+
+**Branch:** main (direct push)  
+**Commit:** 6833947  
+**Status:** COMPLETE. All releases now reference "ashfall-" prefix; workflow ready for multi-game scaling.

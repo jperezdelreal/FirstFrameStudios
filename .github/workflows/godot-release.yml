@@ -40,6 +40,17 @@ jobs:
       - name: Create output directory
         run: mkdir -p games/ashfall/builds/windows
       
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.version }}"
+          else
+            TAG="${GITHUB_REF#refs/tags/}"
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "tag_clean=${TAG#ashfall-}" >> $GITHUB_OUTPUT
+      
       - name: Export Windows build
         working-directory: games/ashfall
         run: |
@@ -50,17 +61,6 @@ jobs:
           cd games/ashfall/builds/windows
           zip -r Ashfall-${{ steps.version.outputs.tag_clean }}-windows.zip .
       
-      - name: Determine version
-        id: version
-        run: |
-           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-             TAG="${{ github.event.inputs.version }}"
-           else
-             TAG="${GITHUB_REF#refs/tags/}"
-           fi
-           echo "tag=$TAG" >> $GITHUB_OUTPUT
-           echo "tag_clean=${TAG#ashfall-}" >> $GITHUB_OUTPUT
-       
       - name: Check if sprint release
         id: sprint_check
         run: |
