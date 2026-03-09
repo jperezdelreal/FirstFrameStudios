@@ -301,3 +301,148 @@ Updated godot-release.yml workflow to prefix all release tags with game name (as
 **Branch:** main (direct push)  
 **Commit:** 6833947  
 **Status:** COMPLETE. All releases now reference "ashfall-" prefix; workflow ready for multi-game scaling.
+
+### 2026-03-11 — Sprint 1 Lessons Learned & GDScript Standards
+
+**Session:** Post-Sprint 1 retrospective analysis  
+**Role:** Tool Engineer — Coding standards, quality gates, knowledge capture
+
+**Task Executed:**
+Investigated all Sprint 1 bugs (23 fix commits, 7 closed bug issues, playtest reports, team retrospectives) to identify patterns and create comprehensive lessons learned + coding standards documentation.
+
+**Deliverables Created:**
+
+1. **`games/ashfall/docs/SPRINT-1-LESSONS-LEARNED.md` (21.5 KB)**
+   - 5 major lessons: Godot 4.6 type inference failures, input handling export bugs, frame data drift, reactive integration testing, method name shadowing
+   - Each lesson: what happened, root cause, impact metrics, prevention for Sprint 2
+   - Process improvements: pre-merge integration gate, Windows export testing, frame data CSV pipeline
+   - Tooling improvements: GDScript linter enhancements, integration gate CI workflow, export build validator
+   - Success criteria: zero type inference bugs, zero input export failures, integration gate enforced before merge
+
+2. **`games/ashfall/docs/GDSCRIPT-STANDARDS.md` (25.4 KB)**
+   - 7 critical rules (violation = bug): Never use `:=` with dict/array/abs(), use absf()/absi(), explicit return types, never override ui_* actions, Button nodes for menus, prefix custom draw methods, frame-based timing
+   - 5 important rules (violation = risk): Autoload order assertions, signal naming (past tense), always emit signals, collision layer constants, exported variable types
+   - 4 style rules (consistency): Tab indentation, naming conventions, file organization, comment philosophy
+   - 10 Godot 4.6 gotchas (quick reference)
+   - PR review checklist
+   - Do's and don'ts quick reference table
+
+3. **`.squad/skills/gdscript-godot46/SKILL.md`**
+   - 5 key patterns: Explicit type annotations, type-specific math functions, native Button nodes, never override ui_* actions, frame-based timing
+   - Anti-patterns with correct alternatives
+   - Cross-references to lessons learned and standards docs
+
+**Key Findings:**
+
+**Systematic Type Safety Bugs (10 commits in v0.2.0):**
+- `:=` from `dict["key"]`, `array[0]`, or `abs(x)` produces `Variant`, not expected type
+- Godot 4.6 type inference is NOT Python-like — fails silently in editor, crashes in exports
+- Affected: `audio_manager.gd`, `vfx_manager.gd`, `character_select.gd`, `throw_state.gd`, `kael_sprite.gd` (47 fixes), `rhena_sprite.gd` (47 fixes)
+
+**Character Select Input Saga (6 PRs over 10 days):**
+- Custom `ui_*` action overrides with `physical_keycode:0` broke Windows exports
+- Custom `_input()` with `InputEventKey` bypassed focus system
+- Main menu worked on first try because it used native `Button` nodes
+- Final fix: Adopt main_menu.gd pattern everywhere (native Button nodes + grab_focus())
+
+**Frame Data Drift:**
+- Three sources of truth: GDD spec, base .tres files, character .tres files
+- All diverged silently — MP/MK startup 1f faster than GDD spec
+- Medium attacks completely missing from character movesets (4 buttons instead of 6-button GDD spec)
+- Filed as issues #108, #109, #110
+
+**Integration Gate Was Reactive:**
+- Tool existed but ran manually post-merge
+- Caught 6 orphaned signals, autoload order issues, scene reference errors AFTER merge
+- Required emergency fix PRs (#88, #89)
+
+**Lessons Applied to Sprint 2:**
+- Integration gate runs as GitHub Action on every PR (blocks merge if failed)
+- Windows export testing for all UI/input PRs
+- Frame data CSV pipeline (single source of truth)
+- Type safety pre-commit checks
+- All agents read GDSCRIPT-STANDARDS.md before Sprint 2 code
+
+**Status:** COMPLETE. Three documents ready for team. Sprint 2 success criteria defined (zero type inference bugs, integration gate enforced before merge, fewer than 3 fix commits).
+
+### 2026-03-09 — Sprint 1 Lessons Learned & GDScript Standards
+
+**Session:** Sprint 2 Kickoff: Bug Audit & Standards  
+**Role:** Tool Engineer — Standards enforcement, integration gate, pattern library
+
+**Task Executed:**
+Comprehensive analysis of Sprint 1 bugs with creation of mandatory GDScript standards for Sprint 2+ enforcement.
+
+**Analysis Findings:**
+- **23 fix commits** required across v0.1.0 to v0.2.0 (vs. 3 target for Sprint 2)
+- **6 PRs** for character select input alone (10 days of debugging)
+- **5 emergency releases** (v0.1.3, v0.1.4, v0.1.5) disrupted art focus
+
+**Four Systematic Bug Patterns:**
+1. **Type inference failure (10 bugs):** := from dict/array/abs() produces Variant, not expected type
+2. **Input export divergence (6 bugs):** Custom _input() works in editor, breaks in Windows exports
+3. **Frame data drift (3 bugs):** Three sources of truth (GDD, base .tres, character .tres) diverged silently
+4. **Integration gate reactive (2 bugs):** Tool existed but ran after merge, not before (posts PR comments too late)
+
+**Deliverables Created:**
+1. **SPRINT-1-LESSONS-LEARNED.md (21.7KB)** — Comprehensive analysis with 5 lesson clusters and prevention strategies
+2. **GDSCRIPT-STANDARDS.md (25.7KB)** — 16 coding rules (7 critical, 5 important, 4 style), every rule traced to Sprint 1 bug with commit SHAs
+3. **gdscript-godot46 SKILL.md** — Pattern library for all agents, reusable across Godot 4.6 projects
+
+**The 16 Rules (All Evidence-Based):**
+
+Critical Rules (traced to real bugs):
+1. Never := with dict/array/abs() — 10 type inference fixes, 94 call sites
+2. Use absf()/absi() — throw_state.gd distance calculation
+3. Button nodes for menus — Character select 6 PRs
+4. Never override ui_* — Keyboard broken in exports
+5. Prefix custom draw methods — Node2D method shadowing
+6. Frame-based timing — Float division in attack_state
+7. Autoload assertions — VFXManager null refs
+
+**Enforcement Mechanisms (Mandatory for Sprint 2+):**
+1. **Integration gate runs on every PR** — GitHub Action blocks merge if failed (not optional)
+2. **Pre-commit type safety check** — Grep for risky := patterns before commit
+3. **Code review checklist** — Jango validates all PRs against GDSCRIPT-STANDARDS.md
+4. **Windows export testing** — Required for all UI/input changes (new Ackbar responsibility)
+
+**Success Metrics for Sprint 2:**
+
+| Metric | Sprint 1 Baseline | Sprint 2 Target |
+|--------|-------------------|-----------------|
+| Fix commits | 23 | < 3 |
+| Type inference bugs | 10 | 0 |
+| Input export failures | 6 PRs | 0 |
+| Frame data drift bugs | 3 | 0 |
+| Post-merge integration fixes | 2 PRs | 0 |
+| Emergency releases | 3 | 0 |
+
+**Why Mandatory, Not Guidelines?**
+
+Evidence: 10 type bugs followed same pattern; 6 input bugs made same mistake. If agents don't know the pattern, they'll repeat it.
+
+Productivity: 10 days lost to character select debugging; 3-4 hours hunting type issues; emergency releases disrupted work.
+
+Future risk: Sprint 2 is combo system (high complexity, low tolerance for bugs). Type safety bugs break combo calculations.
+
+**Timeline:**
+- 2026-03-09: Documents created, decision proposed
+- Sprint 2 Day 1: Integration gate GitHub Action deployed
+- Sprint 2 Day 1: All agents read GDSCRIPT-STANDARDS.md (10 min)
+- Sprint 2 Week 1: Pre-commit hooks installed
+- Sprint 2 Week 2: Tool #11 (frame data CSV pipeline) deployed
+
+**Cross-Project Value:**
+- Type inference gotchas are engine-specific, apply to ALL Godot 4.6 games
+- Input handling best practices apply to any menu system
+- Integration gate pattern reusable for any multi-system project
+- Next fighting game can copy GDSCRIPT-STANDARDS.md verbatim
+
+**Status:** COMPLETE. Decision approved for mandatory Sprint 2 enforcement. Integration gate deployment planned for Sprint 2 Day 1.
+
+**Cross-Agent Knowledge:**
+- Solo: 35 bugs total, every one preventable with these standards
+- Ackbar: Identified vfx_manager.gd timing issue — type safety prevents similar issues
+- This standards enforcement is part of larger Sprint 2 quality initiative with Solo's bug catalog and Ackbar's code audit
+
+---

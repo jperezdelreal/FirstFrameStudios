@@ -204,3 +204,8 @@
 - **Key Lesson:** When a previous fix for the same bug fails, don't iterate on the same approach — audit the entire pipeline and find what assumption was wrong. PR #116 assumed ui_* actions existed; the fix was to eliminate that assumption.
 - **PR:** #118 (squad/fix-charselect-v2), supersedes PR #116
 
+
+### 2026-03-09 — Sprint 1 Audit Results: Process & Standards
+
+**Cross-Agent Update:** Sprint 1 bug catalog identified 35 bugs with 7 mandatory process improvements for Sprint 2. Lando responsible for edge case test matrix (equal HP, timer expiry, simultaneous hits, double KO scenarios). GDSCRIPT-STANDARDS.md now mandatory (16 rules, starting Sprint 2 Day 1). See .squad/decisions/decisions.md.
+

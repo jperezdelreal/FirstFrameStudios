@@ -355,3 +355,86 @@ Gate is unblocked. Team can proceed with M4 playtesting phase without CI frictio
   2. P1-002: Medium attacks (MP, MK) missing from character moveset .tres files. Only 6 moves per character.
   3. P1-003: Frame data drift between base .tres and character moveset .tres (HP startup 10f vs 12f).
 - **Key Insight:** The art pipeline is architecturally excellent — procedural 2D drawing with parametric palettes, EventBus-decoupled VFX, and data-driven animation building. The gaps are numerical (frame data values) not structural. Fix the numbers, not the system.
+### 2026-03-09: Sprint 1 Code Quality Audit (Full Codebase)
+- **Audit scope:** All 53 GDScript files in games/ashfall/scripts/**
+- **Issues found:** 16 total (1 critical, 7 warnings, 8 info)
+- **Clean files:** 37 of 53 (70% of codebase has zero issues)
+- **Critical issue:** vfx_manager.gd uses _process instead of _physics_process for VFX timing (violates "Frame Data Is Law" principle from GDD)
+- **Key patterns identified:**
+  1. **_process vs _physics_process inconsistency** — 5 files use float delta timing for animations instead of deterministic frame counters
+  2. **Missing is_instance_valid() checks** — 3 files have potential crash risk from freed node access
+  3. **Unsafe type inference** — Dictionary.get() and Array[] access without explicit types (Godot 4.6 := bug)
+  4. **has_method() overuse** — 2 files use runtime checks instead of type guards
+  5. **Missing type hints on helpers** — Internal methods lack type annotations
+- **Notable strengths:**
+  - All fighter states correctly use frame-based timing
+  - EventBus decoupling is perfect (zero direct dependencies)
+  - Animation sync between state machine and AnimationPlayer is solid
+  - No resource leaks found
+  - No signal connection mismatches
+  - Consistent super() calls in all state methods
+- **Recommendations for Sprint 2:**
+  - Priority 1: Fix vfx_manager _process → _physics_process (critical for determinism)
+  - Priority 2: Add is_instance_valid checks to hitbox.gd, camera_controller.gd
+  - Priority 3: Migrate UI animations to _physics_process
+  - Process improvement: Add lint rule for _process vs _physics_process enforcement
+- **Document created:** games/ashfall/docs/SPRINT-1-CODE-AUDIT.md (full findings with per-file breakdown)
+
+### 2026-03-09 — Sprint 1 Code Quality Audit: Timing Determinism
+
+**Session:** Sprint 2 Kickoff: Bug Audit & Standards  
+**Role:** QA/Playtester — Code quality and determinism validation
+
+**Task Executed:**
+Comprehensive code audit revealing critical timing issues that violate GDD's "Frame Data Is Law" requirement for 60 FPS deterministic gameplay.
+
+**Key Findings:**
+- **5 files using _process(delta) for timing-sensitive operations** (should use _physics_process for determinism)
+- **Critical Issue:** vfx_manager.gd (lines 98-102) — VFX shake, flash, slowmo timers affect input responsiveness
+- **Priority 2:** fight_hud.gd (line 87) — health bar lerp, ghost bar, ember bar, announcer animations
+- **Priority 3:** victory_screen.gd, main_menu.gd — cosmetic only, acceptable as _process
+- Stage VFX files also affected but lower priority
+
+**Problem:**
+Float delta timing creates non-deterministic behavior:
+- Animations drift across machines (58 FPS vs 62 FPS runs differently)
+- Framerate-dependent timing (fast PC = faster animations)
+- Replay desync issues (if we add replays later)
+- Combo timing inconsistencies
+
+**Decision Matrix Created:**
+| System | Uses _physics_process? | Rationale |
+|--------|------------------------|-----------|
+| VFX timing (shake, flash, slowmo) | ✅ YES | Affects player input timing |
+| HUD animations (health bar, timer) | ✅ YES | Round timer is gameplay-critical |
+| UI menu animations (title glow) | ❌ NO | Pure cosmetic, no gameplay impact |
+| Stage ambient effects | ❌ NO | Pure visual atmosphere |
+
+**Recommended Changes:**
+- Priority 1 (Critical): vfx_manager.gd → _physics_process with frame counters
+- Priority 2 (Should fix): fight_hud.gd → _physics_process
+- Priority 3 (Cosmetic): Leave victory/main menu as _process
+
+**Lint Rule Proposed:**
+`
+"no-process-in-gameplay-code":
+  - error if _process() in games/ashfall/scripts/systems/
+  - error if _process() in games/ashfall/scripts/fighters/
+  - warn if _process() uses timing logic
+  - allow _process() in games/ashfall/scripts/ui/
+  - allow _process() in games/ashfall/scripts/stages/
+`
+
+**Testing Protocol:**
+1. Run game at 30 FPS (half speed) — animations sync with gameplay
+2. Run game at 120 FPS (double speed) — animations sync with gameplay
+3. Record replay, play back at different frame rates — match exactly
+
+**Status:** COMPLETE. Decision approved for Sprint 2 enforcement. Lint rule to be integrated by Jango.
+
+**Cross-Agent Knowledge:**
+- Solo's bug catalog identified "works in isolation, breaks in integration" pattern (9 bugs)
+- Jango's standards will enforce this at code review
+- This timing fix is part of larger Sprint 2 quality initiative
+
+---

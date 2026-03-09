@@ -653,3 +653,82 @@ Fixed CI integration gate failure caused by 6 orphaned signals + 4 false positiv
 - EventBus (all game signals): `games/ashfall/scripts/systems/event_bus.gd`
 - Fight scene (wiring hub): `games/ashfall/scripts/fight_scene.gd`
 - PR: #89, Branch: squad/88-fix-integration-gate
+
+### Sprint 1 Bug Catalog — Pattern Analysis & Prevention Strategy (Session Current)
+- **Assignment:** Create comprehensive bug catalog for Sprint 1 to inform Sprint 2 preparation
+- **Deliverable:** `games/ashfall/docs/SPRINT-1-BUG-CATALOG.md` (33K chars, 9 bug categories, 35 bugs cataloged)
+- **Outcome:** SUCCESS — Every failure documented with root cause, timeline, and prevention strategy
+
+**What Was Cataloged:**
+1. **35 total bugs:** 7 P0 (blocking), 9 P1 (high), 10 P2 (medium), 9 unrated
+2. **9 bug categories:** Input system (character select black screen), type safety (Godot 4.6), frame data drift, signal wiring, combat pipeline, round management, integration failures, export issues, art integration
+3. **3 integration gate failures:** Issues #83, #88, #107 (signal wiring, autoload dependencies)
+4. **13 Sprint 0 bugs discovered in Sprint 1:** AI stranded, empty hitboxes, score sync, timer draw, frame data drift
+5. **5 recurring patterns:** Works in isolation breaks in integration (9 bugs), code looks right but doesn't work (5 bugs), type inference too loose (9 bugs), spec drift (4 bugs), edge cases not tested (3 bugs)
+
+**Key Insights:**
+1. **66% of bugs found by humans** (playtest + retrospective), only 34% by automation. Integration gate needs expansion.
+2. **46% of bugs are P0/P1 severity** — should be caught before merge, not after
+3. **Average lag time: 1 day** between bug introduction (Sprint 0) and discovery (Sprint 1). Integration testing must happen within each sprint.
+4. **Input bugs hardest to fix:** 4 hours across 5 attempts (custom ui_* overrides → keycode → Button nodes)
+5. **Type safety bugs caught quickly** (compiler) but required 6+ hours of proactive annotation
+
+**Prevention Strategy for Sprint 2:**
+- **Integration checkpoint at end of every sprint** — full game flow test before closure
+- **Enforce explicit types** — no PR merge without type annotations
+- **Signal contract testing** — every signal needs emitter + consumer before merge
+- **Frame data validation tool** — `check-frame-data.py` added to integration gate
+- **Export testing in CI/CD** — Windows build must pass
+- **Edge case test matrix** — equal HP, timer draw, double KO scenarios documented
+- **Branch hygiene enforcement** — always branch from main, never from feature branches
+
+**Most Important Finding:** Every bug was preventable with better processes (not more time/people). Integration testing is not optional — it's the primary quality gate. Shift left: catch bugs during development, not after.
+
+**Documents produced:** `games/ashfall/docs/SPRINT-1-BUG-CATALOG.md` (35-bug catalog with timelines, patterns, recommendations), `.squad/decisions/inbox/solo-sprint1-bug-catalog.md` (process improvement decision for Sprint 2)
+
+### 2026-03-09 — Sprint 1 Bug Catalog & Process Improvements
+
+**Session:** Sprint 2 Kickoff: Bug Audit & Standards  
+**Role:** Lead / Chief Architect — Orchestrate post-sprint quality assessment
+
+**Task Executed:**
+Created comprehensive Sprint 1 bug analysis identifying **35 bugs** across 9 categories with 7 mandatory process improvements for Sprint 2.
+
+**Key Findings:**
+- **35 bugs cataloged:** 7 P0, 9 P1, 10 P2, 9 unrated (16 P0/P1 severity — 46%)
+- **66% found by humans** (playtest + retrospective), 34% by automation
+- **Average 1-day lag** from introduction to discovery (13 Sprint 0 bugs not discovered until Sprint 1)
+- Three integration gate failures during sprint
+- **Every bug was preventable** with better processes, not more time
+
+**Five Recurring Patterns:**
+1. "Works in Isolation, Breaks in Integration" (9 bugs)
+2. "Code Looks Right, But..." (5 bugs)
+3. "Type Inference Too Loose" (9 bugs)
+4. "Specification Drift" (4 bugs)
+5. "Edge Cases Not Tested" (3 bugs)
+
+**Seven Mandatory Process Changes for Sprint 2:**
+1. Integration Checkpoint at End of Every Sprint ✅ CRITICAL
+2. Enforce Explicit Type Annotations ✅ CRITICAL
+3. Signal Contract Testing ✅ CRITICAL
+4. Frame Data Validation Tool ✅ HIGH PRIORITY
+5. Export Testing in CI/CD ✅ HIGH PRIORITY
+6. Branch Hygiene Enforcement ✅ HIGH PRIORITY
+7. Edge Case Test Matrix ✅ MEDIUM PRIORITY
+
+**Impact Assessment:**
+- Chewie: Add type annotations to all variables, wire autoload assertions
+- Lando: Create edge case test matrix, verify combat scenarios
+- Jango: Create check-frame-data.py validator, add type checker to integration gate, add export build to CI
+- Ackbar: Run integration checkpoint at end of Sprint 2, expand smoke test checklist
+- Solo: Enforce PR review standards (types, signal contracts, branch hygiene)
+
+**Status:** COMPLETE. Decision proposed to founder (joperezd). Rollout: Sprint 2 Day 1.
+
+**Cross-Agent Knowledge:**
+- Ackbar identified vfx_manager.gd timing issue (CRITICAL)
+- Jango identified 23 fix commits following 5 clear patterns
+- All three agents recommend mandatory enforcement, not guidelines
+
+---
