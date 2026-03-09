@@ -182,3 +182,13 @@
 - **GDSCRIPT-STANDARDS compliance:** Replaced all `:=` with explicit type annotations (`var x: float =`). Used `absf()`, `clampf()`, `minf()` instead of generic `abs/clamp/min`. All functions have explicit `-> Type` return annotations. Zero Variant inference.
 - Renamed `position_smoothing` → `follow_speed`, `zoom_smoothing` → `zoom_speed` for clarity. No external callers found.
 - **PR #144 created.**
+
+### Sprite PoC Test Viewer
+- Created `scenes/test/sprite_poc_test.tscn` + `scripts/test/sprite_poc_test.gd` — minimal viewer for PoC sprite animations.
+- Data-driven animation config: `ANIM_CONFIG` dictionary maps animation names to prefix/count/fps/loop. Adding new animations = one dict entry + files. No code changes.
+- `AnimatedSprite2D` with programmatic `SpriteFrames`: loads numbered PNGs at runtime via `load()`. Avoids manual SpriteFrames resource creation in editor.
+- Center-bottom origin via `offset = Vector2(0, -256)` on a 512×512 sprite with `centered = true`. Node position represents feet.
+- Flip via `scale.x *= -1` preserves offset math and animation state. No need for `flip_h` which doesn't work with offset-based origins.
+- LP animation (non-looping) auto-returns to idle via `animation_finished` signal. Config-driven — any animation with `loop: false` gets the same behavior.
+- HUD on `CanvasLayer` so it's unaffected by camera/zoom in future. Shadow text for readability over any background.
+- Texture filter set to `TEXTURE_FILTER_NEAREST` on the AnimatedSprite2D node (runtime override, no .import file changes needed).
