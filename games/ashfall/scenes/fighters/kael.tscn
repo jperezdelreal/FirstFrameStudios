@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://scripts/fighters/fighter_base.gd" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/states/state_machine.gd" id="2_sm"]
@@ -16,12 +16,17 @@
 [ext_resource type="Script" path="res://scripts/fighters/sprites/kael_sprite.gd" id="14_kael_sprite"]
 [ext_resource type="Script" path="res://scripts/fighters/sprites/sprite_state_bridge.gd" id="15_bridge"]
 [ext_resource type="Resource" path="res://resources/movesets/kael_moveset.tres" id="16_moveset"]
+[ext_resource type="Script" path="res://scripts/fighters/fighter_animation_controller.gd" id="17_anim_ctrl"]
+[ext_resource type="Script" path="res://scripts/systems/hitbox.gd" id="18_hitbox"]
 
 [sub_resource type="RectangleShape2D" id="SubResource_body"]
 size = Vector2(30, 60)
 
 [sub_resource type="RectangleShape2D" id="SubResource_hurtbox"]
 size = Vector2(26, 56)
+
+[sub_resource type="RectangleShape2D" id="SubResource_hitbox"]
+size = Vector2(36, 24)
 
 [node name="Kael" type="CharacterBody2D"]
 collision_mask = 9
@@ -55,6 +60,24 @@ shape = SubResource("SubResource_hurtbox")
 position = Vector2(30, -30)
 
 [node name="Hitboxes" type="Node2D" parent="."]
+
+[node name="Hitbox" type="Area2D" parent="Hitboxes"]
+collision_layer = 2
+collision_mask = 4
+monitoring = false
+monitorable = false
+script = ExtResource("18_hitbox")
+
+[node name="CollisionShape" type="CollisionShape2D" parent="Hitboxes/Hitbox"]
+position = Vector2(30, -30)
+shape = SubResource("SubResource_hitbox")
+disabled = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+playback_process_mode = 2
+
+[node name="FighterAnimationController" type="Node" parent="."]
+script = ExtResource("17_anim_ctrl")
 
 [node name="InputBuffer" type="Node" parent="."]
 script = ExtResource("11_input")

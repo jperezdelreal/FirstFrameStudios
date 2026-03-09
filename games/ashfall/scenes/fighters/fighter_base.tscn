@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scripts/fighters/fighter_base.gd" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/states/state_machine.gd" id="2_sm"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://scripts/fighters/fighter_controller.gd" id="12_ctrl"]
 [ext_resource type="Script" path="res://scripts/fighters/states/throw_state.gd" id="13_throw"]
 [ext_resource type="Script" path="res://scripts/systems/hitbox.gd" id="14_hitbox"]
+[ext_resource type="Script" path="res://scripts/fighters/fighter_animation_controller.gd" id="15_anim_ctrl"]
 
 [sub_resource type="RectangleShape2D" id="SubResource_body"]
 size = Vector2(30, 60)
@@ -66,6 +67,12 @@ script = ExtResource("14_hitbox")
 position = Vector2(30, -30)
 shape = SubResource("SubResource_hitbox")
 disabled = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+playback_process_mode = 2
+
+[node name="FighterAnimationController" type="Node" parent="."]
+script = ExtResource("15_anim_ctrl")
 
 [node name="InputBuffer" type="Node" parent="."]
 script = ExtResource("11_input")

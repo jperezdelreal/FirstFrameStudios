@@ -1,5 +1,9 @@
 ## Connects the procedural CharacterSprite to the fighter's state machine,
 ## updating the sprite pose whenever the fighter changes state.
+## Works alongside FighterAnimationController: the controller drives
+## AnimationPlayer for timed transitions (walk cycles, attack phases),
+## while this bridge handles dynamic per-frame overrides (jump velocity,
+## block stance) that can't be baked into static animations.
 ## Attach as a child of the CharacterSprite node.
 class_name SpriteStateBridge
 extends Node
@@ -8,6 +12,8 @@ extends Node
 var fighter: Fighter
 ## Resolved at runtime from parent
 var character_sprite: CharacterSprite
+## True when a FighterAnimationController is present and driving poses
+var _has_anim_controller: bool = false
 
 
 func _ready() -> void:
@@ -34,6 +40,9 @@ func _ready() -> void:
 	# Sync facing on startup
 	character_sprite.flip_h = fighter.facing_direction < 0
 
+	# Check if AnimationPlayer controller exists
+	_has_anim_controller = fighter.get_node_or_null("FighterAnimationController") != null
+
 
 func _physics_process(_delta: float) -> void:
 	if not fighter or not character_sprite:
@@ -43,15 +52,32 @@ func _physics_process(_delta: float) -> void:
 
 
 func _sync_pose_from_state() -> void:
-	if not fighter.state_machine.current_state:
+	if not fighter.state_machine or not fighter.state_machine.current_state:
 		return
 	var state_name := fighter.state_machine.current_state.name.to_lower()
-	var new_pose := _state_to_pose(state_name)
-	if character_sprite.pose != new_pose:
+
+	# For states with dynamic poses that depend on per-frame conditions
+	# (jump velocity, block stance), override the AnimationPlayer pose.
+	# For static states, let AnimationPlayer handle it when present.
+	var new_pose := ""
+	match state_name:
+		"jump":
+			new_pose = _get_jump_pose()
+		"block":
+			new_pose = _get_block_pose()
+		"throw":
+			new_pose = _get_throw_pose()
+		_:
+			if _has_anim_controller:
+				# AnimationPlayer is driving these poses — don't override
+				return
+			new_pose = _state_to_pose(state_name)
+
+	if new_pose != "" and character_sprite.pose != new_pose:
 		character_sprite.pose = new_pose
 
 
-## Map fighter state names to sprite pose names
+## Map fighter state names to sprite pose names (fallback without AnimationPlayer)
 func _state_to_pose(state_name: String) -> String:
 	match state_name:
 		"idle":   return "idle"
@@ -75,6 +101,17 @@ func _get_jump_pose() -> String:
 	if vel_y < -20.0:
 		return "jump_up"
 	elif vel_y > 20.0:
+		"throw":  return _get_throw_pose()
+		_:        return "idle"
+
+
+## Jump pose depends on vertical velocity
+func _get_jump_pose() -> String:
+	if not fighter:
+		return "jump_up"
+	if fighter.velocity.y < -20.0:
+		return "jump_up"
+	elif fighter.velocity.y > 20.0:
 		return "jump_fall"
 	else:
 		return "jump_peak"
@@ -141,4 +178,57 @@ func _get_attack_pose() -> String:
 		if is_air: return "jump_lp"
 		if is_crouch: return "crouch_lp"
 		return "attack_lp"
+## Block pose depends on standing vs crouching
+func _get_block_pose() -> String:
+	var block_state := fighter.state_machine.current_state
+	if block_state and "_is_crouching" in block_state:
+		if block_state._is_crouching:
+			return "block_crouching"
+	return "block_standing"
+
+
+## Throw pose depends on current phase
+func _get_throw_pose() -> String:
+	var throw_state := fighter.state_machine.current_state
+	if throw_state and "_phase" in throw_state:
+		match throw_state._phase:
+			0:  return "throw_startup"    # STARTUP
+			1:  return "throw_startup"    # ACTIVE
+			2:  return "throw_execute"    # EXECUTE
+			3:  return "throw_whiff"      # WHIFF
+			4:  return "throw_startup"    # TECH
+	return "attack_hp"
+
+
+## Determine attack pose from the current MoveData
+func _get_attack_pose() -> String:
+	var attack_state := fighter.state_machine.current_state
+	if attack_state and attack_state.has_method("get_current_move_name"):
+		var move_name: String = attack_state.get_current_move_name()
+		return _move_name_to_pose(move_name)
+	return "attack_mp"
+
+
+## Parse a move name string into a sprite pose name
+func _move_name_to_pose(move_name: String) -> String:
+	if move_name == "":
+		return "attack_mp"
+	# Check for specific button references
+	var lower := move_name.to_lower()
+	if "lp" in lower:
+		return "attack_lp"
+	elif "hp" in lower:
+		return "attack_hp"
+	elif "lk" in lower:
+		return "attack_lk"
+	elif "hk" in lower:
+		return "attack_hk"
+	elif "mk" in lower:
+		return "attack_mk"
+	elif "mp" in lower:
+		return "attack_mp"
+	elif "light" in lower:
+		return "attack_lp"
+	elif "heavy" in lower:
+		return "attack_hp"
 	return "attack_mp"
