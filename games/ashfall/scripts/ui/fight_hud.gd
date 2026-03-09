@@ -81,6 +81,7 @@ func _wire_signals() -> void:
 	EventBus.ember_changed.connect(_on_ember_changed)
 	EventBus.combo_updated.connect(_on_combo_updated)
 	EventBus.combo_ended.connect(_on_combo_ended)
+	EventBus.round_draw.connect(_on_round_draw)
 
 
 func _process(delta: float) -> void:
@@ -219,6 +220,12 @@ func _on_round_started(round_number: int) -> void:
 
 
 func _on_round_ended(_winner: Variant, _round_number: int) -> void:
+	p1_rounds_won = GameState.scores[0]
+	p2_rounds_won = GameState.scores[1]
+	_rebuild_dots()
+
+
+func _on_round_draw(_round_number: int) -> void:
 	p1_rounds_won = GameState.scores[0]
 	p2_rounds_won = GameState.scores[1]
 	_rebuild_dots()

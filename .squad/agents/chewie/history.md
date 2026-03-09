@@ -150,3 +150,10 @@
 - GDScript learning curve estimated at 2-3 weeks for JS devs (Python-like syntax). C# available as fallback. All architectural knowledge transfers: fixed timestep → `_physics_process`, event bus → signals, audio bus → AudioBus, hitlag → `Engine.time_scale`.
 - Unity rejected for squad fit: C# learning curve (2-3 months), heavy editor, pricing uncertainty, scene merge conflicts with 12 agents. Defold rejected: small community, visual ceiling 8/10, Lua paradigm shift.
 - Full analysis written to `.squad/analysis/next-project-tech-evaluation.md`. Decision summary submitted to `.squad/decisions/inbox/chewie-tech-ambition.md`.
+
+### Timer Draw Fix — Bug #95
+- **Bug:** `_time_over()` defaulted `winner_index = 0` when HP was equal, emitted `round_ended` with a fake winner, and never incremented scores. Match looped forever since nobody could reach `rounds_to_win`.
+- **Root cause:** Missing draw branch. The `>=` in `f0_hp >= f1_hp` silently picked P1 as winner on ties, but the score guard `if f0_hp != f1_hp` prevented any score change.
+- **Fix:** Per GDD ("both lose a round — forces aggression"), equal HP now increments both scores. New `round_draw` and `match_draw` signals added to RoundManager and EventBus so UI/audio can react to draws distinctly from wins.
+- **Edge case:** If both players hit `rounds_to_win` simultaneously (e.g., two consecutive draws in best-of-3), `_check_match_over()` now detects the double-win condition and emits `match_draw` + "DRAW GAME!" announcement, ending the match cleanly.
+- **Pattern:** Always handle the equal case explicitly in comparison logic. `>=` silently swallowing ties is a common fighting game bug.

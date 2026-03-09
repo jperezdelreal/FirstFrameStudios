@@ -105,6 +105,7 @@ func _on_fighter_ko(fighter: CharacterBody2D) -> void:
 		return
 	var winner_index: int = 1 if fighter == fighters[0] else 0
 	scores[winner_index] += 1
+	GameState.scores[winner_index] = scores[winner_index]
 	_transition_to("KO")
 	announce.emit("K.O.!")
 	EventBus.announce.emit("K.O.!")
@@ -125,11 +126,13 @@ func _time_over() -> void:
 		# GDD: equal HP = draw, both lose the round (forces aggression)
 		scores[0] += 1
 		scores[1] += 1
+		GameState.scores = scores.duplicate()
 		round_draw.emit(current_round)
 		EventBus.round_draw.emit(current_round)
 	else:
 		var winner_index: int = 0 if f0_hp > f1_hp else 1
 		scores[winner_index] += 1
+		GameState.scores[winner_index] = scores[winner_index]
 		round_ended.emit(fighters[winner_index], current_round)
 		EventBus.round_ended.emit(fighters[winner_index], current_round)
 
