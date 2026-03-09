@@ -109,7 +109,7 @@ func _process_active() -> void:
 func _process_execute() -> void:
 	# Hold opponent next to thrower during animation
 	if _grabbed_opponent:
-		var grab_offset := 40.0 * fighter.facing_direction
+		var grab_offset: float = 40.0 * fighter.facing_direction
 		_grabbed_opponent.global_position.x = fighter.global_position.x + grab_offset
 		_grabbed_opponent.velocity = Vector2.ZERO
 
@@ -171,7 +171,7 @@ func _get_opponent() -> CharacterBody2D:
 
 
 func _in_throw_range(opp: CharacterBody2D) -> bool:
-	var dist := abs(fighter.global_position.x - opp.global_position.x)
+	var dist: float = absf(fighter.global_position.x - opp.global_position.x)
 	return dist <= THROW_RANGE
 
 
