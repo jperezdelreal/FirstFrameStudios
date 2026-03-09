@@ -696,4 +696,190 @@ What Was Done:
 
 **Why:** Validator caught real wiring gaps (6 orphaned signals) mixed with false positives (4 Godot built-ins). Separation ensures CI catches real issues without noise.
 
+---
+
+### Sprint Structure & Terminology (2026-03-09) — Mace (Producer)
+
+**Status:** APPROVED & DOCUMENTED
+
+**Problem:** Terminology confusion between Milestone Gates (M0-M4) and Sprints. Causes ambiguous planning.
+
+**Solution:** 
+- **Milestone Gates** = checkpoints within a sprint
+- **Sprints** = major work phases (Art Phase, UI Phase, Audio Phase)
+
+**Key Decisions:**
+1. Each sprint has M0-M4 milestone gates
+2. M4 = ship criteria
+3. Scope lock at sprint start
+
+**Ashfall Sprint Structure:**
+- Sprint 0: Foundation (shipped)
+- Sprint 1: Art Phase (in progress)
+- Sprint 2: UI/UX
+- Sprint 3: Audio + VFX
+- Sprint 4+: Polish & Expansion
+
+---
+
+### Sprint 1 (Art Phase) Kickoff Decision (2026-03-10) — Mace (Producer)
+
+**Status:** ✅ APPROVED
+
+**Decision: Sprint 1 Scope is LOCKED**
+
+**What's IN Scope:**
+1. Character Sprites (Nien) — Kael & Rhena, ~45 states each
+2. Stage Background (Leia) — EmberGrounds 3-round progression
+3. Art Direction (Boba) — Silhouettes, palettes, animation timing
+4. Character VFX (Bossk) — Kael embers, Rhena bursts
+5. AnimationPlayer Integration (Chewie) — Sprite loading, animation wiring
+6. Visual Playtest (Ackbar) — PASS verdict required
+
+**What's OUT of Scope:**
+- Audio → Sprint 3
+- UI/UX polish → Sprint 2
+- Training mode, additional characters → Phase 5+
+
+**Milestone Gates:**
+- M0: Art Direction locked
+- M1: Sprites drafted
+- M2: VFX + AnimationPlayer wired
+- M3: Visual integration complete
+- M4: Ackbar visual playtest PASS (required to ship)
+
+**Load Analysis:** 140h planned, 96h available. Over by 44h; mitigated via P2 de-scope if bottleneck hits.
+
+---
+
+### Sprint 1 Closure Decision (2026-03-20) — Mace (Producer)
+
+**Status:** COMPLETE — Sprint 1 (Art Phase) Officially Shipped
+
+**Sprint Duration:** 2026-03-10 to 2026-03-20 (10 days)
+
+**PRs Merged (2026-03-20):**
+1. PR #103 — Leia: EmberGrounds stage
+2. PR #104 — Nien: Fighter animation states (P0+P1)
+3. PR #105 — Bossk: Character-specific VFX
+
+**All Milestone Gates Verified:**
+- ✅ M0: Art Direction locked
+- ✅ M1: Character sprites delivered
+- ✅ M2: VFX + AnimationPlayer wired
+- ✅ M3: Visual integration complete
+- ✅ M4: Ackbar visual playtest PASS
+
+**Quality Gates Passed:**
+- ✅ Silhouette test: Kael vs Rhena visually distinct
+- ✅ Ackbar playtest: PASS
+- ✅ Animation smoothness: Frame-perfect transitions
+- ✅ VFX differentiation: Particles identify character
+- ✅ P0 bugs: 0 critical issues
+
+**Key Decisions:**
+1. P2 De-scope (throw/win/lose deferred to Sprint 2)
+2. Parallel execution validated (4 PRs, 0 conflicts)
+3. Art direction lock prevented rework
+4. Playtesting as gating criterion
+
+**Critical Follow-ups for Sprint 2:**
+1. P2 animation states
+2. Ackbar playtest notes triage
+3. Character select visual upgrade
+
+---
+
+### Ackbar Sprint 1 Visual Playtest Verdict (2026-03-20) — Ackbar (QA Lead)
+
+**Status:** ✅ PASS WITH NOTES
+
+**Verdict:** Sprint 1 art deliverables meet quality bar. All animation states implemented per character with distinct art. VFX wired. Stage escalation functional. AnimationPlayer integrated. Characters visually distinct.
+
+**Three P1 Issues Require Follow-up:**
+
+1. **P1-001:** MP/MK startup frames 1f faster than GDD spec. Must align before combo tuning.
+
+2. **P1-002:** Medium attacks missing from character moveset .tres. Only 6 moves per character.
+
+3. **P1-003:** Frame data drift between base .tres and character .tres (HP: 10f vs 12f).
+
+**Impact:**
+- Yoda: Review GDD frame data vs implementation
+- Solo/Chewie: Resolve .tres source authority
+- Mace: Track P1 issues as Sprint 2 blockers
+
+**Rationale:** PASS WITH NOTES acceptable per SPRINT-1-SUCCESS.md. All follow-ups documented.
+
+---
+
+### 2026-03-09T1247Z: User Directive — Viewport Resolution
+
+**By:** joperezd (via Copilot)  
+**Status:** IMPLEMENTED
+
+**What:** Viewport should be 1920x1080 (1080p), not 720p.
+
+**Why:** 1280x720 is too low for 2026 standards. 1080p provides better visual clarity for fighting game.
+
+**Implementation:** `games/ashfall/project.godot` [display] section updated:
+- `viewport_width`: 1280 → 1920
+- `viewport_height`: 720 → 1080
+
+**Status:** Complete.
+
+---
+
+### 2025-07-24: Godot Build Pipeline Architecture — Jango (Tool Engineer)
+
+**Status:** Implemented (PR #111)
+
+**Decision:** Automated builds and releases for Ashfall.
+
+**Key Decisions:**
+
+1. **Export Presets Versioned** — Needed for CI/CD (no credentials, only relative paths)
+2. **Manual Godot Installation** — wget for Godot 4.6 (explicit version control)
+3. **Tag-Triggered Releases** — Push v* tag → automatic build and GitHub Release
+4. **Windows Desktop Only** — Initially. Can add Linux/Mac/Web later.
+5. **Cross-Compilation on Ubuntu** — Linux runner exports Windows .exe
+
+**Architecture:**
+```
+Tag push (v0.1.0) → GitHub Actions → Install Godot + templates 
+  → Export to .exe → Zip → Create GitHub Release
+```
+
+**Deliverables:**
+- `games/ashfall/export_presets.cfg` — Windows preset
+- `.github/workflows/godot-release.yml` — Build workflow
+- Root `.gitignore` updated
+
+**Impact:**
+- Developers: Create releases by pushing tag
+- Players: Download and play without Godot
+- QA: Test via manual workflow dispatch
+- Future: Pipeline reusable for other projects
+
+**Testing:** Merge PR #111 → test manual dispatch → create v0.0.1-test tag → validate
+
+---
+
+### 2026-03-09T1253Z: User Directive — Auto-Release at Sprint End
+
+**By:** joperezd (via Copilot)  
+**Status:** PENDING IMPLEMENTATION
+
+**What:** Releases should happen automatically at sprint end. When a sprint is shipped (tagged `sprint-N-shipped`), a versioned release (v0.N.0 or similar) should be created automatically with the built .exe.
+
+**Why:** Zero-friction release flow tied to sprint cadence. Founder wants automatic versioning tied to sprint milestones.
+
+**Implementation Approach:** 
+- GitHub Actions workflow triggers on `sprint-N-shipped` tag push
+- Automatically creates v0.N.0 release
+- Builds .exe and attaches to release
+- Integrates with existing godot-release.yml
+
+**Status:** Captured for team memory. Requires workflow expansion after Sprint 1.
+
 
