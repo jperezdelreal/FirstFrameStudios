@@ -42,6 +42,38 @@ Built the Ember Grounds arena — Ashfall's first fighting stage. Created `scene
 
 ## Learnings
 
+### Issue #55 — EmberGrounds Stage Round Transitions (squad/55-embergrounds-stage-art)
+**Date:** 2026-07-22
+**PR:** #103
+**Branch:** squad/55-embergrounds-stage-art
+
+Upgraded EmberGrounds from placeholder to final-quality procedural stage art with round-based visual escalation.
+
+**What was built:**
+- 3-round palette system (dormant/warming/eruption) with smooth 1.5s Tween transitions via `EventBus.round_started`
+- Cracked obsidian floor with 16 procedural crack lines, pulsing lava glow, and 5 lava pools (`ember_grounds_lava_floor.gd`)
+- 24 drifting smoke wisps on separate parallax layer at 0.03× scroll rate (`ember_grounds_smoke.gd`)
+- Up to 60 floating ember particles with round-scaled emission rate (`ember_grounds_embers.gd`)
+- Screen-edge heat vignette overlay for Round 3 eruption (`ember_grounds_vignette.gd`)
+- Lava flow Polygon2D strips on center volcano slopes
+- Two-layer reactivity: round palette (base) × ember gauge (modifier)
+
+**Key decisions:**
+- Used `_draw()` procedural rendering on Node2D children rather than textures — fits the code-first art pipeline
+- Precomputed crack/smoke/patch positions with seeded RNG in `_ready()` for deterministic layout + zero per-frame allocation
+- Separated effects into focused scripts (floor, smoke, embers, vignette) for maintainability
+- Round palette uses parallel const arrays indexed by round, interpolated with `_rc()` (color) and `_rf()` (float) helpers
+- Tween handles mid-transition round changes by killing old tween and snapping to previous target
+
+**Learnings:**
+- Seeded `RandomNumberGenerator` in `_ready()` gives deterministic visual layouts while keeping frame-stable rendering (no per-frame RNG allocation)
+- `queue_redraw()` in `_process()` is the correct pattern for animated `_draw()` content — avoids stale renders
+- For two-dimensional reactivity (round × ember), interpolate the outer dimension first (round lerp), then the inner (ember lerp) — cleaner than flattening into a single blend
+- Godot ParallaxLayer ordering in scene tree determines draw order — SmokeLayer before MidLayer ensures smoke renders behind volcanoes
+- Screen-edge vignette using layered rectangles with decreasing alpha is cheap and effective — no shader needed
+- `create_tween()` returns a Tween that auto-destroys when done — must store reference to `.kill()` if transition is interrupted
+- Const arrays of Color work fine in GDScript 4 — good for palette definitions
+
 - Building pattern array in background.js tiles across the world; adding new types requires: array entry, switch case, draw method — all three.
 - Far layer uses `cameraX * 0.8` offset with `PLANT_SPACING` to tile; new far-layer elements (billboards, signs) should anchor relative to plant positions to avoid overlap.
 - `seededRandom(x * factor + offset)` keeps frame-stable randomness for per-building variation (graffiti, window lighting, car colors).
