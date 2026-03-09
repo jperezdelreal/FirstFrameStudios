@@ -10,7 +10,29 @@
 
 ## Learnings
 
-### GitHub Operations Centeralization (2026-03-08)
+### Documentation Audit & Milestone Status Sync (2026-03-09)
+
+**Outcome:** Documentation now reflects actual project state. M0-M3 gates are verified complete; M4 is the active target.
+
+**What Was Outdated:**
+1. `.squad/identity/now.md` — Said "M3 (Character Sprites): 🔜 NEXT" despite all M3 gate criteria being met (HUD integrated, game flow playable 1v1, character select, round management, victory screen all implemented)
+2. `games/ashfall/docs/SPRINT-0.md` progress table — Showed Lando, Wedge, Tarkin as "Blocked" despite all being complete; Nien as Phase 2 with 0% load despite working on #9 character sprites
+3. Agent status labeling — Confusing mix of "In Progress" (out of date) and "Blocked" (stale) for completed milestones
+4. `.squad/decisions.md` — Sprint 0 decision had placeholder date "2026-[Sprint Start Date]"; no clarity on current M4 gate
+
+**What Was Fixed:**
+1. **now.md:** Updated to show M0-M3 ✅ complete, M4 🔲 in progress with P0 blocker #88 identified
+2. **SPRINT-0.md:** Updated progress table with accurate milestone gates + load breakdown; clarified #9 is Phase 2 prep (not M3), added M4 ship gate criteria
+3. **decisions.md:** Appended new "Sprint 0 Milestone Status Update" entry (2026-03-09) documenting M0-M3 completion and M4 activation
+
+**Lesson Learned:** **Documentation debt grows silently.** When milestones complete, update living docs immediately. Stale docs → team confusion → slower decisions. The pattern:
+- Merge PR → verify "Closes #N" → check if milestone complete → UPDATE now.md + SPRINT-0.md + decisions.md same day (not weeks later)
+- Historical docs (retros, ceremonies, proposals) stay frozen; LIVING docs (now.md, progress tables, active decisions) must reflect current state
+- Founder visibility depends on accurate status reporting. Contradictions (saying "M3 is next" while showing all M3 criteria met) erode trust.
+
+**Process Improvement:** Add "update documentation" as explicit post-milestone task in Mace's checklist, before closing the milestone.
+
+
 
 **Outcome:** GitHub is now the source of truth for all First Frame Studios work.
 

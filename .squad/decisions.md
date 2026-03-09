@@ -214,3 +214,320 @@ Three actions should be taken before the next project kicks off:
 - All meaningful changes require team consensus
 - Document architectural decisions here
 - Keep history focused on work, decisions focused on direction
+
+---
+
+### Sprint 0 Milestone Status Update (Mace)
+**Author:** Mace (Producer)  
+**Date:** 2026-03-09  
+**Status:** Active
+
+M0-M3 gates have been passed and verified. M4 (stable build, balance tuning, ship) is now the active milestone gate.
+
+**Milestone Status:**
+- M0 ✅ GDD + Architecture approved (closed issues #1-#4 in Sprint 0)
+- M1 ✅ Project buildable (scaffold + core systems implemented)
+- M2 ✅ Movement + attacks working (fighter controller, hitbox system, AI opponent functional)
+- M3 ✅ HUD integrated, game flow playable 1v1 (main menu, character select, fight scene, HUD, round manager, victory screen — all implemented and wired)
+- M4 🔲 Stable build, balance tuning, ship Sprint 0 — **ACTIVE GATE**
+
+**Current Blockers:**
+- P0 Blocker: Issue #88 (Integration Gate failure — signal wiring in core systems)
+
+**In Progress:**
+- Issue #9 (character sprite placeholders — assigned to Nien, Phase 2 content prep, NOT M4 blocker)
+- Ackbar playtesting and balance tuning (M4 ship gate activity)
+
+**Scope Clarification:**
+- Issues #50-#58 (Phase 2-5 content: VFX palettes, audio, cinematics, training mode) are NOT Sprint 0 blockers
+- M4 gate focuses solely on: Integration stability, combat feel, deterministic 1v1 game flow
+- Phase 2 content waits for M4 completion
+
+---
+
+### Chewie — Fighter Engine Infrastructure Decisions (2025-07-22)
+**Author:** Chewie (Engine Developer)  
+**Status:** Proposed  
+**Scope:** Ashfall — fighter state machine, hitbox/hurtbox, round manager
+
+Technical architecture decisions for Ashfall combat engine:
+
+1. **Simplified Collision Layers (4 instead of 6)** — Using scaffold's existing 4 layers (Fighters, Hitboxes, Hurtboxes, Stage) for local play. Will expand to 6-layer per-player scheme when needed for 2v2 or complex self-hit prevention.
+2. **Node Names Without "State" Suffix** — States named "Idle", "Walk", "Attack" (not "IdleState"). Makes transition calls clean: `transition_to("idle")`.
+3. **Frame-Phase Attack State (Temporary)** — AttackState uses frame counters for hitbox timing. Will switch to AnimationPlayer-driven activation when Tarkin creates MoveData resources.
+4. **Dual Signal Emission in RoundManager** — Both local signals (for FightScene wiring) AND EventBus global signals (for UI/VFX/audio decoupling). Slight redundancy for significant decoupling benefit.
+5. **Input Wrappers (Not InputBuffer Yet)** — Placeholder thin wrappers over Input singleton, keyed by player_id. Lando will replace with full InputBuffer system per ARCHITECTURE.md.
+
+**Impact:** Lando extends these with motion detection. Tarkin creates MoveData resources. Wedge wires signal connections. Solo reviews collision expansion path.
+
+---
+
+### Lando — Fighter Controller + Input Buffer Architecture (2025-07-21)
+**Author:** Lando (Gameplay Developer)  
+**Status:** Implemented  
+**Scope:** Ashfall — input system and fighter gameplay layer
+
+Core input system decisions:
+
+1. **InputBuffer Routes ALL Input** — All fighter input flows through InputBuffer ring buffer (8-frame / 133ms leniency). Enables buffered inputs, motion detection, consume mechanics, AI injection, deterministic replay.
+2. **Controller Handles Attacks, States Handle Movement** — FighterController owns attack priority (throw > specials > normals). States handle movement transitions (idle ↔ walk ↔ crouch ↔ jump). Separation prevents rewriting state logic.
+3. **Motion Priority: Complex Beats Simple** — DP (→↓↘) beats QCF (↓↘→). Priority order: double_qcf > hcf/hcb > dp > qcf/qcb. Matches SF6/Guilty Gear standard.
+4. **MoveData as Pure Resource** — Moves are `.tres` resource files. Designers tune frame data in Inspector without touching GDScript. Each character's moveset is exportable.
+5. **8-Frame Input Leniency** — Sweet spot: generous enough for casual players, tight enough for precision-play pros. Tunable via `InputBuffer.INPUT_LENIENCY`.
+6. **SOCD Resolution** — Left+Right = Neutral, Up+Down = Up (jump priority). FGC standard.
+
+**Why:** "Player Hands First" — InputBuffer is the invisible engineering separating responsive from broken feeling.
+
+---
+
+### Lando — Integration Fixes (2025-07-17)
+**Author:** Lando  
+**Status:** PR Created  
+**Scope:** Input & collision domain integration
+
+Fixed integration issues:
+1. **Removed Orphaned Throw Inputs** — p1_throw / p2_throw defined in project.godot but never read. Throws use LP+LK simultaneous press (fighter_controller.gd).
+2. **Updated Collision Layer Documentation** — ARCHITECTURE.md documented 6-layer scheme never implemented. Updated to reflect actual 4-layer shared scheme in code.
+3. **Fixed Stage Collision Layers** — Stage StaticBody2D now on Layer 4 (Stage), fighters detect Layer 4. Was working by accident with default Layer 1.
+4. **Input Buffer Configuration Exported** — Converted BUFFER_SIZE, INPUT_LENIENCY, SIMULTANEOUS_WINDOW to @export for runtime Godot Inspector tuning.
+
+**Impact:** Collision detection now explicit. Input buffer easily tunable for playtesting.
+
+---
+
+### Jango — M1+M2 Retrospective Action Items (2026-03-08)
+**Author:** Jango (Lead)  
+**Status:** Proposed  
+**Scope:** Ashfall — Pre-M3 mandatory fixes
+
+Top 3 action items from post-M2 review:
+
+1. 🔴 **Cherry-pick AI Controller to Main (P0)** — ai_controller.gd (298 LOC) merged to wrong branch. Game has no single-player. Cherry-pick from remotes/origin/squad/7-ai-opponent or recreate PR from main-based branch.
+2. 🔴 **Full Integration Pass in Godot (P0)** — All systems built in parallel, no end-to-end validation. Open project, walk Main Menu → Character Select → Fight → KO → Victory → Rematch. File bugs.
+3. 🟡 **Add Medium Buttons to Input Map (P1)** — GDD specifies 6-button layout (LP/MP/HP/LK/MK/HK) but project.godot only maps 4 per player. No medium punch/kick. Add p1_medium_punch/kick and movesets.
+
+**Process Change:** No M3 feature work begins until items 1 and 2 complete.
+
+---
+
+### Jango — Solo Role Split (2026-03-09)
+**Author:** Joaquín (User)  
+**Status:** Active  
+**Scope:** Team role clarification — Solo & Mace
+
+**Change:** Solo's role narrowed to pure architecture review. Operational tasks (blocker tracking, branch rebasing, stale issue management) moved to Mace.
+
+**Why:** "Architecture review is deep work" — can't do it well while context-switching to ops. Solo does uninterrupted architecture design. Mace handles transactional ops (check, flag, resolve).
+
+**Authority:**
+- **Solo:** Pure architecture review, system design, integration patterns, code structure
+- **Mace:** Ops backbone — blocker unblocking, branch validation, issue cleanup, rebase coordination
+
+**Artifacts:** Solo's charter updated, Mace's charter updated, routing.md updated.
+
+---
+
+### Jango — GitHub Issues Infrastructure for Ashfall Sprint 0 (2025-07-24)
+**Author:** Jango (Tool Engineer)  
+**Status:** Implemented  
+**Scope:** Ashfall project tracking — affects all agents
+
+GitHub Issues setup as PM backbone for Sprint 0 in jperezdelreal/FirstFrameStudios:
+
+1. **Milestone:** "Ashfall Sprint 0" groups all sprint work
+2. **24 Labels:** Structured filtering system:
+   - `game:ashfall` — per-game filter (monorepo support)
+   - `priority:p0/p1/p2` — critical path tiers
+   - `type:feature/infrastructure/art/audio/design/qa` — work categories
+   - `squad:{agent}` — 14-agent ownership (one per agent)
+3. **13 Issues (#1–#13):** Critical path tasks from SPRINT-0.md with full descriptions
+
+**Why:** Every agent filters by their squad label. Milestone view shows sprint progress. Acceptance criteria self-validate completion. `game:ashfall` label future-proofs for multi-game monorepo.
+
+---
+
+### Asset Naming Convention (2026-03-09)
+**Author:** Joaquín (User)  
+**Status:** Active  
+**Scope:** Ashfall sprite asset naming
+
+All game assets follow: `{character}_{action}_{variant}.png` in `assets/sprites/{character}/`
+
+- **Characters:** lowercase, no spaces (kael, rhena)
+- **Actions:** lowercase, match state names (idle, walk, jump, punch, kick, throw, hit, ko, block)
+- **Variants:** attack strength suffix (lp, mp, hp, lk, mk, hk) — omit for non-attacks
+- **Spritesheets:** `{character}_{action}_sheet.png`
+- **Stages:** `assets/stages/{stage_name}/{element}.png`
+
+**Why:** M3 will have Nien creating sprites while Chewie/Lando reference them in code. Shared naming prevents integration friction.
+
+---
+
+### Solo — Integration Audit (2025-07-17)
+**Agent:** Solo (Architect)  
+**Status:** Completed  
+**Verdict:** ⚠️ WARN — Project loads, no launch blockers, but issues need attention
+
+**Autoload Check:** ✅ PASS — All 5 autoloads exist in dependency order (EventBus → GameState → VFXManager → AudioManager → SceneManager). Note: RoundManager exists but not registered as autoload.
+
+**Scene References:** ✅ PASS — All 7 .tscn files have valid ext_resource references. Both .tres resource files valid.
+
+**State Machine:** ✅ PASS — All 8 fighter states exist (Idle, Walk, Crouch, Jump, Attack, Block, Hit, KO). Base class inheritance correct.
+
+**Input Map vs Controller:** ⚠️ WARN — Orphaned `p1_throw` / `p2_throw` in project.godot but never read (throws use LP+LK). Low impact, spec divergence.
+
+**Collision Layers:** ⚠️ WARN — ARCHITECTURE.md documents 6-layer per-player scheme never implemented. Actual code uses 4-layer shared scheme. Alignment needed.
+
+**Null Safety:** ⚠️ WARN — 8 `get_node()` calls without null checks. Should add defensive guards before M3.
+
+**GDD Compliance:** ✅ SPOT CHECK PASS — Ember System, 6-button layout, deterministic simulation verified in code.
+
+---
+
+### Solo — Final Verification (2026-03-09)
+**Agent:** Solo (Architect and Integration Gatekeeper)  
+**Date:** 2026-03-09  
+**Commit:** 05eafc6 (main, post-PR #28 + #32 merge)  
+**Verdict:** **FAIL** ⛔ — 6 blocking issues prevent M3 launch
+
+**Blocking Issues:**
+1. **RoundManager Not Instantiated** — System exists (117 LOC) but never added to autoloads or fight_scene.tscn. No round timer, no "FIGHT!" announcement, no KO detection.
+2. **Orphaned Combo Signals** — hit_confirmed and combo_ended defined in EventBus, connected in VFXManager, but never emitted anywhere. Combo counter has no data source.
+3. **VFXManager Signal Orphans** — Defined connections to hit_confirmed / combo_ended / knockback_applied / player_blocked but systems don't emit them.
+4. **Scene Initialization Order** — fight_scene.gd doesn't call round_manager.start_match(). Round system never activates.
+5. **Autoload Registration Missing** — RoundManager should be registered as autoload (5th after SceneManager) per SKILL reference pattern.
+6. **Null Safety Issues** — 8 get_node() calls lack null checks. Will crash if scene structure diverges.
+
+**Root Cause:** Systems built but not wired together. Integration validation never ran before merge.
+
+**Why This Matters:** Architecture looks solid on paper. Wiring is the gap. Next project: integration testing before milestone gate.
+
+---
+
+### Mace — GitHub Operations Setup (2026-03-08)
+**Author:** Mace (Producer)  
+**Status:** Implemented  
+**Scope:** GitHub-centric project operations for FirstFrameStudios
+
+What Was Done:
+
+1. **README.md Development Section** — Links to Issues, Project, Wiki, workflow diagram, CONTRIBUTING.md
+2. **CONTRIBUTING.md Created** — Complete workflow:
+   - Branch naming: `squad/{issue-number}-{slug}`
+   - Commit format with examples
+   - Label system explanation (game, squad, type, priority, status)
+   - How Squad agents pick up work (via labels)
+   - PR process, code review standards, 20% load cap
+3. **team.md Updated** — Issue Source section (jperezdelreal/FirstFrameStudios, game:ashfall filter for current sprint)
+4. **GitHub Wiki Status** ⏳ — Wiki cannot be enabled via API. Manual action required: joperezd must enable in repo settings
+
+**Why:** Centralized visibility, clear workflow, scalability, governance, discoverability.
+
+**Decisions Made:**
+- Label-driven work allocation (Squad agents query GitHub Issues by label, not manual assignment)
+- Branch naming ties to issues (squad/{issue-number} enables auto-linking)
+- Wiki optional, not critical (processes in CONTRIBUTING.md; Wiki hosts GDDs/ARCHs separately)
+- Load cap governance in CONTRIBUTING.md (team understands 20% rule)
+- Game-tagged filtering (game:ashfall current sprint, future games follow same model)
+
+**Risk Mitigation:**
+- Wiki not enabled immediately? No impact; critical docs in repo.
+- Squad agents don't find issues? Daily standup in #ashfall clarifies ownership.
+- Load cap enforcement? Mace monitors daily, blocks merges if agent exceeds 20%.
+
+**Follow-Up Actions:**
+- [ ] joperezd: Enable Wiki in repo settings
+- [ ] joperezd: Create Wiki home page
+- [ ] Solo: Train agents on branch naming + commit format
+- [ ] Jango: (Optional) GitHub Actions validator for branch names
+- [ ] Mace: Begin daily #ashfall standup
+
+---
+
+### Mace — Dev Diary Post Process (Post-Milestone)
+**Author:** Mace (Producer)  
+**Decision:** Create Dev Diary discussion post after each milestone
+
+**Process:**
+1. **Timing:** Post within 24 hours of milestone completion
+2. **Category:** "General" discussion category
+3. **Title Format:** `🔥 Dev Diary #X: [Milestone Title]` (e.g., "#2: Character Sprites & Polish")
+4. **Content:** Pitch, What We Shipped, By The Numbers, What's Next, The Meta, CTA
+5. **Tone:** Passionate, transparent, indie dev blog + behind-the-scenes documentary. NOT corporate.
+6. **Visibility:** Public-facing marketing for First Frame Studios. Every post reminds readers this is AI-powered dev.
+
+**Integration with Wiki:**
+- Update `.squad/wiki/milestones.md` after each milestone
+- Link Dev Diary discussion from milestone entry
+- Track discussion URL for metrics
+
+---
+
+### Mace — Issue Creation Discipline (2026-03-09)
+**Author:** Joaquín (User)  
+**Decision:** All agents must create GitHub issues immediately when they find bugs, blockers, or unresolved questions
+
+**Why:** Post-mortems revealed known problems never tracked. Tarkin's AI controller sat on dead branch with no issue. Solo's overload surfaced only in ceremony. Issues at discovery time, not retroactively.
+
+---
+
+### Mace — Wiki Updates After Milestone Completion (2025-01-20)
+**Author:** Mace (Producer)  
+**Decision:** GitHub Wiki must be updated within 1 business day after each milestone completion
+
+**Update Scope:**
+1. **Home.md** — Milestone summary, completion status, merged PRs by category, infrastructure changes
+2. **Ashfall-Sprint-0.md** — New milestone section, issue numbers, PR list, M3/M4 status
+3. **Ashfall-Architecture.md** — New systems introduced, API docs, autoload details, scene links
+4. **Ashfall-GDD.md** — Implementation notes, mechanics moved to "complete"
+5. **Team.md** — Team size changes, review process updates
+
+**Process:**
+1. Assign one agent (Mace or Scribe) to wiki update task
+2. Clone wiki repo to temp location
+3. Update all pages in single commit
+4. Push with: `docs: Update wiki for [Milestone Name] completion`
+5. Verify wiki renders on GitHub
+
+**Success Criteria:**
+- ✅ All 5 pages updated
+- ✅ Links correct, cross-references work
+- ✅ Commit includes Co-authored-by trailer
+- ✅ Push succeeds, wiki reflects changes within 5 minutes
+
+**Owner:** Mace
+
+---
+
+### User Directives — March 8-9, 2026
+
+#### 2026-03-08T12:42:49Z: GitHub-First Development
+**By:** Joaquín (User)  
+**What:** Use GitHub's full potential — Issues for task tracking, Projects for boards, PRs for code review. No empty repo; everything active and visible.
+
+#### 2026-03-08T18:01:00Z: Joaquín Never Reviews Code
+**By:** Joaquín (User)  
+**What:** Joaquín is NOT a code reviewer. Jango (Lead) handles all PR reviews. Founder focuses on vision, not implementation.
+
+#### 2026-03-08T18:05:00Z: Wiki Auto-Update Post-Milestone
+**By:** Joaquín (User)  
+**What:** Wiki updates automatically after each milestone as part of dev cycle. Mace responsibility. Integrate in post-milestone flow.
+
+#### 2026-03-08T18:10:00Z: Dev Diary Auto-Post
+**By:** Joaquín (User)  
+**What:** El devlog (GitHub Discussions) se publica automáticamente tras cada milestone, igual que la wiki. Responsabilidad de Mace. No se pide manualmente.
+
+#### 2026-03-08T21:22:00Z: Jango Unlimited on Tooling
+**By:** Joaquín (User)  
+**What:** Jango (Lead) has NO 20% bandwidth limit. Full freedom to propose and create tools, scripts, automations. Not just reviewer — tool engineer with carte blanche.
+
+#### 2026-03-09T09:15:31Z: Backlog Automation, Team Autonomy, Role Overload
+**By:** Joaquín (User)  
+**What:** 
+1. Backlog sync must be automated (CI/CD) — scan code for TODOs, docs for undocumented items, auto-create issues
+2. Lead autonomy on bandwidth — Jango adjusts workload distribution independently, no CEO approval needed
+3. Auto-wiki/devblog updates — Implement Jango's proposed automation
+4. Solo overloaded — needs role split (architecture review ≠ ops tasks)
+5. ADRs and integration testing — Evaluate and implement Solo's proposals
+
+

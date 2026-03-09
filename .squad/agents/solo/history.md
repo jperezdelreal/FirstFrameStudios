@@ -589,3 +589,67 @@ Created `games/ashfall/docs/ARCHITECTURE.md` — the complete technical blueprin
 - 1 stage + 2 characters as initial scope
 - GDScript, Godot-native patterns
 - Local multiplayer + AI opponent
+
+---
+
+## Ashfall Milestone Documentation Audit (2026-03-09)
+
+Role expanded to include **integration verification and quality gate ownership** per Mace's role split decision. Two critical audits completed:
+
+### Integration Audit (2025-07-17)
+Conducted comprehensive integration audit pre-M3. Verdict: ⚠️ WARN — Project loads, no launch blockers, but 4 issues need attention.
+
+**Findings:**
+- ✅ **PASS:** All 5 autoloads exist in correct dependency order
+- ✅ **PASS:** All 7 scene files have valid ext_resource references
+- ✅ **PASS:** All 8 fighter states exist with correct inheritance
+- ⚠️ **WARN:** Orphaned `p1_throw` / `p2_throw` inputs (defined but never read)
+- ⚠️ **WARN:** ARCHITECTURE.md documents 6-layer per-player collision scheme never implemented
+- ⚠️ **WARN:** Stage collision layers use default Layer 1 instead of designated Layer 4
+- ⚠️ **WARN:** 8 `get_node()` calls lack null safety checks
+
+**Impact:** Lando fixed collision layers + input documentation + null safety patterns in squad/fix-integration PR.
+
+### Final Verification (2026-03-09)
+Pre-M3 integration gate verification. Verdict: **FAIL** ⛔ — 6 blocking issues prevent M3 launch.
+
+**Blocking Issues:**
+1. **RoundManager Not Instantiated** — System exists (117 LOC) but not added to autoloads or fight_scene.tscn. No round timer, no "FIGHT!" announcement, no KO detection.
+2. **Orphaned Combo Signals** — hit_confirmed and combo_ended defined in EventBus, connected in VFXManager, but never emitted. Combo counter has no data source.
+3. **VFXManager Signal Orphans** — Defined connections to hit_confirmed, combo_ended, knockback_applied, player_blocked but no emitters.
+4. **Scene Initialization Gap** — fight_scene.gd doesn't call round_manager.start_match(). Round system never activates.
+5. **Autoload Registration Missing** — RoundManager should be 5th autoload after SceneManager per skill reference.
+6. **Null Safety Issues** — 8 get_node() calls without defensive guards. Will crash if scene structure diverges.
+
+**Root Cause:** Systems built but not wired. Integration validation never ran before merge. Architecture looks solid on paper — wiring is the gap.
+
+**Key Lesson:** Next project must enforce integration testing before milestone gate. Parallel development needs serial validation gate.
+
+**Process Change:** All post-M3 work now includes Solo's integration sign-off BEFORE milestone closure.
+
+### Integration Gate Fix — Signal Wiring (Session 9, Issue #88)
+Fixed CI integration gate failure caused by 6 orphaned signals + 4 false positives in the signal validator.
+
+**Root Cause:** The JSON report used `all(r["passed"])` including the signal validator, while the console treated signals as non-fatal. This mismatch caused CI to report FAIL even though the gate said PASS.
+
+**Signal Wiring Fixes (6 orphaned signals resolved):**
+1. `combo_updated` / `combo_ended` — Connected in fight_hud.gd for combo counter display and combo end announcements
+2. `ember_spent` — Connected in vfx_manager.gd for particle burst + screen shake feedback
+3. `hit_blocked` — Emitted in fight_scene.gd when target is in block state (chip damage path)
+4. `ignition_activated` — Emitted via GameState.activate_ignition() (full ember bar spend)
+5. `scene_change_requested` — Emitted from fight_scene.gd on match end for auto-transition to victory
+6. `state_changed` — Defined + emitted in StateMachine.transition_to() for sprite bridge
+
+**Validator Improvements:**
+- Added 30+ Godot built-in signal exclusions (area_entered, pressed, timeout, value_changed, etc.)
+- Excluded test/ directory files to avoid flagging test-only signals
+- Fixed JSON report consistency with console output
+
+**Key Architectural Insight:** `defined ≠ connected ≠ emitted`. Infrastructure signals (EventBus definitions) need explicit emit sites AND connect sites. The validator enforces this — good. But Godot built-in signals (emitted by the engine) must be excluded or they create false positive noise.
+
+**Key File Paths:**
+- Signal validator: `tools/check-signals.py`
+- Integration gate: `tools/integration-gate.py`
+- EventBus (all game signals): `games/ashfall/scripts/systems/event_bus.gd`
+- Fight scene (wiring hub): `games/ashfall/scripts/fight_scene.gd`
+- PR: #89, Branch: squad/88-fix-integration-gate

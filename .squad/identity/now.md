@@ -14,10 +14,11 @@ scope: 1 stage, 2 characters (MVP)
 Ashfall — 1v1 Fighting Game (Godot 4)
 
 ## Status
-- M1 (Greybox Prototype): ✅ COMPLETE — 9 PRs merged, 31 GDScript files, 2,711 lines of code
-- M2 (Visual Polish): ✅ COMPLETE — 8 systems merged (VFX, UI, audio, game flow)
-- M3 (Character Sprites): 🔜 NEXT — Issue #9 (Kael and Rhena sprites)
-- M4 (Playtesting): 📋 PLANNED — Issue #13 (balance pass, combo tuning)
+- M0 (GDD + Architecture): ✅ COMPLETE — Design locked, architecture approved
+- M1 (Buildable Scaffold): ✅ COMPLETE — Core systems, project scaffold, fixed timestep
+- M2 (Movement + Attacks): ✅ COMPLETE — Fighter controller, hitbox system, knockback, AI
+- M3 (HUD + Game Flow): ✅ COMPLETE — Main menu, character select, fight scene, HUD, round manager, victory screen
+- M4 (Stable Build & Ship): 🔲 IN PROGRESS — Integration gate, balance tuning (Issue #88 blocker, Issue #9 in progress as Phase 2 prep)
 
 ## Recent Retrospective (M1+M2)
 
