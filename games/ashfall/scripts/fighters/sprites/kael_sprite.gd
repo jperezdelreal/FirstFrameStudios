@@ -63,7 +63,7 @@ func _init_palettes() -> void:
 # =========================================================================
 func _draw_idle() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# --- Legs ---
 	# Left leg (slightly back)
@@ -130,7 +130,7 @@ func _draw_idle() -> void:
 # =========================================================================
 func _draw_walk() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — stride pose
 	draw_limb(Vector2(-4, HIP_Y), Vector2(-10, KNEE_Y + 2), LEG_THICK, p.outfit_secondary, ol)
@@ -165,7 +165,7 @@ func _draw_walk() -> void:
 
 func _draw_walk_2() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — opposite stride
 	draw_limb(Vector2(-4, HIP_Y), Vector2(-6, KNEE_Y - 2), LEG_THICK, p.outfit_secondary, ol)
@@ -202,7 +202,7 @@ func _draw_walk_2() -> void:
 # =========================================================================
 func _draw_attack_lp() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — planted, stable
 	draw_limb(Vector2(-5, HIP_Y), Vector2(-8, KNEE_Y), LEG_THICK, p.outfit_secondary, ol)
@@ -240,7 +240,7 @@ func _draw_attack_lp() -> void:
 # =========================================================================
 func _draw_attack_mp() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — wider base, weight shifting forward
 	draw_limb(Vector2(-6, HIP_Y), Vector2(-10, KNEE_Y), LEG_THICK, p.outfit_secondary, ol)
@@ -277,7 +277,7 @@ func _draw_attack_mp() -> void:
 # =========================================================================
 func _draw_attack_hp() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — deep lunge, back leg extended
 	draw_limb(Vector2(-6, HIP_Y), Vector2(-14, KNEE_Y + 2), LEG_THICK, p.outfit_secondary, ol)
@@ -316,7 +316,7 @@ func _draw_attack_hp() -> void:
 # =========================================================================
 func _draw_hit() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — stumbling back
 	draw_limb(Vector2(-3, HIP_Y), Vector2(-6, KNEE_Y + 2), LEG_THICK, p.outfit_secondary, ol)
@@ -360,7 +360,7 @@ func _draw_hit() -> void:
 # =========================================================================
 func _draw_ko() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Entire body rotated — falling backward at ~45°
 	# Legs — crumpling
@@ -394,7 +394,7 @@ func _draw_ko() -> void:
 	draw_line(Vector2(-4, HEAD_Y + 8), Vector2(-2, HEAD_Y + 10), p.eye, 1.5)
 	draw_line(Vector2(-4, HEAD_Y + 10), Vector2(-2, HEAD_Y + 8), p.eye, 1.5)
 	# Open mouth
-	draw_ellipse(Vector2(-5, HEAD_Y + 13), Vector2(2, 1.5), p.eye)
+	draw_ellipse_outlined(Vector2(-5, HEAD_Y + 13), Vector2(2, 1.5), p.eye)
 
 
 # =========================================================================
@@ -402,7 +402,7 @@ func _draw_ko() -> void:
 # =========================================================================
 func _draw_crouch() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var crouch_off := 12.0  # how much the body drops
 
 	# Legs — deeply bent, wide base
@@ -439,7 +439,7 @@ func _draw_crouch() -> void:
 # =========================================================================
 func _draw_jump_up() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var lift := -8.0
 
 	# Legs — tucked under body
@@ -475,7 +475,7 @@ func _draw_jump_up() -> void:
 # =========================================================================
 func _draw_jump_peak() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var lift := -6.0
 
 	# Legs — spread apart in air
@@ -511,7 +511,7 @@ func _draw_jump_peak() -> void:
 # =========================================================================
 func _draw_jump_fall() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var lift := -4.0
 
 	# Legs — extending down to land
@@ -547,7 +547,7 @@ func _draw_jump_fall() -> void:
 # =========================================================================
 func _draw_dash() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — back leg pushing, front leg leading
 	draw_limb(Vector2(-6, HIP_Y), Vector2(-14, KNEE_Y + 4), LEG_THICK, p.outfit_secondary, ol)
@@ -581,7 +581,7 @@ func _draw_dash() -> void:
 # =========================================================================
 func _draw_backdash() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — both off ground slightly, arched back
 	draw_limb(Vector2(-4, HIP_Y), Vector2(-8, KNEE_Y - 2), LEG_THICK, p.outfit_secondary, ol)
@@ -616,7 +616,7 @@ func _draw_backdash() -> void:
 # =========================================================================
 func _draw_attack_lk() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Back leg planted
 	draw_limb(Vector2(-5, HIP_Y), Vector2(-8, KNEE_Y), LEG_THICK, p.outfit_secondary, ol)
@@ -653,7 +653,7 @@ func _draw_attack_lk() -> void:
 # =========================================================================
 func _draw_attack_mk() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Back leg — planted wide
 	draw_limb(Vector2(-6, HIP_Y), Vector2(-12, KNEE_Y + 2), LEG_THICK, p.outfit_secondary, ol)
@@ -688,7 +688,7 @@ func _draw_attack_mk() -> void:
 # =========================================================================
 func _draw_attack_hk() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Pivot leg — bent, supporting weight
 	draw_limb(Vector2(-4, HIP_Y), Vector2(-8, KNEE_Y + 2), LEG_THICK + 0.5, p.outfit_secondary, ol)
@@ -724,7 +724,7 @@ func _draw_attack_hk() -> void:
 # =========================================================================
 func _draw_crouch_lp() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var co := 12.0
 
 	draw_limb(Vector2(-6, HIP_Y + co), Vector2(-12, KNEE_Y + co + 4), LEG_THICK, p.outfit_secondary, ol)
@@ -759,7 +759,7 @@ func _draw_crouch_lp() -> void:
 # =========================================================================
 func _draw_crouch_mp() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var co := 12.0
 
 	draw_limb(Vector2(-6, HIP_Y + co), Vector2(-12, KNEE_Y + co + 4), LEG_THICK, p.outfit_secondary, ol)
@@ -792,7 +792,7 @@ func _draw_crouch_mp() -> void:
 # =========================================================================
 func _draw_crouch_hp() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var co := 8.0  # less crouch since rising
 
 	draw_limb(Vector2(-6, HIP_Y + co), Vector2(-12, KNEE_Y + co + 4), LEG_THICK, p.outfit_secondary, ol)
@@ -828,7 +828,7 @@ func _draw_crouch_hp() -> void:
 # =========================================================================
 func _draw_crouch_lk() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var co := 12.0
 
 	# Back leg — support
@@ -862,7 +862,7 @@ func _draw_crouch_lk() -> void:
 # =========================================================================
 func _draw_crouch_mk() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var co := 12.0
 
 	draw_limb(Vector2(-6, HIP_Y + co), Vector2(-12, KNEE_Y + co + 4), LEG_THICK, p.outfit_secondary, ol)
@@ -895,7 +895,7 @@ func _draw_crouch_mk() -> void:
 # =========================================================================
 func _draw_crouch_hk() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var co := 14.0  # lower than other crouches for sweep
 
 	# Support leg — deeply bent
@@ -931,7 +931,7 @@ func _draw_crouch_hk() -> void:
 # =========================================================================
 func _draw_block_standing() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — stable, weight back slightly
 	draw_limb(Vector2(-5, HIP_Y), Vector2(-8, KNEE_Y), LEG_THICK, p.outfit_secondary, ol)
@@ -967,7 +967,7 @@ func _draw_block_standing() -> void:
 # =========================================================================
 func _draw_block_crouching() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var co := 12.0
 
 	draw_limb(Vector2(-6, HIP_Y + co), Vector2(-12, KNEE_Y + co + 4), LEG_THICK, p.outfit_secondary, ol)
@@ -1002,7 +1002,7 @@ func _draw_block_crouching() -> void:
 # =========================================================================
 func _draw_jump_lp() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var lift := -6.0
 
 	draw_limb(Vector2(-4, HIP_Y + lift), Vector2(-8, KNEE_Y + lift - 2), LEG_THICK, p.outfit_secondary, ol)
@@ -1033,7 +1033,7 @@ func _draw_jump_lp() -> void:
 
 func _draw_jump_mp() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var lift := -6.0
 
 	draw_limb(Vector2(-4, HIP_Y + lift), Vector2(-8, KNEE_Y + lift - 2), LEG_THICK, p.outfit_secondary, ol)
@@ -1064,7 +1064,7 @@ func _draw_jump_mp() -> void:
 
 func _draw_jump_hp() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var lift := -6.0
 
 	draw_limb(Vector2(-4, HIP_Y + lift), Vector2(-8, KNEE_Y + lift - 2), LEG_THICK, p.outfit_secondary, ol)
@@ -1095,7 +1095,7 @@ func _draw_jump_hp() -> void:
 
 func _draw_jump_lk() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var lift := -6.0
 
 	# Kicking leg extended, other tucked
@@ -1125,7 +1125,7 @@ func _draw_jump_lk() -> void:
 
 func _draw_jump_mk() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var lift := -6.0
 
 	draw_limb(Vector2(-4, HIP_Y + lift), Vector2(-8, KNEE_Y + lift - 2), LEG_THICK, p.outfit_secondary, ol)
@@ -1155,7 +1155,7 @@ func _draw_jump_mk() -> void:
 
 func _draw_jump_hk() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var lift := -6.0
 
 	draw_limb(Vector2(-4, HIP_Y + lift), Vector2(-8, KNEE_Y + lift - 2), LEG_THICK, p.outfit_secondary, ol)
@@ -1188,7 +1188,7 @@ func _draw_jump_hk() -> void:
 # =========================================================================
 func _draw_throw_execute() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — wide, braced for throw
 	draw_limb(Vector2(-6, HIP_Y), Vector2(-12, KNEE_Y + 2), LEG_THICK, p.outfit_secondary, ol)
@@ -1224,7 +1224,7 @@ func _draw_throw_execute() -> void:
 # =========================================================================
 func _draw_throw_victim() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Body tilted at ~60°, being flipped
 	draw_limb(Vector2(-4, HIP_Y + 4), Vector2(-10, KNEE_Y + 10), LEG_THICK, p.outfit_secondary, ol)
@@ -1257,7 +1257,7 @@ func _draw_throw_victim() -> void:
 	draw_circle(hc + Vector2(-2, -1), 1.5, p.eye)
 	draw_circle(hc + Vector2(2, -1), 1.5, p.eye)
 	# Open mouth
-	draw_ellipse(hc + Vector2(0, 3), Vector2(2, 1.5), p.eye)
+	draw_ellipse_outlined(hc + Vector2(0, 3), Vector2(2, 1.5), p.eye)
 
 
 # =========================================================================
@@ -1265,7 +1265,7 @@ func _draw_throw_victim() -> void:
 # =========================================================================
 func _draw_wakeup() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var co := 8.0
 
 	# One knee down, other leg pushing up
@@ -1300,7 +1300,7 @@ func _draw_wakeup() -> void:
 # =========================================================================
 func _draw_special_1() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — deep forward stance
 	draw_limb(Vector2(-6, HIP_Y), Vector2(-14, KNEE_Y + 3), LEG_THICK, p.outfit_secondary, ol)
@@ -1342,7 +1342,7 @@ func _draw_special_1() -> void:
 # =========================================================================
 func _draw_special_2() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var rise := -10.0  # character lifts off ground
 
 	# Legs — extended below, pushing off
@@ -1383,7 +1383,7 @@ func _draw_special_2() -> void:
 # =========================================================================
 func _draw_special_3() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Similar to dash + attack — lunging palm
 	draw_limb(Vector2(-6, HIP_Y), Vector2(-16, KNEE_Y + 4), LEG_THICK, p.outfit_secondary, ol)
@@ -1417,7 +1417,7 @@ func _draw_special_3() -> void:
 # =========================================================================
 func _draw_special_4() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — stable, wide stance
 	draw_limb(Vector2(-6, HIP_Y), Vector2(-10, KNEE_Y), LEG_THICK, p.outfit_secondary, ol)
@@ -1455,7 +1455,7 @@ func _draw_special_4() -> void:
 # =========================================================================
 func _draw_ignition() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — power stance, deep and wide
 	draw_limb(Vector2(-7, HIP_Y), Vector2(-14, KNEE_Y + 2), LEG_THICK + 0.5, p.outfit_secondary, ol)
@@ -1495,7 +1495,7 @@ func _draw_ignition() -> void:
 # =========================================================================
 func _draw_win() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs — relaxed, standing upright
 	draw_limb(Vector2(-5, HIP_Y), Vector2(-6, KNEE_Y), LEG_THICK, p.outfit_secondary, ol)
@@ -1542,7 +1542,7 @@ func _draw_win() -> void:
 # =========================================================================
 func _draw_lose() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var co := 10.0
 
 	# One knee down
@@ -1584,7 +1584,7 @@ func _draw_lose() -> void:
 # =========================================================================
 func _draw_throw_startup() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs -- forward-weighted lunge
 	draw_limb(Vector2(-6, HIP_Y), Vector2(-12, KNEE_Y + 2), LEG_THICK, p.outfit_secondary, ol)
@@ -1620,7 +1620,7 @@ func _draw_throw_startup() -> void:
 # =========================================================================
 func _draw_throw_whiff() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs -- overextended forward
 	draw_limb(Vector2(-6, HIP_Y), Vector2(-14, KNEE_Y + 4), LEG_THICK, p.outfit_secondary, ol)
@@ -1653,7 +1653,7 @@ func _draw_throw_whiff() -> void:
 	draw_line(hc + Vector2(0, -2), hc + Vector2(-8, 2), p.hair, 2.0, true)
 	draw_circle(hc + Vector2(-2, -1), 1.2, p.eye)
 	draw_circle(hc + Vector2(2, -1), 1.2, p.eye)
-	draw_ellipse(hc + Vector2(0, 3), Vector2(1.5, 1.0), p.eye)
+	draw_ellipse_outlined(hc + Vector2(0, 3), Vector2(1.5, 1.0), p.eye)
 
 
 # =========================================================================
@@ -1661,7 +1661,7 @@ func _draw_throw_whiff() -> void:
 # =========================================================================
 func _draw_hit_heavy() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs -- buckling backward
 	draw_limb(Vector2(-4, HIP_Y), Vector2(-10, KNEE_Y + 4), LEG_THICK, p.outfit_secondary, ol)
@@ -1702,7 +1702,7 @@ func _draw_hit_heavy() -> void:
 # =========================================================================
 func _draw_hit_crouching() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var co := 12.0
 
 	# Legs -- deeply bent, sliding back
@@ -1743,7 +1743,7 @@ func _draw_hit_crouching() -> void:
 # =========================================================================
 func _draw_hit_air() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 	var lift := -14.0
 
 	# Legs -- curling upward from impact
@@ -1775,7 +1775,7 @@ func _draw_hit_air() -> void:
 	draw_line(hc + Vector2(0, -2), hc + Vector2(-8, 4), p.hair, 2.0, true)
 	draw_line(hc + Vector2(-4, 0), hc + Vector2(-2, 1), p.eye, 1.5)
 	draw_line(hc + Vector2(0, 0), hc + Vector2(2, 1), p.eye, 1.5)
-	draw_ellipse(hc + Vector2(0, 4), Vector2(2, 1.2), p.eye)
+	draw_ellipse_outlined(hc + Vector2(0, 4), Vector2(2, 1.2), p.eye)
 
 
 # =========================================================================
@@ -1783,7 +1783,7 @@ func _draw_hit_air() -> void:
 # =========================================================================
 func _draw_knockdown_fall() -> void:
 	var p := pal
-	var ol := p.outline
+	var ol: Color = p.outline
 
 	# Legs -- trailing behind during fall
 	draw_limb(Vector2(-2, HIP_Y + 4), Vector2(-6, KNEE_Y + 8), LEG_THICK, p.outfit_secondary, ol)
@@ -1815,7 +1815,7 @@ func _draw_knockdown_fall() -> void:
 	draw_line(hc + Vector2(0, -2), hc + Vector2(-8, 4), p.hair, 2.0, true)
 	draw_line(hc + Vector2(-4, 0), hc + Vector2(-2, 0), p.eye, 1.0)
 	draw_line(hc + Vector2(0, 0), hc + Vector2(2, 0), p.eye, 1.0)
-	draw_ellipse(hc + Vector2(0, 3), Vector2(1.5, 1.0), p.eye)
+	draw_ellipse_outlined(hc + Vector2(0, 3), Vector2(1.5, 1.0), p.eye)
 
 
 # =========================================================================

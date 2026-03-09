@@ -209,7 +209,7 @@ func _draw_lose() -> void: _draw_ko()
 #  Character fits in roughly 30×60 px to match the collision box.
 # ==================================================================
 ## Outlined ellipse via polygon approximation
-func draw_ellipse(center: Vector2, radius: Vector2, color: Color,
+func draw_ellipse_outlined(center: Vector2, radius: Vector2, color: Color,
 		outline_color: Color = Color.TRANSPARENT, outline_width: float = 1.0,
 		segments: int = 16) -> void:
 	var points := PackedVector2Array()
