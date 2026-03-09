@@ -446,3 +446,10 @@ Future risk: Sprint 2 is combo system (high complexity, low tolerance for bugs).
 - This standards enforcement is part of larger Sprint 2 quality initiative with Solo's bug catalog and Ackbar's code audit
 
 ---
+
+### 2026-03-11 — Sprint 2 CI Infrastructure (#133)
+
+- **#133 (sprite_sheet_generator.gd):** @tool script's `Engine.is_editor_hint()` guard was only in `_ready()` condition — `generate_sheets()` could still be called directly without protection. Added early-return guard in both `_ready()` and `generate_sheets()` so neither path runs outside the editor.
+- **CI Workflow:** Created integration-gate.yml as a PR-gating action (runs on `pull_request` targeting main, not on push). Three grep-based checks: (1) `:=` with dict/array access (Godot 4.6 type inference bug), (2) `_process` in gameplay scripts (should be `_physics_process`), (3) public functions without explicit return types. Shell-based approach keeps CI fast — no Godot import needed.
+- **PR Template:** Added pre-merge checklist to pull_request_template.md enforcing GDSCRIPT-STANDARDS.md compliance, CI pass, editor testing, and Windows export testing.
+- **Key Lesson:** In a multi-agent environment, git branch switches can happen between commands. Use atomic command chains for critical git workflows (stash + checkout + apply + commit in one block).
