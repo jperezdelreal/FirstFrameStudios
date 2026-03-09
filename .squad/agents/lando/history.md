@@ -204,6 +204,15 @@
 - **Key Lesson:** When a previous fix for the same bug fails, don't iterate on the same approach — audit the entire pipeline and find what assumption was wrong. PR #116 assumed ui_* actions existed; the fix was to eliminate that assumption.
 - **PR:** #118 (squad/fix-charselect-v2), supersedes PR #116
 
+### 2026-03-11 — Combat Code Fixes (#130, #132, #135)
+
+- **#130:** Float precision in attack_state gravity. Fixed `int(fighter.gravity)/60` to `fighter.gravity/60.0`.
+- **#132:** Type guard in crouch_state before CollisionShape2D cast.
+- **#135:** take_damage chip call fixed from 1 arg to 3 `(chip, Vector2.ZERO, 0)`.
+- **Key Lesson:** Grep all callers when auditing function signatures.
+- **Key Lesson:** Float division consistency — use `/ 60.0` not `int() / 60`.
+
+
 
 ### 2026-03-09 — Sprint 1 Audit Results: Process & Standards
 

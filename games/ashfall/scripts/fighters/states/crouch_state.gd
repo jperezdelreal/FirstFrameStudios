@@ -13,7 +13,10 @@ func enter(args: Dictionary) -> void:
 		return
 	fighter.velocity.x = 0
 	# Shrink hurtbox to simulate ducking
-	var hurtbox_shape: CollisionShape2D = fighter.hurtbox.get_child(0) as CollisionShape2D
+	var node: Node = fighter.hurtbox.get_child(0)
+	if not (node is CollisionShape2D):
+		return
+	var hurtbox_shape: CollisionShape2D = node as CollisionShape2D
 	if hurtbox_shape:
 		_original_hurtbox_scale = hurtbox_shape.scale
 		hurtbox_shape.scale.y = fighter.crouch_hurtbox_scale
@@ -25,7 +28,10 @@ func exit() -> void:
 	if not fighter:
 		return
 	# Restore hurtbox
-	var hurtbox_shape: CollisionShape2D = fighter.hurtbox.get_child(0) as CollisionShape2D
+	var node: Node = fighter.hurtbox.get_child(0)
+	if not (node is CollisionShape2D):
+		return
+	var hurtbox_shape: CollisionShape2D = node as CollisionShape2D
 	if hurtbox_shape:
 		hurtbox_shape.scale = _original_hurtbox_scale
 		hurtbox_shape.position.y -= 10.0

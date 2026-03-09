@@ -66,7 +66,7 @@ func _on_hit_landed(attacker, target, move: Dictionary) -> void:
 		EventBus.hit_blocked.emit(attacker, target, move)
 		var chip: int = maxi(1, move.get("damage", 10) / 10)
 		if target.has_method("take_damage"):
-			target.take_damage(chip)
+			target.take_damage(chip, Vector2.ZERO, 0)
 		return
 
 	var base_damage: int = move.get("damage", 10)
