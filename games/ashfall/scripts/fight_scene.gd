@@ -60,8 +60,10 @@ func _on_hit_landed(attacker, target, move: Dictionary) -> void:
 	var base_damage: int = move.get("damage", 10)
 	var combo_hit: int = ComboTracker.get_combo_count(attacker)
 	var scaled_damage: int = maxi(1, int(base_damage * _get_proration(combo_hit)))
+	var knockback_force: Vector2 = move.get("knockback_force", Vector2(100, 0))
+	var hitstun: int = move.get("hitstun_duration", 12)
 	if target.has_method("take_damage"):
-		target.take_damage(scaled_damage)
+		target.take_damage(scaled_damage, knockback_force, hitstun)
 
 func _setup_combo_tracker() -> void:
 	var script := load("res://scripts/systems/combo_tracker.gd")
