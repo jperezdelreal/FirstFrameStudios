@@ -22,3 +22,10 @@
 - Damage number popups use a `Node2D` marker with a `Label` child, tweened upward with fade-out. Font size scales with damage (20/24/28). `_auto_free` handles cleanup after 1s.
 - Screen shake now scales by damage: `intensity *= clampf(dmg / 80.0, 0.6, 2.0)`. Duration also scales: `0.15 + clampf(intensity / 50.0, 0, 0.1)`. This makes LP jabs feel crisp and HP/specials feel heavy.
 - **Issue #124 fix:** Converted `vfx_manager.gd` from `_process(delta)` to `_physics_process(_delta)` with integer frame counters for deterministic VFX timing. Float-based `_shake_duration`/`_shake_elapsed`/`_ko_slowmo_timer` replaced with `_shake_duration_frames`/`_shake_frames_elapsed`/`_ko_slowmo_frames` (int). KO slow-mo duration changed from `0.5s` float to `30` frames constant. All timing now deterministic at 60fps per "Frame Data Is Law" principle. (PR #139)
+- **Sprint 2 Phase 2/4 — Hit Feedback VFX + Ember Stage Integration (PR #146):**
+  - Hit sparks now vary by hit strength via `HIT_SPARK_CONFIG` constant: light (white, 6p, 0.2s), medium (orange, 10p, 0.3s), heavy (red/orange, 16p, 0.4s). Character palette still influences gravity, damping, and color blend (30% accent lerp).
+  - `_get_hit_type` now returns "light"/"medium"/"heavy" instead of "light"/"heavy"/"special" — aligns with HitType enum (0/1/2). "special" reserved for KO/ember bursts only.
+  - Screen shake px ranges now explicit: light=1.5px, medium=3.5px, heavy=6.5px, special=10px. Duration is frame-based: `9 + clampi(int(intensity / 2.0), 0, 6)` frames.
+  - Ember stage integration uses 3 tiers: 50+ ember → floating stage particles (6-30, box emission across viewport), 75+ → warm orange overlay (3-12% alpha on CanvasLayer 90), 100 → heat distortion via sine-wave camera wobble (1.5px amplitude, ~4Hz). Distortion defers to active screen shake.
+  - `_update_ember_stage()` queries `GameState.get_ember()` for both players and uses max — stage is a shared visualization of the highest ember level.
+  - Stage effects fully cleaned up on `round_started` via `_cleanup_stage_effects()`. Overlay uses `queue_free()`, particles toggled off then freed.
