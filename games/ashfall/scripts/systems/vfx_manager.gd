@@ -1,6 +1,8 @@
-## Autoload VFX manager. Spawns hit sparks, block sparks, screen shake,
-## hitstun flash, KO slow-motion, and ember particle trails.
+## Autoload VFX manager. Spawns character-specific hit sparks, block sparks,
+## screen shake, hitstun flash, damage number popups, KO freeze-frame/slow-motion,
+## KO screen flash, and ember particle trails.
 ## Connects exclusively to EventBus signals — zero direct coupling.
+## Character palettes: Kael (blue-ember, controlled) vs Rhena (red-orange, explosive).
 extends Node
 
 # ── Screen shake state ──────────────────────────────────
@@ -21,6 +23,70 @@ const FLASH_FRAMES: int = 2
 # ── Ember trail tracking ───────────────────────────────
 var _ember_emitters: Dictionary = {}  # player_id -> GPUParticles2D
 
+# ── KO freeze-frame state ──────────────────────────────
+var _ko_freeze_frames: int = 0
+const KO_FREEZE_FRAMES: int = 6  # ~100ms at 60fps
+
+# ── Character VFX palettes ─────────────────────────────
+# Kael (Cinder Monk): cool discipline — blue-ember accents, controlled precise bursts
+# Rhena (Wildfire): hot intensity — orange-ember, red/explosive wild scattered
+const CHARACTER_PALETTES := {
+	"Kael": {
+		"spark_start": Color(0.5, 0.8, 1.0, 1.0),
+		"spark_end": Color(1.0, 0.6, 0.2, 0.0),
+		"spark_base": Color(0.4, 0.7, 1.0, 1.0),
+		"spread": 40.0,
+		"vel_min": 80.0,
+		"vel_max": 180.0,
+		"gravity": Vector3(0, -60, 0),
+		"particle_bonus": 0,
+		"damping_min": 20.0,
+		"damping_max": 40.0,
+		"scale_min": 1.5,
+		"scale_max": 2.5,
+		"ko_start": Color(0.5, 0.8, 1.0, 1.0),
+		"ko_end": Color(1.0, 0.6, 0.2, 0.0),
+		"flash_color": Color(3.0, 4.0, 5.0, 1.0),
+		"dmg_color": Color(0.4, 0.85, 1.0, 1.0),
+	},
+	"Rhena": {
+		"spark_start": Color(1.0, 1.0, 0.9, 1.0),
+		"spark_end": Color(1.0, 0.05, 0.0, 0.0),
+		"spark_base": Color(1.0, 0.4, 0.1, 1.0),
+		"spread": 90.0,
+		"vel_min": 160.0,
+		"vel_max": 350.0,
+		"gravity": Vector3(0, 300, 0),
+		"particle_bonus": 4,
+		"damping_min": 15.0,
+		"damping_max": 35.0,
+		"scale_min": 1.0,
+		"scale_max": 4.0,
+		"ko_start": Color(1.0, 0.3, 0.0, 1.0),
+		"ko_end": Color(0.8, 0.0, 0.0, 0.0),
+		"flash_color": Color(5.0, 2.0, 1.0, 1.0),
+		"dmg_color": Color(1.0, 0.3, 0.1, 1.0),
+	},
+}
+const DEFAULT_PALETTE := {
+	"spark_start": Color(1.0, 1.0, 1.0, 1.0),
+	"spark_end": Color(1.0, 0.6, 0.1, 0.0),
+	"spark_base": Color(1.0, 0.9, 0.7, 1.0),
+	"spread": 60.0,
+	"vel_min": 120.0,
+	"vel_max": 250.0,
+	"gravity": Vector3(0, 300, 0),
+	"particle_bonus": 0,
+	"damping_min": 40.0,
+	"damping_max": 80.0,
+	"scale_min": 1.5,
+	"scale_max": 3.0,
+	"ko_start": Color(1.0, 1.0, 0.8, 1.0),
+	"ko_end": Color(1.0, 0.3, 0.0, 0.0),
+	"flash_color": Color(5.0, 5.0, 5.0, 1.0),
+	"dmg_color": Color(1.0, 0.9, 0.7, 1.0),
+}
+
 
 func _ready() -> void:
 	assert(EventBus != null, "VFXManager requires EventBus to load first")
@@ -30,6 +96,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_tick_freeze()
 	_tick_shake(delta)
 	_tick_slowmo(delta)
 	_tick_flash()
@@ -54,16 +121,17 @@ func _on_hit_landed(attacker: Variant, target: Variant, move: Variant) -> void:
 		return
 	var hit_pos := _get_hit_position(attacker, target)
 	var hit_type := _get_hit_type(move)
+	var char_name := _get_character_name(attacker)
 
-	_spawn_hit_sparks(hit_pos, hit_type)
-	_apply_screen_shake(hit_type)
-	_apply_flash(target)
+	_spawn_hit_sparks(hit_pos, hit_type, char_name)
+	_apply_screen_shake(hit_type, move)
+	_apply_flash(target, char_name)
+	_spawn_damage_number(hit_pos, move, char_name)
 
 
-func _on_hit_confirmed(_attacker: Variant, target: Variant, _move: Variant, _combo_count: int) -> void:
-	# Confirmed hits already handled via hit_landed; combo flash reinforcement
+func _on_hit_confirmed(attacker: Variant, target: Variant, _move: Variant, _combo_count: int) -> void:
 	if target and is_instance_valid(target):
-		_apply_flash(target)
+		_apply_flash(target, _get_character_name(attacker))
 
 
 # ── Hit blocked: blue/white sparks + light shake ────────
@@ -73,7 +141,7 @@ func _on_hit_blocked(attacker: Variant, target: Variant, move: Variant) -> void:
 		return
 	var hit_pos := _get_hit_position(attacker, target)
 	_spawn_block_sparks(hit_pos)
-	_apply_screen_shake("light")
+	_apply_screen_shake("light", move)
 
 
 # ── KO: slow-motion + big burst ────────────────────────
@@ -81,13 +149,15 @@ func _on_hit_blocked(attacker: Variant, target: Variant, move: Variant) -> void:
 func _on_fighter_ko(fighter: Variant) -> void:
 	if not fighter or not is_instance_valid(fighter):
 		return
-	_start_ko_slowmo()
 	var pos: Vector2
 	if fighter is Node2D:
 		pos = fighter.global_position
 	else:
 		pos = Vector2.ZERO
-	_spawn_ko_burst(pos)
+	var ko_char := _get_ko_attacker_name(fighter)
+	_start_ko_freeze_frame()
+	_spawn_ko_burst(pos, ko_char)
+	_spawn_ko_flash(ko_char)
 	_apply_screen_shake("special")
 
 
@@ -102,7 +172,8 @@ func _on_ember_changed(player_id: int, new_value: int) -> void:
 func _on_ember_spent(player_id: int, _amount: int, _action: String) -> void:
 	var fighter := _find_fighter(player_id)
 	if fighter and fighter is Node2D:
-		_spawn_hit_sparks(fighter.global_position + Vector2(0, -30), "special")
+		var char_name := _get_character_name(fighter)
+		_spawn_hit_sparks(fighter.global_position + Vector2(0, -30), "special", char_name)
 		_apply_screen_shake("light")
 
 
@@ -113,6 +184,7 @@ func _on_round_started(_round_number: int) -> void:
 	_shake_duration = 0.0
 	_shake_elapsed = 0.0
 	_ko_slowmo_timer = 0.0
+	_ko_freeze_frames = 0
 	Engine.time_scale = 1.0
 	_flash_targets.clear()
 	# Clean up lingering ember emitters
@@ -126,46 +198,47 @@ func _on_round_started(_round_number: int) -> void:
 # HIT SPARKS — white/orange burst (8-12 particles, 0.3s)
 # ═════════════════════════════════════════════════════════
 
-func _spawn_hit_sparks(pos: Vector2, hit_type: String) -> void:
+func _spawn_hit_sparks(pos: Vector2, hit_type: String, char_name: String = "") -> void:
+	var palette := _get_palette(char_name)
 	var particles := GPUParticles2D.new()
 	particles.emitting = false
 	particles.one_shot = true
 	particles.explosiveness = 1.0
 	particles.z_index = 100
 
+	var base_count: int
 	match hit_type:
 		"light":
-			particles.amount = 8
+			base_count = 8
 		"heavy":
-			particles.amount = 10
+			base_count = 10
 		"special":
-			particles.amount = 12
+			base_count = 12
 		_:
-			particles.amount = 8
+			base_count = 8
+	particles.amount = base_count + palette.particle_bonus
 
 	var mat := ParticleProcessMaterial.new()
 	mat.direction = Vector3(0, -1, 0)
-	mat.spread = 60.0
-	mat.initial_velocity_min = 120.0
-	mat.initial_velocity_max = 250.0
-	mat.gravity = Vector3(0, 300, 0)
-	mat.scale_min = 1.5
-	mat.scale_max = 3.0
-	mat.damping_min = 40.0
-	mat.damping_max = 80.0
+	mat.spread = palette.spread
+	mat.initial_velocity_min = palette.vel_min
+	mat.initial_velocity_max = palette.vel_max
+	mat.gravity = palette.gravity
+	mat.scale_min = palette.scale_min
+	mat.scale_max = palette.scale_max
+	mat.damping_min = palette.damping_min
+	mat.damping_max = palette.damping_max
 
-	# White-orange gradient for hit sparks
 	var gradient := GradientTexture1D.new()
 	var g := Gradient.new()
 	g.set_offset(0, 0.0)
 	g.set_offset(1, 1.0)
-	g.set_color(0, Color(1.0, 1.0, 1.0, 1.0))   # white
-	g.set_color(1, Color(1.0, 0.6, 0.1, 0.0))     # orange → transparent
+	g.set_color(0, palette.spark_start)
+	g.set_color(1, palette.spark_end)
 	gradient.gradient = g
 	mat.color_ramp = gradient
 
-	# Bright start color
-	mat.color = Color(1.0, 0.9, 0.7, 1.0)
+	mat.color = palette.spark_base
 
 	particles.process_material = mat
 	particles.lifetime = 0.3
@@ -222,12 +295,13 @@ func _spawn_block_sparks(pos: Vector2) -> void:
 # KO BURST — big dramatic particle explosion
 # ═════════════════════════════════════════════════════════
 
-func _spawn_ko_burst(pos: Vector2) -> void:
+func _spawn_ko_burst(pos: Vector2, char_name: String = "") -> void:
+	var palette := _get_palette(char_name)
 	var particles := GPUParticles2D.new()
 	particles.emitting = false
 	particles.one_shot = true
 	particles.explosiveness = 1.0
-	particles.amount = 24
+	particles.amount = 24 + palette.particle_bonus * 2
 	particles.z_index = 100
 
 	var mat := ParticleProcessMaterial.new()
@@ -245,12 +319,12 @@ func _spawn_ko_burst(pos: Vector2) -> void:
 	var g := Gradient.new()
 	g.set_offset(0, 0.0)
 	g.set_offset(1, 1.0)
-	g.set_color(0, Color(1.0, 1.0, 0.8, 1.0))     # bright yellow-white
-	g.set_color(1, Color(1.0, 0.3, 0.0, 0.0))       # red-orange → transparent
+	g.set_color(0, palette.ko_start)
+	g.set_color(1, palette.ko_end)
 	gradient.gradient = g
 	mat.color_ramp = gradient
 
-	mat.color = Color(1.0, 0.95, 0.8, 1.0)
+	mat.color = palette.spark_base
 
 	particles.process_material = mat
 	particles.lifetime = 0.6
@@ -264,7 +338,7 @@ func _spawn_ko_burst(pos: Vector2) -> void:
 # SCREEN SHAKE — camera offset with exponential decay
 # ═════════════════════════════════════════════════════════
 
-func _apply_screen_shake(hit_type: String) -> void:
+func _apply_screen_shake(hit_type: String, move: Variant = null) -> void:
 	var intensity: float
 	match hit_type:
 		"light":
@@ -276,10 +350,15 @@ func _apply_screen_shake(hit_type: String) -> void:
 		_:
 			intensity = 2.0
 
+	# Scale intensity by actual move damage when available
+	if move is Dictionary:
+		var dmg: int = move.get("damage", 50)
+		intensity *= clampf(float(dmg) / 80.0, 0.6, 2.0)
+
 	# Only override if new shake is stronger
 	if intensity > _shake_intensity:
 		_shake_intensity = intensity
-		_shake_duration = 0.15
+		_shake_duration = 0.15 + clampf(intensity / 50.0, 0.0, 0.1)
 		_shake_elapsed = 0.0
 
 
@@ -317,23 +396,28 @@ func _reset_camera_offset() -> void:
 # HITSTUN FLASH — sprite turns white for 2 frames
 # ═════════════════════════════════════════════════════════
 
-func _apply_flash(target: Variant) -> void:
+func _apply_flash(target: Variant, char_name: String = "") -> void:
 	if not target or not is_instance_valid(target):
 		return
+
+	var palette := _get_palette(char_name)
+	var flash_col: Color = palette.flash_color
 
 	# Avoid duplicate flash entries for same target
 	for entry in _flash_targets:
 		if entry.target == target:
 			entry.frames_remaining = FLASH_FRAMES
-			_set_white(target, true)
+			entry.flash_color = flash_col
+			_set_flash(target, flash_col)
 			return
 
 	_flash_targets.append({
 		"target": target,
 		"frames_remaining": FLASH_FRAMES,
 		"original_modulate": _get_modulate(target),
+		"flash_color": flash_col,
 	})
-	_set_white(target, true)
+	_set_flash(target, flash_col)
 
 
 func _tick_flash() -> void:
@@ -342,16 +426,15 @@ func _tick_flash() -> void:
 		var entry: Dictionary = _flash_targets[i]
 		entry.frames_remaining -= 1
 		if entry.frames_remaining <= 0:
-			_set_white(entry.target, false)
+			_restore_modulate(entry.target)
 			_flash_targets.remove_at(i)
 		i -= 1
 
 
-func _set_white(target: Variant, white: bool) -> void:
+func _set_flash(target: Variant, flash_color: Color) -> void:
 	if not is_instance_valid(target):
 		return
 
-	# Look for the sprite node on the fighter
 	var sprite: Node = null
 	if target.has_node("Sprite"):
 		sprite = target.get_node("Sprite")
@@ -359,10 +442,21 @@ func _set_white(target: Variant, white: bool) -> void:
 		sprite = target.get_node("Visual")
 
 	if sprite and sprite is CanvasItem:
-		if white:
-			sprite.modulate = Color(5.0, 5.0, 5.0, 1.0)  # HDR white flash
-		else:
-			sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
+		sprite.modulate = flash_color
+
+
+func _restore_modulate(target: Variant) -> void:
+	if not is_instance_valid(target):
+		return
+
+	var sprite: Node = null
+	if target.has_node("Sprite"):
+		sprite = target.get_node("Sprite")
+	elif target.has_node("Visual"):
+		sprite = target.get_node("Visual")
+
+	if sprite and sprite is CanvasItem:
+		sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)
 
 
 func _get_modulate(target: Variant) -> Color:
@@ -542,3 +636,118 @@ func _auto_free(node: Node, delay: float) -> void:
 		if is_instance_valid(node):
 			node.queue_free()
 	)
+
+
+# ═════════════════════════════════════════════════════════
+# KO FREEZE-FRAME — brief Engine.time_scale=0 pause
+# ═════════════════════════════════════════════════════════
+
+func _start_ko_freeze_frame() -> void:
+	Engine.time_scale = 0.0
+	_ko_freeze_frames = KO_FREEZE_FRAMES
+
+
+func _tick_freeze() -> void:
+	if _ko_freeze_frames <= 0:
+		return
+	_ko_freeze_frames -= 1
+	if _ko_freeze_frames <= 0:
+		_start_ko_slowmo()
+
+
+# ═════════════════════════════════════════════════════════
+# KO FLASH — full-screen color flash tinted by attacker
+# ═════════════════════════════════════════════════════════
+
+func _spawn_ko_flash(char_name: String) -> void:
+	var palette := _get_palette(char_name)
+	var layer := CanvasLayer.new()
+	layer.layer = 100
+
+	var rect := ColorRect.new()
+	var fc := palette.flash_color
+	rect.color = Color(minf(fc.r / 5.0, 1.0), minf(fc.g / 5.0, 1.0), minf(fc.b / 5.0, 1.0), 0.8)
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(rect)
+	add_child(layer)
+
+	var tween := create_tween()
+	tween.tween_property(rect, "color:a", 0.0, 0.5) \
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.finished.connect(layer.queue_free)
+
+
+# ═════════════════════════════════════════════════════════
+# DAMAGE NUMBERS — floating popups that fade up and out
+# ═════════════════════════════════════════════════════════
+
+func _spawn_damage_number(pos: Vector2, move: Variant, char_name: String) -> void:
+	var damage := 0
+	if move is Dictionary:
+		damage = move.get("damage", 0)
+	if damage <= 0:
+		return
+
+	var palette := _get_palette(char_name)
+	var marker := Node2D.new()
+	marker.z_index = 200
+
+	var label := Label.new()
+	label.text = str(damage)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", _get_damage_font_size(damage))
+	label.add_theme_color_override("font_color", palette.dmg_color)
+	label.add_theme_color_override("font_outline_color", Color(0.0, 0.0, 0.0, 1.0))
+	label.add_theme_constant_override("outline_size", 3)
+	label.position = Vector2(-20, -10)
+	marker.add_child(label)
+
+	_add_to_scene(marker, pos + Vector2(randf_range(-15.0, 15.0), -30.0))
+
+	var start_y := marker.global_position.y
+	var tween := get_tree().create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(marker, "global_position:y", start_y - 60.0, 0.8) \
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(marker, "modulate:a", 0.0, 0.6) \
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD).set_delay(0.2)
+	_auto_free(marker, 1.0)
+
+
+func _get_damage_font_size(damage: int) -> int:
+	if damage >= 100:
+		return 28
+	elif damage >= 70:
+		return 24
+	return 20
+
+
+# ═════════════════════════════════════════════════════════
+# CHARACTER IDENTIFICATION
+# ═════════════════════════════════════════════════════════
+
+func _get_character_name(fighter: Variant) -> String:
+	if not fighter or not is_instance_valid(fighter) or not "player_id" in fighter:
+		return ""
+	if fighter.player_id == 1:
+		return SceneManager.p1_character if SceneManager else ""
+	elif fighter.player_id == 2:
+		return SceneManager.p2_character if SceneManager else ""
+	return ""
+
+
+func _get_ko_attacker_name(ko_victim: Variant) -> String:
+	if not ko_victim or not is_instance_valid(ko_victim) or not "player_id" in ko_victim:
+		return ""
+	# The attacker is the OTHER player
+	if ko_victim.player_id == 1:
+		return SceneManager.p2_character if SceneManager else ""
+	elif ko_victim.player_id == 2:
+		return SceneManager.p1_character if SceneManager else ""
+	return ""
+
+
+func _get_palette(char_name: String) -> Dictionary:
+	if CHARACTER_PALETTES.has(char_name):
+		return CHARACTER_PALETTES[char_name]
+	return DEFAULT_PALETTE
