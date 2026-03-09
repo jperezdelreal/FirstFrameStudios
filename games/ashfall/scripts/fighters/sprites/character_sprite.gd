@@ -37,36 +37,34 @@ var pal: Dictionary:
 ## Subclasses override the _draw_*() methods for character-specific art.
 ## Poses without a dedicated drawing fall back to the closest match.
 const POSES := [
-	"idle", "walk", "walk_2",
-	"crouch",
-	"jump_up", "jump_peak", "jump_fall",
-	"dash", "backdash",
-	"attack_lp", "attack_mp", "attack_hp",
-	"attack_lk", "attack_mk", "attack_hk",
-	"crouch_lp", "crouch_mp", "crouch_hp",
-	"crouch_lk", "crouch_mk", "crouch_hk",
-	"jump_lp", "jump_mp", "jump_hp",
-	"jump_lk", "jump_mk", "jump_hk",
-	"block_standing", "block_crouching",
-	"hit", "ko",
-	"throw_execute", "throw_victim",
-	"wakeup",
-	"special_1", "special_2", "special_3", "special_4",
-	"ignition",
 	# Stance
 	"idle", "walk", "walk_2", "crouch",
 	# Air
 	"jump_up", "jump_peak", "jump_fall",
-	# Attacks (punches)
+	# Movement
+	"dash", "backdash",
+	# Standing attacks (punches + kicks)
 	"attack_lp", "attack_mp", "attack_hp",
-	# Attacks (kicks) — fall back to punch equivalents until drawn
 	"attack_lk", "attack_mk", "attack_hk",
+	# Crouching attacks
+	"crouch_lp", "crouch_mp", "crouch_hp",
+	"crouch_lk", "crouch_mk", "crouch_hk",
+	# Jump attacks
+	"jump_lp", "jump_mp", "jump_hp",
+	"jump_lk", "jump_mk", "jump_hk",
 	# Block
 	"block_standing", "block_crouching",
-	# Damage
-	"hit", "ko",
+	# Hit reactions
+	"hit", "hit_heavy", "hit_crouching", "hit_air",
+	# Knockdown
+	"ko", "knockdown_fall",
 	# Throw
-	"throw_startup", "throw_execute", "throw_whiff",
+	"throw_startup", "throw_execute", "throw_whiff", "throw_victim",
+	# Recovery
+	"wakeup",
+	# Specials + super
+	"special_1", "special_2", "special_3", "special_4",
+	"ignition",
 	# Win/Lose
 	"win", "lose",
 ]
@@ -84,7 +82,6 @@ func _init_palettes() -> void:
 
 func _draw() -> void:
 	match pose:
-		# Stance
 		"idle":             _draw_idle()
 		"walk":             _draw_walk()
 		"walk_2":           _draw_walk_2()
@@ -115,8 +112,14 @@ func _draw() -> void:
 		"block_standing":   _draw_block_standing()
 		"block_crouching":  _draw_block_crouching()
 		"hit":              _draw_hit()
+		"hit_heavy":        _draw_hit_heavy()
+		"hit_crouching":    _draw_hit_crouching()
+		"hit_air":          _draw_hit_air()
 		"ko":               _draw_ko()
+		"knockdown_fall":   _draw_knockdown_fall()
+		"throw_startup":    _draw_throw_startup()
 		"throw_execute":    _draw_throw_execute()
+		"throw_whiff":      _draw_throw_whiff()
 		"throw_victim":     _draw_throw_victim()
 		"wakeup":           _draw_wakeup()
 		"special_1":        _draw_special_1()
@@ -126,105 +129,78 @@ func _draw() -> void:
 		"ignition":         _draw_ignition()
 		"win":              _draw_win()
 		"lose":             _draw_lose()
-		# Air
-		"jump_up":          _draw_jump_up()
-		"jump_peak":        _draw_jump_peak()
-		"jump_fall":        _draw_jump_fall()
-		# Attacks — punches
-		"attack_lp":        _draw_attack_lp()
-		"attack_mp":        _draw_attack_mp()
-		"attack_hp":        _draw_attack_hp()
-		# Attacks — kicks (fallback to punch equivalents)
-		"attack_lk":        _draw_attack_lk()
-		"attack_mk":        _draw_attack_mk()
-		"attack_hk":        _draw_attack_hk()
-		# Block
-		"block_standing":   _draw_block_standing()
-		"block_crouching":  _draw_block_crouching()
-		# Damage
-		"hit":              _draw_hit()
-		"ko":               _draw_ko()
-		# Throw
-		"throw_startup":    _draw_throw_startup()
-		"throw_execute":    _draw_throw_execute()
-		"throw_whiff":      _draw_throw_whiff()
-		# Win/Lose
-		"win":              _draw_win()
-		"lose":             _draw_lose()
-		# Unknown pose → idle fallback
 		_:                  _draw_idle()
 
 
 # --- Virtual pose methods (override in subclass) ---
-# Core poses
+# Core stance
 func _draw_idle() -> void: pass
 func _draw_walk() -> void: pass
 func _draw_walk_2() -> void: pass
-func _draw_crouch() -> void: pass
-func _draw_jump_up() -> void: pass
-func _draw_jump_peak() -> void: pass
-func _draw_jump_fall() -> void: pass
+func _draw_crouch() -> void: _draw_idle()
 func _draw_dash() -> void: pass
 func _draw_backdash() -> void: pass
+
+# Jump -- default to idle
+func _draw_jump_up() -> void: _draw_idle()
+func _draw_jump_peak() -> void: _draw_idle()
+func _draw_jump_fall() -> void: _draw_idle()
+
+# Standing attacks -- kicks default to punch equivalents
 func _draw_attack_lp() -> void: pass
 func _draw_attack_mp() -> void: pass
 func _draw_attack_hp() -> void: pass
-func _draw_attack_lk() -> void: pass
-func _draw_attack_mk() -> void: pass
-func _draw_attack_hk() -> void: pass
+func _draw_attack_lk() -> void: _draw_attack_lp()
+func _draw_attack_mk() -> void: _draw_attack_mp()
+func _draw_attack_hk() -> void: _draw_attack_hp()
+
+# Crouching attacks
 func _draw_crouch_lp() -> void: pass
 func _draw_crouch_mp() -> void: pass
 func _draw_crouch_hp() -> void: pass
 func _draw_crouch_lk() -> void: pass
 func _draw_crouch_mk() -> void: pass
 func _draw_crouch_hk() -> void: pass
+
+# Jump attacks
 func _draw_jump_lp() -> void: pass
 func _draw_jump_mp() -> void: pass
 func _draw_jump_hp() -> void: pass
 func _draw_jump_lk() -> void: pass
 func _draw_jump_mk() -> void: pass
 func _draw_jump_hk() -> void: pass
-func _draw_block_standing() -> void: pass
-func _draw_block_crouching() -> void: pass
+
+# Block -- default to idle/crouch
+func _draw_block_standing() -> void: _draw_idle()
+func _draw_block_crouching() -> void: _draw_crouch()
+
+# Hit reactions -- variants default to base hit
 func _draw_hit() -> void: pass
+func _draw_hit_heavy() -> void: _draw_hit()
+func _draw_hit_crouching() -> void: _draw_hit()
+func _draw_hit_air() -> void: _draw_hit()
+
+# Knockdown -- fall defaults to KO ground pose
 func _draw_ko() -> void: pass
-func _draw_throw_execute() -> void: pass
+func _draw_knockdown_fall() -> void: _draw_ko()
+
+# Throw -- defaults until character-specific art
+func _draw_throw_startup() -> void: _draw_attack_hp()
+func _draw_throw_execute() -> void: _draw_attack_hp()
+func _draw_throw_whiff() -> void: _draw_idle()
 func _draw_throw_victim() -> void: pass
+
+# Recovery
 func _draw_wakeup() -> void: pass
+
+# Specials + super
 func _draw_special_1() -> void: pass
 func _draw_special_2() -> void: pass
 func _draw_special_3() -> void: pass
 func _draw_special_4() -> void: pass
 func _draw_ignition() -> void: pass
-func _draw_win() -> void: pass
-func _draw_lose() -> void: pass
-func _draw_hit() -> void: pass
-func _draw_ko() -> void: pass
 
-# Attack poses
-func _draw_attack_lp() -> void: pass
-func _draw_attack_mp() -> void: pass
-func _draw_attack_hp() -> void: pass
-
-# Kick poses — default to punch equivalents
-func _draw_attack_lk() -> void: _draw_attack_lp()
-func _draw_attack_mk() -> void: _draw_attack_mp()
-func _draw_attack_hk() -> void: _draw_attack_hp()
-
-# Stance poses — default to idle until Nien draws dedicated art
-func _draw_crouch() -> void: _draw_idle()
-func _draw_jump_up() -> void: _draw_idle()
-func _draw_jump_peak() -> void: _draw_idle()
-func _draw_jump_fall() -> void: _draw_idle()
-func _draw_block_standing() -> void: _draw_idle()
-func _draw_block_crouching() -> void: _draw_crouch()
-
-# Throw poses — default to attack_hp until dedicated art
-func _draw_throw_startup() -> void: _draw_attack_hp()
-func _draw_throw_execute() -> void: _draw_attack_hp()
-func _draw_throw_whiff() -> void: _draw_idle()
-
-# Win/Lose — default to idle/ko
+# Win/Lose -- default to idle/ko
 func _draw_win() -> void: _draw_idle()
 func _draw_lose() -> void: _draw_ko()
 
