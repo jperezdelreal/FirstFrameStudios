@@ -218,3 +218,18 @@
 
 **Cross-Agent Update:** Sprint 1 bug catalog identified 35 bugs with 7 mandatory process improvements for Sprint 2. Lando responsible for edge case test matrix (equal HP, timer expiry, simultaneous hits, double KO scenarios). GDSCRIPT-STANDARDS.md now mandatory (16 rules, starting Sprint 2 Day 1). See .squad/decisions/decisions.md.
 
+### Sprint 2 Phase 4 — Combat Feel Tuning & Input Audit (2026-03-09)
+- **Context:** Sprint 2 Phase 4 — fine-tune hitstun, blockstun, knockback for combat impact, verify input responsiveness.
+- **PR:** #150 (squad/phase4-combat-feel), 28 files changed.
+- **Critical Fix — Block damage pipeline was broken:** fight_scene.gd called `take_damage(chip, Vector2.ZERO, 0)` on blocked hits, which bypassed blockstun entirely by transitioning from block→hit(0 frames)→idle instantly. Fixed by adding `take_block_damage()` to fighter_base.gd and routing blocked hits through it, properly re-entering block_state with correct blockstun frames and pushback.
+- **Block pushback tuning:** Scale factor reduced from 0.3 to 0.06 (GDD §2.6: 4-12px). Old value gave 24-54px pushback — 5x too much. Added attacker pushback on block (both fighters separate).
+- **MoveData→Hitbox wiring gap fixed:** attack_state._activate_hitboxes() was enabling the hitbox but never setting its damage/knockback/hitstun from the current MoveData. All hits used default hitbox exports instead of per-move frame data. Now wires _current_move values into hitbox on activation.
+- **blockstun_duration added to hit pipeline:** hitbox.gd now exports blockstun_duration and includes it in hit_data dict. attack_state wires MoveData.blockstun_frames into it. fight_scene reads it for proper block handling.
+- **6-button input gap closed:** Added mp/mk to input_buffer._read_raw_input(), _empty_frame(), fighter_controller.BUTTON_PRIORITY (hk>hp>mk>mp>lk>lp), fighter_base.is_input_just_pressed(), and idle/crouch _any_attack_pressed(). Medium attacks are now accessible in gameplay (pending input action mapping in project.godot).
+- **Reference .tres GDD alignment:** All 18 files across fighter_base/, attack_state/, block_state/ updated to match GDD §2.5: LP 12/8, MP 16/12, HP 22/16, LK 12/8, MK 16/12, HK 22/16. Previous values drifted by 1-8 frames.
+- **Key Learnings:**
+  - The block damage pipeline was fully broken — chip hits were exiting block state immediately. Always trace the full signal chain (hitbox→EventBus→fight_scene→fighter_base→state_machine) end-to-end when auditing combat feel. A "feels wrong" complaint often hides a completely non-functional system.
+  - hitbox.gd exports are defaults, not authoritative. The authoritative frame data lives in MoveData .tres and must be wired at activation time by attack_state. Without this wiring, all attacks hit identically regardless of move type.
+  - Block pushback math: knockback × 0.06 with decel 10.0 gives approximately (knockback × 0.06) pixels total push, killed in 1 frame. This matches GDD 4-12px range for knockback values 60-200.
+  - abs() → absf() is still getting missed in new code (fighter_base.gd line 83). Grep for `abs(` periodically — the Variant return type causes export crashes per GDSCRIPT-STANDARDS Rule 2.
+
