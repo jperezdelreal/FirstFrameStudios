@@ -7,13 +7,13 @@ var p1_hp: float = 1000.0
 var p1_max_hp: float = 1000.0
 var p1_display_hp: float = 1000.0
 var p1_ghost_hp: float = 1000.0
-var p1_ghost_delay: float = 0.0
+var p1_ghost_delay: int = 0
 
 var p2_hp: float = 1000.0
 var p2_max_hp: float = 1000.0
 var p2_display_hp: float = 1000.0
 var p2_ghost_hp: float = 1000.0
-var p2_ghost_delay: float = 0.0
+var p2_ghost_delay: int = 0
 
 # ── Ember state ──────────────────────────────────────────
 var p1_ember: float = 0.0
@@ -27,16 +27,17 @@ var p1_rounds_won: int = 0
 var p2_rounds_won: int = 0
 
 # ── Announcement state ──────────────────────────────────
-var announce_timer: float = 0.0
+var _announce_elapsed: int = 0
+var _announcing: bool = false
 
 # ── Tuning ───────────────────────────────────────────────
-const GHOST_DELAY: float = 0.5
+const GHOST_DELAY_FRAMES: int = 30   # 30 frames = 0.5s at 60 FPS
 const GHOST_SPEED: float = 400.0
 const HP_LERP: float = 10.0
 const EMBER_LERP: float = 8.0
-const ANNOUNCE_DURATION: float = 1.5
-const ANNOUNCE_SCALE_IN: float = 0.15
-const ANNOUNCE_FADE_OUT: float = 0.3
+const ANNOUNCE_DURATION_FRAMES: int = 90    # 90 frames = 1.5s at 60 FPS
+const ANNOUNCE_SCALE_IN_FRAMES: int = 9     # 9 frames = 0.15s at 60 FPS
+const ANNOUNCE_FADE_OUT_FRAMES: int = 18    # 18 frames = 0.3s at 60 FPS
 const ROUNDS_TO_WIN: int = 2
 
 # ── Colour palette ───────────────────────────────────────
@@ -68,6 +69,7 @@ func _ready() -> void:
 	_rebuild_dots()
 	announcer.text = ""
 	announcer.modulate.a = 0.0
+	_announcing = false
 
 
 func _wire_signals() -> void:
@@ -84,10 +86,10 @@ func _wire_signals() -> void:
 	EventBus.round_draw.connect(_on_round_draw)
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	_tick_health(delta)
 	_tick_ember(delta)
-	_tick_announcer(delta)
+	_tick_announcer()
 
 
 # ── Health bars ──────────────────────────────────────────
@@ -98,8 +100,8 @@ func _tick_health(delta: float) -> void:
 	p1_bar.value = (p1_display_hp / maxf(p1_max_hp, 1.0)) * 100.0
 	_color_hp(p1_bar, p1_display_hp / maxf(p1_max_hp, 1.0))
 
-	if p1_ghost_delay > 0.0:
-		p1_ghost_delay -= delta
+	if p1_ghost_delay > 0:
+		p1_ghost_delay -= 1
 	else:
 		p1_ghost_hp = move_toward(p1_ghost_hp, p1_display_hp, GHOST_SPEED * delta)
 	p1_ghost.value = (p1_ghost_hp / maxf(p1_max_hp, 1.0)) * 100.0
@@ -109,8 +111,8 @@ func _tick_health(delta: float) -> void:
 	p2_bar.value = (p2_display_hp / maxf(p2_max_hp, 1.0)) * 100.0
 	_color_hp(p2_bar, p2_display_hp / maxf(p2_max_hp, 1.0))
 
-	if p2_ghost_delay > 0.0:
-		p2_ghost_delay -= delta
+	if p2_ghost_delay > 0:
+		p2_ghost_delay -= 1
 	else:
 		p2_ghost_hp = move_toward(p2_ghost_hp, p2_display_hp, GHOST_SPEED * delta)
 	p2_ghost.value = (p2_ghost_hp / maxf(p2_max_hp, 1.0)) * 100.0
@@ -155,29 +157,33 @@ func _color_ember(bar: ProgressBar, value: float) -> void:
 
 # ── Announcer ────────────────────────────────────────────
 
-func _tick_announcer(delta: float) -> void:
-	if announce_timer <= 0.0:
+func _tick_announcer() -> void:
+	if not _announcing:
 		announcer.modulate.a = 0.0
 		return
 
-	announce_timer -= delta
-	var elapsed := ANNOUNCE_DURATION - announce_timer
+	_announce_elapsed += 1
+	var hold_end: int = ANNOUNCE_DURATION_FRAMES - ANNOUNCE_FADE_OUT_FRAMES
 
-	if elapsed < ANNOUNCE_SCALE_IN:
+	if _announce_elapsed < ANNOUNCE_SCALE_IN_FRAMES:
 		# Phase 1: punch-in scale
-		var t := elapsed / ANNOUNCE_SCALE_IN
-		var s := lerpf(2.5, 1.0, ease(t, -2.0))
+		var t: float = float(_announce_elapsed) / float(ANNOUNCE_SCALE_IN_FRAMES)
+		var s: float = lerpf(2.5, 1.0, ease(t, -2.0))
 		announcer.pivot_offset = announcer.size * 0.5
 		announcer.scale = Vector2(s, s)
 		announcer.modulate.a = t
-	elif announce_timer > ANNOUNCE_FADE_OUT:
+	elif _announce_elapsed < hold_end:
 		# Phase 2: hold
 		announcer.scale = Vector2.ONE
 		announcer.modulate.a = 1.0
-	else:
+	elif _announce_elapsed < ANNOUNCE_DURATION_FRAMES:
 		# Phase 3: fade out
+		var remaining: int = ANNOUNCE_DURATION_FRAMES - _announce_elapsed
 		announcer.scale = Vector2.ONE
-		announcer.modulate.a = announce_timer / ANNOUNCE_FADE_OUT
+		announcer.modulate.a = float(remaining) / float(ANNOUNCE_FADE_OUT_FRAMES)
+	else:
+		_announcing = false
+		announcer.modulate.a = 0.0
 
 
 # ── Signal handlers ──────────────────────────────────────
@@ -188,10 +194,10 @@ func _on_fighter_damaged(fighter: Variant, _amount: int, remaining_hp: int) -> v
 		pid = fighter.player_id
 	if pid == 1:
 		p1_hp = float(remaining_hp)
-		p1_ghost_delay = GHOST_DELAY
+		p1_ghost_delay = GHOST_DELAY_FRAMES
 	else:
 		p2_hp = float(remaining_hp)
-		p2_ghost_delay = GHOST_DELAY
+		p2_ghost_delay = GHOST_DELAY_FRAMES
 
 
 func _on_fighter_ko(_fighter: Variant) -> void:
@@ -247,7 +253,8 @@ func _on_timer_updated(seconds_remaining: int) -> void:
 
 func _on_announce(text: String) -> void:
 	announcer.text = text
-	announce_timer = ANNOUNCE_DURATION
+	_announce_elapsed = 0
+	_announcing = true
 	announcer.scale = Vector2(2.5, 2.5)
 	announcer.modulate.a = 0.0
 

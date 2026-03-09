@@ -27,6 +27,7 @@ func _ready() -> void:
 	vs_cpu_btn.grab_focus()
 
 
+# Cosmetic-only glow — _process is acceptable (Rule 7: delta OK for visual interpolation).
 func _process(delta: float) -> void:
 	_ember_time += delta
 	_apply_title_glow()
