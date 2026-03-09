@@ -300,6 +300,9 @@ prompt: |
   Do the work. Keep it focused.
   If you made a meaningful decision, write to .squad/decisions/inbox/{name}-{brief-slug}.md
 
+  AFTER work:
+  If you found a bug or blocker, create a GitHub issue with `gh issue create`.
+
   ⚠️ OUTPUT: Report outcomes in human terms. Never expose tool internals or SQL.
   ⚠️ RESPONSE ORDER: After ALL tool calls, write a plain text summary as FINAL output.
 ```
@@ -666,6 +669,9 @@ prompt: |
      .squad/decisions/inbox/{name}-{brief-slug}.md
   3. SKILL EXTRACTION: If you found a reusable pattern, write/update
      .squad/skills/{skill-name}/SKILL.md (read templates/skill.md for format).
+  4. ISSUES: If you found a bug, blocker, tech debt, or unresolved question
+     during your work, create a GitHub issue NOW with `gh issue create`.
+     Do not leave TODOs in code without a matching issue. Do not defer to retros.
   
   ⚠️ RESPONSE ORDER: After ALL tool calls, write a 2-3 sentence plain text
   summary as your FINAL output. No tool calls after this summary.
