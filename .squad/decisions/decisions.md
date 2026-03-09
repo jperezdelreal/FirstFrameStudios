@@ -1482,3 +1482,14 @@ Sprint 1 revealed systematic bugs in Godot 4.6 type inference, input handling, a
 **APPROVED for mandatory Sprint 2 enforcement.** Every rule traces to real bug. Evidence is overwhelming.
 
 ---
+
+### 2026-03-09T232154Z: PoC feedback y directivas del founder
+**By:** joperezd (via Copilot)
+**What:** 
+1. Estilo y calidad visual: APROBADO por el founder
+2. Kael no debería llevar botas — es un monje (descalzo o sandalias)
+3. El founder evalúa gusto/estilo. La consistencia y corrección es responsabilidad del equipo (Boba/Nien)
+4. Corregir walk cycle (misma pierna) y LP recovery (frames 7-12 cargan de nuevo)
+5. Preparar código Godot para ejecutar la PoC con los sprites generados
+**Why:** Founder review — GO en estilo, ITERATE en animación. Equipo debe autogestionar calidad.
+

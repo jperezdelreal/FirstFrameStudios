@@ -499,3 +499,28 @@ The red placeholder rectangle is functional for now. Character portraits can wai
 - FLUX on Azure is a text-to-image API black box. The features that matter most for our use case (identity consistency across frames) simply don't exist on this deployment.
 - The "just use detailed prompts" approach to character consistency is unproven for production sprite sets. We need to be honest about risks.
 - 512x512 is the modern standard for AI sprite generation. 256 was a speed optimization that sacrificed too much detail.
+
+### SPRITE-ART-BRIEF v3 — Definitive Multi-Model Brief (2026-03-11)
+
+**Delivered:**
+- Rewrote `games/ashfall/docs/SPRITE-ART-BRIEF.md` from scratch — v3 final, ~51KB (down from 73KB).
+- Restructured around 3 validated FLUX models (FLUX 2 Pro, Kontext Pro, FLUX 1.1 Pro) with exact Azure endpoints, model params, rate limits.
+- Designed three-model production pipeline: FLUX 2 Pro → hero frames at 1024×1024, Kontext Pro → bulk sprite production at 512×512 with `input_image` reference, FLUX 1.1 Pro → non-character assets.
+- Added real production time estimates: ~34 min raw generation for 1,020 frames, ~2 hours with QA cycles.
+- Revised frame count: ~1,020 total frames (51 poses × 2 chars × ~10 avg), down from ~1,200 (more realistic average).
+- Introduced seed strategy for reproducibility (Kael: 1000–1999, Rhena: 2000–2999).
+- Added hero frame gate — FLUX 2 Pro generates reference, Boba approves, then Kontext Pro produces all variants.
+- Removed speculative sections (Tool Evaluation FLUX vs local SD, research section) — replaced with validated infrastructure.
+- Kept character reference sheets, full pose catalog with frame counts, quality checklist, and file organization from v2.
+
+**Key decisions:**
+- Kontext Pro's `input_image` parameter changes everything. We are no longer limited to prompt anchoring. Character consistency risk drops from High to Medium.
+- FLUX 2 Pro at 4 req/min is reserved exclusively for hero frames — too slow for bulk production but maximum quality for reference images.
+- Hero frame approval is the pipeline's critical gate. No pose production begins until Boba signs off on the canonical character image.
+- Removed the FLUX vs Local SD comparison section. With Kontext Pro reference propagation, the prompt-only weakness from v2 is mitigated. We proceed with Azure.
+
+**Learnings:**
+- Three models, three roles. Don't use the best model for everything — use each model where its strengths matter most.
+- Rate limits define workflow architecture. 4/min for quality, 30/min for throughput — design the pipeline to match.
+- The `input_image` parameter on Kontext Pro is the single most important capability for our use case. It transforms the pipeline from "hope for consistency" to "propagate identity."
+- Always verify infrastructure before writing specs. v1 and v2 were written against assumptions. v3 is written against validated API calls.
