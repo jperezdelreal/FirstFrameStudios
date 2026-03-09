@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/fight_scene.gd" id="1_scene"]
-[ext_resource type="PackedScene" path="res://scenes/fighters/fighter_base.tscn" id="2_fighter"]
-[ext_resource type="Resource" path="res://resources/movesets/kael_moveset.tres" id="3_kael"]
-[ext_resource type="Resource" path="res://resources/movesets/rhena_moveset.tres" id="4_rhena"]
+[ext_resource type="PackedScene" path="res://scenes/fighters/kael.tscn" id="2_kael"]
+[ext_resource type="PackedScene" path="res://scenes/fighters/rhena.tscn" id="3_rhena"]
 
 [ext_resource type="Script" path="res://scripts/systems/camera_controller.gd" id="5_camera"]
 
@@ -61,23 +60,21 @@ color = Color(0.08, 0.06, 0.12, 1)
 
 [node name="Fighters" type="Node2D" parent="."]
 
-[node name="Fighter1" parent="Fighters" instance=ExtResource("2_fighter")]
+[node name="Fighter1" parent="Fighters" instance=ExtResource("2_kael")]
 position = Vector2(200, 300)
 player_id = 1
 walk_speed = 200.0
 walk_back_speed = 170.0
 jump_force = 520.0
 gravity = 900.0
-moveset = ExtResource("3_kael")
 
-[node name="Fighter2" parent="Fighters" instance=ExtResource("2_fighter")]
+[node name="Fighter2" parent="Fighters" instance=ExtResource("3_rhena")]
 position = Vector2(440, 300)
 player_id = 2
 walk_speed = 220.0
 walk_back_speed = 187.0
 jump_force = 520.0
 gravity = 900.0
-moveset = ExtResource("4_rhena")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(320, 180)
