@@ -3,14 +3,14 @@ name: Godot Build & Release
 on:
   push:
     tags:
-      - 'v*'
-      - 'sprint-*-shipped'
+      - 'ashfall-v*'
+      - 'ashfall-sprint-*-shipped'
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version tag (e.g., v0.1.0)'
+        description: 'Version tag (e.g., ashfall-v0.1.0)'
         required: false
-        default: 'v0.0.0-dev'
+        default: 'ashfall-v0.0.0-dev'
 
 jobs:
   export-game:
@@ -48,22 +48,24 @@ jobs:
       - name: Create release archive
         run: |
           cd games/ashfall/builds/windows
-          zip -r Ashfall-Windows.zip .
+          zip -r Ashfall-${{ steps.version.outputs.tag_clean }}-windows.zip .
       
       - name: Determine version
         id: version
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "tag=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          else
-            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
-          fi
-      
+           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+             TAG="${{ github.event.inputs.version }}"
+           else
+             TAG="${GITHUB_REF#refs/tags/}"
+           fi
+           echo "tag=$TAG" >> $GITHUB_OUTPUT
+           echo "tag_clean=${TAG#ashfall-}" >> $GITHUB_OUTPUT
+       
       - name: Check if sprint release
         id: sprint_check
         run: |
           TAG="${{ steps.version.outputs.tag }}"
-          if [[ $TAG =~ ^sprint-.*-shipped$ ]]; then
+          if [[ $TAG =~ ^ashfall-sprint-.*-shipped$ ]]; then
             echo "is_sprint=true" >> $GITHUB_OUTPUT
           else
             echo "is_sprint=false" >> $GITHUB_OUTPUT
@@ -73,7 +75,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          name: Ashfall ${{ steps.version.outputs.tag }}
+          name: Ashfall ${{ steps.version.outputs.tag_clean }}
           body: |
             ## Ashfall - 1v1 Fighting Game
             
@@ -82,6 +84,8 @@ jobs:
             ### Changes in this release
             See commit history for details.
           files: |
-            games/ashfall/builds/windows/Ashfall-Windows.zip
+            games/ashfall/builds/windows/Ashfall-${{ steps.version.outputs.tag_clean }}-windows.zip
           draft: false
           prerelease: ${{ steps.sprint_check.outputs.is_sprint == 'true' }}
+
+
