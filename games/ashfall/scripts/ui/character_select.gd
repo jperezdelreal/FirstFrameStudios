@@ -73,7 +73,7 @@ func _update_display() -> void:
 	var p2_index := (1 - p1_index) if p1_index >= 0 else 1
 
 	if p1_index >= 0:
-		var p1 := CHARACTERS[p1_index]
+		var p1: Dictionary = CHARACTERS[p1_index]
 		p1_name_label.text = p1.name
 		p1_archetype_label.text = p1.archetype
 		p1_status_label.text = "READY!"
@@ -82,7 +82,7 @@ func _update_display() -> void:
 		p1_archetype_label.text = "Choose your fighter"
 		p1_status_label.text = "Pick a character above"
 
-	var p2 := CHARACTERS[p2_index]
+	var p2: Dictionary = CHARACTERS[p2_index]
 	p2_portrait.color = p2.color
 	p2_name_label.text = p2.name
 	p2_archetype_label.text = p2.archetype
