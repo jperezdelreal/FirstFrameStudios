@@ -161,7 +161,7 @@ func _on_announce(text: String) -> void:
 	if clean.begins_with("ROUND"):
 		var parts := clean.split(" ")
 		if parts.size() >= 2:
-			var round_num := parts[1].to_int()
+			var round_num: int = parts[1].to_int()
 			var key := "round_%d" % clampi(round_num, 1, 3)
 			_play_announcer(key)
 	elif clean.begins_with("FIGHT"):
@@ -276,7 +276,7 @@ func _get_next_sfx_player() -> AudioStreamPlayer:
 			_sfx_pool_index = (idx + 1) % SFX_POOL_SIZE
 			return _sfx_pool[idx]
 	# All busy — steal oldest slot
-	var player := _sfx_pool[_sfx_pool_index]
+	var player: AudioStreamPlayer = _sfx_pool[_sfx_pool_index]
 	_sfx_pool_index = (_sfx_pool_index + 1) % SFX_POOL_SIZE
 	return player
 

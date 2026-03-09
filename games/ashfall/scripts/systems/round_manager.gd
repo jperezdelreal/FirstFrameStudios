@@ -138,8 +138,8 @@ func _time_over() -> void:
 
 
 func _check_match_over() -> void:
-	var p1_won := scores[0] >= rounds_to_win
-	var p2_won := scores[1] >= rounds_to_win
+	var p1_won: bool = scores[0] >= rounds_to_win
+	var p2_won: bool = scores[1] >= rounds_to_win
 	if p1_won and p2_won:
 		# Double draw-out: both reached rounds_to_win simultaneously
 		_transition_to("MATCH_END")
