@@ -625,3 +625,40 @@ Pitched three game concepts aligned with updated principles and team capabilitie
 
 **Cross-Agent Update:** Sprint 1 analysis complete. 35 bugs cataloged with 7 process improvements for Sprint 2. GDD references now mandatory in code (GDSCRIPT-STANDARDS.md rule). Frame data validation tool coming Sprint 2 Week 2. All Ashfall developers required to follow standards starting Sprint 2 Day 1. See .squad/decisions/decisions.md.
 
+
+## Learnings
+
+### 2026-03-09 — Sprite Art Vision Guide for FLUX Generation
+
+**Context:** Ashfall transitioning from procedural draw sprites to FLUX 1.1 Pro-generated pixel art sprites. Created comprehensive creative vision guide to ensure AI-generated sprites capture Ashfall's identity.
+
+**Key Creative Vision Decisions:**
+
+1. **Silhouette First to Thick Outlines plus Distinct Proportions:** Translated Silhouette First pillar to pixel art as 2-3 pixel thick black outlines, exaggerated pose angles, and strict body proportion ratios. Sprites must read at 64x64px thumbnail.
+
+2. **Readable Emotion to Exaggerated Expressions plus Body Language:** Defined that emotion must be visible in BOTH face and body language. Kael's calm vs Rhena's fury must be OBVIOUS, not subtle.
+
+3. **Warm-Dominant Palette to Color Temperature Guidance:** Established that volcanic warm tones dominate. Cool tones exist ONLY as contrast accent. No pure black or white.
+
+4. **Procedural Elegance to Clean Pixel Art Translation:** Translates to pixel art as clean lines, minimal unnecessary detail, geometric foundation, intentional pixel placement.
+
+5. **Escalating Intensity to VFX Overlay Not Sprite Variants:** KEY DECISION — Intensity escalation is handled by VFX and stage art, NOT by sprite variants. Sprites remain emotionally consistent. Keeps sprite count manageable.
+
+6. **Character Personality Through Movement Energy:**
+   - Kael: Economy of motion — minimal wind-ups, linear trajectories, clean recovery, controlled power
+   - Rhena: Explosive commitment — BIG wind-ups, wide arcs, momentum bleed in recovery, full-body strikes
+
+7. **Fighting Game Visual Language Requirements:** Defined mandatory genre conventions for impact frames, wind-up telegraphing, recovery vulnerability, block poses, and hit reactions.
+
+8. **Art Style Target HD Pixel Art Cel-Shaded:** Target Last Blade 2 and Guilty Gear XX quality. Flat color base plus cel-shaded hard-edge shadows.
+
+9. **Emotion and Intensity Scale by Action State:** Created detailed emotion matrix for EVERY action state for BOTH characters. Kael NEVER loses composure. Rhena is ALWAYS intense.
+
+10. **Non-Negotiable Consistency Rules:** Established strict constants that MUST remain identical across ALL frames including body proportions, identity markers, color palettes, and ember colors.
+
+**Design Philosophy Reinforced:**
+Every sprite is a frame in a story. If a sprite doesn't serve that story, it doesn't belong in Ashfall.
+
+**Artifact:** games/ashfall/docs/SPRITE-ART-VISION.md
+**Decision Inbox:** .squad/decisions/inbox/yoda-sprite-art-vision.md
+

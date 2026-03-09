@@ -1011,3 +1011,97 @@ Tag push (ashfall-v0.1.0)
 - Test manual workflow dispatch
 - Create v0.0.1-test tag to validate build output
 - Document release process for team
+
+# Decision: Sprite Art Brief Revised with Web Research
+
+**Author:** Boba (Art Director)  
+**Date:** 2026-03-10  
+**Status:** Proposed  
+**Scope:** Ashfall sprite production pipeline
+
+## What Changed
+
+Revised `games/ashfall/docs/SPRITE-ART-BRIEF.md` based on web research per founder directive ("que se informen bien de lo que implica este cambio").
+
+### Key Revisions
+
+1. **Canvas: 256×256 → 512×512.** Web research confirms 512 is the industry sweet spot for AI sprite generation. 256 is only for NES/SNES-era retro art. Joaquín's original instinct was correct.
+
+2. **New Section 0 (Research & Best Practices).** Covers resolution standards, character consistency techniques, industry sprite count benchmarks, and the proven ControlNet + LoRA + img2img workflow.
+
+3. **New Section 5 (FLUX on Azure: Capabilities & Limitations).** Honest assessment: our Azure deployment supports text-to-image ONLY. No ControlNet, no img2img, no LoRA, no seed control. All proven consistency techniques are unavailable.
+
+4. **New Section 6 (Tool Evaluation).** Head-to-head comparison of FLUX on Azure vs Local SD + ComfyUI. Local SD is objectively superior for character consistency. FLUX advantage is zero setup + newer model.
+
+5. **Infrastructure Decision Gate.** Added after P0 in production pipeline: if >30% of frames need regeneration due to consistency drift, we should evaluate pivoting to local SD + ComfyUI.
+
+6. **Frame Count Analysis.** Our ~600 frames/character is in the Guilty Gear range. Ambitious but achievable — if we have the right tools.
+
+## Decisions Requiring Founder Input
+
+1. **Confirm 512×512** — Now aligned with research. No objection expected.
+2. **After P0:** Evaluate consistency results and decide whether to continue with FLUX on Azure or invest in local SD + ComfyUI setup.
+3. **Hybrid approach option:** Use FLUX for reference frames → train LoRA locally → use ComfyUI for production. Best of both worlds but requires GPU hardware.
+
+## Impact on Team
+
+- All agents referencing sprite dimensions must use 512×512
+- Production timeline unchanged for P0 (same 48 frames, same generation process)
+- Potential infrastructure pivot after P0 if consistency is unacceptable
+
+## Why This Matters
+
+The founder asked us to research before building. He was right. Without this research, we would have attempted 1,200 frames of prompt-only generation with no proven path to character consistency — and discovered the problem after weeks of wasted effort. Now we know the risks upfront and have a decision gate to course-correct early.
+
+
+---
+
+### 2026-03-09T210032Z: FLUX deployment status
+**By:** joperezd (via Copilot)
+**What:** Solo FLUX 1.1 Pro está desplegado actualmente. Los otros 3 modelos (Kontext Pro, FLUX 2 Pro, FLUX 2 Flex) pueden desplegarse en Azure AI Foundry y crear variables de entorno de sistema para cada uno. Despliegue pendiente antes de empezar producción de sprites.
+**Why:** User input — estado real de infraestructura. No asumir que los modelos están disponibles hasta que Joaquín los despliegue.
+
+
+---
+
+### 2026-03-09T205438Z: Full FLUX model arsenal available
+**By:** joperezd (via Copilot)
+**What:** Four FLUX models available on Azure AI Foundry:
+1. FLUX 1.1 Pro — text-to-image, 30 tokens/min
+2. FLUX 1 Kontext Pro — text+image editing with CHARACTER CONSISTENCY, rate limit TBD
+3. FLUX 2 Pro — text-to-image + img2img, 4/min
+4. FLUX 2 Flex — text-to-image + img2img + NATIVE ControlNet + inpainting, rate limit TBD
+**Why:** User input — complete model inventory for art sprint tool evaluation.
+
+
+---
+
+### 2026-03-09T205742Z: Complete FLUX rate limits confirmed
+**By:** joperezd (via Copilot)
+**What:** Rate limits confirmados para todos los modelos FLUX en Azure AI Foundry:
+- FLUX 1.1 Pro (text-to-image): 30/min
+- FLUX 1 Kontext Pro (text+image ref, character consistency): 30/min
+- FLUX 2 Pro (text-to-image + img2img): 4/min
+- FLUX 2 Flex (text + img2img + ControlNet nativo + inpainting): 4/min
+**Why:** User input — rate limits finales para planificación de producción.
+
+
+---
+
+### 2026-03-09T212435Z: FLUX API validated — Entra ID auth works
+**By:** joperezd + Squad (via Copilot)
+**What:** FLUX 1.1 Pro API call validated successfully. Auth: Entra ID Bearer token (az account get-access-token --resource https://cognitiveservices.azure.com). API key auth disabled by org Azure Policy. BFL native path: providers/blackforestlabs/v1/flux-pro-1.1?api-version=preview. Response: 121KB PNG in b64_json. Sprint de arte desbloqueado para FLUX 1.1 Pro.
+**Why:** Validation confirmed — pipeline is functional. Next: deploy Kontext Pro, FLUX 2 Pro, FLUX 2 Flex.
+
+
+---
+
+### 2026-03-09T205112Z: FLUX 2 Pro disponible con img2img
+**By:** joperezd (via Copilot)
+**What:** Además de FLUX 1.1 Pro (text-to-image, 30 tokens/min), hay disponible FLUX 2 Pro que soporta text-to-image E image-to-image. Rate limit: 4 calls por minuto.
+**Why:** User input — cambia fundamentalmente la evaluación de herramientas. img2img permite propagación de consistencia entre frames sin necesitar ControlNet/LoRA.
+
+
+---
+
+

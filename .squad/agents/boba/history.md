@@ -299,6 +299,75 @@ Created universal animation principles skill — a comprehensive, engine-agnosti
 
 **Cross-references:** Links to game-feel-juice (juicy feedback visuals), game-design-fundamentals (animation as communication), beat-em-up-combat (attack animation timing)
 
+---
+
+## Session 18: Ashfall Sprite Art Brief (2026-03-09)
+
+**Context:** Ashfall is pivoting from procedural `_draw()` sprites to AI-generated pixel art via FLUX 1.1 Pro (Azure AI Foundry). Joaquín specifically requested we define EXACTLY what to ask FLUX before generating anything.
+
+**Delivered:**
+- `games/ashfall/docs/SPRITE-ART-BRIEF.md` (61 KB) — Comprehensive master reference for AI sprite generation covering:
+  1. **Sprite Specifications:** Canvas dimensions (256×256 recommended), format (PNG + alpha), orientation (all right-facing), origin point (center-bottom), padding/safe zones
+  2. **Character Reference Sheets:** Complete visual descriptions for Kael (lean monk, blue accent) and Rhena (muscular brawler, orange accent) — physical traits, costume details, exact palette hex values from ART-DIRECTION.md, silhouette keywords
+  3. **Animation Pose Catalog:** All 51 poses from character_sprite.gd with visual descriptions, frame counts (60 FPS timing), key frame identification, priority tiers (P0: idle/walk/attack_lp for PoC, P1: MVP gameplay, P2: polish)
+  4. **FLUX Prompt Strategy:** Base template, character-specific modifiers, pose-specific modifiers, style consistency anchors, negative prompts, palette enforcement options (guided vs. post-recolor), frame sequence strategy (frame-by-frame recommended over sprite sheets)
+  5. **Quality Checklist:** 7-point QA (silhouette test, color accuracy, pose accuracy, frame coherence, animation flow, style consistency, technical compliance)
+  6. **Production Pipeline:** Generation order (P0→P1→P2), batch strategy (10-frame review cycles), 6 review gates (Boba at each milestone), iteration budget (50% P0, 25% P1, 35% P2), file organization per ASSET-NAMING-CONVENTION.md, Godot import settings
+
+**Key Decisions:**
+
+**256×256 canvas over 512×512:**
+- FLUX generates cleaner pixel art at 256×256 (less interpolation artifacts when downscaled)
+- 4.3× safety margin for in-game 30×60px render size (sufficient for quality + rotation)
+- 2× faster iteration cycles (30 sec/frame vs. 60 sec/frame)
+- Power-of-2 texture size (optimal GPU memory)
+- Reserve 512×512 only for special cases (win poses, character select portraits, promotional renders)
+
+**Frame-by-frame generation over sprite sheets:**
+- FLUX struggles with multi-frame sprite sheet layouts (misalignment, inconsistent spacing)
+- Frame-level control is critical for fighting game precision (active frames, recovery frames must match frame data exactly)
+- Character consistency is solvable via strong prompt anchoring (include full character description in every frame prompt)
+- P0 scope is only ~48 frames (3 poses × 2 chars × 8 frames avg) = 24 minutes generation time at 30 sec/frame — acceptable
+- Easier iteration (regenerate single bad frame vs. entire sequence)
+
+**Palette enforcement strategy:**
+- Start with hex-guided prompts (include hex values + color descriptions: "grey-white gi (#E0DBD1)")
+- FLUX may drift ±10-15% from target hex — acceptable for P0/P1 if within visual tolerance
+- Reserve post-recolor pass (Python script with nearest-color mapping) for P2 polish if drift exceeds 15%
+
+**Review gates:**
+- Gate 1: First frame of first pose (Kael idle frame 1) — establishes visual baseline, must pass all QA checks before proceeding
+- Gate 2: First complete pose (Kael idle 8 frames) — validates frame coherence, animation flow
+- Gate 3: P0 complete (6 pose sets) — systemic check before scaling to P1
+- Gate 4: P1 midpoint — catch style drift early
+- Gate 5: P1 complete — gameplay integration validation
+- Gate 6: P2 complete — final art director + founder sign-off
+
+**Production efficiency:**
+- Batch size: 10 frames → review → iterate → next 10 frames (catch errors early, avoid generating 48 frames with consistent mistakes)
+- Iteration budget: 50% re-gen allowance for P0 (learning phase), 25% for P1 (prompts tuned), 35% for P2 (higher quality bar)
+- Rate limit: Azure FLUX 1.1 Pro = 30 tokens/min, assume 1 sprite = 1 token → can generate 2 frames/min sustained
+
+**P0 scope (Proof of Concept):**
+- 3 poses: `idle`, `walk`, `attack_lp`
+- 2 characters: Kael, Rhena
+- ~48 total frames
+- Goal: Validate FLUX prompt strategy, frame coherence, color accuracy, style consistency before committing to 1000+ frame production
+
+**Cross-references:**
+- ART-DIRECTION.md (palettes, silhouettes, proportions, animation timing)
+- ASSET-NAMING-CONVENTION.md (file paths: `assets/sprites/{character}/{character}_{pose}_{frame:02d}.png`)
+- GDD.md (character archetypes, gameplay context)
+- character_sprite.gd (51 pose names, `CharacterSprite.pose` property, palette system)
+
+**Next Actions:**
+1. Joaquín reviews + approves brief (confirm 256×256 canvas, P0 scope, review gates)
+2. Set up Azure AI Foundry access (FLUX 1.1 Pro endpoint)
+3. Generate Kael idle frame 1 (baseline)
+4. Iterate on prompt until frame 1 passes Gate 1 QA
+5. Complete P0 (6 pose sets, 48 frames)
+6. Report P0 results, adjust pipeline for P1 based on learnings
+
 **Confidence:** Medium (firstPunch experience + industry best practices). Low for 3D motion capture section (not yet applied to game project).
 
 
@@ -404,3 +473,29 @@ For a Sprint 1 that focused on core gameplay mechanics (movement, hitboxes, game
 
 **On Character Portraits for Select Screen:**
 The red placeholder rectangle is functional for now. Character portraits can wait for Sprint 3 — gameplay readability is more urgent.
+
+### Wave — Sprite Art Brief Revision (2026-03-10)
+
+**Delivered:**
+- Revised `games/ashfall/docs/SPRITE-ART-BRIEF.md` based on web research per founder directive
+- Added Section 0 (Research & Best Practices) with industry benchmarks, proven workflows, and resolution guidance
+- Changed canvas recommendation from 256x256 to 512x512 — Joaquín was right, web research confirms 512 is the sweet spot
+- Added Section 5 (FLUX on Azure: Capabilities & Limitations) — honest assessment of what our Azure text-to-image API can and cannot do
+- Added Section 6 (Tool Evaluation: FLUX vs Local SD + ComfyUI) — head-to-head comparison table for Joaquín's decision
+- Updated all downstream references (origin points, safe zones, prompt templates, Godot import offsets, QA checks) from 256 to 512
+- Added infrastructure decision gate after P0 in production pipeline
+- Renumbered sections: Quality Checklist is now Section 7, Production Pipeline is now Section 8
+
+**Key decisions:**
+- Acknowledged that ALL proven character consistency techniques (ControlNet, LoRA, img2img, IPAdapter) are unavailable on our Azure FLUX deployment. We can only use prompt anchoring — the weakest technique.
+- Recommended using FLUX for P0 to test viability, with honest 30% regeneration threshold as decision gate.
+- Did not oversell FLUX — presented local SD + ComfyUI as objectively superior for character consistency, while acknowledging FLUX's advantages in quality and zero-setup.
+- Proposed hybrid approach: use FLUX for initial reference frames, then LoRA-train local SD for production frames.
+- Updated frame count estimates: ~600 frames per character (1,200 total) places us in the Guilty Gear tier — ambitious but achievable.
+- Admitted original 256x256 recommendation was wrong. Research showed it's only appropriate for NES/SNES-era art, not Street Fighter Alpha / Guilty Gear Xrd aesthetic.
+
+**Learnings:**
+- Never make technical recommendations without researching industry best practices first. The founder was right to push back.
+- FLUX on Azure is a text-to-image API black box. The features that matter most for our use case (identity consistency across frames) simply don't exist on this deployment.
+- The "just use detailed prompts" approach to character consistency is unproven for production sprite sets. We need to be honest about risks.
+- 512x512 is the modern standard for AI sprite generation. 256 was a speed optimization that sacrificed too much detail.
