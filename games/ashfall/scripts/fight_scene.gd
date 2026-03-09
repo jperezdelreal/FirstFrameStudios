@@ -4,7 +4,7 @@ extends Node2D
 
 @onready var fighter1: Fighter = $Fighters/Fighter1
 @onready var fighter2: Fighter = $Fighters/Fighter2
-@onready var camera: Camera2D = $Camera2D
+@onready var camera: CameraController = $Camera2D
 
 func _ready() -> void:
 	# Cross-reference opponents
@@ -22,6 +22,11 @@ func _ready() -> void:
 	fighter1.knocked_out.connect(_on_fighter_ko)
 	fighter2.knocked_out.connect(_on_fighter_ko)
 
+	# Wire camera controller to fighters
+	if camera:
+		camera.fighter1 = fighter1
+		camera.fighter2 = fighter2
+
 	GameState.reset_match()
 
 	# Wire hit_landed signal for damage application
@@ -29,24 +34,6 @@ func _ready() -> void:
 
 	# Start the round system
 	RoundManager.start_match(fighter1, fighter2)
-
-func _physics_process(_delta: float) -> void:
-	_update_camera()
-
-func _update_camera() -> void:
-	if not camera or not fighter1 or not fighter2:
-		return
-	# Track midpoint between fighters
-	var midpoint := (fighter1.global_position + fighter2.global_position) / 2.0
-	camera.global_position.x = midpoint.x
-	# Zoom based on distance
-	var distance := abs(fighter1.global_position.x - fighter2.global_position.x)
-	if distance < 200:
-		camera.zoom = Vector2(1.1, 1.1)
-	elif distance > 400:
-		camera.zoom = Vector2(0.9, 0.9)
-	else:
-		camera.zoom = Vector2(1.0, 1.0)
 
 func _on_fighter_damaged(fighter_node, amount: int, remaining_hp: int) -> void:
 	EventBus.fighter_damaged.emit(fighter_node, amount, remaining_hp)
