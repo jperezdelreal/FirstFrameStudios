@@ -1,0 +1,76 @@
+name: Godot Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v0.1.0)'
+        required: false
+        default: 'v0.0.0-dev'
+
+jobs:
+  export-game:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install Godot 4.6
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_linux.x86_64.zip
+          unzip -q Godot_v4.6-stable_linux.x86_64.zip
+          sudo mv Godot_v4.6-stable_linux.x86_64 /usr/local/bin/godot
+          sudo chmod +x /usr/local/bin/godot
+          godot --version
+      
+      - name: Install Export Templates
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates/4.6.stable
+          wget -q https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_export_templates.tpz
+          unzip -q Godot_v4.6-stable_export_templates.tpz
+          mv templates/* ~/.local/share/godot/export_templates/4.6.stable/
+      
+      - name: Create output directory
+        run: mkdir -p games/ashfall/builds/windows
+      
+      - name: Export Windows build
+        working-directory: games/ashfall
+        run: |
+          godot --headless --export-release "Windows Desktop" builds/windows/Ashfall.exe
+      
+      - name: Create release archive
+        run: |
+          cd games/ashfall/builds/windows
+          zip -r Ashfall-Windows.zip .
+      
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "tag=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Ashfall ${{ steps.version.outputs.tag }}
+          body: |
+            ## Ashfall - 1v1 Fighting Game
+            
+            **Download the Windows build below and extract to play.**
+            
+            ### Changes in this release
+            See commit history for details.
+          files: |
+            games/ashfall/builds/windows/Ashfall-Windows.zip
+          draft: false
+          prerelease: false

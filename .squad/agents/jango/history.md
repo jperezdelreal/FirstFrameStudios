@@ -141,3 +141,70 @@ Restructured the source IPKong repository into a multi-game monorepo layout.
 **Commit:** `613a8e5` — "Restructure to monorepo layout"
 
 **Status:** COMPLETE. Repository is now a monorepo. Ready for Ashfall project creation in `games/ashfall/`.
+
+### 2025-07-24 — Godot Export and GitHub Release Pipeline
+**Session:** Ashfall Sprint 1 — Build automation infrastructure  
+**Role:** Tool Engineer — Pipeline automation, CI/CD for Godot builds
+
+**Task Executed:**
+Created complete automated build and release pipeline for Ashfall game.
+
+**What Was Created:**
+1. **Export Presets (`games/ashfall/export_presets.cfg`):**
+   - Windows Desktop preset for Godot 4.6 (config_version=5)
+   - Output path: `builds/windows/Ashfall.exe`
+   - Embedded PCK for single-file distribution
+   - Company metadata: First Frame Studios, Ashfall - 1v1 Fighting Game
+   - Texture formats: S3TC/BPTC enabled, ETC2/ASTC disabled (PC-focused)
+   
+2. **GitHub Actions Workflow (`.github/workflows/godot-release.yml`):**
+   - Triggers: Tag push matching `v*` OR manual workflow_dispatch
+   - Installs Godot 4.6 stable + export templates (manual wget, not chickensoft)
+   - Exports Windows build from `games/ashfall/` working directory
+   - Creates `Ashfall-Windows.zip` archive
+   - Publishes GitHub Release with zip download using `softprops/action-gh-release@v2`
+   - Cross-compilation: Ubuntu runner exports Windows .exe (Godot includes Windows runtime in templates)
+   
+3. **Gitignore Updates:**
+   - Removed `export_presets.cfg` from root `.gitignore` (needed for CI/CD to read the preset)
+   - Added `builds/` directory to ignore local build output
+
+**Key Decisions:**
+- **Manual Godot installation vs chickensoft-games/setup-godot:** Used manual wget approach for explicit Godot 4.6 support (action might not support 4.6 yet)
+- **Versioned export_presets.cfg:** Typically ignored, but we need it in CI/CD to configure exports. Safe because it contains no local paths or credentials.
+- **Single preset (Windows only):** Starting simple; can add Linux/Mac/Web exports later if needed
+- **Tag-based releases:** Developer pushes a `v*` tag → automatic build and GitHub Release. Clean workflow.
+
+**Architecture:**
+```
+Tag push (v0.1.0)
+  ↓
+GitHub Actions triggers
+  ↓
+Install Godot 4.6 + templates (Linux runner)
+  ↓
+Export using export_presets.cfg → Ashfall.exe
+  ↓
+Zip build output
+  ↓
+Create GitHub Release with zip download
+```
+
+**Branch:** `squad/build-pipeline` (PR #111)  
+**Status:** COMPLETE. Ready for testing with manual workflow dispatch or test tag.
+
+### 2026-03-09 — Viewport Resolution Update (Ashfall)
+**Session:** Configuration update  
+**Role:** Tool Engineer — Direct configuration management
+
+**Task Executed:**
+Updated Ashfall viewport resolution from 1280x720 (720p) to 1920x1080 (1080p).
+
+**Changes Made:**
+- `games/ashfall/project.godot` [display] section:
+  - `window/size/viewport_width`: 1280 → 1920
+  - `window/size/viewport_height`: 720 → 1080
+
+**Rationale:** 720p resolution too low for 2026 game standards; 1080p provides better visual clarity for fighting game action and character animation detail. No other configuration modified.
+
+**Status:** COMPLETE. Viewport updated; no additional work required.
