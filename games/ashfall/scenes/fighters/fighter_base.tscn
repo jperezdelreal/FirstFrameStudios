@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/fighters/fighter_base.gd" id="1_fighter"]
 [ext_resource type="Script" path="res://scripts/states/state_machine.gd" id="2_sm"]
@@ -13,12 +13,16 @@
 [ext_resource type="Script" path="res://scripts/systems/input_buffer.gd" id="11_input"]
 [ext_resource type="Script" path="res://scripts/fighters/fighter_controller.gd" id="12_ctrl"]
 [ext_resource type="Script" path="res://scripts/fighters/states/throw_state.gd" id="13_throw"]
+[ext_resource type="Script" path="res://scripts/systems/hitbox.gd" id="14_hitbox"]
 
 [sub_resource type="RectangleShape2D" id="SubResource_body"]
 size = Vector2(30, 60)
 
 [sub_resource type="RectangleShape2D" id="SubResource_hurtbox"]
 size = Vector2(26, 56)
+
+[sub_resource type="RectangleShape2D" id="SubResource_hitbox"]
+size = Vector2(36, 24)
 
 [node name="FighterBase" type="CharacterBody2D"]
 collision_mask = 9
@@ -50,6 +54,18 @@ shape = SubResource("SubResource_hurtbox")
 position = Vector2(30, -30)
 
 [node name="Hitboxes" type="Node2D" parent="."]
+
+[node name="Hitbox" type="Area2D" parent="Hitboxes"]
+collision_layer = 2
+collision_mask = 4
+monitoring = false
+monitorable = false
+script = ExtResource("14_hitbox")
+
+[node name="CollisionShape" type="CollisionShape2D" parent="Hitboxes/Hitbox"]
+position = Vector2(30, -30)
+shape = SubResource("SubResource_hitbox")
+disabled = true
 
 [node name="InputBuffer" type="Node" parent="."]
 script = ExtResource("11_input")
