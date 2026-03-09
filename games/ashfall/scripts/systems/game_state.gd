@@ -41,6 +41,13 @@ func spend_ember(player_id: int, cost: int, action: String) -> bool:
 func get_ember(player_id: int) -> int:
 	return ember[player_id - 1]
 
+
+func activate_ignition(player_id: int) -> bool:
+	if not spend_ember(player_id, MAX_EMBER, "ignition"):
+		return false
+	EventBus.ignition_activated.emit(player_id)
+	return true
+
 func is_match_over() -> bool:
 	return scores[0] >= ROUNDS_TO_WIN or scores[1] >= ROUNDS_TO_WIN
 
