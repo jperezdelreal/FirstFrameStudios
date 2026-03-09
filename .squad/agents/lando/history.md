@@ -112,3 +112,10 @@
   - FighterController is the "Lando will replace with InputBuffer" integration Chewie left as TODO
   - Combat system (hit detection, damage application) and round manager are NOT wired in this PR — those are separate tickets
   - MoveData resources are pure data; AnimationPlayer-driven hitbox activation will come from Tarkin's frame data work
+
+### P0 Combat Bug Fixes (#92, #93) (2026-03-09)
+- **Context:** Ackbar's M4 playtest found two P0 blockers — attacks couldn't connect and damage pipeline would crash.
+- **Bug #92 — Empty Hitbox Geometry:** fighter_base.tscn had an empty Hitboxes Node2D with no Area2D children. Added a Hitbox (Area2D with hitbox.gd script) containing a CollisionShape2D (RectangleShape2D 36x24) positioned at (30, -30) to match AttackOrigin. Shape starts disabled; attack_state.gd activates during active frames and deactivates on recovery. Collision layer 2 (Hitboxes) / mask 4 (Hurtboxes) per architecture spec.
+- **Bug #93 — take_damage Signature Mismatch:** fight_scene.gd's `_on_hit_landed` was calling `target.take_damage(scaled_damage)` with 1 arg, but fighter_base.gd expects `take_damage(amount, knockback, hitstun_frames)` with 3. Fixed by extracting `knockback_force` and `hitstun_duration` from the hit_data dictionary (emitted by hitbox.gd).
+- **Key Lesson:** When building a pipeline (hitbox → signal → damage handler), validate the full chain end-to-end at build time. The hitbox.gd emit and fighter_base.gd consume were designed by different agents without a live integration check. Future: wire integration tests for combat signals early.
+- **PR:** #96 (squad/92-93-p0-combat-fixes), closes #92 and #93.
