@@ -14,8 +14,8 @@ How to decide who handles what.
 | Audio, SFX, music, sound design | Greedo | Sound effects, procedural music, audio events, Web Audio API |
 | QA, playtesting, balance, feel | Ackbar | Playtesting, combat feel, balance tuning, regression, edge cases |
 | Tooling, scaffolding, templates, conventions | Jango | EditorPlugins, scene templates, GDScript style guide, build/export automation, project.godot config, linting, asset pipelines |
-| Architecture, integration, review | Solo | Project structure, code review, integration, decisions, scene tree conventions, architecture reviews |
-| Scope & priorities | Solo | What to build next, trade-offs, backlog prioritization |
+| Architecture, integration review | Solo | Project structure, integration verification, decisions, scene tree conventions, architecture reviews |
+| Ops, blockers, branch management, stale issues | Mace | Blocker tracking/unblocking, branch rebasing, stale issue cleanup, branch validation |
 | Sprint planning, timelines, workload | Mace | Sprint planning, milestone tracking, scope management, developer joy, release planning |
 | Feature triage, scope decisions | Yoda + Mace | Vision Keeper (Yoda) + Producer (Mace) evaluate features against four-test framework |
 | Async issue work (bugs, tests, small features) | @copilot 🤖 | Well-defined tasks matching capability profile |
