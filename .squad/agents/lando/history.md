@@ -119,3 +119,13 @@
 - **Bug #93 — take_damage Signature Mismatch:** fight_scene.gd's `_on_hit_landed` was calling `target.take_damage(scaled_damage)` with 1 arg, but fighter_base.gd expects `take_damage(amount, knockback, hitstun_frames)` with 3. Fixed by extracting `knockback_force` and `hitstun_duration` from the hit_data dictionary (emitted by hitbox.gd).
 - **Key Lesson:** When building a pipeline (hitbox → signal → damage handler), validate the full chain end-to-end at build time. The hitbox.gd emit and fighter_base.gd consume were designed by different agents without a live integration check. Future: wire integration tests for combat signals early.
 - **PR:** #96 (squad/92-93-p0-combat-fixes), closes #92 and #93.
+
+### Frame Data Alignment (#108, #109, #110) (2026-03-09)
+- **Context:** Sprint 1 playtest found 3 P1 bugs: MP/MK startup 1f fast, medium attacks missing from character movesets, and base↔character .tres frame data drift.
+- **#108 Fix:** MP startup 6→7f, MK startup 7→8f across fighter_base/, attack_state/, block_state/ .tres files and frame-data.csv.
+- **#109 Fix:** Added Standing MP (input_button="mp") and Standing MK (input_button="mk") MoveData sub-resources to kael_moveset.tres and rhena_moveset.tres. Rhena's MK uses hitstun=20 for GDD's +5 on-hit advantage. load_steps updated 7→9.
+- **#110 Fix:** HP startup 10→12f, HK startup 12→14f in all base .tres. Per-character variations (HP active, HK active/recovery) left intentional — within GDD ranges.
+- **Key Lesson:** Frame data spread across 3+ directories (fighter_base/, attack_state/, block_state/) invites drift. fighter_base/ and attack_state/ are identical — consolidation needed. Character moveset .tres is the authoritative runtime source; base .tres are reference/validation only.
+- **Key Lesson:** The GDD has both generic ranges (e.g. Medium startup 7-9f) and specific per-move values (e.g. Standing MK = 8f). Always use the specific value when available, falling back to range minimum for generic entries.
+- **Open Item:** Input system only supports 4 buttons (lp/hp/lk/hk). Medium button inputs (mp/mk) need input mapping infrastructure before these moves are accessible in gameplay. Separate ticket needed.
+- **PR:** #114 (squad/108-110-frame-data-fixes), closes #108, #109, #110.
