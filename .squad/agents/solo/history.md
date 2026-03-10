@@ -752,3 +752,26 @@ Conducted independent web research after founder reported v2 animation frames wo
 Decision written to `.squad/decisions/inbox/solo-sprite-consistency-research.md`.
 
 ---
+
+---
+
+### Squad Ecosystem Audit (2026-07-23)
+Conducted comprehensive investigation of Squad CLI v0.8.25 ecosystem at founder's request. Key findings:
+
+1. **13 unused features identified** across CLI commands, plugins, SubSquads, human members, and governance tooling. 6 classified as high-value adopt-now, 4 as adopt-later, 3 as skip.
+
+2. **Context bloat is critical.** Solo history.md hit 69KB, decisions.md hit 85KB. squad nap --deep has never been run. This wastes agent context tokens in every session. Recommended as #1 priority fix.
+
+3. **SubSquads solve our parallel workstream problem.** Art Sprint / Gameplay / Audio can run in isolated Codespaces with directory-scoped SubSquads via .squad/streams.json. Eliminates merge conflicts between art and gameplay agents.
+
+4. **No game-dev plugin marketplace exists.** The 4 existing marketplaces (awesome-copilot, anthropic-skills, azure-cloud-dev, security-hardening) target web/cloud development. Our 31 skills could become the first game-dev marketplace for the Squad community.
+
+5. **17 GitHub Actions workflows installed — 12 active, 5 template stubs.** Heartbeat cron is commented out (biggest quick win to enable). The 5 stubs need Godot-specific build/lint commands.
+
+6. **squad build --check should be in CI.** We have squad.config.ts but never run squad build. Config and markdown may have silently diverged.
+
+7. **Joaquín should be added as human team member.** Formal approval gates for architecture decisions and ship/no-ship calls instead of ad-hoc requests.
+
+Decision written to .squad/decisions/inbox/solo-squad-ecosystem-audit.md.
+
+---
