@@ -1,12 +1,5 @@
 # Jango — History
 
-## Project Context
-- **Project:** firstPunch — Transitioning from browser-based (HTML/Canvas/JS) to Godot 4
-- **User:** joperezd
-- **Stack (current):** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
-- **Stack (target):** Godot 4, GDScript, Godot editor toolchain
-- **Role:** Tool Engineer — owns development-time tooling, templates, scaffolding, and pipeline automation
-
 ## Background
 
 ### Why This Role Exists
@@ -453,3 +446,36 @@ Future risk: Sprint 2 is combo system (high complexity, low tolerance for bugs).
 - **CI Workflow:** Created integration-gate.yml as a PR-gating action (runs on `pull_request` targeting main, not on push). Three grep-based checks: (1) `:=` with dict/array access (Godot 4.6 type inference bug), (2) `_process` in gameplay scripts (should be `_physics_process`), (3) public functions without explicit return types. Shell-based approach keeps CI fast — no Godot import needed.
 - **PR Template:** Added pre-merge checklist to pull_request_template.md enforcing GDSCRIPT-STANDARDS.md compliance, CI pass, editor testing, and Windows export testing.
 - **Key Lesson:** In a multi-agent environment, git branch switches can happen between commands. Use atomic command chains for critical git workflows (stash + checkout + apply + commit in one block).
+
+---
+
+### 2026-07-23 — Squad Documentation Deep Audit
+
+- **Task:** Deep-crawled 25+ pages of the Squad docs site (bradygaster.github.io/squad/docs/) and produced comprehensive feature inventory cross-referenced against our `.squad/` setup.
+- **Deliverable:** `.squad/decisions/inbox/jango-squad-docs-audit.md` — 37 features inventoried, each with adoption status, value assessment, and effort estimate.
+- **Critical Finding:** Our `decisions.md` is 85KB — docs recommend archiving stale entries to `decisions-archive.md`. This is our #1 context budget waste. `squad nap --deep` or manual archiving is highest-ROI fix available.
+- **Key Gaps Found:**
+  1. No decision archiving → context bloat on every agent spawn
+  2. @copilot auto-assign disabled → missing autonomous async work
+  3. No governance hooks → no file-write guards or PII scrubbing
+  4. `squad.config.ts` has placeholder routing (all → @scribe) and wrong casting universe
+  5. No progressive history summarization for oversized agent histories
+  6. No custom ceremonies beyond default Design Review + Retrospective
+- **Features We Don't Need:** Remote Control, OpenTelemetry/Aspire, Consult Mode, Git Worktrees
+- **Features to Adopt When Ready:** Personal Squad + Upstream Inheritance (when 2nd game starts), Plugin Marketplace (when game-dev plugins exist)
+- **Method:** Used `web_fetch` with `max_length: 15000` across all docs sections. Verified actual site URL structure is `/squad/docs/` not `/squad/`. Pages that 404'd: `concepts/how-agents-work`, `scenarios/` index, `cookbook/` index.
+
+### Session 14: Marketplace Skills Install + Config Fix
+**Date:** 2025-07-23  
+**Task:** Install 9 marketplace skills from github/awesome-copilot and anthropics/skills, fix squad.config.ts routing/casting/hooks.
+
+**Key Findings:**
+1. **Installed 9 skills successfully** via GitHub MCP `get_file_contents` — game-engine-web, context-map, create-technical-spike, refactor-plan, prd, conventional-commit, github-issues, what-context-needed, skill-creator.
+2. **Named `game-engine-web`** to avoid collision with our existing `web-game-engine` skill directory.
+3. **Fixed squad.config.ts routing** — all four rules were pointing to `@scribe` (placeholder). Now: feature-dev → @solo/@chewie/@lando, bug-fix → @chewie/@lando, testing → @ackbar, documentation → @scribe.
+4. **Fixed casting allowlist** — was `['The Usual Suspects', 'Breaking Bad', 'The Wire', 'Firefly']`, changed to `['Star Wars']` per our diegetic universe.
+5. **Enabled `scribeAutoRuns: true`** so Scribe fires after every batch automatically.
+6. **Added governance hooks** — `allowedWritePaths`, `blockedCommands`, `scrubPii: true`. Config format accepted the `hooks` key directly.
+7. **MCP download pattern works well** — `github-mcp-server-get_file_contents` is reliable for pulling individual skill files. Parallelized all 9 fetches.
+
+**Deliverable:** Committed as `chore: install 9 marketplace skills + fix squad.config.ts`.
