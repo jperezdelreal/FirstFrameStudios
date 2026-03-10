@@ -168,7 +168,7 @@ func _get_attack_pose() -> String:
 	var attack_state := fighter.state_machine.current_state
 	if not attack_state or not attack_state.has_method("get_current_move_name"):
 		return "attack_mp"
-	var move_name: String = attack_state.get_current_move_name()
+	var move_name: String = attack_state.get_current_move_name().to_lower()
 
 	# Special / super moves -- check first (highest priority)
 	if "ignition" in move_name or "super" in move_name:

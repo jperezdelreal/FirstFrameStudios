@@ -1,4 +1,4 @@
-[gd_resource type="Resource" load_steps=9 format=3]
+[gd_resource type="Resource" load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/data/fighter_moveset.gd" id="1_moveset"]
 [ext_resource type="Script" path="res://scripts/data/move_data.gd" id="2_move"]
@@ -77,6 +77,25 @@ launch_force = Vector2(0, 0)
 move_type = 0
 hit_type = 2
 requires_crouch = true
+requires_air = false
+
+[sub_resource type="Resource" id="Resource_st_lk"]
+script = ExtResource("2_move")
+move_name = "Standing LK"
+input_motion = ""
+input_button = "lk"
+startup_frames = 4
+active_frames = 3
+recovery_frames = 8
+damage = 35
+chip_damage = 0
+hitstun_frames = 12
+blockstun_frames = 8
+knockback = Vector2(80, 0)
+launch_force = Vector2(0, 0)
+move_type = 0
+hit_type = 1
+requires_crouch = false
 requires_air = false
 
 [sub_resource type="Resource" id="Resource_st_hk"]
@@ -158,5 +177,5 @@ requires_air = false
 [resource]
 script = ExtResource("1_moveset")
 character_name = "Rhena"
-normals = [SubResource("Resource_st_lp"), SubResource("Resource_st_mp"), SubResource("Resource_st_hp"), SubResource("Resource_cr_lk"), SubResource("Resource_st_mk"), SubResource("Resource_st_hk")]
+normals = [SubResource("Resource_st_lp"), SubResource("Resource_st_mp"), SubResource("Resource_st_hp"), SubResource("Resource_st_lk"), SubResource("Resource_cr_lk"), SubResource("Resource_st_mk"), SubResource("Resource_st_hk")]
 specials = [SubResource("Resource_blaze_rush"), SubResource("Resource_flashpoint")]

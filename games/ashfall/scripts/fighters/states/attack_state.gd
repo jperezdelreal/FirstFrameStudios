@@ -110,13 +110,13 @@ func _deactivate_hitboxes() -> void:
 		return
 	for child in fighter.hitboxes.get_children():
 		if child is Area2D:
-			child.monitoring = false
+			child.set_deferred("monitoring", false)
 			var shape := child.get_child(0) as CollisionShape2D
 			if shape:
-				shape.disabled = true
+				shape.set_deferred("disabled", true)
 			# Reset one-hit tracking if using Hitbox class
 			if child.has_method("deactivate"):
-				child.deactivate()
+				child.call_deferred("deactivate")
 
 
 ## Returns the MoveData driving this attack, or null.

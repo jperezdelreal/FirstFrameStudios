@@ -62,9 +62,12 @@ func _ready() -> void:
 	_build_all_animations()
 	anim_player.add_animation_library("", anim_library)
 
-	# Connect to state machine for automatic animation switching
-	if fighter.state_machine:
-		fighter.state_machine.state_changed.connect(_on_state_changed)
+	# Connect to state machine for automatic animation switching.
+	# Access the node directly because fighter.state_machine is @onready
+	# and not yet populated when sibling _ready() runs.
+	var sm := fighter.get_node_or_null("StateMachine")
+	if sm and sm.has_signal("state_changed"):
+		sm.state_changed.connect(_on_state_changed)
 
 	# Start with idle
 	play_animation("idle")
@@ -334,18 +337,20 @@ func _move_to_pose(move: MoveData) -> String:
 	var button := move.input_button
 	if move.requires_crouch:
 		match button:
-			"lp": return "attack_lp"
-			"hp": return "attack_hp"
-			"lk": return "attack_lp"
-			"hk": return "attack_hp"
-			_:    return "attack_mp"
+			"lp": return "crouch_lp"
+			"mp": return "crouch_mp"
+			"hp": return "crouch_hp"
+			"lk": return "crouch_lk"
+			"mk": return "crouch_mk"
+			"hk": return "crouch_hk"
+			_:    return "crouch_mp"
 	match button:
 		"lp": return "attack_lp"
 		"mp": return "attack_mp"
 		"hp": return "attack_hp"
-		"lk": return "attack_lp"
-		"mk": return "attack_mp"
-		"hk": return "attack_hp"
+		"lk": return "attack_lk"
+		"mk": return "attack_mk"
+		"hk": return "attack_hk"
 		_:    return "attack_mp"
 
 
@@ -373,5 +378,7 @@ func _play_attack_from_state() -> void:
 		if move:
 			play_attack_animation(move)
 			return
-	# Fallback: generic attack pose
-	play_animation("hit")  # Will be overridden by bridge
+	# Fallback: let SpriteStateBridge handle the pose
+	if anim_player and anim_player.is_playing():
+		anim_player.stop()
+	_current_anim = ""

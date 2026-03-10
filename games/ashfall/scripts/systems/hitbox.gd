@@ -50,12 +50,12 @@ func activate() -> void:
 
 
 func deactivate() -> void:
-	monitoring = false
+	set_deferred("monitoring", false)
 	_hit_targets.clear()
 	# Disable all child collision shapes
 	for child in get_children():
 		if child is CollisionShape2D:
-			child.disabled = true
+			child.set_deferred("disabled", true)
 
 
 func _on_area_entered(area: Area2D) -> void:

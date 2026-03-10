@@ -22,15 +22,23 @@ extends Node2D
 				queue_redraw()
 
 ## Mirrors the sprite horizontally when true (facing left).
-## Uses parent scale.x to flip the entire node including AnimatedSprite2D children.
-## Accounts for per-character default sprite orientation via _sprite_faces_right().
+## For procedural rendering: uses parent scale.x to flip the node.
+## For PNG sprites: uses AnimatedSprite2D.flip_h instead of scale.x
+## to avoid double-flipping (child inherits parent scale).
 var flip_h: bool = false:
 	set(value):
 		flip_h = value
-		var visual_flip := flip_h
-		if not _sprite_faces_right():
-			visual_flip = not flip_h
-		scale.x = -1.0 if visual_flip else 1.0
+		if _use_png_sprites and _animated_sprite:
+			var visual_flip := flip_h
+			if not _sprite_faces_right():
+				visual_flip = not flip_h
+			_animated_sprite.flip_h = visual_flip
+			scale.x = 1.0
+		else:
+			var visual_flip := flip_h
+			if not _sprite_faces_right():
+				visual_flip = not flip_h
+			scale.x = -1.0 if visual_flip else 1.0
 
 
 ## All Blender-rendered sprites face LEFT by default (same camera angle).

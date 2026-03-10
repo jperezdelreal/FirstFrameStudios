@@ -70,7 +70,7 @@ jump_force = 520.0
 gravity = 900.0
 
 [node name="Fighter2" parent="Fighters" instance=ExtResource("3_rhena")]
-position = Vector2(440, 300)
+position = Vector2(400, 300)
 player_id = 2
 walk_speed = 220.0
 walk_back_speed = 187.0
