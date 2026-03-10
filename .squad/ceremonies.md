@@ -121,3 +121,49 @@
 9. Document any failures as P0 blocking issues
 
 **Root cause (M1+M2):** Nobody opened Godot after merging 8 PRs across two milestones. The project was never verified to load or run. Integration failures were invisible until Jango's pre-M3 code review found 5 blockers that prevented the game from running at all.
+
+---
+
+## Sprint Planning
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | manual |
+| **When** | before |
+| **Condition** | start of new sprint |
+| **Facilitator** | Mace (Producer) |
+| **Participants** | Mace + Yoda + Solo |
+| **Time budget** | focused |
+| **Enabled** | ✅ yes |
+
+**Purpose:** At the start of each sprint, the team aligns on scope, priorities, and assignments. Mace facilitates, Yoda provides game design perspective, Solo defines architecture constraints.
+
+**Agenda:**
+1. Review backlog — what issues are open, what's the priority order?
+2. Define sprint scope — what ships this sprint?
+3. Assign work to agents via `squad:{member}` labels
+4. Identify dependencies and blockers
+5. Set sprint milestone and deadline
+
+---
+
+## Art Review
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | manual |
+| **When** | after |
+| **Condition** | art/sprite PRs merged or new visual assets integrated |
+| **Facilitator** | Boba (Art Director) |
+| **Participants** | Boba + Nien |
+| **Time budget** | focused |
+| **Enabled** | ✅ yes |
+
+**Purpose:** After visual asset integration, verify consistency across characters, animations, and environments. Catch style drift before it compounds.
+
+**Checklist:**
+1. Compare new sprites against art style reference (cel-shade spec, proportions)
+2. Verify color palette consistency across characters
+3. Check animation frame counts and timing feel right
+4. Verify sprite positioning and scale relative to game viewport
+5. Document any visual inconsistencies as issues
