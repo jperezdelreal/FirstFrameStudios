@@ -33,10 +33,10 @@ var flip_h: bool = false:
 		scale.x = -1.0 if visual_flip else 1.0
 
 
-## Override in subclass if the raw sprite PNG faces LEFT instead of RIGHT.
-## Kael faces right, Rhena faces left — determined by Blender camera angle.
+## All Blender-rendered sprites face LEFT by default (same camera angle).
+## Override only if a specific character's render uses a different camera.
 func _sprite_faces_right() -> bool:
-	return true
+	return false
 
 ## Character palettes — override in subclass
 ## Each palette is a Dictionary with keys: skin, hair, outfit_primary,

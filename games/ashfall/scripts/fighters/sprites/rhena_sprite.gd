@@ -28,10 +28,6 @@ func _get_character_id() -> String:
 	return "rhena"
 
 
-func _sprite_faces_right() -> bool:
-	return false
-
-
 func _init_palettes() -> void:
 	# P1: Hot intensity — dark red/black attire, orange-ember accents, warm skin
 	palettes.append({
