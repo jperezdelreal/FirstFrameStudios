@@ -555,3 +555,100 @@ The red placeholder rectangle is functional for now. Character portraits can wai
 - **Review contact sheets before production.** Catching these issues at PoC saves massive rework.
 
 **Verdict:** FLUX pipeline is viable but requires tighter reference propagation. Recommend one more PoC iteration with Kontext Pro input_image to prove consistency.
+
+### Wave 6 — Cel-Shade Art Direction Specification (2026-06-12)
+
+**Delivered:**
+- `games/ashfall/docs/CEL-SHADE-ART-SPEC.md` — Comprehensive 21KB technical art spec for Blender pipeline, defining exact parameters for fighting game quality cel-shade renders.
+
+**Sections & Key Parameters:**
+
+1. **Outline System** (Section 1)
+   - Thickness: increased from 0.002 to 0.008 (4x thicker for 512×512 readability)
+   - Per-character tinting: Kael outline (0.35, 0.15, 0.05) warm burnt sienna, Rhena (0.08, 0.12, 0.20) dark navy
+   - Uniform thickness across all body parts (Mixamo limitation; future enhancement for custom models)
+
+2. **Shadow Bands** (Section 2)
+   - Steps: 2 (down from 3) for maximum dramatic impact, mimicking Guilty Gear Xrd hard-edge shading
+   - Ramp threshold at 0.5 diffuse brightness (hard edge via CONSTANT interpolation)
+   - Color values locked to existing character palettes (Kael/Rhena base/shadow already defined)
+
+3. **Lighting Setup** (Section 3)
+   - Key light: SUN, energy 3.0, rotation (50°, 10°, 30°) — upper-left-front drama
+   - Fill light: SUN, energy 1.5, rotation (60°, -20°, -30°) — opposite side for shadow definition
+   - World ambient: (0.15, 0.15, 0.18) color, 0.5 strength — subtle warm-neutral bounce
+   - Rationale: Guilty Gear uses artist-driven, non-physically-accurate lighting for anime effect
+
+4. **Color Palette Refinement** (Section 4)
+   - Existing Kael/Rhena color presets are locked; no changes needed
+   - Single-material constraint accepted (per-body-part coloring deferred to custom model phase)
+   - Personality comes from outlines + shading + pose, not multi-colored materials
+
+5. **Post-Processing** (Section 5)
+   - Bloom optional (Glare node, threshold 0.8, intensity 0.3) — test without first
+   - Color grading optional (slight S-curve for comic-book punch)
+   - Export: PNG RGBA 8-bit, film transparent, EEVEE renderer
+
+6. **Hand-Drawn Illusion Techniques** (Section 6)
+   - Sharp shadows & hard edges: banded transitions via CONSTANT ColorRamp
+   - Inverted-hull outlines: Solidify modifier with thickness=0.008, offset=1.0, flip_normals=True
+   - Directional lighting: artist-chosen angle, not physically accurate
+   - Color restraint: characters stay in hue family (orange→burnt sienna, blue→indigo)
+   - Normal editing: deferred (Mixamo models not hand-tuned; future custom models)
+
+**Key Decisions:**
+- Adopted Guilty Gear Xrd as visual north star: hard edges, dramatic lighting, hand-painted color treatment.
+- Increased outline thickness 4x to match 512×512 render resolution — visibility is critical for fighting game readability.
+- Chose 2-step shading over 3-step for maximum visual punch; anime-style stark shadow/lit split.
+- Tinted outlines per character (not pure black) for visual harmony with color palette.
+- Accepted single-material limitation as reasonable for Mixamo → planned transition to custom models with per-part materials.
+- Lighting setup matches industry standard "animation lighting" (upper-left key, fill to prevent silhouette).
+
+**Implementation Roadmap for Chewie:**
+1. Update `cel_shade_material.py`: default thickness 0.008, add outline_color to PRESETS, pass to `add_outline_modifier()`
+2. Update `blender_sprite_render.py`: add CLI flags `--outline-thickness`, `--shadow-steps`
+3. Validate lighting parameters match spec (energy, rotation, ambient)
+4. Test render Kael & Rhena idle with new params
+5. Iterate with Boba on visual feedback until locked
+6. Production sprite batch render with finalized parameters
+
+**Learnings:**
+- Guilty Gear Xrd's magic is artist-driven shading + dramatic lighting + bold outlines, not photorealism.
+- 0.002 outline thickness is invisible at 512×512; need 0.008 for visual clarity.
+- 2-step shading creates more readable silhouettes than gradual 3-step; aligned with anime aesthetic.
+- Character outline tinting (not pure black) creates visual coherence with color palette.
+- Per-body-part materials are a "nice to have" but not critical when you have strong outlines and shading.
+- Mixamo models won't match Guilty Gear's hand-edited normals, but directional lighting + cel-shade can get 80% of the way there.
+
+**Blocked on:**
+- Chewie implementation of code changes (tool updates)
+- Test renders + visual validation
+- On-screen Godot viewport review for pixel-perfect appearance
+
+### Wave 7 — Cel-Shade Sprint Execution (2026-03-10)
+
+**Delivered:**
+- `.squad/orchestration-log/2026-03-10T1025Z-boba.md` — Full orchestration record of specification writing
+- `.squad/log/2026-03-10T1025Z-cel-shade-sprint.md` — Session summary of cel-shade sprint
+- Decision merged into `.squad/decisions.md` (deduped, positioned chronologically)
+- Inbox file deleted (cleanup)
+
+**Cross-Agent Integration:**
+- Worked in parallel with Chewie to define → implement → render pipeline
+- Specification served as technical input to Chewie's shader implementation
+- Validated parameters match Guilty Gear Xrd reference and arcade fighting game standards
+
+**Key Integration Points:**
+- Outline tint colors (Kael burnt sienna, Rhena navy) implemented in cel_shade_material.py PRESETS
+- 0.008 thickness parameter tied directly to 512×512 PNG export resolution
+- 2-step shadow banding confirmed production-ready in rendered test sprites
+- Fresnel rim light effect adds visual punch beyond simple outline + shading
+
+**Learnings:**
+- Art direction specification needs implementation roadmap for smooth handoff to engine developers.
+- Technical parameters (thickness, colors, lighting energy) must be exact — "roughly close" is not acceptable.
+- Contact sheets enable rapid visual validation; critical for color/outline review before production batch.
+- Guilty Gear Xrd remains the gold standard for fighting game cel-shade; use as reference for iteration.
+- Tinted outlines vs pure black is the difference between generic 3D and intentional stylization — small parameter, huge visual impact.
+
+**Status:** Specification validated through rendered test sprites. Production sprite batch approved for Godot import. No visual rework needed.

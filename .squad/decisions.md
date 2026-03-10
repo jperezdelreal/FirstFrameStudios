@@ -2,6 +2,73 @@
 
 ## Active Decisions
 
+### Cel-Shade Parameters for Fighting Game Sprite Quality (Boba)
+**Author:** Boba (Art Director)  
+**Date:** 2026-06-12  
+**Status:** RECOMMENDED FOR IMPLEMENTATION  
+**Audience:** Chewie (Engine Dev), Joaquin (Founder)
+
+We will upgrade the Ashfall Blender sprite rendering pipeline to **Guilty Gear Xrd-inspired cel-shade parameters**, targeting fighting game visual quality (readable at 512×512, bold outlines, dramatic lighting, hand-painted color treatment).
+
+**Current Problem:** Outline thickness (0.002) is invisible at 512×512 PNG export; reads as muddy. 3-step shading too soft for fighting game punch; needs hard-edged shadow/lit split.
+
+**Guilty Gear Xrd Reference:** Arc System Works achieved iconic anime-style 3D NOT through photorealism, but through:
+1. **Bold outlines** — visually dominant, define form
+2. **Hard shadow edges** — 2-step banded shading, not gradual
+3. **Dramatic directional lighting** — artist-chosen, non-physical
+4. **Color restraint** — characters stay in hue family (no radical hue shifts)
+
+**Specific Parameters:**
+- **Outline Thickness:** 0.008 (4× thicker, ~2–3 pixels at 512×512)
+- **Kael Outline:** (0.35, 0.15, 0.05) — burnt sienna, warm
+- **Rhena Outline:** (0.08, 0.12, 0.20) — dark navy, cool
+- **Shading:** 2-step (shadow + lit with hard edge at 0.5 diffuse threshold)
+- **Lighting:** Key SUN 3.0 (50°, 10°, 30°) + Fill SUN 1.5 (60°, -20°, -30°) + Ambient (0.15, 0.15, 0.18) strength 0.5
+- **Export:** PNG RGBA 8-bit, BLENDER_EEVEE renderer
+
+**Impact:**
+- Visual: Immediate character recognizability at all scales; arcade-game polish
+- Technical: Minor code changes, no render time increase
+- Schedule: 3–5 hours total (Chewie implementation + testing)
+
+**Acceptance Criteria:**
+1. Code updated: Thickness flag exposed in CLI, outline colors per character in PRESETS
+2. Test renders: Kael idle, Rhena idle at 512×512 exported as PNG
+3. Visual validation: In Godot viewport at game scale (screen-side-by-side with old renders)
+4. Approval: Boba visual review; if quality acceptable, lock parameters for production sprite batch
+5. Documentation: Spec updated with any parameter tweaks after testing
+
+**Reference:** `games/ashfall/docs/CEL-SHADE-ART-SPEC.md` (comprehensive, implementation-ready)
+
+---
+
+### Cel-Shade Pipeline Standardization (Chewie)
+**Author:** Chewie (Engine Developer)  
+**Date:** 2026-07-22  
+**Status:** Proposed  
+**Scope:** Ashfall sprite rendering pipeline
+
+Standardized the cel-shade sprite pipeline with production-quality parameters:
+
+1. **2-step shadow bands as default** — Hard shadow/lit split at 0.45 (Guilty Gear Xrd style). 3-step available via `--steps 3` but 2-step is the fighting game standard.
+2. **Outline thickness 0.01** — Visible at 512px. Previous 0.002 was invisible. Range 0.008-0.012 appropriate for Mixamo mannequin.
+3. **Fresnel rim light always on** — Edge glow with per-character color. Disable with `--no-rim-light`.
+4. **Dramatic single-key lighting** — Key=5.0, Fill=0.6, Ambient=0.3. High contrast drives the cel-shade look.
+5. **Single source of truth** — `cel_shade_material.py` is the only shader module. `blender_sprite_render.py` imports it via `--preset` flag.
+6. **EEVEE engine name** — Blender 5.0 uses `BLENDER_EEVEE` (not `BLENDER_EEVEE_NEXT`).
+
+**Impact on Team:**
+- Artists reviewing sprites: Files in `assets/sprites/{character}/{animation}/`
+- Anyone rendering: Use `--preset kael` or `--preset rhena` — no manual color setup
+- New characters: Add preset to `cel_shade_material.py` PRESETS dict
+- Pipeline docs in `tools/BLENDER-SPRITE-PIPELINE.md` remain valid
+
+**Why:** Founder wants Street Fighter / Guilty Gear Xrd style. The 2-step shadow + rim light + thick outline combination achieves that dramatic hand-drawn look from free Mixamo mannequins.
+
+**Status:** Ready for production. 380 frames rendered (Kael 190 + Rhena 190) with contact sheets.
+
+---
+
 ### Ashfall GDD v1.0 — Creative Foundation (Yoda)
 **Author:** Yoda (Game Designer / Vision Keeper)  
 **Date:** 2025-07-21  

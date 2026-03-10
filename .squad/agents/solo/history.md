@@ -732,3 +732,23 @@ Created comprehensive Sprint 1 bug analysis identifying **35 bugs** across 9 cat
 - All three agents recommend mandatory enforcement, not guidelines
 
 ---
+
+### Sprite Animation Consistency Research (2026-03-10)
+Conducted independent web research after founder reported v2 animation frames worse than v1 (7/40 vs 39/40 in Boba's audit). Key findings:
+
+1. **Root cause of v2 failure:** Generating each frame independently via Kontext Pro API without structural conditioning (ControlNet) or appearance anchoring (IP-Adapter). Text prompts alone cannot enforce visual consistency across diverse poses.
+
+2. **ChatGPT research (FOUNDER-SPRITE-POSES-RESEARCH) direction is correct** — pose conditioning with skeletons is the right idea — but oversimplifies implementation. Kontext Pro API cannot accept skeleton conditioning directly. Requires open-weight FLUX.2 Dev + ControlNet + IP-Adapter running in ComfyUI locally.
+
+3. **Top 3 approaches ranked:**
+   - **#1: 3D-to-2D (Mixamo + Blender)** — Guaranteed consistency (10/10), free tools, proven in professional fighting games. Recommended as primary pipeline.
+   - **#2: ComfyUI + FLUX.2 Dev + ControlNet + IP-Adapter** — Best AI approach (8/10 consistency), but requires local GPU (12-24GB VRAM), 1-2 days pipeline setup. Our API-only FLUX models don't support conditioning.
+   - **#3: PixelLab** — Purpose-built pixel art sprite tool with skeleton-based animation. Quick to test but locked to pixel art style.
+
+4. **Honest assessment:** AI frame-by-frame animation is NOT production-ready for fighting games with our current API-based approach. The technology exists (ControlNet pipeline) but requires significant infrastructure change. 3D-to-2D is the proven, reliable path.
+
+5. **Critical architectural lesson:** API-only AI models (FLUX 1.1 Pro, Kontext Pro) are insufficient for production sprite pipelines. Structural conditioning requires open-weight models running locally.
+
+Decision written to `.squad/decisions/inbox/solo-sprite-consistency-research.md`.
+
+---
