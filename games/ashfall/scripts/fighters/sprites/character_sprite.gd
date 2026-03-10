@@ -22,16 +22,21 @@ extends Node2D
 				queue_redraw()
 
 ## Mirrors the sprite horizontally when true (facing left).
-## Uses AnimatedSprite2D.flip_h for PNG sprites, parent scale.x for procedural.
-## No change-guard — always propagate so the first frame is correct even when
-## the default (false) matches the desired value.
+## Uses parent scale.x to flip the entire node including AnimatedSprite2D children.
+## Accounts for per-character default sprite orientation via _sprite_faces_right().
 var flip_h: bool = false:
 	set(value):
 		flip_h = value
-		if _use_png_sprites and _animated_sprite:
-			_animated_sprite.flip_h = flip_h
-		else:
-			scale.x = -1.0 if flip_h else 1.0
+		var visual_flip := flip_h
+		if not _sprite_faces_right():
+			visual_flip = not flip_h
+		scale.x = -1.0 if visual_flip else 1.0
+
+
+## Override in subclass if the raw sprite PNG faces LEFT instead of RIGHT.
+## Kael faces right, Rhena faces left — determined by Blender camera angle.
+func _sprite_faces_right() -> bool:
+	return true
 
 ## Character palettes — override in subclass
 ## Each palette is a Dictionary with keys: skin, hair, outfit_primary,
