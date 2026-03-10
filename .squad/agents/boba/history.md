@@ -8,6 +8,25 @@
 - **Current state:** firstPunch has visual polish complete; Ashfall art direction established and validated
 - **Key role:** Art Director — visual standards, character design philosophy, VFX signature language, art asset oversight
 
+## Core Context
+
+**Ashfall Art Direction (LOCKED):**
+- **Style:** Guilty Gear Xrd-inspired cel-shade fighting game aesthetic (arcade readability, bold outlines, dramatic lighting, hand-painted color palette)
+- **Key Parameters:** Outline thickness 0.008 (4x increase from invisible 0.002), 2-step shadow bands, per-character tinted outlines (Kael burnt sienna, Rhena navy)
+- **Lighting:** Artist-driven, non-physical (key=3.0 upper-left, fill=1.5 opposite, ambient=0.15/0.15/0.18)
+- **Production Pipeline:** 3D-to-2D via Mixamo FBX + Blender → cel-shade material → PNG RGBA 512×512
+- **Status:** 380 production sprites rendered (Kael + Rhena × 4 animations), contact sheets approved, pipeline locked
+
+**Key Learnings (Cross-Project):**
+1. **VFX is emotional language** — Visual feedback (hit effects, screen shake, color shifts) drives player-felt impact more than numbers
+2. **Outline design determines readability** — Pure black (#000000) reads flat; tinted outlines (#222222, character-specific colors) create personality and visual coherence
+3. **Art direction must precede code** — Implementation bottlenecks avoided when specs provide exact parameters (thickness, colors, lighting energy)
+4. **Contact sheets > frame review** — Batch visual validation catches consistency issues faster than individual frame inspection
+5. **Guilty Gear Xrd is production-proven baseline** — Reference fighting game aesthetic from documented GDC talk + open-source Blender shaders
+6. **Single-material limitation accepted** — Strong outlines + shading + pose convey character identity without per-body-part materials (Mixamo constraint)
+
+**Learnings Archive (Wave 1-5):** VFX system design, entity rendering consistency, sprite generation pipelines (AI vs 3D), character consistency via hero-frame propagation, FLUX + Kontext Pro evaluation.
+
 ## Learnings
 
 ### Wave 1 — EX-B1, EX-B2, P1-2 (2026-06-03)

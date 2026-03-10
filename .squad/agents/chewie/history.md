@@ -6,6 +6,30 @@
 - **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
 - **Goal:** Ship playable beat 'em up level in 30 minutes
 
+## Core Context
+
+**Ashfall Engine Work (Active):**
+- **Frame Rate:** Fixed 60fps deterministic, inputs drive state (enabling future rollback netcode)
+- **Architecture:** Node-based state machine per fighter, AnimationPlayer for frame timing, MoveData resources for move definitions, collision on 6 separate layers
+- **Recent Focus:** Animation system (sprite pose sync), camera dynamics (Guilty Gear-style zoom + framing), cel-shade pipeline (production rendering)
+
+**Cel-Shade Production Pipeline (COMPLETED):**
+- **Blender Tools:** cel_shade_material.py (shader module) + blender_sprite_render.py (render driver)
+- **Parameters:** 2-step shadow ramp (0.45 threshold), 0.01 outline thickness, Fresnel rim light, dramatic 5.0/0.6 key-fill lighting
+- **Output:** 380 frames × 2 characters, PNG RGBA 512×512, contact sheets for review
+- **Integration:** Preset system (--preset kael/rhena) enables single-command character setup, EEVEE renderer validated
+- **Status:** Production-ready, locked, sprites imported to Godot (no rework)
+
+**Key Learnings (Cross-Project):**
+1. **Deterministic game loops require precise timing** — Fixed timestep + integer frame counters > float timers; `_physics_process()` only, no generic `_process()`
+2. **Module architecture enables parallel work** — Single source of truth (cel_shade_material.py) with clear export/import API prevents code conflicts across teams
+3. **Animation is frame data, not rendering** — AnimationController tracks timeline, renderer interprets frames; decoupling enables flexible pose systems
+4. **Production render parameters must match design spec exactly** — "Roughly close" outline thickness is invisible; parameters live in code, not guesswork
+5. **Contact sheets validate batches faster than iteration** — Rendered 380 frames in one pass; visual review caught zero errors (vs AI generation's consistency issues)
+6. **Guilty Gear Xrd formula: 2-step shadow + high key-to-fill ratio** — This combination alone sells the hand-drawn aesthetic; other tweaks (rim light, tint colors) are multiplicative
+
+**Learnings Archive (P1-2):** VFX integration, hitlag system, event system, animation controller design, screen transitions, particle system, music wiring. **GDScript Standards (Sprint 2+):** Explicit type annotations mandatory, no `:=` inference, no Variant types.
+
 ## Learnings
 
 ### Hitlag System (P1-1)
