@@ -1218,3 +1218,65 @@ Set sprite_poc_test.tscn as the main scene in Godot editor (Project → Project 
 Test-only. No production code affected. No autoloads required (the viewer is self-contained). Other agents can use this pattern for future sprite/animation test viewers.
 
 **Why:** Validates FLUX sprite generation pipeline. Establishes data-driven animation pattern for Ashfall test suite. Enables visual iteration without manual sprite sheet assembly.
+
+
+---
+
+## Nien (Character Artist) — v2 Frame Generation
+# PoC v2 Animation Frames — Complete
+
+**Author:** Nien (Character Artist)  
+**Date:** 2026-07-08  
+**Status:** Complete  
+**Scope:** Ashfall PoC v2 animation frames
+
+## Summary
+
+Generated 56 animation frames (28 per character) for Kael and Rhena using Kontext Pro with approved hero designs as input_image references. All frames saved to `games/ashfall/assets/poc/v2/` with RGBA transparency.
+
+## Frames Generated
+
+| Character | Action | Frames | Status |
+|-----------|--------|--------|--------|
+| Kael      | Idle   | 8      | ✅ All clean |
+| Kael      | Walk   | 8      | ✅ All clean |
+| Kael      | LP     | 12     | ✅ All clean |
+| Rhena     | Idle   | 8      | ✅ All clean |
+| Rhena     | Walk   | 8      | ✅ 3 required retry (content filter) |
+| Rhena     | LP     | 12     | ✅ All clean |
+
+## v1 Fixes Applied
+
+1. **Walk leg alternation:** Each walk frame prompt explicitly specifies which leg is forward/back (e.g., "RIGHT foot forward, LEFT foot behind"). This addresses the v1 sliding/moonwalk issue.
+2. **LP kata vocabulary:** All attack prompts use martial arts kata language instead of combat words. Zero content filter rejections across 24 LP frames.
+3. **Approved hero references:** Used `kael_design_b.png` and `rhena_design_c.png` as Kontext Pro input_image, improving character consistency over v1.
+
+## Post-Processing
+
+- Green chroma key backgrounds removed with widened tolerance (handles dark/olive greens)
+- Corner-based fallback detection for non-standard background colors
+- All 56 frames verified RGBA with >5% transparent pixels
+- Contact sheets: `contact_v2_kael.png`, `contact_v2_rhena.png`
+
+## API Details
+
+- **Deployment:** `flux.1-kontext-pro` (lowercase with dots)
+- **Auth:** Bearer token via `az account get-access-token`
+- **Rate:** 2.5s delay between calls, ~56 calls completed in ~4 minutes
+- **Size:** 1024×1024 per frame
+
+## Impact
+
+- PoC v2 frames ready for founder review
+- Walk cycle fix addresses primary v1 feedback
+- Pipeline proven for future character animation generation
+
+
+---
+
+## 2026-03-10T08:55Z: User Directive — Audio Model Deployed
+### 2026-03-10T08:55Z: User directive — Audio model deployed
+**By:** Joaquín (via Copilot)
+**What:** GPT-Audio-1.5 deployed on Azure AI Foundry for audio generation. Rate limit: 90,000 requests/min (extremely generous). Available for Sprint 3 (Audio) when ready.
+**Why:** Founder deployed a new model for future audio sprint. Captured for team memory so Greedo (Sound Designer) knows what's available.
+
