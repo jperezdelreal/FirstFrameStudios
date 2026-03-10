@@ -479,3 +479,17 @@ Future risk: Sprint 2 is combo system (high complexity, low tolerance for bugs).
 7. **MCP download pattern works well** — `github-mcp-server-get_file_contents` is reliable for pulling individual skill files. Parallelized all 9 fetches.
 
 **Deliverable:** Committed as `chore: install 9 marketplace skills + fix squad.config.ts`.
+
+### Session 15: CommunicationAdapter for GitHub Discussions
+**Date:** 2025-07-23  
+**Task:** Configure CommunicationAdapter so Scribe and Ralph can post session summaries to GitHub Discussions as an automated devblog.
+
+**Key Findings:**
+1. **Discussions were already enabled** on the repo — `has_discussions: true`.
+2. **Discussion category creation is not available via GraphQL API** — `createDiscussionCategory` mutation doesn't exist. Categories must be created manually in GitHub Settings > Discussions. Documented this for Joaquín.
+3. **Used "Announcements" category for test post** — posted successfully at https://github.com/jperezdelreal/FirstFrameStudios/discussions/151. Config references "Squad DevLog" as the intended category (to be created manually).
+4. **GraphQL parameterized mutations work well** — using `-f` variables instead of string interpolation avoids escaping hell with multiline markdown bodies.
+5. **Updated Scribe charter** with Communication section — emoji convention for visual scanning (🏗️ arch, 🔧 code, 🎨 art, 🧪 test, 📋 process).
+6. **Config schema extended cleanly** — `communication` key added to `.squad/config.json` with channel, posting triggers, repo reference, and category name.
+
+**Deliverable:** Committed config + charter updates. Test discussion live.

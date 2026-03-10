@@ -1,4 +1,12 @@
 {
   "version": 1,
-  "teamRoot": "."
+  "teamRoot": ".",
+  "communication": {
+    "channel": "github-discussions",
+    "postAfterSession": true,
+    "postDecisions": true,
+    "postEscalations": true,
+    "repository": "jperezdelreal/FirstFrameStudios",
+    "category": "Squad DevLog"
+  }
 }
