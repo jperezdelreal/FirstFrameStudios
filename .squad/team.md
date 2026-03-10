@@ -28,6 +28,21 @@
 | Mace | Producer | `.squad/agents/mace/charter.md` | 📊 Active |
 | Scribe | Session Logger | `.squad/agents/scribe/charter.md` | 📋 Active |
 | Ralph | Work Monitor | — | 🔄 Monitor |
+| @copilot | Coding Agent | `copilot-instructions.md` | 🤖 Active |
+
+<!-- copilot-auto-assign: false -->
+
+### @copilot Capability Profile
+
+| Capability | Fit | Notes |
+|------------|-----|-------|
+| Single-file bug fixes | 🟢 | Good at isolated fixes with clear reproduction |
+| Multi-file refactors | 🟡 | Works but needs well-scoped issues |
+| New feature implementation | 🟡 | Best with detailed specs in issue body |
+| GDScript / Godot work | 🟡 | Can handle if issue describes expected behavior clearly |
+| Architecture decisions | 🔴 | Route to Solo (Lead) instead |
+| Visual/art integration | 🔴 | Route to Boba (Art Director) or Nien (Character Artist) |
+| Test writing | 🟢 | Good at writing tests from specs |
 
 ## Project Context
 
