@@ -1493,3 +1493,64 @@ Sprint 1 revealed systematic bugs in Godot 4.6 type inference, input handling, a
 5. Preparar código Godot para ejecutar la PoC con los sprites generados
 **Why:** Founder review — GO en estilo, ITERATE en animación. Equipo debe autogestionar calidad.
 
+
+---
+
+## Decision: Transparent Backgrounds Directive (User Requirement)
+
+**Author:** Joaquín (Founder, via Copilot)  
+**Date:** 2026-03-10  
+**Status:** Approved  
+**Type:** User Requirement / Art Pipeline
+
+### Summary
+
+All character sprites MUST have transparent backgrounds (alpha channel). FLUX generates opaque PNGs with inconsistent backgrounds (white, brown, grey). A background removal post-processing step is required in the art pipeline.
+
+### Rationale
+
+- Game sprites need transparency to composite over stage backgrounds in Godot
+- Inconsistent opaque backgrounds are unusable in-engine
+- User requirement from Joaquín (founder)
+
+### Decision
+
+Background removal is mandatory for all FLUX sprite batches before production integration.
+
+---
+
+## Decision: PoC Sprite Background Removal Pipeline
+
+**Author:** Nien (Character Artist)  
+**Date:** 2026-03-10  
+**Status:** Executed  
+**Type:** Art Pipeline / Process
+
+### Context
+
+FLUX-generated PoC sprites had inconsistent opaque backgrounds (white, brown, grey). Game sprites must have transparent backgrounds for proper compositing over stage backgrounds in Godot.
+
+### Decision
+
+Used Python embg library (u2net AI model) for batch background removal on all 30 character sprites. Saved transparent PNGs over originals in-place.
+
+### Scope
+
+- **Processed:** kael_hero, rhena_hero, 8 idle, 8 walk, 12 lp frames (30 files)
+- **Excluded:** embergrounds_bg.png, title_screen.png (full backgrounds, not sprites)
+
+### Rationale
+
+- embg uses AI-based segmentation (u2net) which handles varied/gradient backgrounds better than simple color thresholding
+- Industry-standard tool for game sprite background removal
+- CPU-only install avoids GPU dependency for CI/pipeline use
+
+### Impact
+
+- All PoC sprites now ready for Godot compositing over any stage background
+- Establishes embg as the standard background removal step in the FLUX → game-ready sprite pipeline
+- Future FLUX batches should include this step automatically after generation
+
+### Verdict
+
+**APPROVED.** rembg (u2net) is the standard for background removal in the production sprite pipeline.
