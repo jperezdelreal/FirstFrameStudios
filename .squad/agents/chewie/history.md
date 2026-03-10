@@ -281,3 +281,62 @@
 - Engine has single parameter point for outline/shadow tweaks if founder requests iteration
 
 **Status:** Pipeline complete, sprites rendered, ready for Godot integration.
+
+### Sprite Pipeline V2 — Framing, Root Motion & Frame Count Fixes
+- **Camera framing:** Reduced ortho_scale padding from 1.1× to 1.03× of model bounds. Character now fills most of the 512×512 frame instead of appearing tiny.
+- **Root motion pinning:** Added `find_armature_and_root_bone()` and `pin_root_motion()` functions. After `scene.frame_set(frame)` and before `bpy.ops.render.render()`, the root bone (mixamorig:Hips) has its X/Y location zeroed while preserving Z and all rotations. This prevents Mixamo animations with baked root motion from walking/kicking out of the camera frame.
+- **Animation-aware frame stepping:** Added `ANIM_STEP_HINTS` dict and `get_smart_step()`. Attack animations (punch/kick) auto-use step=5 (yielding ~13 frames), loop animations (idle/walk) keep step=2 (~16-17 frames). Users can still override via `--step` CLI flag.
+- **Final frame counts:** idle=17, walk=16, punch=13, kick=13 per character. At 15fps: attacks ~0.87s, loops ~1.07-1.13s. All attacks under the 15-frame max.
+- **Total re-rendered:** 118 frames × 2 characters + 8 contact sheets = 236 sprites + 8 sheets.
+- **Key insight:** Mixamo FBXs bake root motion into the hip bone — always pin it for sprite rendering. The bone is consistently named `mixamorig:Hips`.
+
+### 3D Character Model Downloads & Pipeline Test (Model Replacement)
+- **Downloaded 4 free CC0 character packs** programmatically:
+  - **Quaternius RPG Pack** (Google Drive via gdown): 6 animated characters (Monk, Warrior, Rogue, Ranger, Cleric, Wizard) + 6 weapons, FBX/OBJ/glTF/Blend formats. ~2-3 MB each.
+  - **Kenney Animated Characters 1/2/3** (direct ZIP from kenney.nl): 3 packs with characterMedium.fbx + idle/jump/run animations + skin textures.
+  - **Kenney Mini Characters** (direct ZIP from kenney.nl): 12 characters (6M/6F) in FBX/GLB/OBJ.
+- **Pipeline test results:**
+  - All third-party FBX models import and render through `blender_sprite_render.py` without errors.
+  - Cel-shade presets (kael/rhena) apply correctly to non-Mixamo models.
+  - **Quaternius Monk** = best Kael candidate. Fighting stance with fists up, chibi proportions, cel-shade shadow bands read perfectly, outline crisp. 11 frames idle animation.
+  - **Quaternius Warrior** = sword character with ponytail, armor, and personality. 15 frames animation.
+  - **Kenney models** = too generic for "personajes" requirement. Bare mannequin meshes, no clothing/weapons in geometry. Same problem as Y-Bot.
+- **Framing issues found:** Animations with large motion range (jumps, attacks) cause character to exit camera frame in later frames. The auto-fit ortho_scale calculates from frame 1 bounds only — needs to scan all frames for max bounds. Not blocking for evaluation.
+- **Monochrome cel-shade limitation:** Our pipeline replaces all materials with a single toon shader color. Characters with distinct clothing/skin/hair don't show those differences. Future work: per-material-slot color assignment or vertex-color-based tinting.
+- **Quaternius download method:** Their website hides Google Drive links behind a JS popup, but the URLs are in the page HTML. gdown Python package downloads folders. Some files hit rate limits; retry works.
+- **Google Drive links found for future downloads:**
+  - Knight Pack: `https://drive.google.com/drive/folders/1QVyfCJkq70mAwMIh1cGq1xfHp2LN5GmK`
+  - Animated Women: `https://drive.google.com/drive/folders/1c13R--fMqdR6r2MRlcKKsbPky0__T-yJ`
+  - Animated Men: `https://drive.google.com/drive/folders/17LibivOaUidsQhSkcxP3YYvDr0n7wIwu`
+- **Mixamo alternative characters:** Beyond Y-Bot, Mixamo has Mery (female), Mutant (creature), Big Vegas (stocky male), and others. All come pre-rigged when downloading animations. Worth exploring in browser.
+- **Next step:** Upload Quaternius Monk/Warrior to Mixamo for martial arts animation retargeting. Monk has compatible humanoid rig.
+
+
+### Mixamo Character Sprite Rendering (Production Characters)
+- **Founder selected 2 custom Mixamo characters** with real clothing, proportions, and personality — not the generic Y-Bot.
+- **Kael model** (~51MB FBX per animation): 4 animations rendered — Idle (30 frames), Walking (16 frames), Punching (13 frames), Side Kick (13 frames). Total: 72 frames.
+- **Rhena model** (~15MB FBX per animation): 4 animations rendered — Idle (106 frames), Walking (16 frames), Hook Punch (14 frames), Mma Kick (13 frames). Total: 149 frames.
+- **Original Mixamo materials used** — NO cel-shade override applied. Models have skin, clothing, and hair textures baked from Mixamo's character system. Rendered through EEVEE with standard 2-light sprite rig (key 3.0 + fill 1.5).
+- **All renders successful:** 221 total frames + 8 contact sheets generated. File sizes 56-183KB per frame (solid renders with actual content — verified no empty transparents).
+- **Root motion pinning** worked perfectly on mixamorig:Hips for all animations.
+- **Frame stepping:** step=2 for loops (idle/walk), step=5 for attacks (punch/kick) — smart step auto-detection worked correctly.
+- **Rhena idle is 106 frames** (212-frame source animation at step=2) — unusually long. In-game may want a shorter loop or subset.
+- **Output locations:**
+  - `games/ashfall/assets/sprites/kael/{idle,walk,punch,kick}/`
+  - `games/ashfall/assets/sprites/rhena/{idle,walk,punch,kick}/`
+- **Decision:** Original Mixamo materials render well through EEVEE — no need for cel-shade fallback. Characters look like themselves, not monochrome blobs.
+
+### Mixamo Render Bugfixes — Ghost Frame & Sprite Scale (Hotfix)
+- **3 bugs reported by founder**, all in blender_sprite_render.py:
+  1. **Ghost frame on Kael Punch (last frame)** — final frame showed Y-Bot mannequin instead of Mixamo character. The last frame of Mixamo FBX exports contains a reset/rest pose.
+  2. **Ghost frame on Rhena Mma Kick (last frame)** — same issue as #1.
+  3. **Characters too small relative to stage** — ortho_scale padding was 1.03× (3% margin), making sprites smaller than needed in the 512×512 frame.
+- **Fixes applied:**
+  - `range(start, end + 1, step)` → `range(start, end, step)` — excludes the last frame from all renders, eliminating ghost/reset poses.
+  - `ortho_scale * 1.03` → `ortho_scale * 0.85` — tighter crop so characters fill ~85% of frame height, appearing larger in-game.
+- **Full re-render of all 8 animation sets** completed successfully:
+  - Kael: Idle (30f), Walking (15f), Punching (7f), Side Kick (12f) — 64 frames total
+  - Rhena: Idle (105f), Walking (16f), Hook Punch (13f), Mma Kick (10f) — 144 frames total
+  - 208 frames + 8 contact sheets, zero errors
+- **Frame counts slightly reduced** vs previous render (221→208) due to last-frame exclusion — this is correct behavior.
+- **No cel-shade applied** — original Mixamo materials preserved per founder preference.

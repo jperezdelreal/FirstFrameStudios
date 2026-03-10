@@ -205,9 +205,9 @@ def setup_camera(objects, angle="side", ortho_scale=0.0, render_size=512):
         offset = distance / math.sqrt(2)
         cam_obj.location = (center.x + offset, center.y - offset, center.z + height * 0.2)
 
-    # Auto-fit ortho scale to model bounds with 10% padding
+    # Auto-fit ortho scale — tight crop so character fills ~85% of frame
     if ortho_scale <= 0:
-        ortho_scale = max(height, width) * 1.1
+        ortho_scale = max(height, width) * 0.85
     cam_data.ortho_scale = ortho_scale
 
     # Render settings
@@ -302,6 +302,65 @@ def get_animation_range():
 
 
 # ---------------------------------------------------------------------------
+# Root motion pinning — keeps character centered in frame
+# ---------------------------------------------------------------------------
+
+def find_armature_and_root_bone():
+    """Find the armature object and its root pose bone (e.g. mixamorig:Hips)."""
+    for obj in bpy.context.scene.objects:
+        if obj.type == 'ARMATURE' and obj.pose:
+            # Mixamo root bone naming conventions
+            for name in ["mixamorig:Hips", "Hips", "Root", "mixamorig:Root"]:
+                if name in obj.pose.bones:
+                    return obj, obj.pose.bones[name]
+            # Fallback: first bone in the hierarchy (topmost parent)
+            roots = [b for b in obj.pose.bones if b.parent is None]
+            if roots:
+                return obj, roots[0]
+    return None, None
+
+
+def pin_root_motion(armature, root_bone):
+    """Zero out root bone X/Y translation, keeping Z (height) and rotations.
+
+    Mixamo animations bake root motion into the hip bone, causing the
+    character to walk/kick out of the camera frame. Pinning X/Y keeps
+    the character centered for sprite rendering.
+    """
+    if root_bone is None:
+        return
+    root_bone.location.x = 0.0
+    root_bone.location.y = 0.0
+    # Keep .z intact — preserves jump/crouch vertical motion
+
+
+# ---------------------------------------------------------------------------
+# Animation-aware frame stepping
+# ---------------------------------------------------------------------------
+
+# Attack animations need fewer frames for snappy game feel (0.3-0.5s)
+# Loop animations (idle/walk) keep more frames for smooth cycling
+ANIM_STEP_HINTS = {
+    "punch": 5,
+    "kick": 5,
+    "heavy": 5,
+    "special": 5,
+    "idle": 2,
+    "walk": 2,
+    "run": 2,
+}
+
+
+def get_smart_step(animation_name, user_step):
+    """Return frame step, using animation-aware defaults if user didn't override."""
+    anim_lower = animation_name.lower()
+    for keyword, suggested in ANIM_STEP_HINTS.items():
+        if keyword in anim_lower:
+            return suggested
+    return user_step
+
+
+# ---------------------------------------------------------------------------
 # Frame rendering
 # ---------------------------------------------------------------------------
 
@@ -309,10 +368,18 @@ def render_frames(output_dir, character, animation, step=2, size=512):
     """Render every Nth frame of the animation as individual PNGs.
 
     Naming convention: {character}_{animation}_{frame:04d}.png
+    Root motion is pinned each frame to keep the character centered.
     """
     os.makedirs(output_dir, exist_ok=True)
     scene = bpy.context.scene
     start, end = get_animation_range()
+
+    # Find armature for root motion pinning
+    armature, root_bone = find_armature_and_root_bone()
+    if root_bone:
+        print(f"    Root motion pinning: {root_bone.name}")
+    else:
+        print("    WARNING: No root bone found — root motion NOT pinned")
 
     rendered = []
     frame_index = 0
@@ -321,8 +388,11 @@ def render_frames(output_dir, character, animation, step=2, size=512):
     print(f"    Frame range: {start}-{end}, step: {step}")
     print(f"    Output: {output_dir}\n")
 
-    for frame in range(start, end + 1, step):
+    # Exclude the last frame — Mixamo FBX files often have a reset/rest pose there
+    for frame in range(start, end, step):
         scene.frame_set(frame)
+        # Pin root motion AFTER frame_set, BEFORE render
+        pin_root_motion(armature, root_bone)
         filename = f"{character}_{animation}_{frame_index:04d}.png"
         filepath = os.path.join(output_dir, filename)
         scene.render.filepath = filepath
@@ -488,12 +558,16 @@ def main():
     # 6. Transparency
     setup_transparency()
 
-    # 7. Render frames
+    # 7. Render frames (use animation-aware step if user didn't override)
+    effective_step = get_smart_step(args.animation, args.step)
+    if effective_step != args.step:
+        print(f"Auto-adjusted step: {args.step} → {effective_step} (animation: {args.animation})")
+
     frames = render_frames(
         output_dir=args.output,
         character=args.character,
         animation=args.animation,
-        step=args.step,
+        step=effective_step,
         size=args.size,
     )
 
