@@ -1,11 +1,5 @@
 # Nien — History
 
-## Project Context
-- **Project:** firstPunch — Browser-based game beat 'em up
-- **User:** joperezd
-- **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
-- **Current characters:** Brawler with bezier curves, M-hair, stubble, overbite. 4 enemy variants (normal/fast/heavy/tough) + Bruiser boss. All Canvas 2D procedural art.
-
 ## Learnings
 - **PoC v2 full animation frame generation (2026-07-08):** Generated 56 Kontext Pro frames (28 per character) for Kael and Rhena using approved hero designs (kael_design_b.png, rhena_design_c.png) as input_image references. Output in `games/ashfall/assets/poc/v2/`. Three animation types per character: idle (8 frames, breathing/weight shift), walk (8 frames, explicit leg alternation fixing v1's sliding issue), and LP light punch (12 frames, kata vocabulary to dodge content filter). All frames post-processed to RGBA with transparent backgrounds. Contact sheets generated: contact_v2_kael.png and contact_v2_rhena.png.
 - **Kontext Pro deployment name is `flux.1-kontext-pro` (lowercase with dots):** On Azure AI (`luquin-resource-prd.services.ai.azure.com`), the deployment name `flux.1-kontext-pro` works. Case-sensitive mixed variants like `FLUX.1-Kontext-Pro` also exist but may trigger different content filter behavior. Use Bearer token auth (key-based auth is disabled on this resource). Token via: `az account get-access-token --resource "https://cognitiveservices.azure.com"` (takes ~40s, use 120s timeout).

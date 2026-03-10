@@ -2042,3 +2042,332 @@ Generated 3 design proposals each for Kael and Rhena at 1024×1024:
 **What:** Kael = Design B, Rhena = Design C. These are the locked hero references for all animation frame generation via Kontext Pro. Files: kael_design_b.png and rhena_design_c.png in games/ashfall/assets/poc/designs/
 **Why:** Founder selected preferred character designs from 3 proposals each. These become the canonical input_image references for the production art pipeline.
 
+
+
+---
+
+# Decision: Automated Visual Test Pipeline for Fight Scene
+
+**Author:** Ackbar (QA/Playtester)  
+**Date:** 2025-07-23  
+**Status:** Implemented  
+**Scope:** Ashfall fight scene QA automation
+
+## Context
+
+The team cannot visually verify the fight scene without manually launching Godot and playing. This blocks AI-based visual analysis and makes regression testing slow and inconsistent.
+
+## Decision
+
+Built a 3-file automated visual test pipeline that captures 7 screenshots of simulated gameplay:
+
+1. **`scripts/test/fight_visual_test.gd`** — Coroutine-based test controller that:
+   - Instances the fight scene, waits for FIGHT state via `RoundManager.announce`
+   - Simulates 7 gameplay steps using `Input.action_press/release`
+   - Captures screenshots with the proven `RenderingServer.frame_post_draw` pattern
+   - Saves to both `res://` (project) and `user://` (absolute) paths
+   
+2. **`scenes/test/fight_visual_test.tscn`** — Minimal scene wrapper
+3. **`tools/visual_test.bat`** — One-click launcher
+
+## Key Design Choices
+
+- **Coroutine sequencing over state machine** — `await _wait_frames()` is more readable than tracking step/frame counters in `_process`. Each test step reads as plain English.
+- **Signal-based fight detection** — Connects to `RoundManager.announce("FIGHT!")` instead of hardcoding a frame delay. Survives intro timing changes.
+- **Tap inputs for attacks, hold for movement** — Attacks press for 1 frame then release (matches real player behavior). Movement holds for the full step duration.
+- **Dual output paths** — `res://` for in-project agent access, `user://` for external tool access (CI, Python scripts, etc.)
+
+## Impact
+
+- Any team member or CI system can run `visual_test.bat` to get 7 annotated screenshots
+- AI agents can analyze screenshots for visual regressions without manual playtesting
+- Pattern is extensible — add new steps to the `_run_test_sequence()` coroutine
+
+
+---
+
+# Decision: PNG Sprite Integration Standards
+
+**Author:** Chewie (Engine Developer)
+**Date:** 2025-07-17
+**Scope:** Ashfall sprite system (character_sprite.gd, fighter_base.gd)
+
+## Decisions Made
+
+### 1. PNG Sprite Scale = 0.20
+`_PNG_SPRITE_SCALE` set to 0.20 (512px → 102px rendered height, ~1.7x collision box). This provides proper visual presence with the fight scene's dynamic Camera2D zoom (0.75–1.3 range over a 1920×1080 viewport).
+
+### 2. AnimatedSprite2D.flip_h for PNG sprite mirroring
+When PNG sprites are active, CharacterSprite.flip_h uses the child AnimatedSprite2D's native `flip_h` property instead of parent `scale.x`. This avoids transform accumulation issues between parent scale and child offset. Procedural _draw() still uses parent `scale.x`.
+
+### 3. All 45+ poses mapped in _POSE_TO_ANIM
+Every pose the state machine can emit has an entry in `_POSE_TO_ANIM`. Non-attack poses (hit, block, jump, ko, etc.) map to "idle". Throws/specials map to "punch" or "kick". This guarantees no fallthrough to procedural _draw() when PNG sprites are loaded.
+
+### 4. fighter_base owns CharacterSprite reference
+`fighter_base.gd` now finds and stores a `character_sprite: CharacterSprite` reference (by type, not by name). This enables direct facing control from `_update_facing()` alongside the SpriteStateBridge, and ensures correct facing from the first frame via explicit `_update_facing()` call in `fight_scene._ready()`.
+
+## Impact
+- Any future CharacterSprite poses added to the state machine MUST also be added to `_POSE_TO_ANIM`.
+- New characters extending CharacterSprite automatically inherit these fixes.
+- The fight_scene.gd now documents all P1/P2 controls in a header comment block.
+
+
+---
+
+# Decision: CommunicationAdapter for GitHub Discussions
+
+**Author:** Jango  
+**Date:** 2025-07-23  
+**Status:** Implemented (partial — category creation requires manual step)
+
+## Context
+
+Joaquín wants an automated devblog where Scribe and Ralph post session summaries to GitHub Discussions after each session. This provides public visibility into what the Squad is working on without manual effort.
+
+## Decision
+
+1. **Channel:** GitHub Discussions (native to the repo, no external services needed)
+2. **Config:** Added `communication` block to `.squad/config.json` with:
+   - `channel: "github-discussions"`
+   - `postAfterSession: true` — Scribe posts after every session
+   - `postDecisions: true` — Decision merges get posted
+   - `postEscalations: true` — Blockers get visibility
+   - `repository: "jperezdelreal/FirstFrameStudios"`
+   - `category: "Squad DevLog"` — dedicated category for automated posts
+3. **Scribe charter updated** with Communication section defining format, content, and emoji convention
+4. **Test post created** at https://github.com/jperezdelreal/FirstFrameStudios/discussions/151
+
+## Manual Action Required
+
+⚠️ **Joaquín must create the "Squad DevLog" discussion category manually:**
+1. Go to https://github.com/jperezdelreal/FirstFrameStudios/settings → Discussions
+2. Click "New category"
+3. Name: `Squad DevLog`
+4. Description: `Automated session logs from the Squad AI team`
+5. Format: `Announcement` (only maintainers/bots can post, others can comment)
+6. Emoji: 🤖
+
+The GitHub API does not support creating discussion categories programmatically. Until this category is created, posts should use "Announcements" as a fallback.
+
+## Alternatives Considered
+
+- **GitHub Issues:** Too noisy, mixes with real bugs/tasks
+- **Wiki:** Good for reference docs, bad for chronological updates
+- **External blog:** Unnecessary dependency, discussions are built-in
+
+## Impact
+
+- Scribe: New responsibility — post to Discussions after session logging
+- Ralph: Can use same channel for heartbeat/status updates
+- All agents: Session work becomes publicly visible
+
+
+---
+
+# Decision: Marketplace Skill Adoption
+
+**Author:** Jango (Tool Engineer)  
+**Date:** 2025-07-23  
+**Status:** Implemented
+
+## Context
+
+Our `.squad/skills/` directory contained 31 custom skills built in-house for our game dev workflow. The `github/awesome-copilot` and `anthropics/skills` repos offer community-maintained skills covering general development workflows (PRDs, refactoring, context mapping, commit conventions, issue management, etc.) that complement our domain-specific skills.
+
+## Decision
+
+Installed 9 marketplace skills into `.squad/skills/`:
+
+| Skill | Source | Purpose |
+|-------|--------|---------|
+| `game-engine-web` | github/awesome-copilot | Web game engine patterns (HTML5/Canvas/WebGL) |
+| `context-map` | github/awesome-copilot | Map relevant files before making changes |
+| `create-technical-spike` | github/awesome-copilot | Time-boxed spike documents for research |
+| `refactor-plan` | github/awesome-copilot | Sequenced multi-file refactor planning |
+| `prd` | github/awesome-copilot | Product Requirements Documents |
+| `conventional-commit` | github/awesome-copilot | Structured commit message generation |
+| `github-issues` | github/awesome-copilot | GitHub issue management via MCP |
+| `what-context-needed` | github/awesome-copilot | Ask what files are needed before answering |
+| `skill-creator` | anthropics/skills | Create and iterate on new skills |
+
+## Naming Convention
+
+When a marketplace skill name collides with an existing local skill, the marketplace version gets a suffix (e.g., `game-engine` → `game-engine-web` because we already had `web-game-engine`).
+
+## Also Fixed
+
+- **squad.config.ts routing**: Was all `@scribe` placeholder. Now routes to correct agents per work type.
+- **squad.config.ts casting**: Was wrong universe list. Now `['Star Wars']`.
+- **squad.config.ts governance**: Enabled `scribeAutoRuns: true`, added `hooks` with write guards, blocked commands, and PII scrubbing.
+
+## Risks
+
+- Marketplace skills may diverge from upstream — no auto-update mechanism yet. Manual re-fetch needed.
+- `skill-creator` from anthropics is large (33KB) — may need trimming if it causes context bloat.
+
+## Follow-up
+
+- Monitor which marketplace skills agents actually invoke — prune unused ones after 2 sprints.
+- Consider building a `skill-sync` tool if we adopt more marketplace skills.
+
+
+---
+
+### Walk/Kick Animation + Hit Reach Fix (Lando)
+**Author:** Lando (Gameplay Developer)  
+**Date:** 2025-07-23  
+**Status:** IMPLEMENTED & VERIFIED  
+**Scope:** Animation system, combat reach, hitbox cleanup
+
+#### Problem
+Founder tested manually and reported three critical issues:
+1. Walk animation not playing — character moves but sprite stays in idle pose
+2. Kick animation not playing — pressing kick keys shows punch pose instead
+3. Hits don't connect visually — punches don't reach the opponent despite hitbox detection working
+
+#### Root Causes Found
+
+**Walk animation (Issue #1):**
+`FighterAnimationController._ready()` accessed `fighter.state_machine` which is an `@onready` variable — null during sibling `_ready()` due to Godot's init ordering (children before parent). The `state_changed` signal was never connected, so the AnimationPlayer stayed on "idle" forever, overwriting all pose changes.
+
+**Kick animation (Issue #2):** Three compounding bugs:
+- `_move_to_pose()` mapped kick buttons (lk/mk/hk) to punch poses (attack_lp/mp/hp)
+- `_get_attack_pose()` used case-sensitive matching (`"lk" in "Standing LK"` → false)
+- Both movesets had no standing LK (only Crouching LK with `requires_crouch=true`)
+
+**Hit reach (Issue #3):**
+Fighters at x=200 and x=440 (240px gap). Hitbox extends 176px from origin, hurtbox starts 48px from target. Maximum reachable gap is 224px — the 240px gap exceeded it by 16px.
+
+#### Changes Made
+| File | Change |
+|------|--------|
+| `fighter_animation_controller.gd` | Access StateMachine node directly; fix `_move_to_pose()` kick mapping; stop AnimationPlayer on fallback instead of playing "hit" |
+| `sprite_state_bridge.gd` | Add `.to_lower()` to move name in `_get_attack_pose()` |
+| `character_sprite.gd` | Fix `flip_h` setter to use `AnimatedSprite2D.flip_h` for PNG sprites |
+| `fight_scene.tscn` | Move Fighter2 from x=440 to x=400 |
+| `kael_moveset.tres` | Add Standing LK (5f/3f/8f, 35 dmg) |
+| `rhena_moveset.tres` | Add Standing LK (4f/3f/8f, 35 dmg) |
+| `attack_state.gd` | Use `set_deferred` for hitbox deactivation during physics callbacks |
+| `hitbox.gd` | Use `set_deferred` in `deactivate()` |
+
+#### Verification
+- `visual_test.bat`: 7/7 screenshots captured, walk shows `pose=walk → anim=walk`, kick shows `pose=attack_lk → anim=kick`, punch connects (`[Hitbox] HIT!`), no physics errors, no animation flickering
+- `play.bat --quit-after 8`: Clean run, PNG sprites load for both characters
+
+#### Known Remaining Issues
+- AnimationMixer warning about string blending for "Ember Shot" (harmless, Godot internal)
+- Throw animation has similar AnimationPlayer vs SpriteStateBridge pose conflict (not reported, lower priority)
+
+
+---
+
+# Decision: Combat Hitbox Scaling for PNG Sprites
+
+**Author:** Lando (Gameplay Developer)
+**Date:** 2026-07-22
+**Status:** Implemented & Verified
+
+## Context
+
+The sprite pipeline recently upgraded from ~60px procedural canvas drawings to ~282px pre-rendered PNG sprites (512px at 0.55 scale). The collision system (hitboxes, hurtboxes, body collision) was never updated to match, breaking all combat — attacks animated but dealt no damage.
+
+## Decision
+
+Scale all fighter collision shapes by 3.67× (282px / ~77px procedural) and fix hitbox directional flipping.
+
+### Specific Values
+
+| Shape | Old Size | New Size | Old Position | New Position |
+|-------|----------|----------|--------------|--------------|
+| Body collision | 30×60 | 110×220 | (0, -30) | (0, -110) |
+| Hurtbox | 26×56 | 96×206 | (0, -28) | (0, -103) |
+| Hitbox | 36×24 | 132×88 | (30, -30) | (110, -110) |
+| AttackOrigin | — | — | (30, -30) | (110, -110) |
+| Sprite (legacy) | — | — | (0, -30) | (0, -141) |
+
+### Hitbox Flipping
+
+Added `shape.position.x = absf(shape.position.x) * fighter.facing_direction` in `attack_state._activate_hitboxes()` so hitboxes extend toward the opponent regardless of which side the attacker faces.
+
+## Files Changed
+
+- `games/ashfall/scenes/fighters/kael.tscn` — collision shape sizes + positions
+- `games/ashfall/scenes/fighters/rhena.tscn` — collision shape sizes + positions
+- `games/ashfall/scenes/fighters/fighter_base.tscn` — template consistency
+- `games/ashfall/scripts/fighters/states/attack_state.gd` — hitbox direction flip
+- `games/ashfall/scripts/systems/hitbox.gd` — debug print on hit
+
+## Verification
+
+- `visual_test.bat`: All 7 screenshots pass. Console confirms `[Hitbox] HIT! Fighter1 → Fighter2 | dmg=50`.
+- `play.bat --quit-after 5`: Clean exit, no errors.
+- Walk animation confirmed rendering with PNG sprites.
+
+## Future Consideration
+
+Any time sprite scale changes, collision shapes must be re-calibrated. Consider extracting collision dimensions into a shared constant or resource so they track sprite scale automatically.
+
+
+---
+
+# Lando — Gameplay Bug Fixes
+
+**Author:** Lando (Gameplay Developer)
+**Date:** 2026-07-22
+**Status:** IMPLEMENTED
+**Scope:** Fighter facing, AI controller, walk animation
+
+## Changes Made
+
+### 1. Facing Direction Fix (character_sprite.gd, fighter_base.gd)
+Removed the `if flip_h != value` guard from the `flip_h` setter in `character_sprite.gd`. The guard prevented initial facing propagation when the desired value (false for P1) matched the default. Also hide the legacy `$Sprite` (Sprite2D) node when PNG sprites are active.
+
+**Impact on Team:**
+- Chewie: No action needed. The setter now always propagates — slightly more calls but zero-cost (one bool assignment per frame).
+- Boba: No visual change — sprites were already correct once the game ran for one frame. This fixes the first-frame glitch.
+
+### 2. AI Controller Wiring (fight_scene.gd, ai_controller.gd)
+Wired the existing `AIController` to Fighter2 (Rhena) in `fight_scene.gd`. Fixed `PROTECTED_STATES` array to match actual state node names (`attack` not `attackstate`, etc.).
+
+**Impact on Team:**
+- Yoda: The AI uses Normal difficulty by default. Difficulty can be tuned via the `AIController.Difficulty` enum.
+- Ackbar: CPU opponent is now active — visual tests and QA runs will show P2 fighting back.
+
+### 3. Walk Animation Timing Fix (fighter_animation_controller.gd)
+Added `_set_initial_pose()` that immediately sets the CharacterSprite pose on state change, closing the one-frame gap before AnimationPlayer evaluates its property tracks. Applied to idle, walk, crouch, and jump transitions.
+
+**Impact on Team:**
+- All agents: Animation transitions now feel one frame tighter. No action needed.
+
+
+---
+
+# Decision: Instance FightHUD in fight_scene.tscn (not runtime)
+
+**Date:** 2025-07-22
+**Author:** Wedge (UI/UX Developer)
+**Status:** Implemented
+
+## Context
+
+The FightHUD (`scenes/ui/fight_hud.tscn`) was fully implemented but never added to the fight scene tree. The fight scene had Stage, Fighters, and Camera2D — no HUD.
+
+## Decision
+
+Instance `fight_hud.tscn` directly in `fight_scene.tscn` rather than loading at runtime in GDScript.
+
+**Reasons:**
+1. The HUD is fully self-contained — it connects all 11 EventBus signals in its own `_ready()` via `_wire_signals()`. No external setup needed.
+2. Scene-tree instancing is visible in the Godot editor, making the scene hierarchy inspectable.
+3. The CanvasLayer (layer=10) ensures it renders above everything regardless of camera — no z-index coordination required.
+4. `@onready` references resolve before `_ready()` runs, so fight_scene.gd can set name labels immediately.
+
+## What Changed
+
+- `fight_scene.tscn`: Added ext_resource for `fight_hud.tscn`, instanced as `FightHUD` child node
+- `fight_scene.gd`: Added `@onready var hud` reference, set P1/P2 name labels from `SceneManager.p1_character`/`p2_character`
+
+## Signal Verification
+
+All 11 EventBus signals the HUD connects to are defined and emitted by existing systems (fight_scene.gd, RoundManager, ComboTracker). No missing signals.
+

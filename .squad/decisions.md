@@ -312,58 +312,6 @@ M0-M3 gates have been passed and verified. M4 (stable build, balance tuning, shi
 
 ---
 
-### Chewie — Fighter Engine Infrastructure Decisions (2025-07-22)
-**Author:** Chewie (Engine Developer)  
-**Status:** Proposed  
-**Scope:** Ashfall — fighter state machine, hitbox/hurtbox, round manager
-
-Technical architecture decisions for Ashfall combat engine:
-
-1. **Simplified Collision Layers (4 instead of 6)** — Using scaffold's existing 4 layers (Fighters, Hitboxes, Hurtboxes, Stage) for local play. Will expand to 6-layer per-player scheme when needed for 2v2 or complex self-hit prevention.
-2. **Node Names Without "State" Suffix** — States named "Idle", "Walk", "Attack" (not "IdleState"). Makes transition calls clean: `transition_to("idle")`.
-3. **Frame-Phase Attack State (Temporary)** — AttackState uses frame counters for hitbox timing. Will switch to AnimationPlayer-driven activation when Tarkin creates MoveData resources.
-4. **Dual Signal Emission in RoundManager** — Both local signals (for FightScene wiring) AND EventBus global signals (for UI/VFX/audio decoupling). Slight redundancy for significant decoupling benefit.
-5. **Input Wrappers (Not InputBuffer Yet)** — Placeholder thin wrappers over Input singleton, keyed by player_id. Lando will replace with full InputBuffer system per ARCHITECTURE.md.
-
-**Impact:** Lando extends these with motion detection. Tarkin creates MoveData resources. Wedge wires signal connections. Solo reviews collision expansion path.
-
----
-
-### Lando — Fighter Controller + Input Buffer Architecture (2025-07-21)
-**Author:** Lando (Gameplay Developer)  
-**Status:** Implemented  
-**Scope:** Ashfall — input system and fighter gameplay layer
-
-Core input system decisions:
-
-1. **InputBuffer Routes ALL Input** — All fighter input flows through InputBuffer ring buffer (8-frame / 133ms leniency). Enables buffered inputs, motion detection, consume mechanics, AI injection, deterministic replay.
-2. **Controller Handles Attacks, States Handle Movement** — FighterController owns attack priority (throw > specials > normals). States handle movement transitions (idle ↔ walk ↔ crouch ↔ jump). Separation prevents rewriting state logic.
-3. **Motion Priority: Complex Beats Simple** — DP (→↓↘) beats QCF (↓↘→). Priority order: double_qcf > hcf/hcb > dp > qcf/qcb. Matches SF6/Guilty Gear standard.
-4. **MoveData as Pure Resource** — Moves are `.tres` resource files. Designers tune frame data in Inspector without touching GDScript. Each character's moveset is exportable.
-5. **8-Frame Input Leniency** — Sweet spot: generous enough for casual players, tight enough for precision-play pros. Tunable via `InputBuffer.INPUT_LENIENCY`.
-6. **SOCD Resolution** — Left+Right = Neutral, Up+Down = Up (jump priority). FGC standard.
-
-**Why:** "Player Hands First" — InputBuffer is the invisible engineering separating responsive from broken feeling.
-
----
-
-### Lando — Integration Fixes (2025-07-17)
-**Author:** Lando  
-**Status:** PR Created  
-**Scope:** Input & collision domain integration
-
-Fixed integration issues:
-1. **Removed Orphaned Throw Inputs** — p1_throw / p2_throw defined in project.godot but never read. Throws use LP+LK simultaneous press (fighter_controller.gd).
-2. **Updated Collision Layer Documentation** — ARCHITECTURE.md documented 6-layer scheme never implemented. Updated to reflect actual 4-layer shared scheme in code.
-3. **Fixed Stage Collision Layers** — Stage StaticBody2D now on Layer 4 (Stage), fighters detect Layer 4. Was working by accident with default Layer 1.
-4. **Input Buffer Configuration Exported** — Converted BUFFER_SIZE, INPUT_LENIENCY, SIMULTANEOUS_WINDOW to @export for runtime Godot Inspector tuning.
-
-**Impact:** Collision detection now explicit. Input buffer easily tunable for playtesting.
-
----
-
-## Ashfall Art Sprint Directives (2026-03-09)
-
 ### 2026-03-09T220139Z: Game Resolution is 1080p
 **By:** joperezd (via Copilot)  
 **What:** Game resolution is 1920×1080 (1080p), NOT 720p. This affects sprite dimension scaling: at 1080p, characters render larger, so 512×512 may need validation for proportions.  
@@ -619,25 +567,6 @@ Top 3 action items from post-M2 review:
 
 ---
 
-### Jango — GitHub Issues Infrastructure for Ashfall Sprint 0 (2025-07-24)
-**Author:** Jango (Tool Engineer)  
-**Status:** Implemented  
-**Scope:** Ashfall project tracking — affects all agents
-
-GitHub Issues setup as PM backbone for Sprint 0 in jperezdelreal/FirstFrameStudios:
-
-1. **Milestone:** "Ashfall Sprint 0" groups all sprint work
-2. **24 Labels:** Structured filtering system:
-   - `game:ashfall` — per-game filter (monorepo support)
-   - `priority:p0/p1/p2` — critical path tiers
-   - `type:feature/infrastructure/art/audio/design/qa` — work categories
-   - `squad:{agent}` — 14-agent ownership (one per agent)
-3. **13 Issues (#1–#13):** Critical path tasks from SPRINT-0.md with full descriptions
-
-**Why:** Every agent filters by their squad label. Milestone view shows sprint progress. Acceptance criteria self-validate completion. `game:ashfall` label future-proofs for multi-game monorepo.
-
----
-
 ### Asset Naming Convention (2026-03-09)
 **Author:** Joaquín (User)  
 **Status:** Active  
@@ -652,27 +581,6 @@ All game assets follow: `{character}_{action}_{variant}.png` in `assets/sprites/
 - **Stages:** `assets/stages/{stage_name}/{element}.png`
 
 **Why:** M3 will have Nien creating sprites while Chewie/Lando reference them in code. Shared naming prevents integration friction.
-
----
-
-### Solo — Integration Audit (2025-07-17)
-**Agent:** Solo (Architect)  
-**Status:** Completed  
-**Verdict:** ⚠️ WARN — Project loads, no launch blockers, but issues need attention
-
-**Autoload Check:** ✅ PASS — All 5 autoloads exist in dependency order (EventBus → GameState → VFXManager → AudioManager → SceneManager). Note: RoundManager exists but not registered as autoload.
-
-**Scene References:** ✅ PASS — All 7 .tscn files have valid ext_resource references. Both .tres resource files valid.
-
-**State Machine:** ✅ PASS — All 8 fighter states exist (Idle, Walk, Crouch, Jump, Attack, Block, Hit, KO). Base class inheritance correct.
-
-**Input Map vs Controller:** ⚠️ WARN — Orphaned `p1_throw` / `p2_throw` in project.godot but never read (throws use LP+LK). Low impact, spec divergence.
-
-**Collision Layers:** ⚠️ WARN — ARCHITECTURE.md documents 6-layer per-player scheme never implemented. Actual code uses 4-layer shared scheme. Alignment needed.
-
-**Null Safety:** ⚠️ WARN — 8 `get_node()` calls without null checks. Should add defensive guards before M3.
-
-**GDD Compliance:** ✅ SPOT CHECK PASS — Ember System, 6-button layout, deterministic simulation verified in code.
 
 ---
 
@@ -760,34 +668,6 @@ What Was Done:
 **Decision:** All agents must create GitHub issues immediately when they find bugs, blockers, or unresolved questions
 
 **Why:** Post-mortems revealed known problems never tracked. Tarkin's AI controller sat on dead branch with no issue. Solo's overload surfaced only in ceremony. Issues at discovery time, not retroactively.
-
----
-
-### Mace — Wiki Updates After Milestone Completion (2025-01-20)
-**Author:** Mace (Producer)  
-**Decision:** GitHub Wiki must be updated within 1 business day after each milestone completion
-
-**Update Scope:**
-1. **Home.md** — Milestone summary, completion status, merged PRs by category, infrastructure changes
-2. **Ashfall-Sprint-0.md** — New milestone section, issue numbers, PR list, M3/M4 status
-3. **Ashfall-Architecture.md** — New systems introduced, API docs, autoload details, scene links
-4. **Ashfall-GDD.md** — Implementation notes, mechanics moved to "complete"
-5. **Team.md** — Team size changes, review process updates
-
-**Process:**
-1. Assign one agent (Mace or Scribe) to wiki update task
-2. Clone wiki repo to temp location
-3. Update all pages in single commit
-4. Push with: `docs: Update wiki for [Milestone Name] completion`
-5. Verify wiki renders on GitHub
-
-**Success Criteria:**
-- ✅ All 5 pages updated
-- ✅ Links correct, cross-references work
-- ✅ Commit includes Co-authored-by trailer
-- ✅ Push succeeds, wiki reflects changes within 5 minutes
-
-**Owner:** Mace
 
 ---
 
@@ -1040,41 +920,6 @@ Art direction lock prevents rework. Sprint 1 has 4 parallel workstreams (sprites
 - `viewport_height`: 720 → 1080
 
 **Status:** Complete.
-
----
-
-### 2025-07-24: Godot Build Pipeline Architecture — Jango (Tool Engineer)
-
-**Status:** Implemented (PR #111)
-
-**Decision:** Automated builds and releases for Ashfall.
-
-**Key Decisions:**
-
-1. **Export Presets Versioned** — Needed for CI/CD (no credentials, only relative paths)
-2. **Manual Godot Installation** — wget for Godot 4.6 (explicit version control)
-3. **Tag-Triggered Releases** — Push v* tag → automatic build and GitHub Release
-4. **Windows Desktop Only** — Initially. Can add Linux/Mac/Web later.
-5. **Cross-Compilation on Ubuntu** — Linux runner exports Windows .exe
-
-**Architecture:**
-```
-Tag push (v0.1.0) → GitHub Actions → Install Godot + templates 
-  → Export to .exe → Zip → Create GitHub Release
-```
-
-**Deliverables:**
-- `games/ashfall/export_presets.cfg` — Windows preset
-- `.github/workflows/godot-release.yml` — Build workflow
-- Root `.gitignore` updated
-
-**Impact:**
-- Developers: Create releases by pushing tag
-- Players: Download and play without Godot
-- QA: Test via manual workflow dispatch
-- Future: Pipeline reusable for other projects
-
-**Testing:** Merge PR #111 → test manual dispatch → create v0.0.1-test tag → validate
 
 ---
 
@@ -1580,3 +1425,1611 @@ v2 animation frames are WORSE than v1. Zero consistency between frames — each 
 **Why:** Founder defined the visual target for production sprites. This constrains art pipeline choices: either pixel-art post-processing on 3D renders, PixelLab SaaS, or stylized 3D models rendered to look like pixel art.
 
 **Impact:** Clarifies Rank 3 (PixelLab) becomes viable alternative. 3D-to-2D with pixel-art post-processing is primary path. Confirms this is NOT high-res cel-shade.
+
+# Decision: Free 3D Model Selection for Ashfall Character Pipeline
+
+**Date:** 2026-01-09  
+**Decision Maker:** Boba (Art Director)  
+**Category:** Asset sourcing  
+**Priority:** High (blocks character sprite production)
+
+---
+
+## Context
+
+The Mixamo Y-Bot default mannequin lacks personality. Founder directive: "yo no quiero unos maniquies feos, quiero que sean personajes" (I don't want ugly mannequins, I want characters).
+
+**Constraint:** Zero budget — must use free models.  
+**Target Characters:** Kael (fire monk, orange palette) + Rhena (ice warrior, blue palette)  
+**Pipeline:** Existing Mixamo FBX → Blender cel-shade render → 512×512 PNG
+
+---
+
+## Decision
+
+### Primary Recommendation
+**Use Quaternius (Kael) + RenderHub Liv (Rhena) as base models.**
+
+**Rationale:**
+1. **Quaternius (Kael)**
+   - CC0 license (zero IP complications)
+   - Rigged for animation, FBX export ready
+   - Stylized aesthetic aligns with cel-shade look
+   - Game-tested across 500+ indie titles
+   - Customization path clear: recolor orange, add cloth wraps
+   - Estimated effort: 8-12 hours Blender work
+
+2. **RenderHub Liv (Rhena)**
+   - Designed specifically for fighting games
+   - Female-form character (matches Rhena brief)
+   - Pre-rigged, Mixamo-compatible
+   - Silhouette already combat-ready
+   - Customization path clear: recolor blue, enhance armor
+   - Estimated effort: 8-10 hours Blender work
+
+3. **Both Models**
+   - FBX format (native to our pipeline)
+   - Mixamo skeleton compatibility (upload for animation library)
+   - No format conversion needed
+   - Risk level: Low (quality pre-validated)
+
+### Fallback (If Phase 1 evaluation fails)
+1. **Ready Player Me** (professional pipeline, higher customization depth)
+2. **Kenney Mini Characters** (quality consistency, simpler aesthetic)
+3. **OpenGameArt martial arts models** (if Sketchfab/community options emerge)
+
+---
+
+## Alternatives Considered
+
+| Option | Pros | Cons | Rank |
+|---|---|---|---|
+| **Quaternius + RenderHub** | CC0, game-tested, FBX-ready, low risk | Requires 16-22hr Blender work | ⭐⭐⭐ |
+| **Ready Player Me** | Professional, highly customizable, standard rig | GLB→FBX conversion, higher complexity | ⭐⭐ |
+| **Kenney** | Extremely consistent, CC0, well-documented | Less personality, higher customization needed | ⭐⭐ |
+| **Sketchfab browsing** | Massive variety, unique models | Quality inconsistent, licensing risk, rigging variable | ⭐ |
+| **Commission new models** | Perfect fit, original IP | $1000-5000+ cost, violates zero-budget constraint | ✗ |
+| **Stay with Y-Bot** | No development time, pipeline proven | Founder rejected; lacks personality | ✗ |
+
+**Conclusion:** Quaternius + RenderHub balance quality, effort, cost, and timeline constraints best.
+
+---
+
+## Implementation Plan
+
+### Phase 1: Evaluation (2 hours)
+**Objective:** Validate Blender pipeline and Mixamo compatibility.
+
+1. Download Quaternius fighter + RenderHub Liv (FBX)
+2. Import both to Blender (test scene)
+3. Run through cel-shade material application
+4. Render test PNG at 512×512
+5. Upload to Mixamo, validate auto-rig + animation retargeting
+6. **Decision Point:** Proceed to Phase 2 or adjust model selection
+
+**Owner:** Boba (Art Director)  
+**Timeline:** 2 hours  
+**Success Criteria:**
+- FBX imports cleanly
+- Cel-shade material renders without topology issues
+- Mixamo auto-rig succeeds (skeleton recognized)
+- Test animation applies correctly
+
+### Phase 2: Customization (16-22 hours)
+**Objective:** Customize models to Kael/Rhena specifications.
+
+#### Kael (Quaternius Base) — 8-12 hours
+1. Material customization: orange palette (#FF8C00, #FFA500, #FFB347)
+2. Model customization:
+   - Add cloth wraps (geometry modeling)
+   - Remove shoes → barefoot variant
+   - Optional: enhance face/features for personality
+3. Rig verification: Ensure Mixamo skeleton intact
+4. FBX export with armature
+5. Upload to Mixamo, tag for "meditation", "punch", "kick" animations
+6. Contact sheet generation (4 key poses)
+
+#### Rhena (RenderHub Liv Base) — 8-10 hours
+1. Material customization: steel blue palette (#2E5C8A, #4A90E2, #1C3A5F)
+2. Model customization:
+   - Armor silhouette enhancement (if needed)
+   - Adjust color contrast (armor vs. body)
+   - Optional: weapon refinement
+3. Rig verification: Ensure Mixamo skeleton intact
+4. FBX export with armature
+5. Upload to Mixamo, tag for "warrior stance", "punch", "kick" animations
+6. Contact sheet generation (4 key poses)
+
+**Owner:** Boba (Art Director)  
+**Timeline:** 2-3 days elapsed (assuming 4-6 hours/day Blender work)  
+**Success Criteria:**
+- Contact sheets approved by Founder
+- Models match character brief (personality, colors, silhouette)
+- Mixamo animations apply cleanly
+
+### Phase 3: Production Rendering (4-6 hours)
+**Objective:** Generate full sprite library for Godot.
+
+1. Mixamo animation download (100+ free martial arts animations)
+2. Batch render sprites (512×512, RGBA)
+3. Sprite sheet generation + naming convention alignment
+4. Godot asset import
+5. In-game testing + visual QA
+
+**Owner:** Chewie (Engine) + Boba (Art Direction)  
+**Timeline:** 1 day  
+**Success Criteria:**
+- All animations render without artifacts
+- Sprite sheets match cel-shade spec (0.008 outline, 2-step shadow)
+- In-game appearance matches contact sheets
+
+---
+
+## Resource Requirements
+
+### Software
+- **Blender 4.x** (existing; cel-shade material already configured)
+- **Mixamo account** (free Adobe tier sufficient)
+- **Python script** (existing render pipeline)
+
+### Time Commitment
+- **Art Director:** 18-24 hours (Phase 1 evaluation + Phase 2 customization + approval gates)
+- **Engine (Chewie):** 2 hours (Phase 3 rendering + Godot import validation)
+- **Total:** 20-26 hours
+
+### Cost
+- **Models:** $0 (CC0 + free)
+- **Software:** $0 (existing licenses)
+- **Timeline:** 5-7 days calendar time (assuming 4-6 hr/day work availability)
+
+---
+
+## Approval Gate
+
+**Before Phase 2 begins:** Founder must approve model styles + color palettes from Phase 1 test renders.
+
+**Decision Required:**
+1. Quaternius stylized aesthetic acceptable? (vs. more realistic alternatives)
+2. RenderHub Liv proportions match Rhena vision?
+3. Timeline realistic for project schedule?
+
+---
+
+## Success Metrics
+
+✅ **Phase 1 Complete:**
+- Blender pipeline validated for both models
+- Mixamo upload/animation retargeting verified
+- Test PNG render quality acceptable
+
+✅ **Phase 2 Complete:**
+- Contact sheets approved by Founder
+- Kael matches orange/cloth aesthetic
+- Rhena matches blue/warrior aesthetic
+- FBX exports clean (no topology/rig warnings)
+
+✅ **Phase 3 Complete:**
+- 100+ martial arts animation sprites rendered
+- Godot asset integration successful
+- In-game character appearance matches specs
+
+---
+
+## Risks & Mitigation
+
+| Risk | Impact | Probability | Mitigation |
+|---|---|---|---|
+| Quaternius model doesn't customize well to orange | High | Low | Phase 1 testing; fallback to Kenney |
+| RenderHub Liv rig incompatible with Mixamo | High | Low | Manual rig adjustment; fallback to CGTrader |
+| Blender topology issues during rendering | Medium | Medium | Retopo or model swap; 2-4 hour delay |
+| Founder rejects style after Phase 1 | High | Medium | Early approval gate; discuss alternatives now |
+| Timeline overruns (Blender work slower than estimated) | Medium | Medium | Pare customization scope; focus on color only |
+
+---
+
+## Decision Record
+
+**Approved By:** Boba (Art Director)  
+**Reviewed By:** [Pending Founder feedback]  
+**Date Decided:** 2026-01-09  
+**Status:** Ready for Phase 1 execution
+
+**Next Action:** Schedule Phase 1 evaluation; present test renders to Founder for style approval before proceeding to Phase 2.
+
+---
+
+## References
+
+- **Research:** `games/ashfall/docs/FREE-3D-MODEL-RESEARCH.md`
+- **Quaternius:** https://quaternius.com/characters.html
+- **RenderHub Liv:** https://www.renderhub.com/hisqiefurqoni/stylized-female-fighting-character-liv
+- **Mixamo:** https://mixamo.com
+- **Blender Cel-Shade Pipeline:** `tools/scripts/cel_shade_material.py` (existing)
+
+# Decision: Auto-Screenshot Mode for Sprite Viewer
+
+**Author:** Chewie (Engine Developer)  
+**Date:** 2026-10-03  
+**Status:** IMPLEMENTED  
+**Scope:** Ashfall sprite viewer test tooling
+
+## Context
+Joaquín was frustrated by the manual loop: agents tweak sprite viewer code → Joaquín opens Godot → runs scene → reports result. No agent could verify visual output independently.
+
+## Decision
+Added a `--screenshot` CLI mode to `sprite_poc_test.gd` that:
+1. Parses `OS.get_cmdline_user_args()` for `--screenshot`, `--char=`, `--anim=`
+2. Waits 5 render frames, captures viewport to PNG
+3. Saves to both `user://screenshot.png` and project root `screenshot.png`
+4. Prints paths to stdout and quits
+
+Created `games/ashfall/tools/screenshot.bat` to wrap the Godot CLI call.
+
+## Rationale
+- **Zero impact on interactive mode** — `_process()` early-returns when not in screenshot mode
+- **Dual save paths** — `user://` is always writable; project root is easy for agents/humans to find
+- **Extensible** — same pattern works for any scene; just change `--scene` in the CLI call
+- **Agent-friendly** — batch file can be invoked from any automation; stdout confirms paths
+
+## Key Paths
+- Script: `games/ashfall/scripts/test/sprite_poc_test.gd`
+- Batch: `games/ashfall/tools/screenshot.bat`
+- Output: `games/ashfall/screenshot.png`
+
+# Decision: Mixamo Character Sprite Rendering
+
+**Author:** Chewie (Engine Developer)
+**Date:** 2025-07-08
+**Status:** COMPLETED
+
+## Context
+
+The founder selected two custom Mixamo characters (Kael and Rhena) with real clothing, proportions, and personality — replacing the generic Y-Bot placeholder. These models come with their own materials/textures from Mixamo's character system.
+
+## Decision
+
+**Render with original Mixamo materials (no cel-shade override).**
+
+The pipeline previously used `--cel-shade --preset kael/rhena` to apply monochrome toon shading. For these production characters, we tested rendering WITHOUT cel-shade first — letting the model's own skin, clothing, and hair textures come through EEVEE's standard renderer.
+
+**Result: Original materials render cleanly.** The characters look like themselves, with distinct clothing, skin tones, and hair. No need for the cel-shade fallback.
+
+## Render Summary
+
+| Character | Animation   | Source FBX     | Frames | Step | Output Directory                    |
+|-----------|-------------|----------------|--------|------|-------------------------------------|
+| Kael      | Idle        | Idle.fbx       | 30     | 2    | sprites/kael/idle/                  |
+| Kael      | Walk        | Walking.fbx    | 16     | 2    | sprites/kael/walk/                  |
+| Kael      | Punch       | Punching.fbx   | 13     | 5    | sprites/kael/punch/                 |
+| Kael      | Kick        | Side Kick.fbx  | 13     | 5    | sprites/kael/kick/                  |
+| Rhena     | Idle        | Idle.fbx       | 106    | 2    | sprites/rhena/idle/                 |
+| Rhena     | Walk        | Walking.fbx    | 16     | 2    | sprites/rhena/walk/                 |
+| Rhena     | Punch       | Hook Punch.fbx | 14     | 5    | sprites/rhena/punch/                |
+| Rhena     | Kick        | Mma Kick.fbx   | 13     | 5    | sprites/rhena/kick/                 |
+
+**Totals:** 221 frames rendered, 8 contact sheets generated.
+
+## Notes
+
+- Rhena's idle animation is 106 frames (212 source frames at step=2) — unusually long. May want to trim for in-game use.
+- Root motion pinning (mixamorig:Hips X/Y zeroed) worked on all animations — no character drift.
+- Renderer: BLENDER_EEVEE (not EEVEE_NEXT), standard 2-light rig (key 3.0 + fill 1.5).
+- Contact sheets generated for visual review in each output directory.
+- If the art direction later calls for unified cel-shade style, the `--cel-shade --preset` flags remain available.
+
+# Decision: 3D Character Models Downloaded & Tested
+
+**Date:** 2025-07-08  
+**Author:** Chewie (Engine)  
+**Status:** Results ready for founder review
+
+---
+
+## What Happened
+
+Downloaded free CC0 3D character models and ran them through our Blender cel-shade pipeline.
+
+### Successfully Downloaded (automated)
+| Pack | Source | Characters | Format | Size |
+|------|--------|-----------|--------|------|
+| **Quaternius RPG Pack** | Google Drive | Monk, Warrior, Rogue, Ranger, Cleric, Wizard + weapons | FBX/Blend/glTF | ~15 MB |
+| **Kenney Animated Characters 1-3** | kenney.nl | 3× characterMedium + animations | FBX | ~2 MB |
+| **Kenney Mini Characters** | kenney.nl | 12 characters (6M/6F) | FBX/GLB | ~2.3 MB |
+
+All saved to: `games/ashfall/assets/3d/characters/`
+
+### Pipeline Test Results
+
+**Quaternius Monk** → **WINNER for Kael base.** Fighting stance with fists raised, chibi proportions, cel-shade looks great. Already animated with combat idle.
+
+**Quaternius Warrior** → Sword character with ponytail and armor. Great silhouette and personality. Animation includes attack sequence.
+
+**Kenney models** → Too generic. Same mannequin problem as Y-Bot. Not recommended.
+
+### Test renders at:
+- `games/ashfall/assets/sprites/test_quaternius_monk/` (11 frames + contact sheet)
+- `games/ashfall/assets/sprites/test_quaternius_warrior/` (15 frames + contact sheet)
+- `games/ashfall/assets/sprites/test_kenney_kael_side/` (Kenney with Kael colors)
+
+---
+
+## Known Limitations
+
+1. **Monochrome rendering** — Our cel-shade pipeline paints everything one color (Kael orange). Clothes, skin, hair all same tone. Needs per-material color work for production.
+2. **Animation framing** — Characters with big motion (jumps, swings) can exit the camera frame. Pipeline auto-fit uses frame-1 bounds only.
+3. **Mixamo retargeting needed** — Quaternius models have their own animations (idle/attack), but we need Mixamo martial arts library (punch, kick, walk, etc.) for the full moveset.
+
+---
+
+## 30-Second Download Guide (for Joaquin)
+
+### Priority 1: More Quaternius Packs (browser)
+These have the best fighting-game characters. Open in browser → click "Download" → save ZIP:
+
+1. **Knight Pack** (animated knight with swords/helmets):
+   `https://drive.google.com/drive/folders/1QVyfCJkq70mAwMIh1cGq1xfHp2LN5GmK`
+
+2. **Animated Women** (4 female characters with animations):
+   `https://drive.google.com/drive/folders/1c13R--fMqdR6r2MRlcKKsbPky0__T-yJ`
+
+3. **Universal Base Characters** (6 models, 3 body types, 20 hairstyles):
+   Visit `https://quaternius.itch.io/universal-base-characters` → click "Download" (free)
+
+Save FBX files to: `games/ashfall/assets/3d/characters/`
+
+### Priority 2: KayKit Adventurers (browser)
+5 rigged/animated dungeon characters with 25+ weapons. CC0 license.
+1. Visit `https://kaylousberg.itch.io/kaykit-adventurers`
+2. Click "Download" → "No thanks, just take me to the downloads"
+3. Download the free ZIP
+4. Extract FBX files to `games/ashfall/assets/3d/characters/kaykit-adventurers/`
+
+### Priority 3: Mixamo Characters (browser)
+Your existing Mixamo account has built-in characters beyond Y-Bot:
+1. Go to `https://mixamo.com` → log in
+2. Click "Characters" tab (top-left)
+3. Try: **Mery** (female), **Big Vegas** (stocky male), **Mutant** (creature)
+4. Select any animation → Download as FBX
+5. These come pre-rigged — drop directly into pipeline
+
+### Test any FBX in pipeline:
+```
+"C:\Program Files\Blender Foundation\Blender 5.0\blender.exe" --background --python games/ashfall/tools/blender_sprite_render.py -- --input YOUR_MODEL.fbx --output games/ashfall/assets/sprites/test_output/ --character test --animation idle --size 512 --step 2 --cel-shade --preset kael --outline --contact-sheet
+```
+
+---
+
+## Recommendation
+
+**Use Quaternius Monk as Kael's base mesh.** It's already in the repo, already renders through our pipeline, has a fighting stance, and the chibi proportions give it character. Upload to Mixamo for the full martial arts animation set, then customize colors in Blender.
+
+For Rhena, download the Quaternius Animated Women pack or KayKit Adventurers — both have female warrior characters that could work as a base.
+
+# Sprite Pipeline V2 — Root Motion Pinning & Animation-Aware Stepping
+
+**Author:** Chewie (Engine Developer)  
+**Date:** 2025-07-23  
+**Status:** Implemented  
+**Scope:** Ashfall sprite rendering pipeline (`blender_sprite_render.py`)
+
+## Changes Made
+
+### 1. Tighter Camera Framing
+- Ortho scale padding: **1.1× → 1.03×** of model bounds
+- Character now fills ~97% of the 512×512 frame vs ~90% before
+- Still auto-fits; `--ortho-scale` CLI override still available
+
+### 2. Root Motion Pinning (NEW)
+- Mixamo animations bake root motion into `mixamorig:Hips` bone
+- New `pin_root_motion()` zeros X/Y translation each frame, keeps Z + rotations
+- Runs after `frame_set()`, before `render()` — character stays centered
+- Auto-detects root bone with fallback chain: mixamorig:Hips → Hips → Root → first parentless bone
+
+### 3. Animation-Aware Frame Stepping (NEW)
+- `ANIM_STEP_HINTS` dict maps animation keywords to optimal steps
+- Attacks (punch/kick/heavy/special): **step=5** → ~13 frames (was 31 with step=2)
+- Loops (idle/walk/run): **step=2** → 16-17 frames (unchanged)
+- Auto-applied via `get_smart_step()`; user `--step` still works as override
+- Key metric met: **no attack exceeds 15 frames**
+
+## Frame Count Summary
+| Animation | Old Frames | New Frames | At 15fps |
+|-----------|-----------|------------|----------|
+| idle      | 17        | 17         | 1.13s    |
+| walk      | 16        | 16         | 1.07s    |
+| punch     | 31        | 13         | 0.87s    |
+| kick      | 31        | 13         | 0.87s    |
+
+## Impact on Team
+- **Art (Boba):** Sprites are larger in frame, centered, and attack timing is game-appropriate. Review contact sheets.
+- **Design (Yoda):** Frame data for moves can now reference 13-frame attacks for punch/kick — much snappier feel.
+- **Godot integration:** Same output paths, same naming convention. Just re-import the updated PNGs.
+- **Future characters:** Pipeline auto-handles any Mixamo FBX — root motion pinning and smart stepping are automatic.
+
+# PNG Sprite Integration into CharacterSprite
+
+**Author:** Chewie (Engine Developer)  
+**Date:** 2026-07-24  
+**Status:** Implemented  
+**Scope:** Ashfall fighter rendering pipeline
+
+## Decision
+
+Modified `CharacterSprite` base class to auto-detect and render pre-rendered PNG sprites instead of procedural `_draw()` geometry. The system probes `res://assets/sprites/{character_id}/` at startup and creates an `AnimatedSprite2D` child if sprites are found.
+
+## Key Design Choices
+
+1. **Detection via virtual method** — `_get_character_id()` returns the character folder name. Base returns `""` (no sprites). Subclasses override with `"kael"` / `"rhena"`. Cleaner than class name parsing.
+
+2. **Pose setter branches** — When `pose` changes, the setter calls `_update_sprite_animation()` (PNG mode) or `queue_redraw()` (procedural mode). No new signals, no polling.
+
+3. **Graceful fallback** — If sprites aren't found, procedural rendering continues unchanged. Both Kael and Rhena can run with or without PNGs.
+
+4. **Zero changes to downstream systems** — `SpriteStateBridge`, `FighterAnimationController`, fighter `.tscn` files, hitboxes, and HUD are all untouched. The integration is entirely inside `CharacterSprite`.
+
+5. **Scale constant** — `_PNG_SPRITE_SCALE = 0.15` (512px → ~77px). Tunable constant, not buried in logic.
+
+## Impact on Team
+
+- **Boba:** New sprite animations (block, hit, jump, etc.) just need to follow the naming convention `{char}_{anim}_{NNNN}.png` in the correct folder. Add the animation name to `_SPRITE_ANIM_CONFIGS` and pose mappings to `_POSE_TO_ANIM`.
+- **Wedge:** No gameplay changes. State machine and hitbox systems unaffected.
+- **Joaquín:** Run the game normally — if PNGs exist, they render automatically.
+
+## Files Changed
+
+- `games/ashfall/scripts/fighters/sprites/character_sprite.gd` — PNG sprite system added
+- `games/ashfall/scripts/fighters/sprites/kael_sprite.gd` — `_get_character_id()` override
+- `games/ashfall/scripts/fighters/sprites/rhena_sprite.gd` — `_get_character_id()` override
+
+# Squad Documentation Deep Audit — Complete Feature Inventory
+
+**Author:** Jango (Tool Engineer)
+**Date:** 2026-07-23
+**Status:** Proposed
+**Audience:** Joaquín (Founder), all agents
+
+---
+
+## Summary
+
+Deep-crawled 25+ pages of the Squad docs site (bradygaster.github.io/squad). Read every Get Started, Concepts, Features, Guide, Reference, Scenarios, Cookbook, and What's New page. Cross-referenced against our `.squad/` directory, `squad.config.ts`, GitHub workflows, and identity files. This report covers **every documented feature** with our adoption status, value assessment, and specific next steps.
+
+---
+
+## Feature Inventory
+
+### 1. CLI Installation & Distribution
+
+**What it does:** Squad installs via `npm i -g @bradygaster/squad-cli`. Supports global install, npx one-off, and SDK library import.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — we have `squad.config.ts` and full `.squad/` directory |
+| Value | 🤷 Low — already done |
+| Effort | N/A |
+
+---
+
+### 2. Team Formation (Init Mode)
+
+**What it does:** `squad init` scans your repo, proposes a 3-7 member team based on detected stack, lets you customize, then writes `.squad/` directory with charters, routing, and casting.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — 15 agents + Scribe + Ralph + @copilot on the roster |
+| Value | 🤷 Low — already mature |
+| Effort | N/A |
+
+---
+
+### 3. Parallel Fan-Out Execution
+
+**What it does:** Saying "Team, ..." triggers parallel agent spawning. Multiple agents work simultaneously in separate context windows. Coordinator collects and synthesizes results.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — we use "Team, ..." pattern regularly |
+| Value | 🔥 High — multiplies throughput on multi-domain tasks |
+| Effort | N/A |
+
+---
+
+### 4. Response Modes (Direct / Lightweight / Standard / Full)
+
+**What it does:** Squad auto-selects effort level. Direct (~2-3s) for status checks, Lightweight (~8-12s) for quick fixes, Standard (~25-35s) for normal work, Full (~40-60s) for multi-agent tasks.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — automatic, no config needed |
+| Value | 💡 Medium — saves tokens on simple queries |
+| Effort | N/A |
+
+---
+
+### 5. Work Routing (Named / Domain / Skill-Aware)
+
+**What it does:** Three routing strategies: Named ("Chewie, fix X"), Domain (pattern matching in `routing.md`), and Skill-aware (agent with relevant skill preferred). First match wins.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — comprehensive `routing.md` with 13 work types |
+| Value | 🔥 High — critical for correct agent assignment |
+| Effort | N/A |
+
+---
+
+### 6. Reviewer Protocol & Lockout
+
+**What it does:** When a reviewer (Lead, Tester) rejects work, the original agent gets locked out — no self-revision allowed. Prevents endless fix-retry loops. Deadlock handling escalates to user.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — Solo (Lead) and Ackbar (QA) have review authority |
+| Value | 🔥 High — prevents infinite feedback loops |
+| Effort | N/A |
+
+---
+
+### 7. Ceremonies (Design Review + Retrospective)
+
+**What it does:** Structured meetings auto-triggered at key moments. Design Review before multi-agent tasks with shared systems. Retrospective after failures. Custom ceremonies supported.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — both Design Review and Retrospective configured in `ceremonies.md` |
+| Value | 🔥 High — design reviews prevent conflicting implementations |
+| Effort | N/A |
+
+**Gap noted:** We have only the two default ceremonies. Docs mention you can add custom ceremonies (e.g., "security review", "sprint planning"). We could add:
+- **Sprint Planning ceremony** — Mace facilitates, auto-triggers at sprint boundaries
+- **Art Review ceremony** — Boba facilitates before sprite/animation integration
+
+---
+
+### 8. Decisions System (decisions.md + inbox)
+
+**What it does:** Append-only shared memory all agents read before working. Decisions captured from agent work (inbox files), user directives, and Scribe merges.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — large `decisions.md` (85KB!), active inbox with 7 pending items |
+| Value | 🔥 High — team alignment backbone |
+| Effort | N/A |
+
+**⚠️ Critical gap: Decision Archiving.** Docs say when `decisions.md` gets large, old decisions should archive to `decisions-archive.md` — "preserved for reference but no longer loaded into agent context." Our file is **85KB** — that's eating enormous context budget. We do NOT have a `decisions-archive.md`.
+
+**Recommendation:** 🔥 HIGH PRIORITY — Archive stale sprint artifacts and one-time planning fragments. This could cut agent context usage dramatically.
+
+---
+
+### 9. Directives (Signal Word Detection)
+
+**What it does:** Say "always", "never", "from now on", "remember to", "don't", "make sure to" and Squad captures it as a permanent team rule. Persists across all sessions.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | 🟡 Configured but underused — directives exist in `decisions.md` but we don't have a separate `directives.md` |
+| Value | 🔥 High — fastest way to shape team behavior |
+| Effort | Trivial (minutes) |
+
+**Docs note:** The CLI reference mentions a separate `directives.md` file for permanent rules. We embed them in `decisions.md`. Either approach works, but a dedicated file prevents dilution.
+
+---
+
+### 10. Skills System (Starter + Earned, Confidence Lifecycle)
+
+**What it does:** Reusable knowledge files at `.squad/skills/{name}/SKILL.md`. Team-wide (not per-agent). Earned skills have confidence lifecycle: Low → Medium → High. Skills are portable across projects via export/import.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — **31 skills** in `.squad/skills/`, covering game design, combat, audio, tools, workflow, etc. |
+| Value | 🔥 High — massive knowledge base already |
+| Effort | N/A |
+
+**Gap noted:** We likely haven't assigned confidence levels to our earned skills. Docs say earned skills should have `**Confidence:** low|medium|high` in them. Worth auditing.
+
+---
+
+### 11. Personal History (history.md per agent)
+
+**What it does:** Each agent has `.squad/agents/{name}/history.md`. After every session, agents append learnings. Only that agent reads its own history. Progressive summarization when >12KB.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — all agents have history files, some quite large |
+| Value | 🔥 High — specialized per-agent memory |
+| Effort | N/A |
+
+**Gap noted:** Progressive summarization. Docs say when history exceeds ~12KB, older entries should be archived into a summary section. Some of our agent histories (like Jango's at 25KB) may be oversized.
+
+---
+
+### 12. Human Team Members
+
+**What it does:** Add real people to the roster with 👤 Human badge. No charter, no history, never spawned as sub-agent. When work routes to them, Squad pauses and tells you someone needs to act. Stale reminders keep things moving.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ❌ Not set up — no human members on roster |
+| Value | 💡 Medium — useful for Joaquín as formal approval gate |
+| Effort | Trivial (minutes) |
+
+**Recommendation:** Consider adding Joaquín as a human member for approval gates on architecture decisions, sprint scope, and art direction sign-off. The docs' litmus test: "If you want agents to stop and wait for someone's input before proceeding, add them."
+
+---
+
+### 13. @copilot Coding Agent Integration
+
+**What it does:** GitHub Copilot coding agent as autonomous squad member. Picks up issues, creates branches, opens PRs. Three-tier capability profile (🟢🟡🔴). Auto-assign via `COPILOT_ASSIGN_TOKEN` PAT.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ⚠️ Partially set up — @copilot on roster, capability profile defined, `squad-issue-assign.yml` exists, BUT auto-assign is `false` and likely no `COPILOT_ASSIGN_TOKEN` secret |
+| Value | 🔥 High — autonomous async work on well-defined tasks |
+| Effort | Small (< 1 hour) |
+
+**To fully enable:**
+1. Set `copilot-auto-assign: true` in `team.md`
+2. Create classic PAT with `repo` scope at github.com/settings/tokens/new
+3. `gh secret set COPILOT_ASSIGN_TOKEN` on the repo
+4. Ensure `copilot-setup-steps.yml` exists in `.github/`
+5. Test by labeling an issue `squad:copilot`
+
+---
+
+### 14. Ralph — Work Monitor
+
+**What it does:** Built-in agent that tracks the work queue, monitors CI status, auto-triages issues. Three layers: in-session ("Ralph, go"), local watchdog (`squad watch`), cloud heartbeat (GitHub Actions cron). Never stops while work remains.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ⚠️ Partially set up — Ralph on roster, `squad-heartbeat.yml` exists, but likely not actively used for continuous monitoring |
+| Value | 🔥 High — autonomous backlog processing |
+| Effort | Small (< 1 hour) to fully activate |
+
+**Untapped patterns:**
+- "Ralph, go" — activates in-session work loop
+- `squad watch --interval 5` — persistent local polling
+- Heartbeat cron for fully unattended triage
+
+---
+
+### 15. GitHub Issues Integration
+
+**What it does:** Connect to repo, view backlog, work on issues, agents create branches/PRs, handle review feedback, merge. Full issue-driven development workflow.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — issue source connected to `jperezdelreal/FirstFrameStudios`, routing labels configured |
+| Value | 🔥 High — core workflow |
+| Effort | N/A |
+
+---
+
+### 16. Plugin Marketplace
+
+**What it does:** Community-curated bundles of agent templates, skills, and best practices. Available marketplaces include awesome-copilot, anthropic-skills, azure-cloud-dev, security-hardening. Install with `/plugin install`.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ❌ Not set up — no plugins directory, no marketplace configured |
+| Value | 💡 Medium — could bring pre-built patterns for game dev |
+| Effort | Small (< 1 hour) |
+
+**Recommendation:** Check if any marketplaces have game-dev-related plugins. We have `plugin-marketplace.md` in `.squad/` (docs template) but no actual marketplace configured. Try: `"Browse awesome-copilot marketplace"` in a session.
+
+---
+
+### 17. Export & Import
+
+**What it does:** Export trained team to portable JSON. Import into any repo. Skills, casting state, agent histories included. Project-specific details stripped on import.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | 🟡 Available but unused — `squad export` is a CLI command we haven't used |
+| Value | 💡 Medium — useful when we start our second game project |
+| Effort | Trivial (minutes) |
+
+**When to use:** Before major refactors (backup), when starting the next game project (bring trained team), sharing with collaborators.
+
+---
+
+### 18. Personal Squad (Cross-Project)
+
+**What it does:** `squad init --global` creates `~/.squad/` — a personal team root. All projects point to it. Agents remember conventions across all repos. Skills learned in one project carry to all others.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ❌ Not set up — `config.json` shows `teamRoot: "."` (local mode) |
+| Value | 💡 Medium — becomes high when we have multiple game projects |
+| Effort | Small (< 1 hour) |
+
+**When to adopt:** When we start the second game project. For now, single-project local mode is correct.
+
+---
+
+### 19. Consult Mode
+
+**What it does:** Bring your personal squad to projects you don't own (OSS, client work) without leaving traces. Team consults invisibly, then extracts generic learnings back to personal squad.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ❌ Not set up (requires Personal Squad first) |
+| Value | 🤷 Low for us — we're not contributing to other repos with Squad |
+| Effort | N/A |
+
+---
+
+### 20. Upstream Inheritance
+
+**What it does:** Declare external Squad sources (other repos, local dirs, exports) and inherit their context (skills, decisions, routing) at session start. Enables knowledge sharing across teams/orgs.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ❌ Not set up — no `upstream.json` |
+| Value | 💡 Medium — useful for multi-project studios (share game-dev skills across projects) |
+| Effort | Small (< 1 hour) |
+
+**When to adopt:** When we have 2+ game projects and want to share studio-level conventions without duplicating. Our `identity/` directory already captures studio-level wisdom — upstream inheritance would formalize sharing it.
+
+---
+
+### 21. SDK-First Mode (squad.config.ts)
+
+**What it does:** Define your team in TypeScript using builder functions (`defineTeam`, `defineAgent`, `defineRouting`, `defineCeremony`, `defineHooks`, `defineCasting`, `defineTelemetry`). Typed, testable, version-controlled. Run `squad build` to generate `.squad/` files.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ⚠️ Partially set up — we have `squad.config.ts` but it uses basic config format, not full builder functions |
+| Value | 💡 Medium — typed config is nice but our markdown-based setup works |
+| Effort | Medium (session) to fully migrate |
+
+**Gap noted:** Our `squad.config.ts` routes everything to `@scribe` — this looks like a placeholder/template that was never customized. The routing rules in `routing.md` are the ones actually used. The config should either be fixed or removed to avoid confusion.
+
+---
+
+### 22. Governance Hooks (defineHooks)
+
+**What it does:** File-write guards (allowedWritePaths), blocked commands, PII scrubbing, reviewer lockout enforcement, maxAskUser limit. Enforced in code, not just suggestions.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ❌ Not set up — no hooks defined in `squad.config.ts` |
+| Value | 🔥 High — prevents agents from writing outside their domain, scrubs PII |
+| Effort | Small (< 1 hour) |
+
+**Recommendation:** Add `defineHooks` to our config:
+```ts
+hooks: {
+  allowedWritePaths: ['games/**', '.squad/**', 'tools/**', 'docs/**'],
+  blockedCommands: ['rm -rf', 'DROP TABLE'],
+  scrubPii: true,
+  reviewerLockout: true,
+  maxAskUser: 3,
+}
+```
+
+---
+
+### 23. Model Selection & Fallback Chains
+
+**What it does:** Per-agent model selection based on task type. 16+ models across Premium/Standard/Fast tiers. Task-aware defaults (code → Sonnet, docs → Haiku, visual → Opus). Fallback chains for unavailability.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — `squad.config.ts` has full fallback chain config, default model `claude-sonnet-4.5` |
+| Value | 🔥 High — cost optimization without quality loss |
+| Effort | N/A |
+
+---
+
+### 24. Casting System (Universe Themes)
+
+**What it does:** Agents named from fictional universes. Allowlist universes, overflow strategy, capacity limits. 33+ universes available.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — Star Wars universe, casting history/policy/registry files present |
+| Value | 💡 Medium — team cohesion and personality |
+| Effort | N/A |
+
+**Note:** `squad.config.ts` lists different allowlist universes (Usual Suspects, Breaking Bad, The Wire, Firefly) than what we actually use (Star Wars). Config is mismatched — our actual casting uses Star Wars per `team.md`.
+
+---
+
+### 25. Identity Layer (wisdom.md, now.md)
+
+**What it does:** `wisdom.md` stores reusable heuristics learned through work. `now.md` provides temporal awareness (current sprint, priorities).
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — `.squad/identity/` has wisdom.md, now.md, company.md, mission-vision.md, principles.md, quality-gates.md, growth-framework.md, new-project-playbook.md |
+| Value | 🔥 High — deep studio identity beyond just project context |
+| Effort | N/A |
+
+---
+
+### 26. Interactive Shell (squad command)
+
+**What it does:** Persistent interactive session with `/status`, `/history`, `/agents`, `/sessions`, `/resume` commands. Session management with resume capability.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | 🟡 Available — we primarily use `copilot --agent squad` instead |
+| Value | 💡 Medium — `/sessions` and `/resume` could help with session continuity |
+| Effort | Trivial (minutes) |
+
+---
+
+### 27. squad doctor (Setup Validation)
+
+**What it does:** 9-check setup validation with clear pass/fail output. Validates `.squad/` structure, config files, agent definitions, file permissions, integrations.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | 🟡 Available but likely not routinely run |
+| Value | 💡 Medium — useful diagnostic after upgrades or problems |
+| Effort | Trivial (minutes) — just run `squad doctor` |
+
+---
+
+### 28. squad upgrade
+
+**What it does:** Upgrades Squad-owned files (templates, workflows) to latest version without touching team state (charters, decisions, history).
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | 🟡 Available — unknown when last run |
+| Value | 💡 Medium — keeps templates current |
+| Effort | Trivial (minutes) |
+
+---
+
+### 29. squad nap (Context Hygiene)
+
+**What it does:** Compress, prune, archive `.squad/` state. `--deep` for thorough cleanup, `--dry-run` to preview. Keeps context budget lean.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ❌ Not used — never run |
+| Value | 🔥 High — our 85KB decisions.md and 25KB+ history files scream for this |
+| Effort | Trivial (minutes) |
+
+**Recommendation:** Run `squad nap --dry-run` to preview, then `squad nap --deep` to clean up. This directly addresses our context bloat problem.
+
+---
+
+### 30. squad scrub-emails
+
+**What it does:** Remove email addresses from Squad state files. PII protection.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | 🟡 Available but unknown if needed |
+| Value | 🤷 Low — small team, unlikely PII in state files |
+| Effort | Trivial (minutes) |
+
+---
+
+### 31. Remote Control (squad start --tunnel)
+
+**What it does:** Control Copilot CLI from phone via secure WebSocket tunnel. PTY + devtunnel + phone browser. 7-layer security model. Perfect for demos.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ❌ Not set up |
+| Value | 🤷 Low for us — no mobile workflow needed |
+| Effort | Small (< 1 hour) |
+
+---
+
+### 32. OpenTelemetry / Aspire Dashboard
+
+**What it does:** Observability for Squad operations. Traces, metrics, spans. Aspire dashboard for visualization.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ❌ Not set up |
+| Value | 🤷 Low — overkill for our team size |
+| Effort | Medium (session) |
+
+---
+
+### 33. Git Worktrees Support
+
+**What it does:** Two strategies — worktree-local (independent `.squad/` per worktree) or main-checkout (shared via symlink). `merge=union` for append-only files.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | 🟡 Merge rules likely configured via `.gitattributes` |
+| Value | 🤷 Low — we don't use worktrees currently |
+| Effort | N/A |
+
+---
+
+### 34. GitHub Workflows Suite
+
+**What it does:** Squad installs/upgrades 11+ GitHub Actions workflows: heartbeat, triage, issue-assign, label-enforce, CI, docs, main-guard, preview, promote, release, insider-release.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — 11 squad-* workflows + sync-squad-labels.yml |
+| Value | 🔥 High — automation backbone |
+| Effort | N/A |
+
+---
+
+### 35. Decision Archiving
+
+**What it does:** When `decisions.md` grows large, archive old decisions to `decisions-archive.md`. Active decisions stay lean; agents read less context.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ❌ Not set up — no `decisions-archive.md` exists, main file is 85KB |
+| Value | 🔥 High — directly reduces context waste |
+| Effort | Small (< 1 hour) |
+
+---
+
+### 36. Scribe Agent
+
+**What it does:** Silent decision logger. Periodically consolidates inbox files into canonical `decisions.md`, deduplicating overlapping entries. Always on roster.
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — Scribe on roster with charter |
+| Value | 🔥 High — maintains shared memory |
+| Effort | N/A |
+
+---
+
+### 37. Concurrency Limits
+
+**What it does:** Default 5 agents in parallel. Adjustable via prompt ("Run at most 2 agents at once to save costs").
+
+| Aspect | Assessment |
+|--------|------------|
+| Our status | ✅ Active — default behavior |
+| Value | 💡 Medium — cost control lever |
+| Effort | N/A |
+
+---
+
+---
+
+## Sample Prompts from the Docs We Should Try
+
+### High-Value for Game Studio Context
+
+```
+Team, build the [feature] — include gameplay code, art integration, and tests.
+```
+Multi-agent fan-out tuned for our domain.
+
+```
+Ralph, go — start monitoring and process the backlog until it's clear.
+```
+Activate autonomous work processing.
+
+```
+Run a design review before we start the [feature] rebuild.
+```
+Formal ceremony before multi-agent architecture work.
+
+```
+Run a retro on why those tests failed.
+```
+Automated root-cause analysis.
+
+```
+Always use [convention]. From now on, [rule].
+```
+Directive capture for persistent team rules.
+
+```
+Yoda, do a 20-minute spike on [design question]. Write a decision.
+```
+Architectural spike pattern.
+
+```
+Show me what skills this team has learned.
+```
+Audit accumulated knowledge.
+
+```
+What did the team accomplish last session? Any blockers?
+```
+Quick status without spawning agents.
+
+```
+Team, design the [system]. Don't code yet. Write decisions to decisions.md.
+```
+Decision-first development pattern.
+
+```
+Export the current team.
+```
+Backup before major changes.
+
+---
+
+## Best Practices We're Not Following
+
+### 1. Decision Archiving (CRITICAL)
+Our `decisions.md` is **85KB**. The docs explicitly say to archive stale entries to `decisions-archive.md` so agents read a lean, current shared brain. This is likely our #1 context budget waste.
+
+### 2. Progressive History Summarization
+Agent history files should be summarized when >12KB. Some of ours are 25KB+. The docs say older entries should condense into a summary section.
+
+### 3. Context Hygiene (`squad nap`)
+Never used. Docs recommend periodic cleanup to compress, prune, and archive `.squad/` state.
+
+### 4. Skill Confidence Levels
+Our 31 skills likely don't have confidence metadata (Low/Medium/High). The docs say earned skills should track how battle-tested they are.
+
+### 5. Directives in Dedicated File
+The CLI reference shows a `directives.md` file for permanent rules separate from `decisions.md`. We mix everything together.
+
+---
+
+## Tips and Tricks We Haven't Adopted
+
+1. **"Team" keyword for fan-out** — We may not consistently use this trigger word.
+2. **"Keep working" / "Work until done"** — Activates Ralph's continuous loop.
+3. **Stack decisions in your prompt** — Front-load conventions in the first prompt to reduce agent questions.
+4. **Decision-first development** — "Don't code yet. Write decisions." before implementation.
+5. **Spike → Decision → Build** — For hard problems, spike first, then decide, then build.
+6. **Check `/status` before big asks** — Prevent overloading already-working agents.
+7. **Reference decisions, not details** — "See the auth decision in decisions.md" instead of re-explaining.
+
+---
+
+## Common Mistakes from Docs We Might Be Making
+
+| Mistake | Fix | Our Risk Level |
+|---------|-----|----------------|
+| Vague prompts → agents ask questions | Be specific about scope upfront | 💡 Medium |
+| Interrupting parallel work | Let it finish, then review | 💡 Medium |
+| Not using Ralph on full backlog | `Ralph, go` — let the bot grind | 🔥 High |
+| Too many agents | Start with 4-5, add specialists later | 💡 Medium (we have 15) |
+| Lost team knowledge | Commit `.squad/` to git | ✅ We do this |
+| Contradicting old decisions | Ask Scribe to remind you of rules | 💡 Medium |
+| 85KB decisions.md | Archive old decisions | 🔥 Critical |
+
+---
+
+## Personal Squad Patterns
+
+The docs describe a "Personal Squad" concept (`squad init --global` → `~/.squad/`) that creates a cross-project team identity. **Not relevant for us yet** — we operate in a single repo. This becomes valuable when:
+
+- We start the second game project (export skills → import to new repo)
+- Joaquín wants consistent agent behavior across repos
+- We want studio-level conventions separate from game-specific decisions
+
+Our `identity/` directory already captures studio-level wisdom — it's a natural precursor to a personal squad setup.
+
+---
+
+## What We're Missing
+
+### 🔴 Critical Gaps (Fix This Session)
+
+1. **Decision Archiving** — 85KB `decisions.md` is burning context budget on every agent spawn. Run `squad nap --deep` or manually create `decisions-archive.md` and move old entries. This is the single highest-ROI fix available.
+
+2. **History Summarization** — Agent histories over 12KB need progressive summarization. Multiple agents are over this threshold.
+
+### 🟡 High-Value Gaps (Fix This Sprint)
+
+3. **@copilot Auto-Assign** — It's on the roster but disabled. Create PAT, set secret, enable auto-assign. Unlocks autonomous issue processing for well-defined tasks.
+
+4. **Governance Hooks** — No file-write guards, no PII scrubbing. Adding `defineHooks` to `squad.config.ts` prevents agents from writing outside their domain.
+
+5. **squad.config.ts Cleanup** — Routing rules all point to `@scribe` (placeholder). Casting allowlist doesn't match actual universe (Star Wars). Fix or remove to avoid confusion.
+
+6. **Custom Ceremonies** — Only have Design Review and Retrospective. Consider adding Sprint Planning (Mace facilitates) and Art Review (Boba facilitates).
+
+### 🟢 Nice-to-Have Gaps (Future Sprints)
+
+7. **Plugin Marketplace** — Browse for game-dev relevant plugins. May not exist yet, but worth checking.
+
+8. **Personal Squad** — For when we start the next game project. Export current team, init global, connect both projects.
+
+9. **Upstream Inheritance** — Share studio conventions across game projects. Natural extension of our identity layer.
+
+10. **Skill Confidence Levels** — Audit all 31 skills and add confidence metadata.
+
+11. **Dedicated directives.md** — Separate permanent rules from the decision log.
+
+12. **Human Team Member** — Add Joaquín as formal approval gate for architecture/scope decisions.
+
+### ⬜ Not Needed
+
+- Remote Control (squad start --tunnel) — No mobile workflow
+- OpenTelemetry/Aspire — Overkill for our scale
+- Consult Mode — We don't contribute to external projects with Squad
+- Git Worktrees — Not our workflow
+
+---
+
+## Priority Action Items
+
+| # | Action | Owner | Effort | Impact |
+|---|--------|-------|--------|--------|
+| 1 | Run `squad nap --deep` (or manually archive decisions) | Jango | Small | 🔥 Critical — context budget |
+| 2 | Enable @copilot auto-assign (PAT + secret) | Jango | Small | 🔥 High — autonomous work |
+| 3 | Fix `squad.config.ts` (routing, casting mismatch) | Jango | Small | 💡 Medium — config hygiene |
+| 4 | Add governance hooks to config | Jango | Small | 🔥 High — safety guardrails |
+| 5 | Run `squad doctor` to validate setup | Jango | Trivial | 💡 Medium — diagnostic baseline |
+| 6 | Summarize oversized agent histories | Scribe | Small | 💡 Medium — context budget |
+| 7 | Add custom ceremonies (Sprint Planning, Art Review) | Jango | Small | 💡 Medium — process quality |
+| 8 | Add Joaquín as human team member | Jango | Trivial | 💡 Medium — approval gates |
+
+---
+
+*This audit covers every documented feature as of 2026-07-23 across 25+ docs pages. Squad is alpha software — features may change. Re-audit recommended after major Squad version updates.*
+
+# Squad Ecosystem Audit — Comprehensive Feature Investigation
+
+**Author:** Solo (Lead / Chief Architect)  
+**Date:** 2026-07-23  
+**Status:** PROPOSED  
+**Scope:** Squad CLI v0.8.25, all features vs. current adoption
+
+---
+
+## Executive Summary
+
+We're running Squad v0.8.25 with a mature 16-member team (14 AI agents + Ralph + @copilot), 31 skills, 5 ceremonies, and 17 GitHub Actions workflows. After a thorough investigation of the CLI, docs site, and upstream Squad repo, I found **6 high-value features we should adopt now**, **4 worth adopting later**, and **3 to skip**. Our biggest gaps are: no `squad nap` hygiene (our history files are 69KB+), no SubSquads for parallel workstreams, and unused plugin marketplace.
+
+---
+
+## TOP 5 RECOMMENDATIONS — ADOPT NOW
+
+| # | Feature | Why | Effort |
+|---|---------|-----|--------|
+| 1 | **`squad nap --deep`** | Our `.squad/` state is bloated (Solo history alone is 69KB). Context hygiene prevents agent confusion and token waste. | Trivial — one command |
+| 2 | **SubSquads (Workstreams)** | Split Art Sprint vs. Gameplay vs. Audio into isolated Codespace lanes. Prevents merge conflicts and rate-limit bottleneck. | Small — create `streams.json` |
+| 3 | **Add Joaquín as Human Team Member** | Formal approval gates for architecture decisions and ship/no-ship calls. Agents stop-and-wait instead of guessing. | Trivial — one prompt |
+| 4 | **Enable `squad-heartbeat.yml` cron** | Ralph runs every 30 min unattended. Untriaged issues get auto-processed even when we're AFK. | Trivial — uncomment cron line |
+| 5 | **`squad build --check` in CI** | Catch config drift between `squad.config.ts` and `.squad/` markdown. Prevents silent divergence. | Small — add workflow step |
+
+---
+
+## Full Feature Audit
+
+### 1. Squad CLI Commands
+
+| Command | What It Does | Status | Value | Effort | Recommendation |
+|---------|-------------|--------|-------|--------|----------------|
+| `squad init` | Initialize Squad | ✅ Active (done long ago) | — | — | Already done |
+| `squad upgrade` | Update Squad-owned files | ✅ Active | High | Trivial | Keep running on new releases |
+| `squad status` | Show active squad info | ✅ Active | Low | Trivial | Already available |
+| `squad triage` | Scan and categorize issues | 🟡 Configured (via workflow) | High | Trivial | Use `squad triage --interval 10` for local persistent triage |
+| `squad loop` | Ralph continuous work loop | 🟡 Configured (in-session only) | High | Small | Enable for sprint execution sessions |
+| `squad hire` | Team creation wizard | ✅ Active | Medium | Trivial | Already used for team building |
+| `squad copilot` | Add/remove @copilot agent | ✅ Active | Medium | Trivial | Already configured |
+| `squad plugin` | Manage plugin marketplaces | ❌ Not set up | Medium | Small | Adopt later — see Plugin section |
+| `squad export` | Export squad to JSON snapshot | ❌ Not used | Medium | Trivial | Use before major migrations |
+| `squad import` | Import from export file | ❌ Not used | Medium | Trivial | Paired with export |
+| `squad start` | Copilot with remote access | ❌ Not set up | Low | Medium | Adopt later — see RC section |
+| `squad nap` | Context hygiene/compression | ❌ Not used | **High** | Trivial | **ADOPT NOW** |
+| `squad doctor` | Health checks | ✅ Active (8/8 passing) | Medium | Trivial | Run periodically |
+| `squad consult` | Personal squad on foreign repos | ❌ N/A for us | Low | — | Skip — we own our repos |
+| `squad extract` | Extract learnings from consult | ❌ N/A | Low | — | Skip — paired with consult |
+| `squad subsquads` | Multi-Codespace scaling | ❌ Not set up | **High** | Small | **ADOPT NOW** |
+| `squad link` | Link to remote team root | ❌ Not set up | Medium | Small | Adopt later — useful for multi-repo |
+| `squad build` | Compile squad.config.ts | 🟡 Have config, never built | **High** | Small | **ADOPT NOW** |
+| `squad aspire` | .NET Aspire dashboard | ❌ Not set up | Low | Medium | Skip — not .NET project |
+| `squad rc` | Remote Control bridge | ❌ Not set up | Low | Medium | Adopt later — nice for demos |
+| `squad upstream` | Manage upstream Squad sources | ❌ Not set up | Medium | Small | Adopt later — multi-repo synergy |
+| `squad migrate` | Convert between formats | ❌ Not needed | Low | — | Skip — already on SDK mode |
+| `squad scrub-emails` | Remove PII | ✅ Available | Low | Trivial | Run if needed |
+
+---
+
+### 2. Plugin Marketplace
+
+**Status:** ❌ Not set up  
+**Value:** Medium  
+**Effort:** Small
+
+**What it is:** Community-curated bundles of agent templates, skills, and conventions from GitHub repos. Four marketplaces exist:
+
+| Marketplace | URL | Relevance to Us |
+|-------------|-----|-----------------|
+| awesome-copilot | `github/awesome-copilot` | 🟡 Low — frontend/backend web focus, not game dev |
+| anthropic-skills | `anthropics/skills` | 🟢 Medium — Claude optimization patterns could help |
+| azure-cloud-dev | `github/azure-cloud-development` | 🔴 None — we don't use Azure |
+| security-hardening | `github/security-hardening` | 🟡 Low — game doesn't handle sensitive data |
+
+**Game dev gap:** No game development marketplace exists yet. None of the existing marketplaces have Godot, GDScript, game design, or fighting game plugins.
+
+**Recommendation:** Adopt later. Consider **creating our own marketplace** repo (`FirstFrameStudios/squad-gamedev-plugins`) packaging our 31 skills as reusable plugins. This would be the first game-dev Squad marketplace.
+
+**How to adopt:**
+1. `squad plugin marketplace add anthropics/skills` — get Claude optimization patterns
+2. Long-term: Package our skills into a public marketplace for the Squad community
+
+---
+
+### 3. SubSquads (Workstreams)
+
+**Status:** ❌ Not set up  
+**Value:** **HIGH**  
+**Effort:** Small
+
+**What it is:** Partitions work into labeled SubSquads so multiple Codespaces can work in parallel on different parts of the project. Each SubSquad targets a GitHub label and optionally restricts to certain directories.
+
+**Why we need it:** Our 14-agent team has natural workstream boundaries:
+- **Art Sprint** (`team:art`) — Boba, Leia, Bossk, Nien → `games/ashfall/assets/`, `tools/blender/`
+- **Gameplay** (`team:gameplay`) — Lando, Tarkin, Chewie → `games/ashfall/scripts/`, `games/ashfall/scenes/`
+- **Audio** (`team:audio`) — Greedo → `games/ashfall/audio/`
+- **QA** (`team:qa`) — Ackbar, Jango → `games/ashfall/test/`
+
+**Recommendation:** **ADOPT NOW**
+
+**How to adopt:**
+1. Create `.squad/streams.json`:
+```json
+{
+  "streams": [
+    {
+      "name": "art-sprint",
+      "labelFilter": "team:art",
+      "folderScope": ["games/ashfall/assets/", "tools/"],
+      "workflow": "branch-per-issue"
+    },
+    {
+      "name": "gameplay",
+      "labelFilter": "team:gameplay",
+      "folderScope": ["games/ashfall/scripts/", "games/ashfall/scenes/"],
+      "workflow": "branch-per-issue"
+    },
+    {
+      "name": "audio",
+      "labelFilter": "team:audio",
+      "folderScope": ["games/ashfall/audio/"],
+      "workflow": "branch-per-issue"
+    }
+  ]
+}
+```
+2. Create GitHub labels: `team:art`, `team:gameplay`, `team:audio`
+3. In each Codespace, activate: `squad subsquads activate art-sprint`
+
+---
+
+### 4. Human Team Members
+
+**Status:** ❌ Not set up  
+**Value:** **HIGH**  
+**Effort:** Trivial
+
+**What it is:** Adds real people to the Squad roster with 👤 Human badge. When work routes to a human, Squad pauses and waits for their input. Humans can't be spawned as sub-agents but can serve as reviewers and approval gates.
+
+**Why we need it:** Joaquín is the founder but has no formal roster entry. Adding him creates explicit approval gates for:
+- Architecture decisions (currently ad-hoc)
+- Ship/no-ship calls at milestones
+- Art direction sign-off
+- Design review participation in ceremonies
+
+**Recommendation:** **ADOPT NOW**
+
+**How to adopt:**
+1. In a Squad session: `"Add Joaquín (joperezd) as Founder and Creative Director"`
+2. He appears on roster with 👤 badge
+3. Update ceremonies to add Joaquín as participant in Design Review and Integration Gate
+4. Routing: architecture decisions and milestone sign-offs route to Joaquín
+
+---
+
+### 5. SDK-First Mode & `squad build`
+
+**Status:** 🟡 Have `squad.config.ts`, never run `squad build`  
+**Value:** **HIGH**  
+**Effort:** Small
+
+**What it is:** `squad.config.ts` is the single source of truth. `squad build` compiles it into `.squad/` markdown. `squad build --check` validates sync in CI.
+
+**Current gap:** We have a `squad.config.ts` that defines models, routing, and casting — but our `.squad/` markdown files were created independently. The config and the markdown may have **silently diverged**. Our config is also incomplete — it doesn't define agents, ceremonies, hooks, or skills.
+
+**Recommendation:** **ADOPT NOW** (partial — build validation, not full migration)
+
+**How to adopt:**
+1. Run `squad build --dry-run` to see what would be generated vs. what exists
+2. Expand `squad.config.ts` to include all agents, ceremonies, hooks
+3. Add `squad build --check` to CI workflow (add step to `squad-ci.yml`)
+4. Optionally: `squad build --watch` for live rebuilds during development
+5. Add `defineHooks()` for governance: allowed write paths, blocked commands, PII scrubbing
+
+---
+
+### 6. `squad watch` / Ralph Persistent Polling
+
+**Status:** 🟡 Ralph exists on roster, no persistent polling  
+**Value:** High  
+**Effort:** Trivial
+
+**What it is:** `squad watch --interval 10` runs Ralph as a local watchdog, checking GitHub every N minutes for untriaged issues, stale PRs, CI failures. Three layers: in-session (`Ralph, go`), local watchdog (`squad watch`), cloud heartbeat (GitHub Actions cron).
+
+**Current gap:** We use Ralph in-session only. The heartbeat workflow exists but cron is commented out. No local watchdog.
+
+**Recommendation:** Adopt now — enable heartbeat cron, use `squad watch` during sprint sessions.
+
+**How to adopt:**
+1. Edit `.github/workflows/squad-heartbeat.yml` — uncomment the cron schedule (e.g., `'*/30 * * * *'`)
+2. During sprints, run `squad watch --interval 10` in a background terminal
+3. Ensure `gh` CLI is authenticated with Classic PAT (scopes: `repo`, `project`)
+
+---
+
+### 7. `squad doctor` Deep Checks
+
+**Status:** ✅ Active (8/8 passing)  
+**Value:** Medium  
+**Effort:** Trivial
+
+**What it is:** Validates squad setup — checks files, config, health. Already passing all 8 checks.
+
+**Recommendation:** Keep running periodically, especially after `squad upgrade`.
+
+---
+
+### 8. Ceremonies
+
+**Status:** ✅ 5 configured (Design Review, Retrospective, Integration Gate, Spec Validation, Godot Smoke Test)  
+**Value:** Medium  
+**Effort:** Small
+
+**What the docs offer:** The docs show ceremonies are flexible — any trigger, any schedule, custom agendas. Built-in types are Design Review and Retrospective, but you can create any custom ceremony.
+
+**Ceremonies we could add:**
+
+| Ceremony | Trigger | Value |
+|----------|---------|-------|
+| **Sprint Planning** | Manual, start of sprint | High — Mace + Yoda + Solo plan the sprint |
+| **Daily Standup** | Schedule (cron `0 9 * * 1-5`) | Medium — agents report blockers |
+| **Art Review** | After art PRs merged | Medium — Boba reviews visual consistency |
+| **Security Review** | Before release builds | Low — less critical for single-player game |
+
+**Recommendation:** Add Sprint Planning ceremony now; Daily Standup adopt later (requires `squad loop` active).
+
+**How to adopt:** Add to `.squad/ceremonies.md`:
+```markdown
+## Sprint Planning
+
+| Field | Value |
+|-------|-------|
+| **Trigger** | manual |
+| **When** | before |
+| **Condition** | start of new sprint |
+| **Facilitator** | Mace (Producer) |
+| **Participants** | Mace + Yoda + Solo + Joaquín |
+| **Time budget** | focused |
+| **Enabled** | ✅ yes |
+```
+
+---
+
+### 9. GitHub Actions Workflows
+
+**Status:** 17 workflows installed — 12 active, 5 template stubs  
+**Value:** High  
+**Effort:** Varies
+
+| Workflow | Status | Action Needed |
+|----------|--------|---------------|
+| **squad-heartbeat.yml** | 🟡 Active but cron disabled | **Uncomment cron** — enables unattended triage |
+| **squad-triage.yml** | ✅ Active | Working — routes `squad`-labeled issues |
+| **squad-issue-assign.yml** | ✅ Active | Working — acknowledges `squad:*` labels |
+| **sync-squad-labels.yml** | ✅ Active | Working — syncs labels from roster |
+| **squad-label-enforce.yml** | ✅ Active | Working — enforces mutual exclusivity |
+| **pr-body-check.yml** | ✅ Active | Working — warns if no `Closes #N` |
+| **branch-validation.yml** | ✅ Active | Working — PRs must target main |
+| **squad-main-guard.yml** | ✅ Active | Working — blocks `.squad/` on protected branches |
+| **squad-promote.yml** | ✅ Active | Working — dev→preview→main promotion |
+| **integration-gate.yml** | ✅ Active | Working — GDScript linting on PRs to main |
+| **godot-project-guard.yml** | ✅ Active | Working — warns on project.godot changes |
+| **godot-release.yml** | ✅ Active | Working — exports Godot builds on tags |
+| **squad-ci.yml** | ⚠️ Template stub | Needs build/test commands configured |
+| **squad-docs.yml** | ⚠️ Template stub | Needs docs build configured |
+| **squad-release.yml** | ⚠️ Template stub | Needs release process configured |
+| **squad-insider-release.yml** | ⚠️ Template stub | Needs insider build configured |
+| **squad-preview.yml** | ⚠️ Template stub | Needs preview validation configured |
+
+**Recommendation:** Enable heartbeat cron now. The 5 template stubs need Godot-specific build commands — configure `squad-ci.yml` to run GDScript linting and Godot export checks on PRs.
+
+---
+
+### 10. Remote Squad Mode (`squad link`)
+
+**Status:** ❌ Not set up  
+**Value:** Medium (for future multi-repo)  
+**Effort:** Small
+
+**What it is:** Links project to a remote team root — shared team identity (casting, charters, decisions) across multiple repos while keeping project-specific state local.
+
+**Relevance:** Useful when we have multiple game repos sharing the same studio team. Currently single-repo.
+
+**Recommendation:** Adopt later — when we start a second game project, `squad link` lets the new repo inherit our team without duplicating configuration.
+
+---
+
+### 11. Skills System
+
+**Status:** ✅ 31 skills active  
+**Value:** High (already delivering value)  
+**Effort:** N/A
+
+**Current skills (31):** 2d-game-art, animation-for-games, beat-em-up-combat, canvas-2d-optimization, code-review-checklist, enemy-encounter-design, feature-triage, fighting-game-design, game-audio-design, game-design-fundamentals, game-feel-juice, game-qa-testing, gdscript-godot46, github-pr-workflow, godot-4-manual, godot-beat-em-up-patterns, godot-project-integration, godot-tooling, input-handling, integration-discipline, level-design-fundamentals, milestone-completion-checklist, multi-agent-coordination, parallel-agent-workflow, procedural-audio, project-conventions, squad-conventions, state-machine-patterns, studio-craft, ui-ux-patterns, web-game-engine
+
+**Best practices from docs:**
+- **Confidence lifecycle:** Low → Medium → High. Confidence only goes up.
+- **Earned vs. Starter:** Starter skills (`squad-*`) get overwritten on upgrade. Earned skills are protected.
+- **Team-wide:** All agents read all skills. Not per-agent.
+- **Portable:** Skills survive export/import.
+
+**Recommendation:** Audit confidence levels — ensure battle-tested skills are at High. Consider consolidating overlapping skills (e.g., `beat-em-up-combat` + `fighting-game-design`).
+
+---
+
+### 12. Adding Joaquín as Human Member
+
+See **Item 4** above — full details in the Human Team Members section.
+
+---
+
+### 13. `squad rc` (Remote Control)
+
+**Status:** ❌ Not set up  
+**Value:** Low (for now)  
+**Effort:** Medium
+
+**What it is:** Spawns Copilot CLI in a PTY, mirrors terminal via WebSocket + devtunnel. Phone scans QR code → full terminal on mobile. 7-layer security (devtunnel auth, session tokens, ticket-based WS auth, rate limiting, secret redaction, connection limits, audit logging).
+
+**Cool factor:** High. **Practical value for us:** Low. We work from desktop. Could be useful for demos or monitoring long runs from phone.
+
+**Recommendation:** Skip for now. Adopt when doing live demos or conference talks.
+
+**Prerequisites if adopted:** `winget install Microsoft.devtunnel` → `devtunnel user login` → `squad start --tunnel`
+
+---
+
+### 14. Upstream Inheritance (`squad upstream`)
+
+**Status:** ❌ Not set up  
+**Value:** Medium (future)  
+**Effort:** Small
+
+**What it is:** Declares external Squad sources to inherit skills, decisions, casting policy, and routing. Supports local paths, git repos, and export snapshots. "Closest-wins" — later entries override.
+
+**Relevance:** If we publish our game-dev skills as a marketplace/upstream repo, other game studios could inherit our expertise. We could also inherit from a community game-dev Squad if one emerges.
+
+**Recommendation:** Adopt later — after creating our marketplace repo.
+
+---
+
+### 15. Context Hygiene (`squad nap`)
+
+**Status:** ❌ Never run  
+**Value:** **HIGH**  
+**Effort:** Trivial
+
+**What it is:** Compresses, prunes, and archives `.squad/` state. `--deep` does thorough cleanup. `--dry-run` previews.
+
+**Why critical:** Solo's history.md alone is 69KB. decisions.md is 85KB. These bloated files consume agent context tokens and slow down every session. `squad nap --deep` will compress old sessions, prune archived decisions, and keep only active state.
+
+**Recommendation:** **ADOPT NOW — run immediately.**
+
+**How to adopt:**
+1. `squad nap --dry-run` — preview what gets cleaned
+2. `squad nap --deep` — full cleanup
+3. Commit the cleaned state
+4. Run monthly or after major milestones
+
+---
+
+### 16. Export/Import
+
+**Status:** ❌ Not used  
+**Value:** Medium  
+**Effort:** Trivial
+
+**What it is:** `squad export` creates a portable JSON snapshot of the entire team. `squad import` restores it.
+
+**Recommendation:** Run `squad export` before any major upgrade or restructuring. Keep as backup/portability insurance.
+
+---
+
+### 17. Consult Mode
+
+**Status:** ❌ N/A  
+**Value:** Low for us  
+**Effort:** N/A
+
+**What it is:** Brings personal squad to repos you don't own (OSS, client work) without leaving traces.
+
+**Recommendation:** Skip — we own our repos. Possibly useful if Joaquín contributes to OSS Godot projects.
+
+---
+
+### 18. .NET Aspire Dashboard
+
+**Status:** ❌ Not set up  
+**Value:** Low  
+**Effort:** Medium
+
+**What it is:** OpenTelemetry observability dashboard. Designed for .NET projects.
+
+**Recommendation:** Skip — we're a Godot/GDScript project, not .NET.
+
+---
+
+## Summary Matrix
+
+| Feature | Status | Value | Effort | Action |
+|---------|--------|-------|--------|--------|
+| `squad nap --deep` | ❌ | HIGH | Trivial | **ADOPT NOW** |
+| SubSquads | ❌ | HIGH | Small | **ADOPT NOW** |
+| Human Members (Joaquín) | ❌ | HIGH | Trivial | **ADOPT NOW** |
+| Heartbeat cron | 🟡 | HIGH | Trivial | **ADOPT NOW** |
+| `squad build --check` CI | 🟡 | HIGH | Small | **ADOPT NOW** |
+| Sprint Planning ceremony | ❌ | HIGH | Small | **ADOPT NOW** |
+| Ralph `squad watch` | 🟡 | High | Trivial | Adopt soon |
+| Plugin marketplace | ❌ | Medium | Small | Adopt later |
+| `squad link` | ❌ | Medium | Small | Adopt later (multi-repo) |
+| `squad upstream` | ❌ | Medium | Small | Adopt later |
+| Export/import | ❌ | Medium | Trivial | Adopt later |
+| Skill confidence audit | ✅ | Medium | Small | Adopt later |
+| `squad rc` | ❌ | Low | Medium | Skip |
+| Aspire dashboard | ❌ | Low | Medium | Skip |
+| Consult mode | ❌ | Low | — | Skip |
+
+---
+
+## Implementation Order
+
+**Phase 1 — This sprint (immediate):**
+1. Run `squad nap --deep` to clean bloated state
+2. Add Joaquín as human team member
+3. Uncomment heartbeat cron in `squad-heartbeat.yml`
+4. Add Sprint Planning ceremony to `ceremonies.md`
+5. Run `squad build --dry-run` to assess config drift
+
+**Phase 2 — Next sprint:**
+6. Create `.squad/streams.json` for SubSquads
+7. Set up `squad build --check` in CI
+8. Run `squad export` as backup
+9. Configure `squad-ci.yml` with GDScript lint commands
+
+**Phase 3 — Future:**
+10. Create `FirstFrameStudios/squad-gamedev-plugins` marketplace
+11. Set up `squad link` when second game starts
+12. Explore `squad upstream` for cross-studio knowledge sharing
+
+---
+
+*Solo — Lead / Chief Architect, First Frame Studios*
+
+# Decision: Sprite Test Viewer Updated for Cel-Shade Sprites
+
+**Author:** Wedge (UI Dev)
+**Date:** 2025-01-XX
+**File:** `games/ashfall/scripts/test/sprite_poc_test.gd`
+
+## What changed
+
+Updated the test viewer to load cel-shade rendered sprites from the new directory structure (`res://assets/sprites/kael/` and `res://assets/sprites/rhena/`) instead of the outdated `res://assets/poc/v2/` path.
+
+## Key decisions
+
+1. **Auto-detect frame count** — Instead of hardcoding frame counts per animation, the viewer now loads frames sequentially (0000, 0001, ...) until a file is missing. This means new renders with different frame counts just work without code changes.
+
+2. **Frame rate: 12fps loops, 15fps attacks** — Idle/walk use 12fps for a smooth but readable loop. Punch/kick use 15fps for snappier attack feel. These are standard fighting game rates.
+
+3. **Replaced "lp" animation with punch/kick** — Old viewer had 3 anims (idle, walk, lp). New viewer has 4 (idle, walk, punch, kick) mapped to keys 1-4. K/R keys are now character-only (no longer doubled on 4/5).
+
+4. **Background path changed to v1** — The `embergrounds_bg.png` only exists in `assets/poc/v1/`, not v2. Pointed the viewer there. This is still a placeholder BG — will need a proper stage asset eventually.
+
+5. **Contact sheets ignored** — Each animation dir contains a `_sheet.png` contact sheet. The auto-detect loop naturally skips these since they don't match the `_NNNN.png` naming pattern.
+

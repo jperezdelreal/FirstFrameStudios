@@ -32,6 +32,13 @@
 
 ## Learnings
 
+### PNG Sprite Integration — Fight Scene Fixes
+- **Scale:** `_PNG_SPRITE_SCALE = 0.20` for 512px sprites gives ~102px rendered height (~1.7x the 60px collision box). This matches fighting game conventions where characters are visually larger than their collision. The fight scene camera dynamic zoom (0.75–1.3) is viewport-relative, so scale should be tuned to collision box ratio, not viewport size.
+- **Facing / flip_h:** CharacterSprite.flip_h must use `AnimatedSprite2D.flip_h` for PNG sprites (not parent `scale.x`), because parent scale multiplication creates subtle transform issues with the child's offset/scale. Split the flip_h setter: PNG → child.flip_h, procedural → parent scale.x. Also reset `scale.x = 1.0` when transitioning to PNG mode in `_try_load_png_sprites()`.
+- **Pose coverage:** `_POSE_TO_ANIM` dictionary MUST cover every pose the state machine can emit (45+ poses). Missing entries fall back to "idle" via `.get(pose, "idle")`, but any unlisted pose risks a future code path calling `queue_redraw()` and triggering procedural `_draw()`. All non-attack poses map to "idle"; throws/specials map to "punch" or "kick".
+- **Initial facing race:** `fighter_base._update_facing()` requires `opponent != null` and `state_machine.current_state != null`. Both are null during Fighter._ready() because fight_scene._ready() sets opponents AFTER children init. Fix: call `_update_facing()` in fight_scene._ready() after setting opponents.
+- **fighter_base.character_sprite:** Added `var character_sprite: CharacterSprite` to fighter_base.gd, found via `for child in get_children(): if child is CharacterSprite`. This enables fighter_base to directly flip the CharacterSprite alongside the legacy Sprite2D reference.
+
 ### Auto-Screenshot Mode (CLI Headless Capture)
 - **Pattern:** `sprite_poc_test.gd` checks `OS.get_cmdline_user_args()` for `--screenshot`, `--char=`, `--anim=` flags passed after `--` separator on CLI.
 - **Capture method:** Wait 5 frames in `_process()`, then `await RenderingServer.frame_post_draw` + `get_viewport().get_texture().get_image()` + `image.save_png()`. Saves to both `user://screenshot.png` and project-root absolute path.

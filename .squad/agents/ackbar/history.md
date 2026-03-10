@@ -475,3 +475,16 @@ Float delta timing creates non-deterministic behavior:
 - **Dictionary-heavy rendering code is the weak spot.** Stage rendering uses dicts extensively for visual data (cracks, pools, patches). Works fine now but will be the first thing to break in a refactor. Typed dictionaries or data classes would be safer.
 - **Code quality improved dramatically from Sprint 1.** Zero `abs()` calls, proper `absf()`/`absi()` everywhere, explicit return types on all functions. The GDSCRIPT-STANDARDS.md is working as intended.
 - **Closing issues after integration audit (not after PR merge) is the right pattern.** Several issues had PRs merged but were still open. Integration verification is the correct gate for issue closure.
+
+### 2026-03-10: Fight Scene Visual Test Pipeline
+- **Created automated visual test pipeline** for the fight scene with 3 files:
+  - `games/ashfall/scripts/test/fight_visual_test.gd` — GDScript test controller
+  - `games/ashfall/scenes/test/fight_visual_test.tscn` — Minimal test scene
+  - `games/ashfall/tools/visual_test.bat` — One-click batch launcher
+- **7-step test sequence** simulates real gameplay: Idle → Walk → Punch → Kick → Jump → Settle → Close-up
+- Uses coroutine-based sequencing (`await _wait_frames()`) for clean, readable step flow
+- Waits for RoundManager `announce("FIGHT!")` signal before starting inputs — respects the INTRO → READY → FIGHT lifecycle
+- Captures screenshots to both `res://tools/screenshots/fight_test/` and `user://fight_test/` for dual access (project-relative + absolute path)
+- All output prefixed with `[VISUAL_TEST]` for easy log filtering
+- **Key pattern:** `Input.action_press()` / `Input.action_release()` for simulating player inputs in automated tests — tap attacks (1 frame press), hold movement (multi-frame press)
+- **Screenshot pattern from sprite_poc_test.gd reused:** `await RenderingServer.frame_post_draw` → `get_viewport().get_texture().get_image()` → `image.save_png()`
