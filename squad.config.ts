@@ -28,17 +28,17 @@ const config: SquadConfig = {
     rules: [
       {
         workType: 'feature-dev',
-        agents: ['@scribe'],
+        agents: ['@solo', '@chewie', '@lando'],
         confidence: 'high'
       },
       {
         workType: 'bug-fix',
-        agents: ['@scribe'],
+        agents: ['@chewie', '@lando'],
         confidence: 'high'
       },
       {
         workType: 'testing',
-        agents: ['@scribe'],
+        agents: ['@ackbar'],
         confidence: 'high'
       },
       {
@@ -49,17 +49,14 @@ const config: SquadConfig = {
     ],
     governance: {
       eagerByDefault: true,
-      scribeAutoRuns: false,
+      scribeAutoRuns: true,
       allowRecursiveSpawn: false
     }
   },
   
   casting: {
     allowlistUniverses: [
-      'The Usual Suspects',
-      'Breaking Bad',
-      'The Wire',
-      'Firefly'
+      'Star Wars'
     ],
     overflowStrategy: 'generic',
     universeCapacity: {}
@@ -70,6 +67,12 @@ const config: SquadConfig = {
       disableModelSelection: false,
       scribeMode: 'sync'
     }
+  },
+
+  hooks: {
+    allowedWritePaths: ['games/**', '.squad/**', 'tools/**', 'docs/**'],
+    blockedCommands: ['rm -rf', 'DROP TABLE', 'format c:'],
+    scrubPii: true,
   }
 };
 
