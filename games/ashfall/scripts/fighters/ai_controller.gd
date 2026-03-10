@@ -101,10 +101,10 @@ var attack_weights: Dictionary = {
 	"hk": 20,
 }
 
-# States where the AI should not inject new inputs
+# States where the AI should not inject new inputs.
+# Must match the scene-tree node names lowered (e.g. "Attack" → "attack").
 const PROTECTED_STATES: Array[String] = [
-	"attackstate", "hitstate", "kostate", "launchstate",
-	"blockstate", "crouchblockstate", "introstate",
+	"attack", "hit", "ko", "block", "throw",
 ]
 
 # ------------------------------------------------------------------

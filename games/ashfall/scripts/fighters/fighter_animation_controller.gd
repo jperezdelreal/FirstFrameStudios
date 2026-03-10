@@ -114,12 +114,16 @@ func _on_state_changed(state_name: String) -> void:
 	match lower:
 		"idle":
 			play_animation("idle")
+			_set_initial_pose("idle")
 		"walk":
 			play_animation("walk")
+			_set_initial_pose("walk")
 		"crouch":
 			play_animation("crouch")
+			_set_initial_pose("crouch")
 		"jump":
 			play_animation("jump")
+			_set_initial_pose("jump_up")
 		"block":
 			_play_block_animation()
 		"hit":
@@ -132,6 +136,7 @@ func _on_state_changed(state_name: String) -> void:
 			_play_attack_from_state()
 		_:
 			play_animation("idle")
+			_set_initial_pose("idle")
 
 
 # =========================================================================
@@ -298,6 +303,14 @@ func _build_attack_animation(move: MoveData) -> void:
 # =========================================================================
 #  Helpers
 # =========================================================================
+
+## Set the CharacterSprite pose immediately (same frame as state change)
+## so there's no one-frame delay waiting for AnimationPlayer to evaluate.
+## Only used for simple states with a deterministic initial pose.
+func _set_initial_pose(pose_name: String) -> void:
+	if character_sprite:
+		character_sprite.pose = pose_name
+
 
 ## Add a simple single-key pose track to an animation.
 func _add_pose_track(anim: Animation, pose_value: String, time: float) -> void:

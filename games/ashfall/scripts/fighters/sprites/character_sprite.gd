@@ -23,15 +23,15 @@ extends Node2D
 
 ## Mirrors the sprite horizontally when true (facing left).
 ## Uses AnimatedSprite2D.flip_h for PNG sprites, parent scale.x for procedural.
-## PNG sprites from Blender face LEFT by default, so flip is inverted for them.
+## No change-guard — always propagate so the first frame is correct even when
+## the default (false) matches the desired value.
 var flip_h: bool = false:
 	set(value):
-		if flip_h != value:
-			flip_h = value
-			if _use_png_sprites and _animated_sprite:
-				_animated_sprite.flip_h = not flip_h
-			else:
-				scale.x = -1.0 if flip_h else 1.0
+		flip_h = value
+		if _use_png_sprites and _animated_sprite:
+			_animated_sprite.flip_h = flip_h
+		else:
+			scale.x = -1.0 if flip_h else 1.0
 
 ## Character palettes — override in subclass
 ## Each palette is a Dictionary with keys: skin, hair, outfit_primary,

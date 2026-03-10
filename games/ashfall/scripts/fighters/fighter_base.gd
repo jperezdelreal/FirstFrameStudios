@@ -61,6 +61,9 @@ func _ready() -> void:
 		controller.fighter = self
 		controller.input_buffer = input_buffer
 		controller.moveset = moveset
+	# Hide legacy Sprite2D when PNG sprites are active (avoids visual conflicts)
+	if character_sprite and character_sprite.is_using_png_sprites() and sprite:
+		sprite.visible = false
 	# Ensure state machine starts in idle (safety fallback if
 	# initial_state export wasn't resolved from the scene file)
 	if not state_machine.current_state:

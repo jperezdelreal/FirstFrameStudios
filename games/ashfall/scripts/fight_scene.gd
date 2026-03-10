@@ -26,6 +26,7 @@ const COMBO_PRORATION: Array[float] = [1.0, 0.8, 0.65, 0.5, 0.4]
 @onready var hud: CanvasLayer = $FightHUD
 
 var combo_tracker: Node
+var ai_controller: AIController
 
 func _ready() -> void:
 	# Cross-reference opponents
@@ -35,6 +36,14 @@ func _ready() -> void:
 	# Force correct facing from the very first frame
 	fighter1._update_facing()
 	fighter2._update_facing()
+
+	# Attach AI controller to Player 2 (CPU opponent)
+	ai_controller = AIController.new()
+	ai_controller.name = "AIController"
+	ai_controller.fighter = fighter2
+	ai_controller.opponent = fighter1
+	ai_controller.difficulty = AIController.Difficulty.NORMAL
+	fighter2.add_child(ai_controller)
 
 	# Visual differentiation — Kael is warm (orange), Rhena is cool (blue)
 	var visual2 := fighter2.get_node_or_null("Visual") as ColorRect
