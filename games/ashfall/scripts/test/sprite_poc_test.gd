@@ -2,6 +2,8 @@ extends Node2D
 ## Sprite Test Viewer — Cel-Shade Rendered Sprites
 ## Displays Kael or Rhena cel-shaded sprites as animations over the Embergrounds background.
 ## Keys: 1=Idle  2=Walk  3=Punch  4=Kick  K=Kael  R=Rhena  F=Flip  ESC=Quit
+## Screenshot mode: pass `-- --screenshot` via CLI to auto-capture and quit.
+## Optional: `--char=kael` or `--char=rhena`, `--anim=idle` etc.
 ## Author: Chewie (Engine Developer)
 
 const SPRITE_BASE := "res://assets/sprites/"
@@ -18,24 +20,89 @@ const ANIM_CONFIGS := {
 const CHARACTERS := ["kael", "rhena"]
 
 const CENTER_X := 960
+const CENTER_Y := 960  # Feet position — fighting game ground level on 1080p
 const RHENA_OFFSET_X := 200
 
 # 512px sprites scaled for visibility. Collision box is 30x60 (1:2 ratio).
-# At 0.4 scale the sprite renders ~205px tall — reasonable for a 1080p fighting game.
-const SPRITE_SCALE := 0.4
+# At 1.5 scale the sprite renders ~750px tall — fighting game size on 1080p viewport.
+const SPRITE_SCALE := 1.5
+
+const SCREENSHOT_WAIT_FRAMES := 5
 
 var sprite: AnimatedSprite2D
 var hud_label: Label
 var current_anim: String = "idle"
 var current_character: String = "kael"
 
+# Screenshot mode state
+var _screenshot_mode: bool = false
+var _screenshot_frames_waited: int = 0
+
 
 func _ready() -> void:
+	_parse_cmdline_args()
 	_setup_background()
 	_setup_sprite()
 	_setup_hud()
-	sprite.play("idle")
-	print("🎮 Sprite Viewer loaded — 1/2/3/4 anims, K/R chars, F flip, ESC quit")
+	sprite.play(current_anim)
+
+	if _screenshot_mode:
+		print("[screenshot] Mode active — char=%s anim=%s, capturing in %d frames" % [current_character, current_anim, SCREENSHOT_WAIT_FRAMES])
+	else:
+		print("🎮 Sprite Viewer loaded — 1/2/3/4 anims, K/R chars, F flip, ESC quit")
+
+
+func _parse_cmdline_args() -> void:
+	var user_args: PackedStringArray = OS.get_cmdline_user_args()
+	for arg in user_args:
+		if arg == "--screenshot":
+			_screenshot_mode = true
+		elif arg.begins_with("--char="):
+			var char_name: String = arg.substr(7)
+			if char_name in CHARACTERS:
+				current_character = char_name
+			else:
+				push_warning("[screenshot] Unknown character: %s" % char_name)
+		elif arg.begins_with("--anim="):
+			var anim_name: String = arg.substr(7)
+			if anim_name in ANIM_CONFIGS:
+				current_anim = anim_name
+			else:
+				push_warning("[screenshot] Unknown animation: %s" % anim_name)
+
+
+func _process(_delta: float) -> void:
+	if not _screenshot_mode:
+		return
+	_screenshot_frames_waited += 1
+	if _screenshot_frames_waited >= SCREENSHOT_WAIT_FRAMES:
+		_take_screenshot()
+		get_tree().quit()
+
+
+func _take_screenshot() -> void:
+	await RenderingServer.frame_post_draw
+	var image: Image = get_viewport().get_texture().get_image()
+
+	# Save to user:// (always writable)
+	var user_path: String = "user://screenshot.png"
+	var err_user: int = image.save_png(user_path)
+	if err_user == OK:
+		var abs_user: String = ProjectSettings.globalize_path(user_path)
+		print("[screenshot] Saved to user:// -> %s" % abs_user)
+	else:
+		push_error("[screenshot] Failed to save to user:// (error %d)" % err_user)
+
+	# Save to tools/screenshots/ (easy for agents to find, not cluttering project root)
+	var tools_path: String = "res://tools/screenshots/%s_%s.png" % [current_character, current_anim]
+	var abs_tools: String = ProjectSettings.globalize_path(tools_path)
+	var err_tools: int = image.save_png(abs_tools)
+	if err_tools == OK:
+		print("[screenshot] Saved to -> %s" % abs_tools)
+	else:
+		push_error("[screenshot] Failed to save to tools/screenshots/ (error %d)" % err_tools)
+
+	print("[screenshot] Done — %dx%d" % [image.get_width(), image.get_height()])
 
 
 func _setup_background() -> void:
@@ -55,7 +122,7 @@ func _setup_sprite() -> void:
 	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	# Center-bottom origin: offset sprite up so node position = feet
 	sprite.offset = Vector2(0, -256)
-	sprite.position = Vector2(_get_character_x(), 800)
+	sprite.position = Vector2(_get_character_x(), CENTER_Y)
 	sprite.scale = Vector2(SPRITE_SCALE, SPRITE_SCALE)
 	sprite.animation_finished.connect(_on_animation_finished)
 	add_child(sprite)
@@ -85,9 +152,9 @@ func _build_sprite_frames() -> SpriteFrames:
 				SPRITE_BASE, current_character, anim_name,
 				current_character, anim_name, i
 			]
-			var tex := load(path) as Texture2D
-			if not tex:
+			if not ResourceLoader.exists(path):
 				break
+			var tex := load(path) as Texture2D
 			frames.add_frame(anim_name, tex)
 			i += 1
 

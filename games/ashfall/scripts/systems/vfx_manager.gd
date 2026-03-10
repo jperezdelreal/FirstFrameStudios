@@ -986,4 +986,3 @@ func _cleanup_stage_effects() -> void:
 	if _stage_ember_particles and is_instance_valid(_stage_ember_particles):
 		_stage_ember_particles.queue_free()
 		_stage_ember_particles = null
-
