@@ -28,6 +28,11 @@ func _get_character_id() -> String:
 	return "rhena"
 
 
+## Rhena's Blender render faces RIGHT (opposite to Kael's LEFT-facing render)
+func _sprite_faces_right() -> bool:
+	return true
+
+
 func _init_palettes() -> void:
 	# P1: Hot intensity — dark red/black attire, orange-ember accents, warm skin
 	palettes.append({
