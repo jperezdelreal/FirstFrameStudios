@@ -24,6 +24,10 @@ const BOOT_W := 6.0
 const BOOT_H := 5.0
 
 
+func _get_character_id() -> String:
+	return "kael"
+
+
 func _init_palettes() -> void:
 	# P1: Cool discipline — grey-white gi, blue-ember accents, tan skin
 	palettes.append({

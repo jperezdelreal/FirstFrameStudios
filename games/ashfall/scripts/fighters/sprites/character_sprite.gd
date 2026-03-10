@@ -1,6 +1,10 @@
 ## Base class for procedural character sprites. Handles palette system,
 ## pose state, and common drawing helpers. Character-specific scripts
 ## (kael_sprite.gd, rhena_sprite.gd) extend this to draw each pose.
+##
+## When pre-rendered PNG sprites exist for a character, this class
+## automatically switches from procedural _draw() rendering to
+## AnimatedSprite2D playback. Falls back to procedural if no PNGs found.
 class_name CharacterSprite
 extends Node2D
 
@@ -12,7 +16,10 @@ extends Node2D
 	set(value):
 		if pose != value:
 			pose = value
-			queue_redraw()
+			if _use_png_sprites:
+				_update_sprite_animation()
+			else:
+				queue_redraw()
 
 ## Mirrors the sprite horizontally when true (facing left)
 var flip_h: bool = false:
@@ -32,6 +39,69 @@ var pal: Dictionary:
 		if palettes.is_empty():
 			return {}
 		return palettes[clampi(palette_index, 0, palettes.size() - 1)]
+
+# ===================================================================
+# PNG Sprite System — pre-rendered Mixamo sprites via AnimatedSprite2D
+# ===================================================================
+
+## True when pre-rendered PNG sprites are loaded and active
+var _use_png_sprites: bool = false
+
+## AnimatedSprite2D child created at runtime for PNG sprite playback
+var _animated_sprite: AnimatedSprite2D = null
+
+## Base path for sprite assets
+const _SPRITE_BASE_PATH := "res://assets/sprites/"
+
+## Scale factor for 512px sprites to match the ~60px procedural character.
+## 0.15 ≈ 77px rendered height — slightly taller than collision box for
+## visual presence. Tune this if characters look too big or small.
+const _PNG_SPRITE_SCALE := 0.15
+
+## Texture-pixel offset to anchor sprite at bottom-center (feet at origin).
+## 512 / 2 = 256 — shifts the sprite up so the node position = feet.
+const _PNG_SPRITE_OFFSET := Vector2(0, -256)
+
+## Maps pose strings → sprite animation names.
+## Poses not listed fall back to "idle".
+const _POSE_TO_ANIM := {
+	# Stance / movement
+	"idle": "idle",
+	"walk": "walk",
+	"walk_2": "walk",
+	# Standing punches
+	"attack_lp": "punch",
+	"attack_mp": "punch",
+	"attack_hp": "punch",
+	# Standing kicks
+	"attack_lk": "kick",
+	"attack_mk": "kick",
+	"attack_hk": "kick",
+	# Crouching punches
+	"crouch_lp": "punch",
+	"crouch_mp": "punch",
+	"crouch_hp": "punch",
+	# Crouching kicks
+	"crouch_lk": "kick",
+	"crouch_mk": "kick",
+	"crouch_hk": "kick",
+	# Air punches
+	"jump_lp": "punch",
+	"jump_mp": "punch",
+	"jump_hp": "punch",
+	# Air kicks
+	"jump_lk": "kick",
+	"jump_mk": "kick",
+	"jump_hk": "kick",
+}
+
+## FPS and loop config per sprite animation
+const _SPRITE_ANIM_CONFIGS := {
+	"idle":  { "fps": 12.0, "loop": true },
+	"walk":  { "fps": 12.0, "loop": true },
+	"punch": { "fps": 15.0, "loop": false },
+	"kick":  { "fps": 15.0, "loop": false },
+}
 
 ## All valid pose names — covers every fighter state.
 ## Subclasses override the _draw_*() methods for character-specific art.
@@ -72,7 +142,9 @@ const POSES := [
 
 func _ready() -> void:
 	_init_palettes()
-	queue_redraw()
+	_try_load_png_sprites()
+	if not _use_png_sprites:
+		queue_redraw()
 
 
 ## Override in subclass to define P1/P2 palettes
@@ -80,7 +152,95 @@ func _init_palettes() -> void:
 	pass
 
 
+## Override in subclass to return the character identifier used for
+## sprite asset paths (e.g. "kael", "rhena"). Return "" to skip PNG loading.
+func _get_character_id() -> String:
+	return ""
+
+
+# ===================================================================
+# PNG Sprite Loading
+# ===================================================================
+
+## Attempts to load pre-rendered PNG sprites for this character.
+## If successful, creates an AnimatedSprite2D child and sets _use_png_sprites.
+func _try_load_png_sprites() -> void:
+	var char_id := _get_character_id()
+	if char_id.is_empty():
+		return
+
+	# Probe for at least one idle frame
+	var probe_path := "%s%s/idle/%s_idle_0000.png" % [_SPRITE_BASE_PATH, char_id, char_id]
+	if not ResourceLoader.exists(probe_path):
+		print("[CharacterSprite] No PNG sprites for '%s' — using procedural rendering" % char_id)
+		return
+
+	var frames := _build_sprite_frames(char_id)
+	if frames.get_animation_names().is_empty():
+		return
+
+	_animated_sprite = AnimatedSprite2D.new()
+	_animated_sprite.sprite_frames = frames
+	_animated_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_animated_sprite.offset = _PNG_SPRITE_OFFSET
+	_animated_sprite.scale = Vector2(_PNG_SPRITE_SCALE, _PNG_SPRITE_SCALE)
+	add_child(_animated_sprite)
+
+	_use_png_sprites = true
+	_update_sprite_animation()
+	print("[CharacterSprite] PNG sprites loaded for '%s'" % char_id)
+
+
+## Builds a SpriteFrames resource by scanning the asset directory.
+func _build_sprite_frames(char_id: String) -> SpriteFrames:
+	var frames := SpriteFrames.new()
+	if frames.has_animation("default"):
+		frames.remove_animation("default")
+
+	for anim_name: String in _SPRITE_ANIM_CONFIGS:
+		var cfg: Dictionary = _SPRITE_ANIM_CONFIGS[anim_name]
+		frames.add_animation(anim_name)
+		frames.set_animation_speed(anim_name, cfg.fps)
+		frames.set_animation_loop(anim_name, cfg.loop)
+
+		var i := 0
+		while true:
+			var path := "%s%s/%s/%s_%s_%04d.png" % [
+				_SPRITE_BASE_PATH, char_id, anim_name,
+				char_id, anim_name, i
+			]
+			if not ResourceLoader.exists(path):
+				break
+			var tex := load(path) as Texture2D
+			frames.add_frame(anim_name, tex)
+			i += 1
+
+		if i == 0:
+			push_warning("[CharacterSprite] No frames for %s/%s" % [char_id, anim_name])
+
+	return frames
+
+
+## Plays the sprite animation that corresponds to the current pose.
+func _update_sprite_animation() -> void:
+	if not _animated_sprite:
+		return
+	var anim_name: String = _POSE_TO_ANIM.get(pose, "idle")
+	if not _animated_sprite.sprite_frames.has_animation(anim_name):
+		anim_name = "idle"
+	# Only restart when the animation actually changes
+	if _animated_sprite.animation != anim_name:
+		_animated_sprite.play(anim_name)
+
+
+## Returns true when using pre-rendered PNG sprites instead of procedural.
+func is_using_png_sprites() -> bool:
+	return _use_png_sprites
+
+
 func _draw() -> void:
+	if _use_png_sprites:
+		return
 	match pose:
 		"idle":             _draw_idle()
 		"walk":             _draw_walk()
