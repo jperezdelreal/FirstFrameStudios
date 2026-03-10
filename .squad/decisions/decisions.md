@@ -1554,3 +1554,110 @@ Used Python embg library (u2net AI model) for batch background removal on all 3
 ### Verdict
 
 **APPROVED.** rembg (u2net) is the standard for background removal in the production sprite pipeline.
+
+---
+
+## Decision: Kael FLUX Sprite PoC — Art Director Review
+
+# Kael FLUX Sprite PoC — Art Director Review
+
+**Reviewer:** Boba (Art Director)  
+**Date:** 2025-07-22  
+**Assets Reviewed:**  
+- `games/ashfall/assets/poc/contact_idle.png` — 8 idle frames  
+- `games/ashfall/assets/poc/contact_walk.png` — 8 walk frames  
+- `games/ashfall/assets/poc/contact_lp.png` — 12 LP frames  
+
+---
+
+## 1. IDLE (8 frames)
+
+| Criteria | Assessment |
+|----------|------------|
+| **Consistency** | ⚠️ Moderate issues. Skin tone varies (frames 4-5 warmer/more saturated than 1-3, 6-8). Arm wrap visibility shifts between frames. Overall proportions stable. |
+| **Motion Flow** | ✅ Subtle breathing motion reads well. Good fighting game idle loop feel. |
+| **Silhouette** | ✅ Strong. Guard stance clear, fists visible, head distinct from body. |
+| **Background Removal** | ✅ Clean transparency, no visible halos or artifacts. |
+| **Known Fix Check** | ❌ **FAIL: Kael is wearing brown boots/shoes** in all 8 frames. GDD specifies barefoot fire monk. This was flagged as a required fix. |
+
+### VERDICT: **NEEDS WORK**
+- **Blocker:** Regenerate barefoot. The boots break character identity.
+- Minor: Color-correct skin tones for consistency across frames.
+
+---
+
+## 2. WALK (8 frames)
+
+| Criteria | Assessment |
+|----------|------------|
+| **Consistency** | ✅ Good. All frames same character. Warm orange skin tone consistent. Sandal wraps match throughout. |
+| **Motion Flow** | ⚠️ **Problem: Legs don't alternate.** Frames show subtle weight shift/bobbing but both legs stay mostly in same position. This will read as "bouncing in place" not "walking forward." |
+| **Silhouette** | ✅ Clear guard stance silhouette maintained. Good fighting game readability. |
+| **Background Removal** | ✅ Clean cuts, transparent background intact. |
+| **Known Fix Check** | ✅ Barefoot with proper sandal wraps. ❌ Legs do NOT alternate as required. |
+
+### VERDICT: **NEEDS WORK**
+- **Blocker:** Walk cycle needs actual leg alternation. Current frames are more of a "bounce idle" than a walk.
+- Positive: Footwear correct on this set (sandals/barefoot look).
+
+---
+
+## 3. LP — Light Punch (12 frames)
+
+| Criteria | Assessment |
+|----------|------------|
+| **Consistency** | ❌ **SEVERE inconsistency.** Frames 1-6 and 7-12 look like two different characters. |
+|  | • Frames 1-6: Pale skin, brown boots, taller/leaner proportions, realistic style |
+|  | • Frames 7-12: Warm orange skin, sandals, stockier proportions, more stylized |
+| **Motion Flow** | ⚠️ Within each row, motion is okay. Frame 4-5-6 show fire ember effect (good fire monk identity). Frames 7-12 show recovery to guard. But the jarring style break at frame 7 destroys readability. |
+| **Silhouette** | ✅ Punch extension clear in both styles. Attack readable. |
+| **Background Removal** | ✅ Clean on all frames. |
+| **Known Fix Check** | ⚠️ Partial. Frames 7-12 are barefoot ✅, show recovery to guard ✅. But frames 1-6 still have boots ❌. |
+
+### VERDICT: **FAIL**
+- **Blocker:** Two completely different character styles spliced together. Cannot ship this.
+- The fire ember effect on extended fist (frames 4-6) is actually great — keep that concept.
+- Regenerate entire LP sequence with consistent character model matching the Walk sandal style.
+
+---
+
+## OVERALL PoC VERDICT: **NEEDS WORK**
+
+### Summary
+FLUX can produce quality fighting game sprites — the Walk set proves this. But the AI is generating inconsistent character interpretations across prompts. The IDLE and LP sets have boot/barefoot violations, and LP has a catastrophic style break mid-animation.
+
+### Actionable Next Steps
+
+1. **Standardize the reference.** Pick the Walk frames (7-12 of LP also match) as the canonical Kael look: warm orange skin, sandal wraps, stockier martial artist proportions.
+
+2. **Regenerate IDLE** with explicit barefoot/sandal prompt, using Walk frames as img2img reference if FLUX supports it.
+
+3. **Regenerate LP frames 1-6** to match the style of frames 7-12. The recovery half is good; the startup/active half is wrong.
+
+4. **Walk leg alternation** — either regenerate with better motion description, or manually reorder/flip frames to create proper alternation.
+
+5. **Color consistency pass.** When all sets are regenerated, do a final color grade to lock skin tone, gi color, and wrap color across all animations.
+
+### What's Working
+- Background removal (rembg) is excellent — clean transparency throughout
+- Fighting game silhouettes are clear and readable
+- Fire monk identity comes through when prompted correctly (ember effect on LP)
+- The "correct" Kael (Walk, LP 7-12) has good martial artist energy
+
+### Recommendation
+Do NOT proceed to full animation set production until barefoot + consistent style is locked. One more PoC iteration with tighter prompting should get us there. Consider creating a Kael reference sheet PNG that gets fed into every generation prompt.
+
+---
+
+*— Boba, Art Director*
+
+
+---
+
+## Decision: PoC Art Sprint — Founder Verdict
+
+### 2026-03-10T07:44Z: PoC Art Sprint — Founder Verdict
+**By:** Joaquín (via Copilot)
+**What:** PoC Arte validada. Stage "GUAPISIMO". Character looks good. Known prompt issues (boots, backgrounds) acknowledged — were fixed in second pass. LP attack animation too fast (60fps × 12 frames = 0.2s), needs more frames or lower FPS for production. Scene loaded without issues in Godot. Screenshots saved to games/ashfall/docs/screenshots/PoC Arte/
+**Why:** Founder review of Art PoC — validates FLUX pipeline for production use. Key learning: initial prompts need more care (barefoot, transparent bg, etc.) but the quality ceiling is proven.
+
