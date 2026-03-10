@@ -16,7 +16,9 @@ var fighter2: Node2D
 @export var stage_right: float = 940.0
 
 ## Stage floor Y and ceiling Y for vertical clamping.
-@export var stage_floor_y: float = 300.0
+## Set below the physics floor (y=300) so the camera can show ground area
+## and center fighters properly on the 1920×1080 viewport.
+@export var stage_floor_y: float = 500.0
 @export var stage_ceiling_y: float = -100.0
 
 # -- Zoom tuning --

@@ -21,12 +21,16 @@ extends Node2D
 			else:
 				queue_redraw()
 
-## Mirrors the sprite horizontally when true (facing left)
+## Mirrors the sprite horizontally when true (facing left).
+## Uses AnimatedSprite2D.flip_h for PNG sprites, parent scale.x for procedural.
 var flip_h: bool = false:
 	set(value):
 		if flip_h != value:
 			flip_h = value
-			scale.x = -1.0 if flip_h else 1.0
+			if _use_png_sprites and _animated_sprite:
+				_animated_sprite.flip_h = flip_h
+			else:
+				scale.x = -1.0 if flip_h else 1.0
 
 ## Character palettes — override in subclass
 ## Each palette is a Dictionary with keys: skin, hair, outfit_primary,
@@ -53,22 +57,26 @@ var _animated_sprite: AnimatedSprite2D = null
 ## Base path for sprite assets
 const _SPRITE_BASE_PATH := "res://assets/sprites/"
 
-## Scale factor for 512px sprites to match the ~60px procedural character.
-## 0.15 ≈ 77px rendered height — slightly taller than collision box for
-## visual presence. Tune this if characters look too big or small.
-const _PNG_SPRITE_SCALE := 0.15
+## Scale factor for 512px sprites — sized for fighting-game proportions.
+## 0.55 × 512 ≈ 282px rendered height — ~26% of 1080p viewport height.
+## Comparable to Street Fighter / Guilty Gear character proportions.
+const _PNG_SPRITE_SCALE := 0.55
 
 ## Texture-pixel offset to anchor sprite at bottom-center (feet at origin).
 ## 512 / 2 = 256 — shifts the sprite up so the node position = feet.
 const _PNG_SPRITE_OFFSET := Vector2(0, -256)
 
 ## Maps pose strings → sprite animation names.
-## Poses not listed fall back to "idle".
+## Every pose the state machine can set MUST be listed here to prevent
+## fallthrough to procedural _draw(). Missing entries fall back to "idle".
 const _POSE_TO_ANIM := {
 	# Stance / movement
 	"idle": "idle",
 	"walk": "walk",
 	"walk_2": "walk",
+	"crouch": "idle",
+	"dash": "walk",
+	"backdash": "walk",
 	# Standing punches
 	"attack_lp": "punch",
 	"attack_mp": "punch",
@@ -93,6 +101,37 @@ const _POSE_TO_ANIM := {
 	"jump_lk": "kick",
 	"jump_mk": "kick",
 	"jump_hk": "kick",
+	# Jump (no attack)
+	"jump_up": "idle",
+	"jump_peak": "idle",
+	"jump_fall": "idle",
+	# Block
+	"block_standing": "idle",
+	"block_crouching": "idle",
+	# Hit reactions
+	"hit": "idle",
+	"hit_heavy": "idle",
+	"hit_crouching": "idle",
+	"hit_air": "idle",
+	# Knockdown
+	"ko": "idle",
+	"knockdown_fall": "idle",
+	# Throw
+	"throw_startup": "punch",
+	"throw_execute": "punch",
+	"throw_whiff": "idle",
+	"throw_victim": "idle",
+	# Recovery
+	"wakeup": "idle",
+	# Specials / super
+	"special_1": "punch",
+	"special_2": "punch",
+	"special_3": "kick",
+	"special_4": "kick",
+	"ignition": "kick",
+	# Win / Lose
+	"win": "idle",
+	"lose": "idle",
 }
 
 ## FPS and loop config per sprite animation
@@ -187,6 +226,9 @@ func _try_load_png_sprites() -> void:
 	add_child(_animated_sprite)
 
 	_use_png_sprites = true
+	# Switch mirroring from parent scale.x to child flip_h
+	scale.x = 1.0
+	_animated_sprite.flip_h = flip_h
 	_update_sprite_animation()
 	print("[CharacterSprite] PNG sprites loaded for '%s'" % char_id)
 
