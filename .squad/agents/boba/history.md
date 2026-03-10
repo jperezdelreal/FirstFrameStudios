@@ -524,3 +524,34 @@ The red placeholder rectangle is functional for now. Character portraits can wai
 - Rate limits define workflow architecture. 4/min for quality, 30/min for throughput — design the pipeline to match.
 - The `input_image` parameter on Kontext Pro is the single most important capability for our use case. It transforms the pipeline from "hope for consistency" to "propagate identity."
 - Always verify infrastructure before writing specs. v1 and v2 were written against assumptions. v3 is written against validated API calls.
+
+### FLUX Sprite PoC Review — Kael Character (2025-07-22)
+
+**Reviewed:** First batch of FLUX-generated + rembg-processed sprites for Kael (fire monk fighter).
+- contact_idle.png — 8 idle frames
+- contact_walk.png — 8 walk frames
+- contact_lp.png — 12 light punch frames
+
+**Findings:**
+
+1. **Character consistency is FLUX's biggest weakness.** LP animation showed two completely different character interpretations spliced together (frames 1-6 vs 7-12). Different skin tones, proportions, and even footwear within the same animation.
+
+2. **Prompt drift on specific details.** "Barefoot fire monk" prompt succeeded in Walk but failed in Idle (got brown boots). FLUX doesn't reliably maintain specific costume details across separate generation batches.
+
+3. **Background removal (rembg) is excellent.** Clean transparency on all 28 frames, no halos or artifacts. This part of the pipeline is production-ready.
+
+4. **Fighting game silhouettes work.** Guard stances, punch extensions, and overall readability are strong. FLUX understands martial arts poses.
+
+5. **Motion flow varies.** Walk cycle showed "bouncing in place" rather than proper leg alternation — either prompt was ambiguous or FLUX doesn't generate proper locomotion sequences.
+
+6. **Fire effects on punch are great.** The ember/flame effect on extended fist (LP frames 4-6) captures fire monk identity when prompted correctly.
+
+**Key Learnings:**
+
+- **Hero frame → propagate pattern is mandatory.** Must lock canonical character reference before bulk generation. Every batch needs img2img anchor.
+- **Prompt alone is insufficient.** Even with detailed descriptions, FLUX interprets "barefoot" differently between sessions.
+- **Walk cycles need manual intervention.** AI-generated walk frames may need reordering, flipping, or hybrid manual work to achieve proper leg alternation.
+- **Quality varies by pose complexity.** Static poses (idle, guard) are more consistent than action poses (punch startup/recovery).
+- **Review contact sheets before production.** Catching these issues at PoC saves massive rework.
+
+**Verdict:** FLUX pipeline is viable but requires tighter reference propagation. Recommend one more PoC iteration with Kontext Pro input_image to prove consistency.
