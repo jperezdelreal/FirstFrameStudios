@@ -1280,3 +1280,236 @@ Generated 56 animation frames (28 per character) for Kael and Rhena using Kontex
 **What:** GPT-Audio-1.5 deployed on Azure AI Foundry for audio generation. Rate limit: 90,000 requests/min (extremely generous). Available for Sprint 3 (Audio) when ready.
 **Why:** Founder deployed a new model for future audio sprint. Captured for team memory so Greedo (Sound Designer) knows what's available.
 
+
+---
+
+## Pipeline & Art Direction Decisions
+
+### V2 Animation Consistency Audit (Boba)
+**Author:** Boba (Art Director)  
+**Date:** 2025-01-27  
+**Status:** 🔴 CRITICAL FAILURE
+
+**Executive Summary**
+
+Joaquín's assessment is 100% correct. V2 frames are unusable for animation. Each frame looks like a different character — fundamentally incompatible with frame-by-frame animation which requires consistency between frames.
+
+**V1 Analysis: KAEL IDLE (8 frames)**
+
+| Metric | Score | Notes |
+|--------|-------|-------|
+| **Character Identity** | 10/10 | Same face, same proportions, same person across all 8 frames |
+| **Outfit Consistency** | 10/10 | Identical grey-white gi, dark belt, brown boots, arm wraps |
+| **Color Palette** | 10/10 | Exact same hex values frame-to-frame |
+| **Pose Readability** | 9/10 | Clear breathing cycle, smooth transitions implied |
+
+**V1 TOTAL: 39/40 — Production-ready**
+
+**V2 Analysis: KAEL (28 frames, 3 rows)**
+
+| Metric | Score | Notes |
+|--------|-------|-------|
+| **Character Identity** | 2/10 | Different faces, different body types. Frame 1 and Frame 5 are NOT the same person. |
+| **Outfit Consistency** | 1/10 | Red gi → green gi → brown gi → purple gi → grey gi. Belt: yellow → orange → purple → red → blue. No two frames match. |
+| **Color Palette** | 1/10 | Complete chaos. 7+ different outfit colors in Row 1 alone. |
+| **Pose Readability** | 3/10 | Poses exist but you'd never notice them over the color/identity changes |
+
+**V2 KAEL TOTAL: 7/40 — Unusable**
+
+**V2 RHENA TOTAL: 7/40 — Unusable**
+
+**Root Cause Analysis**
+
+The v2 process appears to have:
+
+1. **No reference anchoring** — Each frame generated independently without enforcing the previous frame's appearance
+2. **High variation sampling** — The AI model was likely allowed too much creative freedom per-frame
+3. **No color palette lock** — Hair, outfit, belt colors re-rolled each generation
+4. **No identity preservation** — Face and body treated as "character" concept rather than "this specific character"
+
+**V1 succeeded because:** Likely used stronger reference conditioning or multiple passes with same seed/parameters.
+
+**Impact Assessment**
+
+Can V2 be animated? **NO.** Playing these frames sequentially would create a flickering nightmare.
+
+Can V2 be salvaged? **Maybe partial.** If we cherry-pick only frames that match (maybe 3-4 per character). But honestly? **Start over with v1's methodology.**
+
+**Recommendations**
+
+1. **Immediate:** Abandon v2 approach. Do not invest more time in this direction.
+2. **V3 Direction:** Return to v1's methodology. Whatever constraint/conditioning made v1 consistent, restore it.
+3. **Process Change:** Before generating 28 frames, generate 3 and verify consistency. Fail fast.
+4. **Scope Reduction:** Maybe we don't need 28 frames per animation. V1's 8 frames looked great. Quality > quantity.
+
+---
+
+### Sprite Animation Consistency — Research & Recommendation (Solo)
+**Author:** Solo (Lead / Chief Architect)  
+**Date:** 2026-03-10  
+**Status:** Proposed  
+**Triggered by:** Founder (Joaquín) reports v2 animation frames worse than v1. ChatGPT research independently suggests skeleton-based pose conditioning.
+
+**Root Cause Analysis: Why V2 Failed**
+
+Boba's audit confirmed it: V2 scored 7/40 vs V1's 39/40. The character looks different in every frame. This is an **architectural failure** in how we generate frames.
+
+**The fundamental error:** We used Kontext Pro to generate each frame independently from a text prompt. Kontext Pro is an image-editing model — it excels when you give it a source image and say "change this specific thing." We used it like a text-to-image model, asking it to generate "frame 2: anticipation pose" from scratch each time. Without structural conditioning (pose skeleton) or appearance anchoring (reference image fed per-frame), the model re-rolls identity on every generation.
+
+**Why V1 worked:** V1 likely used tighter reference conditioning — same seed, same parameters, minimal pose variation (breathing cycle = subtle). The moment we asked for diverse poses (punches, kicks, jumps across 28 frames), the model had nothing to anchor identity to.
+
+**Core insight:** Text prompts alone cannot enforce visual consistency across frames. You need **structural control** (what pose to take) AND **appearance control** (what the character looks like) as explicit inputs to every frame generation.
+
+**Research Findings: All Viable Approaches**
+
+I conducted 9 independent web searches across FLUX models, ControlNet, academic papers, indie game pipelines, and specialized tools.
+
+**Approach A: ComfyUI + FLUX + ControlNet Pose + IP-Adapter**
+
+How it works: Generate master sprite → create pose skeletons → feed both into ComfyUI with ControlNet (pose mode) and IP-Adapter (appearance locking) → generate each frame conditioned on both pose AND appearance.
+
+**Consistency level:** High (8/10). Remaining 20% variation is in fine details requiring manual QA.
+
+**Complexity:** HIGH. Requires local ComfyUI setup, model downloads (~20GB), workflow configuration, GPU with 12-24GB VRAM.
+
+**Verdict:** This is what the ChatGPT research was pointing at. It's the right direction, but requires FLUX.2 Dev (open weights + ControlNet), NOT our current FLUX 1.1 Pro or Kontext Pro API.
+
+**Approach B: PixelLab (Purpose-Built Tool)**
+
+How it works: PixelLab is an AI tool built specifically for pixel art game assets. Has built-in **skeleton-based animation system** — you define joint positions, it generates consistent frames.
+
+**Consistency level:** High (8/10) for pixel art style. Purpose-built for this exact problem.
+
+**Complexity:** LOW. Web-based tool, no local setup.
+
+**Verdict:** Best option IF our art direction is pixel art. Fast to test, low risk. Worth a spike.
+
+**Approach C: 3D-to-2D Pipeline (Mixamo + Blender → Sprite Render)**
+
+How it works: Get 3D humanoid model (Mixamo free library) → apply fighting animations from Mixamo's mocap library → In Blender: orthographic camera, side view, render each frame as PNG → Use SpriteStar or Spritesheet Renderer addon to batch-export sprite sheets → Post-process in Aseprite/Photoshop for style.
+
+**Consistency level:** PERFECT (10/10). It's the same 3D model in every frame. Consistency is guaranteed by definition.
+
+**Complexity:** MEDIUM. Blender setup is one-time. Mixamo animations are free and immediate.
+
+**Verdict:** Most reliable approach for consistency. Zero AI randomness. Classic technique used by professional studios (Donkey Kong Country, Killer Instinct, many modern indie fighters).
+
+**Approach D & E: Sprite Sheet Diffusion & SaaS Tools**
+
+Sprite Sheet Diffusion (Academic research) and SaaS tools (Spritesheets.AI, AutoSprite, Scenario) are additional options but lower priority.
+
+**Top 3 Alternatives — Ranked by Feasibility**
+
+**🥇 Rank 1: 3D-to-2D Pipeline (Mixamo + Blender)**
+- **Why first:** Guaranteed consistency. Zero randomness. Proven in professional fighting games.
+- **Time to first result:** 2-4 hours
+- **Ongoing cost:** Free (Blender + Mixamo are free)
+- **Risk:** Art style gap needs post-processing. But a consistent ugly sprite is infinitely more useful than a beautiful inconsistent one.
+
+**🥈 Rank 2: ComfyUI + FLUX.2 Dev + ControlNet + IP-Adapter**
+- **Why second:** Best AI approach. Combines pose control with appearance locking.
+- **Time to first result:** 1-2 days
+- **Ongoing cost:** GPU time (local) or cloud GPU rental
+- **Risk:** Complex pipeline. Requires 12-24GB VRAM. Still has ~20% variation requiring QA.
+
+**🥉 Rank 3: PixelLab (if pixel art style)**
+- **Why third:** Purpose-built for exactly this problem, but style-locked to pixel art.
+- **Time to first result:** 30 minutes
+- **Ongoing cost:** SaaS subscription
+- **Risk:** Vendor lock-in, pixel art only
+
+**Honest Assessment: Is AI Frame-by-Frame Animation Production-Ready?**
+
+**Short answer: Not yet for fighting games, with our current approach.**
+
+AI-generated sprites are production-ready for: concept art, simple animations with proper pipeline, prototyping, pixel art with dedicated tools.
+
+AI-generated sprites are NOT yet reliable for: complex fighting game animations without structural conditioning, frame-data-precise combat sprites, prompt-only generation.
+
+**My recommendation:** Use AI for concept art and style exploration. Use 3D-to-2D (Mixamo + Blender) for production animation frames. This is what professional indie studios actually do.
+
+**Proposed Next Steps**
+
+1. **Immediate:** Stop generating frames with current approach. It won't improve.
+2. **This week:** Boba runs a spike — download Mixamo fighter model, apply punch animation, render 5 frames in Blender, evaluate quality.
+3. **This week:** Boba tests PixelLab with Kael's master sprite — 30 min evaluation.
+4. **If 3D-to-2D works:** Adopt as primary pipeline.
+5. **If we still want AI:** Set up ComfyUI + FLUX.2 Dev + ControlNet locally.
+6. **Art direction decision:** Yoda + Boba align on pixel art (PixelLab-friendly) vs cel-shaded (needs 3D-to-2D or ControlNet pipeline).
+
+---
+
+### Decision: 3D-to-2D Sprite Pipeline via Mixamo + Blender (Chewie)
+**Author:** Chewie (Engine Dev)  
+**Date:** 2026-07-22  
+**Status:** Proposed (Spike complete, awaiting founder validation)  
+**Scope:** Ashfall art pipeline — sprite generation for all characters
+
+**Context**
+
+AI sprite generation (Kontext Pro / FLUX) failed for animation frames. Individual frames looked great but had zero frame-to-frame consistency. Unusable as actual game animation.
+
+The team researched alternatives. Top recommendation: **3D-to-2D pipeline using Mixamo (free 3D models + animations) + Blender (automated rendering).**
+
+**Decision**
+
+Adopt a 3D-to-2D sprite rendering pipeline:
+
+1. **Source:** Free Mixamo models + animations (FBX format, manual download — no API)
+2. **Render:** Blender 4.x Python script, CLI-driven, orthographic camera, transparent PNG output
+3. **Style:** Cel-shade toon shader (Shader-to-RGB + ColorRamp) for 2D fighting game look
+4. **Output:** Individual frames as {character}_{animation}_{NNNN}.png at 512×512
+
+**What Was Built (Spike)**
+
+| File | Purpose |
+|---|---|
+| games/ashfall/tools/blender_sprite_render.py | Main render script — FBX import, camera, lighting, frame rendering, contact sheet |
+| games/ashfall/tools/cel_shade_material.py | Toon material toolkit with character presets (kael, rhena) and outline support |
+| games/ashfall/tools/BLENDER-SPRITE-PIPELINE.md | Full documentation — prerequisites, step-by-step guide, customization, troubleshooting |
+
+**Why**
+
+| Criterion | AI Generation | 3D-to-2D Pipeline |
+|---|---|---|
+| Frame consistency | ❌ Zero | ✅ Perfect (same mesh) |
+| Animation flow | ❌ Frames don't connect | ✅ Mocap-driven, smooth |
+| Style control | ⚠️ Prompt-dependent | ✅ Material/shader control |
+| Cost | ✅ Pay per generation | ✅ Free (Mixamo + Blender) |
+| Speed per character | ✅ Fast | ⚠️ Setup time, then fast batch |
+
+**Next Steps**
+
+1. **Founder validates spike** — Download one Mixamo model, run the script, check output quality
+2. **If validated:** Render full Kael animation set (idle, walk, all attacks, hit, KO)
+3. **If validated:** Render Rhena with different preset colors
+4. **Long-term:** Consider custom 3D models (replace Mixamo with bespoke characters)
+
+**Risks**
+
+- Mixamo models are generic — may need custom modeling later for unique character identity
+- Blender must be installed on dev machines (it is — founder confirmed)
+- FBX import quality varies — some Mixamo rigs need manual cleanup
+
+---
+
+### V2 Frames REJECTED — Pipeline Pivot Directive (2026-03-10T09:27Z)
+**By:** Joaquín (via Copilot)
+
+v2 animation frames are WORSE than v1. Zero consistency between frames — each frame looks like a different character. Kontext Pro cannot maintain character identity across different poses via text prompts alone. Founder says "no veo que estemos avanzando".
+
+**New approach needed:** pose conditioning with skeleton images (per ChatGPT research). Stop generating frames until pipeline is redesigned with pose conditioning.
+
+**Why:** Critical quality failure. Current approach of text-only pose descriptions to Kontext Pro is fundamentally flawed for animation frames. Need skeleton/ControlNet conditioning via FLUX 2 Flex or equivalent.
+
+
+---
+
+### Art Style Direction — Pixel Art Target (2026-03-10T10:15Z)
+**By:** Joaquín (via Copilot)
+
+**What:** Visual target is Street Fighter pixel art style (Ryu). Classic 2D fighting game sprites with hand-drawn pixel art look. Not generic 3D, not cel-shade — pixel art like SF2/SF3.
+
+**Why:** Founder defined the visual target for production sprites. This constrains art pipeline choices: either pixel-art post-processing on 3D renders, PixelLab SaaS, or stylized 3D models rendered to look like pixel art.
+
+**Impact:** Clarifies Rank 3 (PixelLab) becomes viable alternative. 3D-to-2D with pixel-art post-processing is primary path. Confirms this is NOT high-res cel-shade.
