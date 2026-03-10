@@ -32,6 +32,15 @@
 
 ## Learnings
 
+### Auto-Screenshot Mode (CLI Headless Capture)
+- **Pattern:** `sprite_poc_test.gd` checks `OS.get_cmdline_user_args()` for `--screenshot`, `--char=`, `--anim=` flags passed after `--` separator on CLI.
+- **Capture method:** Wait 5 frames in `_process()`, then `await RenderingServer.frame_post_draw` + `get_viewport().get_texture().get_image()` + `image.save_png()`. Saves to both `user://screenshot.png` and project-root absolute path.
+- **Batch file:** `games/ashfall/tools/screenshot.bat` wraps the full Godot CLI invocation. Pass `--char=kael --anim=idle` etc. as args.
+- **Exact command:** `"C:\Users\joperezd\Downloads\Godot_v4.6.1-stable_win64.exe\Godot_v4.6.1-stable_win64_console.exe" --path "C:\Users\joperezd\FirstFrameStudios\games\ashfall" --scene "res://scenes/test/sprite_poc_test.tscn" -- --screenshot --char=kael --anim=idle`
+- **Output paths:** `C:\Users\joperezd\FirstFrameStudios\games\ashfall\screenshot.png` (project root) and `C:\Users\joperezd\AppData\Roaming\Godot\app_userdata\Ashfall\screenshot.png` (user://).
+- **Key gotcha:** `res://screenshot.png` path must be globalized with `ProjectSettings.globalize_path()` before calling `save_png()` because `res://` is read-only in exports (but writable from editor/CLI).
+- **Interactive mode unaffected:** `_process()` early-returns when `_screenshot_mode == false`; no behavioral changes to keyboard input or HUD.
+
 ### Hitlag System (P1-1)
 - Added `hitlagFrames` counter and `addHitlag(frames)` method to `Game` class. Uses `Math.max` to prevent stacking from multi-hits.
 - Game loop checks hitlag before scene update: if active, decrements counter and calls `scene.updateDuringHitlag(dt)` instead of `scene.update(dt)`. Rendering always runs.
@@ -340,3 +349,12 @@
   - 208 frames + 8 contact sheets, zero errors
 - **Frame counts slightly reduced** vs previous render (221→208) due to last-frame exclusion — this is correct behavior.
 - **No cel-shade applied** — original Mixamo materials preserved per founder preference.
+
+### PNG Sprite Integration into CharacterSprite (In-Game)
+- **Approach:** Modified `character_sprite.gd` to auto-detect PNG sprites at `_ready()` and switch from procedural `_draw()` to `AnimatedSprite2D` playback. Zero changes to `SpriteStateBridge`, `FighterAnimationController`, or fighter `.tscn` files.
+- **Detection:** Virtual method `_get_character_id()` returns "" in base (skip), overridden in `KaelSprite` → "kael", `RhenaSprite` → "rhena". Probes `res://assets/sprites/{id}/idle/{id}_idle_0000.png`.
+- **Pose mapping:** `_POSE_TO_ANIM` dict maps 20+ pose strings to 4 sprite animations (idle, walk, punch, kick). Unmapped poses fall back to "idle".
+- **Scaling:** 512px sprites at `_PNG_SPRITE_SCALE = 0.15` → ~77px rendered height, matching the ~60px procedural characters with slight visual oversizing. `_PNG_SPRITE_OFFSET = (0, -256)` anchors feet at node origin.
+- **Filtering:** `TEXTURE_FILTER_LINEAR` for clean 512→77px downscaling (NEAREST would pixelate badly at 6:1 reduction).
+- **Flip handling:** Parent `CharacterSprite.scale.x = -1` propagates to the AnimatedSprite2D child — no separate flip logic needed.
+- **Fallback:** If `_get_character_id()` returns "" or no sprite files exist, procedural `_draw()` rendering continues unchanged. Both paths coexist cleanly.
