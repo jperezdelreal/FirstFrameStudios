@@ -192,3 +192,22 @@
 - LP animation (non-looping) auto-returns to idle via `animation_finished` signal. Config-driven — any animation with `loop: false` gets the same behavior.
 - HUD on `CanvasLayer` so it's unaffected by camera/zoom in future. Shadow text for readability over any background.
 - Texture filter set to `TEXTURE_FILTER_NEAREST` on the AnimatedSprite2D node (runtime override, no .import file changes needed).
+
+### 3D-to-2D Sprite Pipeline — Blender Automation (Spike)
+- **Context:** AI sprite generation (Kontext Pro) failed for animation frames — zero frame-to-frame consistency. Team pivoted to 3D-to-2D pipeline using Mixamo + Blender.
+- **Mixamo has no public API.** Downloads must be manual (browser → FBX export). Unofficial scrapers exist (gnuton/mixamo_anims_downloader, MixamoHarvester) but require browser-extracted bearer tokens and risk ToS violations. Manual download is the reliable path for a small set of animations.
+- **Created `games/ashfall/tools/blender_sprite_render.py`:** Full CLI-driven Blender Python script for the render pipeline. Features: FBX import → orthographic camera (side/front/3-4 presets) → flat 2-light rig → transparent RGBA → per-frame PNG rendering → optional contact sheet (Pillow or Blender fallback). Auto-fits camera to model bounds. Uses EEVEE Next for fast renders.
+- **Created `games/ashfall/tools/cel_shade_material.py`:** Companion script for toon/cel-shade materials. Uses Shader-to-RGB + ColorRamp (CONSTANT interpolation) for hard-edged lighting bands. Character presets (kael = ember, rhena = steel blue). Optional inverted-hull outline via Solidify modifier. Importable as module or standalone CLI.
+- **Created `games/ashfall/tools/BLENDER-SPRITE-PIPELINE.md`:** Complete pipeline documentation. Step-by-step Mixamo download guide, batch render scripts, customization (camera angle, frame step, size, ortho scale), post-processing for cel-shade/pixel-art/ink styles, troubleshooting table.
+- **Output naming convention:** `{character}_{animation}_{frame:04d}.png` — matches existing sprite structure in `assets/sprites/fighters/kael/`.
+- **Key design decisions:** EEVEE over Cycles (speed over photorealism for sprites), Emission output node (flat color, no specular), orthographic camera (true 2D projection), auto-fit camera bounds (works with any model size).
+- **Why 3D-to-2D wins:** Consistency guaranteed by construction — same mesh in every frame. AI generation gives beautiful individual frames but they don't connect as animation.
+
+### Cel-Shade Pipeline Upgrade (Production Render)
+- **2-step shadow ramp (Guilty Gear style):** Hard CONSTANT ColorRamp at position 0.45 gives dramatically better anime look than 3-step. The single hard shadow edge is what sells the hand-drawn feel. 3-step kept as fallback option via `--steps 3`.
+- **Outline thickness 0.01:** Upgraded from 0.002. At 512px, the thin outline was invisible. 0.01 gives thick, visible fighting-game outlines. Range 0.008-0.012 works well for Mixamo mannequin scale.
+- **Fresnel rim light:** IOR 1.45 → CONSTANT ColorRamp at 0.65 → ADD mix at 0.7 factor. Creates edge glow that pops the character silhouette. Per-character rim colors (warm for Kael, cool for Rhena). Critical for fighting game readability.
+- **Fighting-game lighting rig:** Key light energy 5.0 from upper-left (55°/-15°/-35°), fill at 0.6, ambient 0.3. High key-to-fill ratio creates dramatic shadow shapes that the 2-step ramp turns into bold anime shading. Previous balanced 3.0/1.5 rig was too flat.
+- **Module integration:** Removed inline `apply_cel_shade_material()` from blender_sprite_render.py. Now imports cel_shade_material module properly. Added `--preset`, `--outline`, `--outline-thickness`, `--steps` CLI passthrough args.
+- **Blender 5.0 EEVEE:** Engine name is `BLENDER_EEVEE` (not `BLENDER_EEVEE_NEXT` — that was Blender 4.x).
+- **Production render results:** 190 sprite frames + 8 contact sheets across 2 characters × 4 animations. Idle=17, Walk=16, Punch=31, Kick=31 frames each character at step-2.
