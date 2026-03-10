@@ -68,6 +68,11 @@ func _on_area_entered(area: Area2D) -> void:
 		return
 	_hit_targets.append(target)
 
+	print("[Hitbox] HIT! %s → %s | dmg=%d" % [
+		owner_fighter.name if owner_fighter else "???",
+		target.name if target else "???",
+		damage])
+
 	var hit_data := {
 		"damage": damage,
 		"knockback_force": _get_directional_knockback(target),

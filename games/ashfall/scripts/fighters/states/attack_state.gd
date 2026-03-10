@@ -95,6 +95,8 @@ func _activate_hitboxes() -> void:
 			var shape := child.get_child(0) as CollisionShape2D
 			if shape:
 				shape.disabled = false
+				# Flip hitbox position to match facing direction
+				shape.position.x = absf(shape.position.x) * fighter.facing_direction
 			# Wire current move's frame data into the hitbox for accurate hit_data
 			if _current_move and child is Hitbox:
 				child.damage = _current_move.damage

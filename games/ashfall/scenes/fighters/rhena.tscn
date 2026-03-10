@@ -20,13 +20,13 @@
 [ext_resource type="Script" path="res://scripts/systems/hitbox.gd" id="18_hitbox"]
 
 [sub_resource type="RectangleShape2D" id="SubResource_body"]
-size = Vector2(30, 60)
+size = Vector2(110, 220)
 
 [sub_resource type="RectangleShape2D" id="SubResource_hurtbox"]
-size = Vector2(26, 56)
+size = Vector2(96, 206)
 
 [sub_resource type="RectangleShape2D" id="SubResource_hitbox"]
-size = Vector2(36, 24)
+size = Vector2(132, 88)
 
 [node name="Rhena" type="CharacterBody2D"]
 collision_mask = 9
@@ -42,10 +42,10 @@ palette_index = 0
 script = ExtResource("15_bridge")
 
 [node name="Sprite" type="Sprite2D" parent="."]
-position = Vector2(0, -30)
+position = Vector2(0, -141)
 
 [node name="CollisionShape" type="CollisionShape2D" parent="."]
-position = Vector2(0, -30)
+position = Vector2(0, -110)
 shape = SubResource("SubResource_body")
 
 [node name="Hurtbox" type="Area2D" parent="."]
@@ -53,11 +53,11 @@ collision_layer = 4
 collision_mask = 2
 
 [node name="HurtboxShape" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, -28)
+position = Vector2(0, -103)
 shape = SubResource("SubResource_hurtbox")
 
 [node name="AttackOrigin" type="Marker2D" parent="."]
-position = Vector2(30, -30)
+position = Vector2(110, -110)
 
 [node name="Hitboxes" type="Node2D" parent="."]
 
@@ -69,7 +69,7 @@ monitorable = false
 script = ExtResource("18_hitbox")
 
 [node name="CollisionShape" type="CollisionShape2D" parent="Hitboxes/Hitbox"]
-position = Vector2(30, -30)
+position = Vector2(110, -110)
 shape = SubResource("SubResource_hitbox")
 disabled = true
 
