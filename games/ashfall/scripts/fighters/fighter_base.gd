@@ -38,12 +38,20 @@ var facing_right: bool:
 @onready var controller: FighterController = $FighterController
 @onready var anim_player: AnimationPlayer = $AnimationPlayer
 
+## Reference to the CharacterSprite child (KaelSprite/RhenaSprite) for facing
+var character_sprite: CharacterSprite
+
 
 func _ready() -> void:
 	health = max_health
 	# Wire input buffer
 	input_buffer.player_id = player_id
 	input_buffer.facing_right = facing_right
+	# Find the CharacterSprite child (KaelSprite, RhenaSprite, etc.)
+	for child in get_children():
+		if child is CharacterSprite:
+			character_sprite = child
+			break
 	# Wire fighter reference into every state before the first physics tick
 	for state_node in state_machine.get_children():
 		if state_node is FighterState:
@@ -80,6 +88,8 @@ func _update_facing() -> void:
 	else:
 		facing_direction = -1
 	sprite.flip_h = facing_direction < 0
+	if character_sprite:
+		character_sprite.flip_h = facing_direction < 0
 	attack_origin.position.x = absf(attack_origin.position.x) * facing_direction
 
 
