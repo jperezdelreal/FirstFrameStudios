@@ -1,5 +1,19 @@
 ## Fight scene controller. Sets up fighters, wires signals through
 ## EventBus, and manages the fight lifecycle.
+##
+## ─── Controls ───────────────────────────────────────────────────
+## Player 1 (Kael):
+##   Movement:  W / A / S / D  (up / left / down / right)
+##   Punches:   U (LP)  Y (MP)  I (HP)
+##   Kicks:     J (LK)  H (MK)  K (HK)
+##   Block:     L
+##
+## Player 2 (Rhena):
+##   Movement:  Arrow keys  (up / left / down / right)
+##   Punches:   Numpad 4 (LP)  Numpad 8 (MP)  Numpad 5 (HP)
+##   Kicks:     Numpad 1 (LK)  Numpad 9 (MK)  Numpad 2 (HK)
+##   Block:     Numpad 3
+## ────────────────────────────────────────────────────────────────
 extends Node2D
 
 # Combo damage proration: multiplier per hit number (index 0 = hit 1).
@@ -9,6 +23,7 @@ const COMBO_PRORATION: Array[float] = [1.0, 0.8, 0.65, 0.5, 0.4]
 @onready var fighter1: Fighter = $Fighters/Fighter1
 @onready var fighter2: Fighter = $Fighters/Fighter2
 @onready var camera: CameraController = $Camera2D
+@onready var hud: CanvasLayer = $FightHUD
 
 var combo_tracker: Node
 
@@ -16,6 +31,10 @@ func _ready() -> void:
 	# Cross-reference opponents
 	fighter1.opponent = fighter2
 	fighter2.opponent = fighter1
+
+	# Force correct facing from the very first frame
+	fighter1._update_facing()
+	fighter2._update_facing()
 
 	# Visual differentiation — Kael is warm (orange), Rhena is cool (blue)
 	var visual2 := fighter2.get_node_or_null("Visual") as ColorRect
@@ -32,6 +51,15 @@ func _ready() -> void:
 	if camera:
 		camera.fighter1 = fighter1
 		camera.fighter2 = fighter2
+
+	# Set fighter names on HUD from character selection
+	if hud:
+		var p1_label: Label = hud.get_node_or_null("%P1NameLabel")
+		var p2_label: Label = hud.get_node_or_null("%P2NameLabel")
+		if p1_label:
+			p1_label.text = SceneManager.p1_character.to_upper()
+		if p2_label:
+			p2_label.text = SceneManager.p2_character.to_upper()
 
 	GameState.reset_match()
 

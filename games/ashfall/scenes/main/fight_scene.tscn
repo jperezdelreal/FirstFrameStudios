@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/fight_scene.gd" id="1_scene"]
 [ext_resource type="PackedScene" path="res://scenes/fighters/kael.tscn" id="2_kael"]
 [ext_resource type="PackedScene" path="res://scenes/fighters/rhena.tscn" id="3_rhena"]
 
 [ext_resource type="Script" path="res://scripts/systems/camera_controller.gd" id="5_camera"]
+[ext_resource type="PackedScene" path="res://scenes/ui/fight_hud.tscn" id="6_hud"]
 
 [sub_resource type="WorldBoundaryShape2D" id="SubResource_floor"]
 
@@ -82,3 +83,5 @@ script = ExtResource("5_camera")
 stage_left = -300.0
 stage_right = 940.0
 camera_y = 180.0
+
+[node name="FightHUD" parent="." instance=ExtResource("6_hud")]
