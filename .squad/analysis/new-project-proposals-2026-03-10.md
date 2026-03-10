@@ -88,7 +88,7 @@
 
 ---
 
-## Agent Recommendations
+## Round 1 Picks (pre-Joaquín feedback)
 
 | Agent | Their Pick | Reasoning |
 |-------|-----------|-----------|
@@ -98,3 +98,40 @@
 | Boba | FLORA | Procedural art perfection, cozy gaming trend |
 | Solo | FACTORY FLUX | Lowest risk, pure ECS, zero subjective tuning |
 | Tarkin | DUNGEON FORGE | Gambling hook, infinite content from finite systems |
+
+---
+
+## 🗳️ Round 2: Formal Team Vote (post-Joaquín feedback)
+
+**Joaquín's directive:** "Juegos VISTOSOS — nada de cutreces baratas. Rápidos de hacer, aprender cosas nuevas (Vite, frameworks), show-off capability. Investigar gente usando Squad/AI para Pokémon, explorar creatividad web."
+
+### Voting Method
+Each agent: deep web research → review all 18 proposals → formal Top 3 vote.
+Scoring: 3 pts = 🥇, 2 pts = 🥈, 1 pt = 🥉.
+
+### Results
+
+| Rank | Game | Points | Voters (5/6 = consensus) |
+|------|------|--------|--------------------------|
+| 🥇 | **FLORA** | **12** | Yoda🥇 Lando🥇 Solo🥇 Chewie🥈 Boba🥉 |
+| 🥈 | **SHADOW THIEF** | **6** | Boba🥈 Yoda🥈 Solo🥈 |
+| 🥉 | **PULSE** | **5** | Boba🥇 Lando🥉 Solo🥉 |
+| 4 | DUNGEON FORGE | 4 | Tarkin🥇 Yoda🥉 |
+| 5 | CELLFORGE | 3 | Chewie🥇 |
+| 6 | RICOCHET RAMPAGE | 2 | Lando🥈 |
+| 7 | CHIMERA CIRCUIT (new) | 2 | Tarkin🥈 |
+
+### Key Research Findings
+- **Tech Stack:** Vite + TypeScript + PixiJS v8 + bitECS (confirmed 2025 standard)
+- **WebGPU:** Production-ready in all browsers. PixiJS v8 has native support.
+- **Pokémon-like browsers:** Lane is EMPTY for quality creature collectors. Feasible but 5-6 wk MVP.
+- **Visual techniques:** Shaders + procedural art + post-processing = expensive look, zero assets.
+- **Viral formula:** Shareability + 30-sec hook + visual identity + "I made this" factor.
+
+### New Proposals from Research
+- **BLOOM BEASTS** (Yoda): L-system botanical creatures + collector. Pokémon-like, 4-5 wk.
+- **CHIMERA CIRCUIT** (Tarkin): Roguelite creature auto-battler, procedural geometric creatures, 5-6 wk.
+- **BLOOM RUN** (Lando): Endless runner that paints botanical landscapes behind you, 2-3 wk.
+- **PRISM** (Boba): Light refraction puzzle, each solution = rainbow laser show, 3 wk.
+
+### Status: AWAITING FOUNDER DECISION
