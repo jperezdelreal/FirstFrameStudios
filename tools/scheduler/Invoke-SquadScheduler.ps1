@@ -62,7 +62,7 @@ function Test-CronExpression {
     )
     $fields = $Expression.Trim().Split(" ", [StringSplitOptions]::RemoveEmptyEntries)
     if ($fields.Count -ne 5) {
-        Write-Host "   ⚠️  Invalid cron expression: $Expression" -ForegroundColor Yellow
+        Write-Host "   [!] Invalid cron expression: $Expression" -ForegroundColor Yellow
         return $false
     }
 
@@ -112,10 +112,10 @@ function Test-TaskDue {
 # --- List mode ---
 if ($List) {
     Write-Host ""
-    Write-Host "📅 Squad Scheduler — Scheduled Tasks" -ForegroundColor Cyan
-    Write-Host "─────────────────────────────────────" -ForegroundColor DarkGray
+    Write-Host "[sched] Squad Scheduler - Scheduled Tasks" -ForegroundColor Cyan
+    Write-Host "-------------------------------------" -ForegroundColor DarkGray
     foreach ($task in $schedule.tasks) {
-        $status = if ($task.enabled) { "✅ enabled" } else { "⏸️  disabled" }
+        $status = if ($task.enabled) { "[on] enabled" } else { "[off] disabled" }
         $lastRun = if ($state.ContainsKey($task.id)) { $state[$task.id].ToString("yyyy-MM-dd HH:mm") } else { "never" }
         Write-Host "  $($task.name)" -ForegroundColor White
         Write-Host "    ID:       $($task.id)" -ForegroundColor Gray
@@ -132,12 +132,12 @@ if ($List) {
 $now = Get-Date
 $dueTasks = 0
 
-Write-Host "📅 Squad Scheduler — checking $(($schedule.tasks | Where-Object { $_.enabled }).Count) enabled tasks..." -ForegroundColor Cyan
+Write-Host "[sched] Squad Scheduler - checking $(($schedule.tasks | Where-Object { $_.enabled }).Count) enabled tasks..." -ForegroundColor Cyan
 
 foreach ($task in $schedule.tasks) {
     if (-not $task.enabled) { continue }
     if ($task.trigger.type -ne "cron") {
-        Write-Host "   ⚠️  Unknown trigger type '$($task.trigger.type)' for task '$($task.id)', skipping" -ForegroundColor Yellow
+        Write-Host "   [!] Unknown trigger type '$($task.trigger.type)' for task '$($task.id)', skipping" -ForegroundColor Yellow
         continue
     }
 
@@ -150,7 +150,7 @@ foreach ($task in $schedule.tasks) {
         $body = $task.action.body -replace '\{date\}', $dateStr
         $labels = ($task.action.labels -join ",")
 
-        Write-Host "   🎯 DUE: $($task.name)" -ForegroundColor Green
+        Write-Host "   >> DUE: $($task.name)" -ForegroundColor Green
 
         if ($task.action.type -eq "github-issue") {
             if ($DryRun) {
@@ -162,16 +162,16 @@ foreach ($task in $schedule.tasks) {
                     Write-Host "      Creating issue: $title" -ForegroundColor Gray
                     gh issue create --title $title --body $body --label $labels 2>&1 | ForEach-Object { Write-Host "      $_" -ForegroundColor DarkGray }
                     if ($LASTEXITCODE -eq 0) {
-                        Write-Host "      ✅ Issue created" -ForegroundColor Green
+                        Write-Host "      [OK] Issue created" -ForegroundColor Green
                     } else {
-                        Write-Host "      ❌ Failed to create issue (exit $LASTEXITCODE)" -ForegroundColor Red
+                        Write-Host "      [FAIL] Failed to create issue, exit code: $LASTEXITCODE" -ForegroundColor Red
                     }
                 } catch {
-                    Write-Host "      ❌ Error creating issue: $_" -ForegroundColor Red
+                    Write-Host "      [ERROR] Error creating issue: $_" -ForegroundColor Red
                 }
             }
         } else {
-            Write-Host "      ⚠️  Unknown action type: $($task.action.type)" -ForegroundColor Yellow
+            Write-Host "      [!] Unknown action type: $($task.action.type)" -ForegroundColor Yellow
         }
 
         # Update state
@@ -191,5 +191,5 @@ if (-not $DryRun -and $dueTasks -gt 0) {
 if ($dueTasks -eq 0) {
     Write-Host "   No tasks due right now." -ForegroundColor DarkGray
 } else {
-    Write-Host "   📊 $dueTasks task(s) processed." -ForegroundColor Cyan
+    Write-Host "   [stats] $dueTasks task(s) processed." -ForegroundColor Cyan
 }

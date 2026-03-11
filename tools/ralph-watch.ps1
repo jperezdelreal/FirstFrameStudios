@@ -123,9 +123,9 @@ function Invoke-GitPull {
     param([string]$RepoPath)
     Push-Location $RepoPath
     try {
-        Write-Host "   📥 Pulling latest in $RepoPath..." -ForegroundColor Gray
+        Write-Host "   [pull] Pulling latest in $RepoPath..." -ForegroundColor Gray
         if ($DryRun) {
-            Write-Host "   [DRY RUN] Would run: git fetch origin && git pull --rebase --autostash" -ForegroundColor Yellow
+            Write-Host "   [DRY RUN] Would run: git fetch origin; git pull --rebase --autostash" -ForegroundColor Yellow
         } else {
             git fetch origin 2>&1 | Out-Null
             git pull --rebase --autostash 2>&1 | ForEach-Object { Write-Host "      $_" -ForegroundColor DarkGray }
@@ -138,7 +138,7 @@ function Invoke-GitPull {
 # --- Helper: Run scheduler ---
 function Invoke-Scheduler {
     if (Test-Path $schedulerScript) {
-        Write-Host "   📅 Running Squad Scheduler..." -ForegroundColor Gray
+        Write-Host "   [sched] Running Squad Scheduler..." -ForegroundColor Gray
         if ($DryRun) {
             Write-Host "   [DRY RUN] Would run: $schedulerScript" -ForegroundColor Yellow
             & $schedulerScript -DryRun
@@ -146,7 +146,7 @@ function Invoke-Scheduler {
             & $schedulerScript
         }
     } else {
-        Write-Host "   📅 Scheduler not found, skipping" -ForegroundColor DarkGray
+        Write-Host "   [sched] Scheduler not found, skipping" -ForegroundColor DarkGray
     }
 }
 
@@ -154,7 +154,7 @@ function Invoke-Scheduler {
 $round = 0
 
 Write-Host ""
-Write-Host "🤖 Ralph Watch — First Frame Studios" -ForegroundColor Cyan
+Write-Host "[ralph] Ralph Watch - First Frame Studios" -ForegroundColor Cyan
 Write-Host "   Interval:  $IntervalMinutes minutes" -ForegroundColor Gray
 Write-Host "   Repos:     $($Repos -join ', ')" -ForegroundColor Gray
 Write-Host "   Heartbeat: $heartbeatFile" -ForegroundColor Gray
@@ -170,7 +170,7 @@ while ($true) {
     $roundStart = Get-Date
     $timestamp = $roundStart.ToString('yyyy-MM-ddTHH:mm:ss')
 
-    Write-Host "[$timestamp] 🔄 Round $round starting..." -ForegroundColor Green
+    Write-Host "[$timestamp] >> Round $round starting..." -ForegroundColor Green
     Update-Heartbeat -Status "running" -Round $round
 
     # Step 1: Pull latest code for each repo
@@ -179,7 +179,7 @@ while ($true) {
         if ($resolvedPath) {
             Invoke-GitPull -RepoPath $resolvedPath.Path
         } else {
-            Write-Host "   ⚠️  Repo path not found: $repo" -ForegroundColor Yellow
+            Write-Host "   [!] Repo path not found: $repo" -ForegroundColor Yellow
         }
     }
 
@@ -193,7 +193,7 @@ while ($true) {
             Write-Host "   [DRY RUN] Would spawn: copilot -p `"$($ralphPrompt.Substring(0, 60))...`"" -ForegroundColor Yellow
             $exitCode = 0
         } else {
-            Write-Host "   🚀 Spawning Copilot session..." -ForegroundColor Cyan
+            Write-Host "   [>>] Spawning Copilot session..." -ForegroundColor Cyan
             copilot -p $ralphPrompt
             $exitCode = $LASTEXITCODE
         }
@@ -204,24 +204,24 @@ while ($true) {
         if ($exitCode -eq 0) {
             Write-RalphLog -Round $round -Status "OK" -ExitCode $exitCode -DurationSeconds $duration
             Update-Heartbeat -Status "idle" -Round $round -Extra @{ lastDuration = [math]::Round($duration, 1); lastStatus = "OK" }
-            Write-Host "[$($roundEnd.ToString('yyyy-MM-ddTHH:mm:ss'))] ✅ Round $round complete ($([math]::Round($duration, 1))s)" -ForegroundColor Green
+            Write-Host "[$($roundEnd.ToString('yyyy-MM-ddTHH:mm:ss'))] [OK] Round $round complete ($([math]::Round($duration, 1))s)" -ForegroundColor Green
         } else {
             Write-RalphLog -Round $round -Status "FAIL" -ExitCode $exitCode -DurationSeconds $duration
             Update-Heartbeat -Status "idle" -Round $round -Extra @{ lastDuration = [math]::Round($duration, 1); lastStatus = "FAIL" }
-            Write-Host "[$($roundEnd.ToString('yyyy-MM-ddTHH:mm:ss'))] ❌ Round $round failed (exit $exitCode, $([math]::Round($duration, 1))s)" -ForegroundColor Red
+            Write-Host "[$($roundEnd.ToString('yyyy-MM-ddTHH:mm:ss'))] [FAIL] Round $round failed, exit code $exitCode ($([math]::Round($duration, 1))s)" -ForegroundColor Red
         }
     } catch {
         $roundEnd = Get-Date
         $duration = ($roundEnd - $roundStart).TotalSeconds
         Write-RalphLog -Round $round -Status "ERROR" -ExitCode -1 -DurationSeconds $duration
         Update-Heartbeat -Status "idle" -Round $round -Extra @{ lastDuration = [math]::Round($duration, 1); lastStatus = "ERROR" }
-        Write-Host "[$($roundEnd.ToString('yyyy-MM-ddTHH:mm:ss'))] ⚠️  Round $round exception: $_" -ForegroundColor Red
+        Write-Host "[$($roundEnd.ToString('yyyy-MM-ddTHH:mm:ss'))] [!] Round $round exception: $_" -ForegroundColor Red
     }
 
     # Check MaxRounds limit
     if ($MaxRounds -gt 0 -and $round -ge $MaxRounds) {
         Write-Host ""
-        Write-Host "🏁 Reached MaxRounds ($MaxRounds). Stopping." -ForegroundColor Cyan
+        Write-Host "[end] Reached MaxRounds ($MaxRounds). Stopping." -ForegroundColor Cyan
         Remove-Item $lockFile -Force -ErrorAction SilentlyContinue
         break
     }
