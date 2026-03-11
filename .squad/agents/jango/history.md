@@ -625,3 +625,22 @@ Future risk: Sprint 2 is combo system (high complexity, low tolerance for bugs).
 - No custom layouts yet — minima defaults are clean enough for launch
 
 **Status:** ✅ COMPLETE
+
+### 2026-03-11: Upgraded ralph-watch.ps1 to v2
+**Task:** Upgrade `tools/ralph-watch.ps1` with four missing production-grade features identified from Tamir Dresher's squad-personal-demo.
+
+**Deliverables:**
+1. **Failure alerts** — Tracks `$consecutiveFailures` counter. After 3+ consecutive failures, writes structured alert to `tools/logs/alerts.json` with timestamp, round, exit code, and error detail. Keeps last 50 alerts. Resets counter on success.
+2. **Background activity monitor** — PowerShell runspace prints status lines every 30s while copilot runs (elapsed time, log entry count). Prevents silent terminal during long sessions. Cleanly stopped on round completion or exception.
+3. **Multi-repo defaults** — Default `$Repos` now includes all 4 FFS repos: FirstFrameStudios (`.`), ComeRosquillas, flora, ffs-squad-monitor. Ralph prompt includes `MULTI-REPO WATCH` instructions. Validates repo paths at startup and shows skipped repos.
+4. **Metrics parsing** — `Get-SessionMetrics` function extracts issues closed, PRs merged/opened, and commit counts from copilot output via regex. Metrics included in JSONL log entries and heartbeat file.
+
+**Key Decisions:**
+- No Teams webhook integration yet (requires webhook URL setup). Alerts go to `tools/logs/alerts.json` instead — can be upgraded later when Teams webhook is configured.
+- Used PowerShell runspace (not background job) for activity monitor — lighter weight, same-process, cleaner shutdown.
+- All text ASCII-safe (no emojis) for Windows PowerShell 5.1 compatibility with Windows-1252 encoding.
+- Script grew from 233 to 454 lines. Still single-file, no external dependencies.
+
+**Tested:** `.\tools\ralph-watch.ps1 -DryRun -MaxRounds 1` — clean pass, all 4 repos resolved, heartbeat written with metrics.
+
+**Status:** COMPLETE
