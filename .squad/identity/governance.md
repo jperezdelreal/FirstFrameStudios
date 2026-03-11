@@ -105,6 +105,7 @@ T0 changes are irreversible or foundational decisions that shape the studio's id
 T1 changes are significant decisions that affect multiple repos, multiple agents, or the studio's technical direction. They are reversible but expensive to undo. They require architectural judgment and founder alignment.
 
 **Examples:**
+- Creating a new tool/utility repository (e.g., ffs-metrics-dashboard, ffs-release-bot) — Lead proposes, Founder approves via hub PR
 - Major features that span multiple repositories (e.g., a shared component library used by Flora and ComeRosquillas)
 - Cross-repo architectural decisions (e.g., standardizing on a shared event bus pattern across all games)
 - Changing quality gates or the Definition of Done (`quality-gates.md`)
