@@ -209,6 +209,91 @@ Three actions should be taken before the next project kicks off:
 - **All agents:** 6 skills should have confidence bumped from `low` to `medium`
 - **Full audit:** `.squad/analysis/skills-audit.md` contains per-skill ratings, gap analysis, and improvement recommendations
 
+### User Directive: GitHub Full Potential (2026-03-08T12:42:49Z)
+**By:** joperezd (via Copilot)  
+**Status:** Active  
+**Scope:** Studio-wide operations
+
+Use GitHub's full potential for game development — Issues for task tracking, Projects for boards, PRs for code review workflow. No empty repo; everything should be active and visible.
+
+**Why:** User request — strategic guidance for GitHub-centric operations. Centralizes all work visibility, enables transparent sprint tracking, and leverages native GitHub features for coordination at scale.
+
+---
+
+### GitHub Issues Infrastructure for Ashfall Sprint 0 (Jango)
+**Author:** Jango (Tool Engineer)  
+**Date:** 2026-07-24  
+**Status:** Implemented  
+**Scope:** Ashfall project tracking — affects all agents
+
+Set up GitHub Issues as the project management backbone for Ashfall Sprint 0 in `jperezdelreal/FirstFrameStudios`:
+
+1. **Milestone:** "Ashfall Sprint 0" — groups all sprint work under one trackable milestone
+2. **24 Labels** — structured labeling system for filtering and assignment:
+   - `game:ashfall` — per-game filter (supports monorepo with multiple games)
+   - `priority:p0/p1/p2` — priority tiers mapped to critical path
+   - `type:feature/infrastructure/art/audio/design/qa` — work categories
+   - `squad:{agent}` — one label per agent (14 agents) for ownership tracking
+3. **13 Issues (#1–#13)** — critical path tasks from SPRINT-0.md with full descriptions and acceptance criteria
+
+**Label Conventions:**
+
+| Category | Color | Purpose |
+|----------|-------|---------|
+| `game:*` | Green (#0E8A16) | Filter by game in monorepo |
+| `priority:p0` | Red (#B60205) | Critical path — blocks others |
+| `priority:p1` | Orange (#D93F0B) | Sprint deliverable |
+| `priority:p2` | Yellow (#FBCA04) | Nice-to-have / future phase |
+| `type:*` | Blue/Purple/Pink | Work category |
+| `squad:*` | Teal (#006B75) | Agent assignment |
+
+**Impact on Team:**
+- All agents should reference their issue number when committing code (e.g., `fixes #2`)
+- Mace can use the milestone view for sprint tracking
+- Close issues when acceptance criteria are met
+- Future sprints follow the same label structure
+
+**Why:** GitHub Issues as source of truth works if labels are consistent. Squad label filtering enables massive parallelism — 14-agent team can work simultaneously if they know their label space.
+
+---
+
+### GitHub Operations Setup (Mace, Producer)
+**Date:** 2026-03-08  
+**Status:** Implemented  
+**Scope:** GitHub-centric project operations for FirstFrameStudios
+
+**What Was Done:**
+
+1. **README.md Development Section** ✅
+   - Added "Development" section linking to Issues Board, Project Board creation guide, Wiki, and workflow diagram
+
+2. **CONTRIBUTING.md Created** ✅
+   - Complete workflow documentation
+   - Branch naming convention: `squad/{issue-number}-{slug}`
+   - Commit message format with examples
+   - Label system explanation (game, squad, type, priority, status tags)
+   - Squad agent work pickup (via labels and polling)
+   - PR process standards, code review expectations
+   - Load capacity governance (20% cap)
+
+3. **team.md Updated** ✅
+   - Added "Issue Source" section with repository connection and filters
+
+4. **GitHub Wiki Status** ⏳
+   - Wiki cannot be enabled via GitHub API
+   - Manual action required: joperezd must enable in repo settings and create home page
+
+**Decisions Made:**
+- Label-driven work allocation — Squad agents query GitHub Issues by label
+- Branch naming ties to issues — `squad/{issue-number}` enables automatic linking
+- Wiki is optional, not critical — Processes in CONTRIBUTING.md; Wiki can host GDDs/ARCHs separately
+- Load cap governance in CONTRIBUTING.md — Team understands 20% rule and enforcement
+- Game-tagged filtering — Current sprint (`game:ashfall`) can be filtered; future games follow same model
+
+**Why:** Centralizes visibility, removes ambiguity on workflow, supports multi-project parallelism, and enforces governance. Label system (`game:*`, `squad:*`, `priority:*`) scales with multi-agent teams.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus
