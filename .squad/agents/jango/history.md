@@ -141,3 +141,116 @@ Restructured the source IPKong repository into a multi-game monorepo layout.
 **Commit:** `613a8e5` — "Restructure to monorepo layout"
 
 **Status:** COMPLETE. Repository is now a monorepo. Ready for Ashfall project creation in `games/ashfall/`.
+
+## Learnings
+
+### 2026-03-11T17:10:48Z — PR Review Batch: ComeRosquillas & Flora
+
+**Task:** Review and merge 4 PRs (3 new + 1 CI fix)
+
+**PRs Reviewed:**
+
+1. **ComeRosquillas PR #17 (High Score System)** - REQUEST CHANGES
+   - Issue: Touch users cannot enter initials (critical UX bug)
+   - Issue: Homer sprite rendered during high score entry screen
+   - Spec compliance: All localStorage/leaderboard requirements met
+   - Root cause: D-pad buttons set keys[] but don't dispatch keyboard events for handleHighScoreInput()
+
+2. **Flora PR #18 (Garden UI/HUD)** - REQUEST CHANGES
+   - Issue: Memory leaks - no destroy() methods on any UI components
+   - Issue: Uncanceled setTimeout in GardenScene.ts
+   - Issue: Input debouncing missing (pause menu flickering)
+   - PixiJS v8 compliance: Perfect
+   - Spec compliance: All Issue #9 requirements met
+
+3. **Flora PR #19 (Audio Foundation)** - REQUEST CHANGES
+   - Issue: Volume settings lost on unmute (restores to constants instead of user preferences)
+   - Code quality: Excellent Web Audio API usage
+   - Spec compliance: All Issue #10 requirements met
+   - Note: Uses procedural synthesis instead of audio files (better but deviates from spec wording)
+
+4. **ComeRosquillas PR #14 (Maze Layouts)** - FIXED & MERGED
+   - CI workflow was checking for old monolithic game.js instead of modular structure
+   - Fixed: Updated ci.yml to check for config.js, game-logic.js, main.js
+   - Pushed fix, CI passed, merged to main
+   - Project board: Moved Issue #4 to Done
+
+**Key Technical Findings:**
+
+1. **Web Game Touch Input Pattern:** When adding touch controls to keyboard-driven games, must ensure touch handlers dispatch proper keyboard events OR modify input handlers to check both event.code and keys[] object. Simply setting keys[] bypasses event-driven input handling.
+
+2. **PixiJS Memory Management:** Container-based UI components in PixiJS v8 MUST implement destroy() methods that call removeAllListeners() and removeChildren(true). Event listeners persist beyond scene destruction without explicit cleanup.
+
+3. **Web Audio API Volume Management:** Mute state and user volume preferences are separate concerns. Store user-adjusted volumes separately from mute boolean to restore correctly. Don't conflate mute toggle with volume reset.
+
+4. **CI Workflow Brittleness:** After codebase modularization, CI workflows checking for specific file references in HTML can break. CI should validate architectural patterns (e.g., "has config module, has game logic module") rather than exact filenames when possible.
+
+**Project Board Updates:**
+- Issue #4 (ComeRosquillas maze layouts): Moved to Done after PR #14 merge
+- Issues #3, #9, #10 pending: Will move to Done once developers address review feedback and PRs are merged
+
+**Status:** 1 PR merged (PR #14), 3 PRs need developer fixes before approval. Review feedback posted on all PRs with actionable fix recommendations.
+
+### 2026-03-11T18:45 — Flora PR Review Wave 2: Implementation Issues Found
+
+**Task:** Review and merge Flora PRs #20, #21, #22 (Hazard System, Player Controller, Encyclopedia)
+
+**PRs Reviewed:**
+
+1. **Flora PR #20 (Hazard System)** - REQUEST CHANGES
+   - **BLOCKER:** HazardSystem not integrated into game loop - never instantiated in GardenScene
+   - **BLOCKER:** No connection between PlantSystem.advanceDay() and HazardSystem.onDayAdvance()
+   - **BLOCKER:** applyPestDamage() never called - pests will spawn but deal zero damage
+   - **ISSUE:** spawnPests() method is empty stub - no automatic spawning on random plants
+   - **ISSUE:** No UI handlers for pest removal or drought indicators
+   - ✅ Config values correct: spawn window 6-8, resistance 30% at health >70%
+   - ✅ Difficulty scaling 0..1 ramp works
+   - ✅ Never instant-fail design maintained
+   - **Verdict:** Design is solid but zero integration work done. Complete implementation island.
+
+2. **Flora PR #21 (Player Controller)** - REQUEST CHANGES
+   - **BLOCKER:** Movement doesn't consume actions - startMove() has no this.player.consumeAction() call
+   - **CRITICAL:** Players can move unlimited times per day, breaks action budget system
+   - **CRITICAL:** ToolBar line 119 uses non-null assertion on this.selectedTool! when deselecting (null value)
+   - **ISSUE:** Pathfinding allows multi-tile jumps, violates adjacent-only movement spec
+   - ✅ WASD/arrow key movement working
+   - ✅ Click-to-move with pathfinding
+   - ✅ Tool selection & validation
+   - ✅ Movement animation (smooth easing)
+   - ✅ GardenGrid integration clean
+   - **Verdict:** Core features work but action consumption bug breaks gameplay economy.
+
+3. **Flora PR #22 (Encyclopedia)** - REQUEST CHANGES
+   - **BLOCKER:** Discovery timestamps not stored - firstDiscoveredAt always set to Date.now() on access
+   - **BLOCKER:** Encyclopedia scrolling not wired - scroll() method exists but no input handlers
+   - **MEDIUM:** Help text wrapping breaks "Discovered" mid-word on line 228
+   - **MEDIUM:** Plant count hardcoded to "12" instead of dynamic ALL_PLANTS.length
+   - ✅ Discovery tracking with localStorage persistence
+   - ✅ UI grid with rarity badges
+   - ✅ Discovery popup (3s animated notification)
+   - ✅ Undiscovered plants show '??'
+   - ✅ Plant harvest integration clean
+   - **Verdict:** Core features solid but timestamp tracking and missing scroll input are blocking.
+
+**Key Findings:**
+
+1. **Integration gaps are the pattern** - PR #20 (HazardSystem) has zero game loop integration. PR #21 missing action consumption. This suggests implementation was done in isolation without testing in live gameplay.
+
+2. **UI/Input handlers consistently missing** - All three PRs have logic but missing input wiring (pest click handlers, encyclopedia scroll, adjacent movement validation).
+
+3. **Cannot merge any PRs** - All authored by jperezdelreal (founder). GitHub prevents REQUEST CHANGES on own PRs. Posted review comments instead for developer to address.
+
+**Actions Taken:**
+- Posted detailed review comments on all three PRs with specific fix requirements
+- Comments include line numbers, code snippets, and actionable recommendations
+- Cannot update project board (PRs blocked on changes)
+
+**Learnings:**
+
+1. **Flora codebase maturity** - Systems are well-architected (clean TypeScript, proper entity patterns, good config structure) but integration testing is weak. Suggests agents are implementing in isolation.
+
+2. **Action point economy is critical** - Movement not consuming actions in PR #21 would completely break the core gameplay loop. Action budget is to Flora what collision is to a platformer - non-negotiable.
+
+3. **Discovery timestamp pattern is common bug** - Seen this in other PRs: storing state but querying it incorrectly. Need to emphasize difference between "what exists in memory" vs "what gets persisted" vs "what gets read back."
+
+**Status:** NONE MERGED. All 3 PRs need fixes before approval. Review feedback posted. Waiting for developer iteration.

@@ -8,6 +8,35 @@
 
 ## Learnings
 
+### Flora Player Controller Implementation (2026-03-11)
+- **Task**: Implemented player controller with movement and tool actions for Flora issue #6
+- **Tech Stack**: Vite + TypeScript + PixiJS v8, strict mode TypeScript
+- **Files Created**:
+  - `src/entities/Player.ts` — Player entity with grid position, selected tool, action points, movement state
+  - `src/config/tools.ts` — Tool definitions (water, harvest, remove-pest) with validation and execution logic
+  - `src/systems/PlayerSystem.ts` — Handles keyboard/click input, movement animation, tool action execution
+  - `src/ui/ToolBar.ts` — Three-button tool selector UI with hover states and selection highlighting
+- **Architecture Patterns**:
+  - Player entity uses immutable state snapshots (getState() returns readonly copy)
+  - Movement uses grid coordinates (row/col) with smooth animated transitions between tiles
+  - Tool system uses strategy pattern: each tool has validate/execute methods
+  - Input handling separates keyboard movement (WASD/arrows) from click-to-move
+  - Action points system: 3 actions per day, tool use consumes action, day advances when actions depleted
+- **Game Feel Details**:
+  - Movement uses easeInOutCubic interpolation over 0.3s for smooth tile-to-tile transitions
+  - Player rendered as blue circle (16px radius) with outline
+  - Tool bar positioned at bottom center with 80x80px buttons showing emoji icons
+  - Selected tool highlights with blue background (0x4a9eff)
+  - Action feedback shows message in info text for 2 seconds
+- **Integration Points**:
+  - PlayerSystem hooks into existing InputManager for keyboard events
+  - GridSystem click events route to PlayerSystem for click-to-move
+  - Tool actions validate against Tile and Plant state before executing
+  - Day advancement callback triggers plant growth updates
+- **Scene Architecture**: GardenScene now receives SceneContext (app, input, assets, sceneManager) via Scene interface, ensuring all scenes have consistent access to core systems
+- **Build/Deploy**: Used git worktrees for parallel safety (flora-wt-6), built with TypeScript + Vite, created PR #21 to main branch
+- **Known Gaps**: Plant rendering not yet implemented (plants exist in memory but not visually), no pathfinding for non-adjacent tiles (click-to-move only works on same row/col)
+
 ### Game Architecture (2026-06-03)
 - **Engine Layer**: Core game loop (fixed timestep accumulator), renderer with camera/shake, input manager, Web Audio API
 - **Entity Layer**: Player (Brawler) and Enemy classes with state machines, animation, physics (jump, knockback)

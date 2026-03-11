@@ -214,3 +214,59 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
   - Set `ctx.imageSmoothingEnabled = true` at start of HUD render
   - Pre-computed `hw = Math.round(w / 2)` in title.js for consistent centered text alignment
   - Increased BRAWLER label font from 13px → 14px, health text from 11px → 12px, SCORE label from 11px → 12px
+
+## Flora — Encyclopedia & Seed Discovery System (Issue #8, PR #22)
+**Date:** 2025-07-22  
+**Branch:** `squad/8-encyclopedia`  
+**Repo:** flora (jperezdelreal/flora)  
+**Files:** 
+- `src/systems/EncyclopediaSystem.ts` (new)
+- `src/ui/Encyclopedia.ts` (new)
+- `src/ui/DiscoveryPopup.ts` (new)
+- `src/systems/PlantSystem.ts` (modified)
+- `src/systems/GridSystem.ts` (modified)
+- `src/scenes/GardenScene.ts` (modified)
+
+Implemented complete Encyclopedia & Seed Discovery system for Flora's meta-progression. Key deliverables:
+
+- **EncyclopediaSystem**: Core system managing discovery state with localStorage persistence (graceful fallback on error), discovery event callbacks, and stats tracking (total/discovered/byRarity). All 12 plant types tracked across runs.
+
+- **Encyclopedia UI**: Grid layout displaying all plant entries (4 columns, responsive scrolling). Discovered plants show thumbnail (colored circle), name, rarity badge, growth time. Undiscovered show '??' silhouette with rarity hint. Color-coded rarity tiers: Common (green #4caf50), Uncommon (blue #2196f3), Rare (purple #9c27b0), Heirloom (gold #ffd700). Stats header shows "Discovered: X / 12 (%)".
+
+- **DiscoveryPopup**: Animated 3-second notification on first harvest of new plant type. Fade-in (0.3s) → hold → fade-out (0.5s). Shows plant name, rarity badge, description. Border color matches rarity tier. Non-blocking, centered on screen.
+
+- **PlantSystem Integration**: `harvestPlant()` now returns `isNewDiscovery` boolean and calls `encyclopediaSystem.discoverPlant()`. Discovery event triggers popup via callback registration.
+
+- **GridSystem Enhancement**: Added `onTileClick(callback)` registration system for tile interaction. Callbacks receive (row, col) coordinates on tile selection.
+
+- **GardenScene Demo**: Encyclopedia button (top-right) toggles UI overlay. Planted 4 demo plants (tomato, lettuce, carrot, sunflower) for testing. Harvesting mature plants triggers discovery. Stats displayed in help text showing day count, active plants, and discovery progress.
+
+**Learnings:**
+- PixiJS v8 uses modern constructors: `new Text({text, style})` instead of positional parameters
+- localStorage persistence requires try/catch wrappers for private browsing compatibility
+- TypeScript strict mode caught type errors: must use `Record<string, T>` for rarity maps, import types explicitly from source modules
+- Event callback pattern (`onDiscovery(callback)`) cleanly decouples systems — no direct Encyclopedia reference needed in PlantSystem
+- Grid UI layout requires careful scroll offset management and bounds calculation for content taller than viewport
+- Color-coded rarity system provides instant visual feedback and reinforces plant value hierarchy
+- Meta-progression via localStorage creates player investment across runs without complex database/server setup
+- Variable scoping in nested conditionals can cause "used before declaration" errors — must define at appropriate scope level
+
+
+
+## ComeRosquillas — Touch Input Fix for High Score Entry (PR #17)
+**Date:** 2026-03-11
+**Branch:** `squad/3-high-score-system`
+**Repo:** ComeRosquillas (jperezdelreal/ComeRosquillas)
+**File:** `js/engine/touch-input.js`
+
+Fixed critical touch input bug preventing mobile users from entering high score initials. Review feedback from Jango identified that D-pad buttons only set `this.game.keys[keyCode]` but didn't dispatch keyboard events, so `handleHighScoreInput(e.code)` was never called during `ST_HIGH_SCORE_ENTRY` state on touch devices. Touch users were stuck on initials entry screen.
+
+**Solution:**
+- Modified `setupDpadButton()` to check game state and dispatch keyboard events (via `triggerKey(keyCode)`) when in `ST_HIGH_SCORE_ENTRY` state
+- Added touch-to-confirm on canvas during high score entry (dispatches Enter key) for intuitive tap-to-submit interaction
+- Touch users can now use D-pad arrows to navigate/change letters and tap canvas to confirm
+
+**Learnings:**
+- When integrating touch controls with keyboard-driven input handlers, must dispatch actual keyboard events (`new KeyboardEvent()`) for state-dependent logic, not just set key flags in `game.keys[]` object. Setting flags works for real-time gameplay movement but fails for event-driven state machines like menu navigation.
+- State-aware input: Touch handlers should check `game.state` and adapt behavior appropriately. Same touch gesture can mean different things: tap-to-start on title screen, tap-to-confirm during high score entry, tap-to-continue on game over.
+- The mobile controls PR (#16) already established the pattern with `triggerKey()` method for pause/mute buttons — extending this pattern to D-pad arrows during specific states maintains consistency and reuses proven approach.
