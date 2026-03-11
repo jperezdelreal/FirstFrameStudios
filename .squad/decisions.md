@@ -276,6 +276,232 @@ Three actions should be taken before the next project kicks off:
 - **All agents:** 6 skills should have confidence bumped from `low` to `medium`
 - **Full audit:** `.squad/analysis/skills-audit.md` contains per-skill ratings, gap analysis, and improvement recommendations
 
+### 2026-03-10: New Project Proposals Ceremony
+**By:** Full Team (6 agents — Yoda, Chewie, Lando, Boba, Solo, Tarkin)  
+**What:** 18 game proposals generated with internet research for post-Ashfall direction. Top 5 ranked by AI-friendliness, scope, and viral potential:
+1. **LAST SIGNAL** (micro-horror radio routing, 2 wk MVP) — Yoda's pick
+2. **FLORA** (cozy gardening roguelite with L-systems, 3 wk MVP) — Boba's pick
+3. **RICOCHET RAMPAGE** (physics destruction arcade, 3 wk MVP) — Lando's pick
+4. **FACTORY FLUX** (automation puzzle roguelite, 4 wk MVP) — Solo's pick
+5. **SHADOW THIEF** (stealth platformer as shadow, 4 wk MVP) — Boba's runner-up
+
+**Why:** Ashfall closure ceremony concluded the studio needs simpler, web-first games that leverage rapid prototyping strengths. All 18 proposals designed to avoid Ashfall's failure modes (subjective feel tuning, complex art pipelines, genre complexity).
+
+**Status:** AWAITING FOUNDER DECISION — Joaquín to review and select direction.
+
+---
+
+### 2026-03-11: Upstream + SubSquad + Blog Patterns Architecture Proposal
+**By:** Solo (Lead Architect) + Jango (Tool Engineer)  
+**Status:** AWAITING FOUNDER APPROVAL  
+**What:** Complete implementation plan for incorporating Tamir Dresher blog patterns + upstream + subsquad into FFS workflow.
+
+**Architecture Decision: Option C — Hybrid (RECOMMENDED)**
+- `FirstFrameStudios/` = Studio hub (parent squad with identity, skills, principles)
+- `jperezdelreal/flora` = Game repo (subsquad, inherits via `squad upstream`)
+- Scales to future games: new repo + `squad upstream add FirstFrameStudios`
+- 11 FLORA agents active, 3 hibernated (Leia, Bossk, Nien)
+
+**Implementation Phases:**
+- Phase 0: Restructure studio hub, TLDR convention (Day 1)
+- Phase 1: Create FLORA repo, squad init, squad upstream (Day 1-2)
+- Phase 2: CI/CD, workflows, issue templates, project board (Day 2-3)
+- Phase 3: ralph-watch + scheduler (Day 3-4)
+- Phase 4: FLORA Sprint 0 — build the game! (Day 4+)
+- Phase 5: Podcaster + Squad Monitor (Week 2+)
+
+**Tooling Priority:**
+- DO FIRST: Issue template, heartbeat cron, TLDR convention, archive/notify workflows (~5h)
+- DO NEXT: ralph-watch.ps1, scheduler, daily-digest, drift-detection (~24h)
+- DO LATER: Squad Monitor, Podcaster (~5h)
+
+**Full plans available in session context. Awaiting Joaquín's go/no-go.**
+
+---
+
+### 2026-03-11: Autonomy Gap Audit — Planned vs Implemented
+**By:** Solo (Lead Architect)  
+**Requested by:** Joaquín  
+**Status:** INFORMATIONAL — input to prioritization
+
+**Context:**
+Joaquín flagged frustration: the squad planned an autonomous execution model (from Tamir Dresher blog patterns, Option C hybrid architecture in `solo-upstream-subsquad-proposal.md`) but much of it remains unimplemented. This audit compares what was **planned** in the inbox decisions vs what **actually exists** in the repo.
+
+**Source Documents Analyzed:**
+1. `copilot-tamir-blog-learnings.md` — 16 operational patterns from Tamir's blog
+2. `solo-upstream-subsquad-proposal.md` — Option C hybrid implementation plan (5 phases)
+3. `copilot-directive-2026-03-11T0745-repo-autonomy.md` — Founder directive: agents can create repos autonomously
+
+**Gap Matrix:**
+
+| # | Pattern / Plan Item | Status | Evidence |
+|---|---------------------|--------|----------|
+| 1 | **GitHub Issues = Central Brain** | ✅ IMPLEMENTED | Issue templates exist (`.github/ISSUE_TEMPLATE/squad-task.yml`), triage workflow exists, labels created |
+| 2 | **Ralph Outer Loop (`ralph-watch.ps1`)** | ⚠️ BUILT, NOT ACTIVATED | Script exists at `tools/ralph-watch.ps1` (fully implemented, single-instance guard, heartbeat, structured logging). **Never run persistently.** Heartbeat file exists but is likely stale. |
+| 3 | **Maximize Parallelism in Ralph** | ❌ NOT TESTED | Ralph prompt exists but parallel agent spawning not validated in production runs |
+| 4 | **Two-Way Communication via Webhooks** | ❌ NOT IMPLEMENTED | No webhook integration, no Teams/Slack adapter, no notification channel configured |
+| 5 | **Auto-Scan External Inputs** | ❌ NOT IMPLEMENTED | No email/Teams/HackerNews scanning. No `teams-bridge` label usage. |
+| 6 | **Podcaster for Long Content** | ❌ NOT IMPLEMENTED | No Edge TTS integration. Phase 5 item — correctly deferred. |
+| 7 | **Self-Built Scheduler** | ⚠️ BUILT, NOT ACTIVATED | `tools/scheduler/Invoke-SquadScheduler.ps1` exists with cron evaluator. Needs `schedule.json` tasks defined and actual activation via ralph-watch. |
+| 8 | **Squad Monitor Dashboard** | ❌ NOT IMPLEMENTED | Not installed (`dotnet tool install -g squad-monitor` never run). Phase 5 item. |
+| 9 | **Side Project Repos** | ⚠️ AUTHORIZED, NOT USED | Founder directive grants autonomy for repo creation. No side repos created yet. |
+| 10 | **GitHub Actions Ecosystem** | ✅ MOSTLY IMPLEMENTED | 20+ workflows exist: triage, heartbeat, daily-digest, drift-detection, archive-done, label-enforce, label-sync, CI, docs, preview, release. **Comprehensive.** |
+| 11 | **Self-Approve PRs** | ❌ NOT CONFIGURED | No auto-merge setup. PRs require human review. |
+| 12 | **Cross-Repo Contributions** | ❌ NOT STARTED | No upstream PRs to Squad repo or other tools |
+| 13 | **`squad upstream` for inherited context** | ❌ NOT IMPLEMENTED | Option C planned studio-hub + game-repo inheritance. No `squad upstream` configured. ComeRosquillas lives inside FFS repo, not as a subsquad. |
+| 14 | **Multi-repo management** | ❌ NOT IMPLEMENTED | ralph-watch supports `$Repos` param but only single repo in use |
+| 15 | **TLDR Convention** | ⚠️ DOCUMENTED, NOT ENFORCED | Team knows the pattern. No automated enforcement. No CI check for TLDR in issue comments. |
+| 16 | **Issue Template** | ✅ IMPLEMENTED | `.github/ISSUE_TEMPLATE/squad-task.yml` exists |
+
+**Phase Tracking (from `solo-upstream-subsquad-proposal.md`):**
+
+| Phase | Description | Status |
+|-------|-------------|--------|
+| **Phase 0** | Restructure studio hub, TLDR convention | ⚠️ PARTIAL — hub exists, TLDR not enforced |
+| **Phase 1** | Create game repo, squad init, squad upstream | ❌ NOT STARTED — ComeRosquillas absorbed into FFS, no subsquad |
+| **Phase 2** | CI/CD, workflows, issue templates, project board | ✅ MOSTLY DONE — workflows are comprehensive |
+| **Phase 3** | ralph-watch + scheduler | ⚠️ BUILT, NOT ACTIVATED |
+| **Phase 4** | Game Sprint 0 — build the game | ⚠️ IN PROGRESS — ComeRosquillas exists (1636 LOC, playable) but no sprint structure |
+| **Phase 5** | Podcaster + Squad Monitor | ❌ NOT STARTED (correctly — Phase 5) |
+
+**Summary: What's Actually Blocking Autonomy:**
+
+The infrastructure is **more built than it appears**. The real gap is **activation, not construction**:
+
+1. **ralph-watch.ps1 needs to be started and left running.** The script is production-ready with single-instance guards, heartbeat, logging, and multi-repo support. It just hasn't been turned on.
+
+2. **Scheduler needs tasks defined.** `Invoke-SquadScheduler.ps1` works but `schedule.json` needs actual recurring tasks (daily playtest, weekly retro, drift detection triggers).
+
+3. **TLDR enforcement is cultural, not technical.** Agents write TLDRs when reminded. Need a lightweight CI check or prompt-level convention reinforcement.
+
+4. **The subsquad/upstream model was abandoned** in favor of absorbing ComeRosquillas directly into FFS. This is fine for a single game but won't scale. Decision needed: is this the permanent model or a temporary expedient?
+
+5. **Webhooks/notifications are the biggest true gap.** No way for the squad to proactively signal Joaquín when something important happens. This is the highest-leverage unbuilt feature.
+
+**Recommended Priority Order:**
+1. **P0:** Activate ralph-watch persistently (DevBox or local machine)
+2. **P0:** Define schedule.json with 3-5 recurring tasks
+3. **P1:** Install Squad Monitor (`dotnet tool install -g squad-monitor`)
+4. **P1:** Add webhook notification for critical events (CI failure, PR merged)
+5. **P2:** Evaluate subsquad model for ComeRosquillas vs monorepo approach
+6. **P2:** Podcaster integration for long reports
+
+---
+
+### 2026-03-11: Autonomous Infrastructure Pivot to ComeRosquillas
+**Author:** Jango (Tool Engineer)  
+**Date:** 2026-03-11  
+**Status:** Implemented
+
+**Context:**
+The autonomous loop infrastructure (ralph-watch, scheduler, heartbeat) was built during the FLORA planning phase but never became operational. The studio focus has shifted to ComeRosquillas (Homer's Donut Quest), a web game at `games/comerosquillas/` using HTML/JS/Canvas.
+
+**Decision:**
+1. **now.md** points to ComeRosquillas as the active project (not FLORA)
+2. **Scheduler tasks** reference web-game workflows (browser playtest, browser compat) instead of Godot builds
+3. **Backlog grooming** is enabled (was disabled)
+4. **tools/README.md** documents how to start the autonomous loop with one command
+5. **Legacy Godot tools** remain in `tools/` for reference but are documented as archived
+
+**Consequences:**
+- Any agent reading `now.md` will know the active game is ComeRosquillas
+- The scheduler will create web-game-appropriate issues when ralph-watch runs
+- Joaquín can start the full loop with `.\tools\ralph-watch.ps1`
+
+**Team Impact:**
+- **All agents:** now.md context is current — no confusion about FLORA vs ComeRosquillas
+- **Ackbar:** Playtest issues now include browser checklist instead of Godot build instructions
+- **Mace:** Backlog grooming is back on the schedule (Wednesdays)
+- **Ralph:** Loop is verified operational — just needs to be started
+
+---
+
+### 2026-03-11: Learnings from Tamir Dresher's "Organized by AI" blog
+**By:** Joaquín (via Copilot) — team reading assignment  
+**Source:** https://www.tamirdresher.com/blog/2026/03/10/organized-by-ai  
+**What:** Key patterns from a power-user who runs Squad as his daily productivity system.
+
+**Operational Patterns We Should Adopt:**
+
+1. **GitHub Issues = Central Brain.** All Squad discussion happens IN issue comments. Agents always write TLDR at top of every comment. The founder reviews TLDRs, writes instructions in comments, sets status back to "Todo." Everything is documented, searchable, nothing lost.
+
+2. **Ralph Outer Loop (`ralph-watch.ps1`).** Wraps Ralph in a persistent PowerShell loop that: (a) pulls latest code before each round, (b) spawns fresh Copilot sessions each time, (c) has heartbeat files, structured logging, failure alerts. Runs on machine or DevBox unattended.
+
+3. **Maximize Parallelism in Ralph.** Prompt explicitly says: "If there are 5 actionable issues, spawn 5 agents in one turn." Don't work issues one at a time.
+
+4. **Two-Way Communication via Webhooks.** Squad sends Teams/Slack messages for critical events (CI failures, PR merges, blocking issues). Uses Adaptive Cards with styled formatting. Rule: only send when genuinely newsworthy, never spam.
+
+5. **Auto-Scan External Inputs.** Squad reads emails (Outlook COM), Teams messages, and tech news (HackerNews, Reddit). Creates GitHub issues automatically for actionable items. Labels like `teams-bridge` distinguish auto-created from manual.
+
+6. **Podcaster for Long Content.** Converts markdown reports to audio via Edge TTS. Listen to 3000-word reports while walking. Auto-triggered after significant deliverables (>500 words).
+
+7. **Self-Built Scheduler.** `Invoke-SquadScheduler.ps1` — cron-based triggers for recurring tasks (daily scans, weekly reports). Maintains state file. Runs before each Ralph round.
+
+8. **Squad Monitor Dashboard.** Real-time .NET tool showing agent activity, token usage, costs. Open-sourced at github.com/tamirdresher/squad-monitor. `dotnet tool install -g squad-monitor`.
+
+9. **Side Project Repos.** Squad creates their own repos for tools/utilities that shouldn't clutter the main repo. Links back to main project.
+
+10. **GitHub Actions Ecosystem.** Workflows for: triage, heartbeat (5 min), daily digest, docs auto-gen, drift detection (weekly), archive done issues (7 days), notifications, label enforcement, label sync from team.md.
+
+11. **Self-Approve PRs (Personal Repos).** For personal repos, Squad creates, reviews, and merges their own PRs. Human only jumps in for areas they care about or flagged reviews.
+
+12. **Cross-Repo Contributions.** Squad naturally contributes back upstream to tools they use (PRs to Squad repo itself).
+
+**Philosophy Shifts:**
+
+- **"I don't manage tasks anymore. I manage decisions."** — The human focuses on decisions, Squad does everything else.
+- **"AI is the first approach that meets me where I am."** — AI adapts to human chaos, not the other way around.
+- **"The boundary between using a tool and building a tool dissolved."** — Squad evolved its own tools (monitor, scheduler, tunnel) as needs arose.
+- **Squad as brain extension, not replacement.** — User still makes all important decisions. AI remembers, does tedious work, keeps systems running.
+
+**Multi-Repo & Upstream Patterns (Joaquín highlighted these):**
+
+13. **`squad upstream` for inherited context.** Tamir used the `upstream` command to inherit decisions, skills, and team context from parent squads. His personal Squad connects to work repos so agents can scan and learn from them without copy-pasting context. This enables hierarchical squad organization — one parent Squad with shared knowledge, child Squads per project.
+
+14. **Multi-repo management.** Squad agents create and manage their OWN repos when they need standalone tools (squad-monitor, cli-tunnel, squad-personal-demo). Ralph's prompt includes `MULTI-REPO WATCH` to scan multiple repos for actionable issues in a single round. Example: `"In addition to tamresearch1, also scan tamirdresher/squad-monitor for actionable issues."`
+
+15. **Cross-repo contributions upstream.** Agents contributed PRs back to the Squad repo itself: ADO Platform Adapter (PR #191), CommunicationAdapter (PR #263), SubSquads (PR #272), Upstream & Watch commands (PR #280), test resilience (PR #283). The boundary between "using a tool" and "building a tool" dissolved completely.
+
+16. **Side project repos as first-class workflow.** When agents need a standalone tool, they create a repo, build it there, and link back to the main project. Just like a real engineer saying "I'll build this separately so it doesn't clutter the main project." Examples: squad-monitor (real-time dashboard, open-sourced), cli-tunnel (remote terminal access).
+
+**Applicable to First Frame Studios:**
+
+- We should adopt the **GitHub Issues as backbone** pattern — all agent work documented in issue comments with TLDRs
+- We should explore **ralph-watch.ps1** for unattended operation during long builds/sprints
+- **Squad Monitor** could give Joaquín visibility into what agents are doing during long parallel spawns
+- The **Podcaster** pattern could help Joaquín consume long analysis docs (we generate a LOT of analysis)
+- **GitHub Actions workflows** (triage, heartbeat, daily digest) would automate our current manual processes
+- The **self-built scheduler** pattern would enable recurring tasks (daily playtest, weekly retro)
+- **`squad upstream`** could let FFS have a master Squad with studio-wide knowledge (principles, conventions, skills) inherited by each game project's Squad — shared wisdom without duplication
+- **Multi-repo watch** in Ralph would let us monitor both the main FFS repo AND any game-specific repos (e.g., a separate `games/flora` repo) from a single Ralph loop
+- **Cross-repo contributions** — our agents could contribute improvements back to Squad itself when they hit limitations, just like Tamir's team did
+
+---
+
+### 2026-03-11T07:45: User directive — Side Project Repo Autonomy
+**By:** Joaquín (via Copilot)  
+**What:** Los agentes pueden crear repos públicos bajo demanda sin aprobación previa. Ellos deciden el nombre, qué agentes asignar, y todo lo que haga falta para el side project. Autonomía total en gestión de repos.
+
+**Why:** User request — captured for team memory. Enables Tamir-style "side project repos as first-class workflow" pattern.
+
+---
+
+### 2026-03-10T22:06: User directive — Visual Quality Standard
+**By:** Joaquín (via Copilot)  
+**What:** Los juegos propuestos deben ser VISTOSOS — nada de cutreces baratas. Visualmente impresionantes pero rápidos de hacer. El objetivo es aprender cosas nuevas (frameworks como Vite, etc.) y hacer show off. Explorar lo que hay en la web: gente usando Squad/AI para completar juegos tipo Pokémon, nuevos frameworks, ideas novedosas sin sobrecomplicaciones.
+
+**Why:** User request — captured for team memory. Establishes visual quality as non-negotiable criteria for next project selection.
+
+---
+
+### 2026-03-10: Ashfall Project Closure
+**By:** Full Team (closure ceremony)  
+**What:** Ashfall (1v1 fighting game, Godot 4) officially shelved after 2 complete sprints. Key lessons: fighting games too complex for AI-only tuning, art pipeline needs validation before production, integration gates must be automated from Day 1, Lead Architect role must split at 10+ agents.
+
+**Why:** Team consensus — the genre requires subjective feel-tuning that AI agents cannot deliver. Studio pivoting to simpler, faster-to-ship game genres.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus

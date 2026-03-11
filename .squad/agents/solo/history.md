@@ -456,3 +456,24 @@ Decision written to .squad/decisions/inbox/solo-squad-ecosystem-audit.md.
 - The firstPunch lesson about monolithic files repeats: ComeRosquillas game.js = 1636 LOC, firstPunch gameplay.js = 695 LOC. Same anti-pattern, different game.
 - The Tamir blog patterns are well-documented but stalled at Phase 2-3. The team knows what to build but hasn't crossed the activation barrier.
 - ComeRosquillas being inside the FFS repo (not a subsquad) is a pragmatic choice but means upstream/subsquad patterns from Option C remain untested.
+
+### 2026-03-11: Post-Spawn Orchestration — ComeRosquillas Setup & Autonomy Gap Closure (Session Post-Spawn)
+
+**Session Context:** Solo + Jango background agents executed full orchestration for ComeRosquillas MVP + autonomy infrastructure audit
+
+**Task:**
+- Conduct autonomy gap audit comparing planned vs implemented infrastructure (16-item pattern checklist + 5-phase tracker)
+- Create 12 actionable GitHub issues (#152-#163) to unblock ComeRosquillas MVP
+
+**Deliverables:**
+1. **Orchestration Log** — `.squad/orchestration-log/2026-03-11T0934Z-solo.md` documenting full spawn manifest + deliverables
+2. **Audit Document** — `.squad/decisions/inbox/solo-autonomy-gap-audit.md` (comprehensive gap matrix + phase status + priorities)
+3. **12 GitHub Issues Created:**
+   - #152: Activate ralph-watch.ps1 persistently (P0)
+   - #153: Define schedule.json recurring tasks (P0)
+   - #154-#163: Squad Monitor, webhooks, subsquad evaluation, Podcaster, TLDR enforcement, docs, parallelism testing, tools README, legacy archiving, scanner integration (P1-P2)
+
+**Key Finding:**
+Infrastructure is 80% built; activation gap is the real blocker. ralph-watch.ps1, scheduler, and 20+ GitHub Actions workflows all exist and are production-ready. What's missing: persistent execution, task definitions, webhook notifications, and subsquad/upstream model adoption.
+
+**Status:** ✅ COMPLETE — Audit in decisions inbox (merged to decisions.md by Scribe), 12 issues created and tagged game:comerosquillas, session logged

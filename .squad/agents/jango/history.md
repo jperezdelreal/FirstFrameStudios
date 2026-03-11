@@ -510,3 +510,33 @@ Future risk: Sprint 2 is combo system (high complexity, low tolerance for bugs).
 - The gap wasn't infrastructure quality — it was operational: the tools exist but need someone to type .\tools\ralph-watch.ps1 and leave it running.
 
 **Lesson:** Tools that require manual startup must have dead-simple quickstart docs. One command, no setup, clear output. Pipeline-first means the pipeline must be trivially launchable.
+
+### 2026-03-11: Post-Spawn Orchestration — ComeRosquillas Infrastructure Update (Session Post-Spawn)
+
+**Session Context:** Jango background agent executed full infrastructure pivot from FLORA (Godot) to ComeRosquillas (web-game) workflow
+
+**Task:**
+- Update now.md to point to ComeRosquillas as active project
+- Define scheduler tasks for web-game workflows
+- Verify ralph-watch.ps1 via dry-run test
+- Update tools/README.md with activation instructions
+
+**Deliverables:**
+1. **Orchestration Log** — `.squad/orchestration-log/2026-03-11T0934Z-jango.md` documenting task execution + outcomes
+2. **now.md Updated** — ComeRosquillas (games/comerosquillas/) now primary focus; FLORA moved to inactive
+3. **Scheduler Tasks Defined** — 4 web-game workflows configured:
+   - Daily browser playtest (automated via GitHub Actions)
+   - Browser compatibility check (Chrome, Firefox, Safari)
+   - Performance profiling task
+   - Weekly backlog grooming with web-specific checklist
+4. **ralph-watch.ps1 Verified** — Dry-run test passed successfully; heartbeat created; multi-repo support confirmed functional; single-instance guard working
+5. **tools/README.md Rewritten** — One-command activation: `.\tools\ralph-watch.ps1`; explains autonomous loop, scheduler config, legacy tool archiving
+
+**Key Findings:**
+- ralph-watch.ps1 is production-ready with single-instance guards, heartbeat, structured logging, multi-repo support — just needs activation
+- Scheduler infrastructure exists and works; now needs task definitions for web-game workflows (not Godot)
+- 20+ GitHub Actions workflows already comprehensive (triage, heartbeat, daily-digest, drift-detection, label-enforce, label-sync, CI, docs, preview, release)
+- Backlog grooming disabled during Ashfall closure; re-enabled for ComeRosquillas
+
+**Status:** ✅ COMPLETE — now.md points to ComeRosquillas, scheduler configured with 4 web-game tasks, ralph-watch dry-run passed, README rewritten, session logged
+
