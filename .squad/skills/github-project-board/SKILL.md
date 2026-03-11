@@ -34,14 +34,14 @@ gh project field-list <PROJECT_NUMBER> --owner jperezdelreal --format json
 
 ```
 OWNER:           jperezdelreal
-PROJECT_NUMBER:  __PENDING__
-PROJECT_ID:      __PENDING__
-STATUS_FIELD_ID: __PENDING__
+PROJECT_NUMBER:  5
+PROJECT_ID:      PVT_kwHODRyXic4BRbrR
+STATUS_FIELD_ID: PVTSSF_lAHODRyXic4BRbrRzg_Qx64
 
 # Status option IDs (from field-list output)
-TODO_ID:          __PENDING__
-IN_PROGRESS_ID:   __PENDING__
-DONE_ID:          __PENDING__
+TODO_ID:          f75ad846
+IN_PROGRESS_ID:   47fc9ee4
+DONE_ID:          98236657
 BLOCKED_ID:       __PENDING__
 PENDING_USER_ID:  __PENDING__
 ```
