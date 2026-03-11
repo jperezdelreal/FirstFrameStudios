@@ -617,7 +617,7 @@ function Invoke-CopilotSession {
         Write-Host "      $line" -ForegroundColor DarkGray
     }
 
-    $output = copilot --agent squad -p $prompt 2>&1 | Out-String
+    $output = copilot --agent squad --yolo -p $prompt 2>&1 | Out-String
     $exitCode = $LASTEXITCODE
     return @{
         Output   = $output
@@ -658,7 +658,7 @@ function Invoke-ParallelSessions {
             # UTF-8 in job context
             [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
             $OutputEncoding = [System.Text.Encoding]::UTF8
-            $output = copilot --agent squad -p $sessionPrompt 2>&1 | Out-String
+            $output = copilot --agent squad --yolo -p $sessionPrompt 2>&1 | Out-String
             $code = $LASTEXITCODE
             return @{
                 Output   = $output
