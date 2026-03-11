@@ -77,17 +77,34 @@ if (Test-Path $lockFile) {
 Register-EngineEvent PowerShell.Exiting -Action { Remove-Item $lockFile -Force -ErrorAction SilentlyContinue } | Out-Null
 trap { Remove-Item $lockFile -Force -ErrorAction SilentlyContinue; break }
 
-# --- Ralph prompt (multi-repo aware) ---
-$repoList = ($Repos | ForEach-Object { "  - $_" }) -join "`n"
+# --- Ralph prompt (multi-repo aware, comprehensive) ---
 $ralphPrompt = @"
 Ralph, Go!
-MAXIMIZE PARALLELISM: For every round, identify ALL actionable issues and spawn agents for ALL of them simultaneously.
 
-MULTI-REPO WATCH: You are watching multiple repositories. Scan ALL of them for work:
-$repoList
+MAXIMIZE PARALLELISM: For every round, identify ALL actionable issues across ALL repos and spawn agents for ALL of them simultaneously. Do NOT work issues one at a time. If there are 5 actionable issues, spawn 5 agents in one turn.
 
-For each repo, check for issues labeled 'squad' or 'status:todo'. Work them all across every repo.
-After completing work, report what was done. Include counts: issues closed, PRs merged, PRs opened.
+MULTI-REPO WATCH: Scan ALL First Frame Studios repositories for work:
+- jperezdelreal/FirstFrameStudios (Studio Hub -- infra issues only)
+- jperezdelreal/ComeRosquillas (Game -- arcade game dev issues)
+- jperezdelreal/flora (Game -- roguelite dev issues)
+- jperezdelreal/ffs-squad-monitor (Tool -- monitor dashboard issues)
+
+For each repo, check: issues labeled 'squad' or with 'squad:{member}' labels, open PRs, draft PRs, CI failures.
+
+ISSUE LIFECYCLE: For each issue you pick up:
+1. Create branch squad/{issue-number}-{slug}
+2. Do the work (read the issue body for acceptance criteria)
+3. Commit referencing the issue (Closes #{number})
+4. Push and open PR via gh pr create
+5. If the issue is in a game repo, work in THAT repo's directory
+
+PR MANAGEMENT: Check for PRs needing attention:
+- CHANGES_REQUESTED: address review feedback
+- CI failing: fix the build
+- Approved + CI green: merge via gh pr merge
+
+AFTER completing work, report counts: issues closed, PRs merged, PRs opened.
+COMMIT all .squad/ changes before finishing.
 "@
 
 # --- Helper: Update heartbeat file ---
@@ -364,7 +381,7 @@ while ($true) {
 
     try {
         if ($DryRun) {
-            Write-Host "   [DRY RUN] Would spawn: copilot -p `"$($ralphPrompt.Substring(0, 60))...`"" -ForegroundColor Yellow
+            Write-Host "   [DRY RUN] Would spawn: copilot --agent squad -p `"$($ralphPrompt.Substring(0, 60))...`"" -ForegroundColor Yellow
             Write-Host "   [DRY RUN] Activity monitor would run in background" -ForegroundColor Yellow
             Write-Host "   [DRY RUN] Would parse metrics from copilot output" -ForegroundColor Yellow
             $exitCode = 0
@@ -378,7 +395,7 @@ while ($true) {
             Write-Host "   [monitor] Background activity monitor started" -ForegroundColor DarkCyan
 
             # Capture copilot output for metrics parsing
-            $copilotOutput = copilot -p $ralphPrompt 2>&1 | Out-String
+            $copilotOutput = copilot --agent squad -p $ralphPrompt 2>&1 | Out-String
             $exitCode = $LASTEXITCODE
 
             # Stop the activity monitor
