@@ -1,24 +1,37 @@
-# Ralph Watch v2 -- Autonomous Squad Agent Outer Loop
+# Ralph Watch v3 -- Autonomous Squad Agent Outer Loop (Night/Day Mode)
 # First Frame Studios -- Adapted from Tamir Dresher's squad-personal-demo
 #
-# Launches Ralph in a persistent loop: pull latest, run scheduler, spawn Copilot, log results.
+# Launches Ralph in a persistent loop with automatic night/day scheduling.
+# Night mode: aggressive parallel sessions (weeknights 21-07, weekends 24h)
+# Day mode: conservative single session (weekdays 07-21)
 # To stop: Ctrl+C
 #
-# v2 features (inspired by Tamir's ralph-watch.ps1):
-#   - Failure alerts: tracks consecutive failures, writes to tools/logs/alerts.json after 3+
-#   - Background activity monitor: runspace tails copilot output while session runs
-#   - Multi-repo defaults: watches all 4 FFS repos by default
-#   - Metrics parsing: extracts issues closed, PRs merged from copilot output
+# v3 features:
+#   - Night/day mode auto-detection via system clock
+#   - Parallel copilot sessions in night mode (1 repo per session)
+#   - Governance filter: skips T0 issues, T1 unless approved
+#   - Priority-based scheduling: P0 > P1 > P2 > P3, then repo issue count
+#   - Remote URL validation before each round
+#   - Mid-round heartbeat updates
+#   - All v2 features: failure alerts, activity monitor, metrics parsing
 #
 # Usage:
-#   .\tools\ralph-watch.ps1                          # default 15-min interval, all FFS repos
-#   .\tools\ralph-watch.ps1 -IntervalMinutes 5       # 5-min interval
+#   .\tools\ralph-watch.ps1                          # auto mode, all FFS repos
+#   .\tools\ralph-watch.ps1 -Mode night              # force night mode
+#   .\tools\ralph-watch.ps1 -Mode day                # force day mode
 #   .\tools\ralph-watch.ps1 -DryRun                  # show what would happen
 #   .\tools\ralph-watch.ps1 -MaxRounds 3             # stop after 3 rounds (testing)
+#   .\tools\ralph-watch.ps1 -NightSessions 3         # 3 parallel sessions at night
 #   .\tools\ralph-watch.ps1 -Repos @(".", "../other-repo")
 
 param(
-    [int]$IntervalMinutes = 15,
+    [ValidateSet("auto", "night", "day")]
+    [string]$Mode = "auto",
+    [int]$NightSessions = 2,
+    [int]$DaySessions = 1,
+    [int]$NightInterval = 2,
+    [int]$DayInterval = 10,
+    [int]$MaxIssuesPerSession = 0,
     [switch]$DryRun,
     [int]$MaxRounds = 0,
     [string[]]$Repos = @(
@@ -46,10 +59,54 @@ $maxLogBytes = 1048576  # 1MB
 $consecutiveFailures = 0
 $alertThreshold = 3
 
+# Repo name-to-GitHub mapping for issue queries
+$repoGitHubMap = @{
+    "FirstFrameStudios" = "jperezdelreal/FirstFrameStudios"
+    "ComeRosquillas"    = "jperezdelreal/ComeRosquillas"
+    "flora"             = "jperezdelreal/flora"
+    "ffs-squad-monitor" = "jperezdelreal/ffs-squad-monitor"
+}
+
+# Game repos get scheduling priority over hub/tool repos
+$gameRepoNames = @("ComeRosquillas", "flora")
+
 # Ensure directories exist
 $squadUserDir = Join-Path $env:USERPROFILE ".squad"
 if (-not (Test-Path $squadUserDir)) { New-Item -ItemType Directory -Path $squadUserDir -Force | Out-Null }
 if (-not (Test-Path $logsDir)) { New-Item -ItemType Directory -Path $logsDir -Force | Out-Null }
+
+# --- Mode detection ---
+function Get-OperatingMode {
+    if ($script:Mode -ne "auto") { return $script:Mode }
+    $now = Get-Date
+    $dow = $now.DayOfWeek
+    $hour = $now.Hour
+    # Weekend = always night mode
+    if ($dow -eq [DayOfWeek]::Saturday -or $dow -eq [DayOfWeek]::Sunday) { return "night" }
+    # Weekday: 21:00-06:59 = night, 07:00-20:59 = day
+    if ($hour -ge 21 -or $hour -lt 7) { return "night" }
+    return "day"
+}
+
+# Derive interval and session count from current mode
+function Get-ModeConfig {
+    $opMode = Get-OperatingMode
+    $sessions = if ($opMode -eq "night") { $script:NightSessions } else { $script:DaySessions }
+    $interval = if ($opMode -eq "night") { $script:NightInterval } else { $script:DayInterval }
+    # Max issues per session: parameter override, else mode default
+    $maxIssues = $script:MaxIssuesPerSession
+    if ($maxIssues -le 0) {
+        $maxIssues = if ($opMode -eq "night") { 5 } else { 3 }
+    }
+    return @{
+        Mode       = $opMode
+        Sessions   = $sessions
+        Interval   = $interval
+        MaxIssues  = $maxIssues
+    }
+}
+
+$lastMode = ""
 
 # --- Single-instance guard ---
 if (Test-Path $lockFile) {
@@ -77,17 +134,20 @@ if (Test-Path $lockFile) {
 Register-EngineEvent PowerShell.Exiting -Action { Remove-Item $lockFile -Force -ErrorAction SilentlyContinue } | Out-Null
 trap { Remove-Item $lockFile -Force -ErrorAction SilentlyContinue; break }
 
-# --- Ralph prompt (multi-repo aware, comprehensive) ---
-$ralphPrompt = @"
+# --- Ralph prompt template ---
+# Base prompt shared by all sessions; session-specific repos/issues injected at runtime
+$ralphPromptBase = @'
 Ralph, Go!
 
-MAXIMIZE PARALLELISM: For every round, identify ALL actionable issues across ALL repos and spawn agents for ALL of them simultaneously. Do NOT work issues one at a time. If there are 5 actionable issues, spawn 5 agents in one turn.
+MAXIMIZE PARALLELISM: For every round, identify ALL actionable issues and spawn agents for ALL of them simultaneously. Do NOT work issues one at a time.
 
-MULTI-REPO WATCH: Scan ALL First Frame Studios repositories for work:
-- jperezdelreal/FirstFrameStudios (Studio Hub -- infra issues only)
-- jperezdelreal/ComeRosquillas (Game -- arcade game dev issues)
-- jperezdelreal/flora (Game -- roguelite dev issues)
-- jperezdelreal/ffs-squad-monitor (Tool -- monitor dashboard issues)
+SCOPE: You are working ONLY on the following repository:
+{REPO_SCOPE}
+
+ISSUE ALLOWLIST (work ONLY these issues in priority order):
+{ISSUE_LIST}
+
+GOVERNANCE: Do NOT touch issues labeled "tier:t0" or "tier:t1" (unless also labeled "approved"). Only work tier:t2 and tier:t3 (or unlabeled) issues.
 
 For each repo, check: issues labeled 'squad' or with 'squad:{member}' labels, open PRs, draft PRs, CI failures.
 
@@ -96,7 +156,7 @@ ISSUE LIFECYCLE: For each issue you pick up:
 2. Do the work (read the issue body for acceptance criteria)
 3. Commit referencing the issue (Closes #{number})
 4. Push and open PR via gh pr create
-5. If the issue is in a game repo, work in THAT repo's directory
+5. Work in the repo directory for that issue
 
 PR MANAGEMENT: Check for PRs needing attention:
 - CHANGES_REQUESTED: address review feedback
@@ -119,7 +179,22 @@ Archive them from the project board.
 
 AFTER completing work, report counts: issues closed, PRs merged, PRs opened.
 COMMIT all .squad/ changes before finishing.
-"@
+'@
+
+# --- Helper: Build repo-scoped prompt ---
+function Build-SessionPrompt {
+    param(
+        [string]$RepoFullName,
+        [string[]]$IssueLines
+    )
+    $issueText = if ($IssueLines.Count -gt 0) {
+        $IssueLines -join "`n"
+    } else {
+        "(No pre-fetched issues -- scan the repo for squad-labeled issues)"
+    }
+    $prompt = $ralphPromptBase -replace '\{REPO_SCOPE\}', "- $RepoFullName" -replace '\{ISSUE_LIST\}', $issueText
+    return $prompt
+}
 
 # --- Helper: Update heartbeat file ---
 function Update-Heartbeat {
@@ -128,17 +203,21 @@ function Update-Heartbeat {
         [int]$Round,
         [hashtable]$Extra = @{}
     )
+    $modeConfig = Get-ModeConfig
     $heartbeat = [ordered]@{
         timestamp = (Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ')
         status    = $Status
         round     = $Round
         pid       = $PID
-        interval  = $IntervalMinutes
+        mode      = $modeConfig.Mode
+        sessions  = $modeConfig.Sessions
+        interval  = $modeConfig.Interval
+        maxIssues = $modeConfig.MaxIssues
         repos     = $Repos
         consecutiveFailures = $script:consecutiveFailures
     }
     foreach ($key in $Extra.Keys) { $heartbeat[$key] = $Extra[$key] }
-    $heartbeat | ConvertTo-Json | Out-File $heartbeatFile -Encoding utf8 -Force
+    $heartbeat | ConvertTo-Json -Depth 4 | Out-File $heartbeatFile -Encoding utf8 -Force
 }
 
 # --- Helper: Append structured log entry (JSONL) ---
@@ -149,16 +228,20 @@ function Write-RalphLog {
         [int]$ExitCode,
         [double]$DurationSeconds,
         [string]$Phase = "round",
-        [hashtable]$Metrics = @{}
+        [hashtable]$Metrics = @{},
+        [string]$LogMode = ""
     )
     $logFileName = "ralph-$(Get-Date -Format 'yyyy-MM-dd').jsonl"
     $logPath = Join-Path $logsDir $logFileName
+    $modeConfig = Get-ModeConfig
 
     $entry = [ordered]@{
         timestamp = (Get-Date -Format 'yyyy-MM-ddTHH:mm:ssZ')
         round     = $Round
         phase     = $Phase
         status    = $Status
+        mode      = if ($LogMode) { $LogMode } else { $modeConfig.Mode }
+        sessions  = $modeConfig.Sessions
         exitCode  = $ExitCode
         duration  = [math]::Round($DurationSeconds, 1)
         consecutiveFailures = $script:consecutiveFailures
@@ -344,6 +427,284 @@ function Invoke-Scheduler {
     }
 }
 
+# --- Helper: Validate git remote URL for a repo ---
+function Test-RemoteUrl {
+    param([string]$RepoPath)
+    Push-Location $RepoPath
+    try {
+        $remoteUrl = git remote get-url origin 2>$null
+        if (-not $remoteUrl) {
+            Write-Host "   [!] No remote origin in $RepoPath" -ForegroundColor Yellow
+            return $false
+        }
+        # Must point to jperezdelreal org
+        if ($remoteUrl -notmatch 'jperezdelreal/') {
+            Write-Host "   [BLOCK] Remote URL corrupted in $RepoPath : $remoteUrl" -ForegroundColor Red
+            return $false
+        }
+        return $true
+    } finally {
+        Pop-Location
+    }
+}
+
+# --- Helper: Verify repo is on correct branch after copilot session ---
+function Test-RepoBranch {
+    param([string]$RepoPath)
+    Push-Location $RepoPath
+    try {
+        $currentBranch = git branch --show-current 2>$null
+        $defaultBranch = git symbolic-ref refs/remotes/origin/HEAD 2>$null
+        if ($defaultBranch) {
+            $defaultBranch = $defaultBranch -replace 'refs/remotes/origin/', ''
+        } else {
+            $defaultBranch = "main"
+        }
+        # Squad branches are OK (squad/* pattern); only warn if on unexpected branch
+        if ($currentBranch -ne $defaultBranch -and $currentBranch -notmatch '^squad/') {
+            Write-Host "   [warn] $RepoPath on unexpected branch: $currentBranch" -ForegroundColor Yellow
+        }
+    } finally {
+        Pop-Location
+    }
+}
+
+# --- Helper: Get repo name from local path ---
+function Get-RepoName {
+    param([string]$RepoPath)
+    $resolved = Resolve-Path $RepoPath -ErrorAction SilentlyContinue
+    if ($resolved) { return (Split-Path $resolved.Path -Leaf) }
+    return (Split-Path $RepoPath -Leaf)
+}
+
+# --- Helper: Fetch and filter issues for scheduling ---
+# Returns array of issue objects sorted by priority, then repo issue count, then game > hub
+function Get-ScheduledIssues {
+    param(
+        [string[]]$RepoNames,
+        [int]$TotalMaxIssues
+    )
+    $allIssues = @()
+    $repoIssueCounts = @{}
+
+    foreach ($repoName in $RepoNames) {
+        $ghRepo = $repoGitHubMap[$repoName]
+        if (-not $ghRepo) { continue }
+
+        Write-Host "   [sched] Fetching issues from $ghRepo..." -ForegroundColor DarkGray
+        try {
+            $raw = gh issue list -R $ghRepo --state open --label "squad" --json number,title,labels --limit 30 2>$null
+            if (-not $raw) { continue }
+            $issues = $raw | ConvertFrom-Json -ErrorAction SilentlyContinue
+            if (-not $issues) { continue }
+
+            $repoIssueCounts[$repoName] = $issues.Count
+
+            foreach ($issue in $issues) {
+                $labelNames = @()
+                if ($issue.labels) {
+                    $labelNames = @($issue.labels | ForEach-Object {
+                        if ($_ -is [string]) { $_ } elseif ($_.name) { $_.name } else { "$_" }
+                    })
+                }
+
+                # Governance filter: skip T0 entirely, skip T1 unless approved
+                $tier = ""
+                foreach ($l in $labelNames) {
+                    if ($l -match '^tier:t0$') { $tier = "t0"; break }
+                    if ($l -match '^tier:t1$') { $tier = "t1" }
+                }
+                if ($tier -eq "t0") {
+                    Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t0 needs founder approval" -ForegroundColor DarkYellow
+                    continue
+                }
+                if ($tier -eq "t1" -and ($labelNames -notcontains "approved")) {
+                    Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t1 not approved" -ForegroundColor DarkYellow
+                    continue
+                }
+
+                # Extract priority (default P3 if not labeled)
+                $priority = 3
+                foreach ($l in $labelNames) {
+                    if ($l -match '^priority:p(\d)$') {
+                        $priority = [int]$Matches[1]
+                        break
+                    }
+                }
+
+                $isGame = $gameRepoNames -contains $repoName
+                $allIssues += [PSCustomObject]@{
+                    Number    = $issue.number
+                    Title     = $issue.title
+                    RepoName  = $repoName
+                    GhRepo    = $ghRepo
+                    Priority  = $priority
+                    IsGame    = $isGame
+                    Labels    = $labelNames
+                }
+            }
+        } catch {
+            Write-Host "   [!] Failed to fetch issues from ${ghRepo}: $_" -ForegroundColor Yellow
+        }
+    }
+
+    # Sort: priority ASC (P0 first), repo issue count DESC, game repos first
+    $sorted = $allIssues | Sort-Object @(
+        @{ Expression = { $_.Priority }; Ascending = $true },
+        @{ Expression = { $repoIssueCounts[$_.RepoName] }; Ascending = $false },
+        @{ Expression = { $_.IsGame }; Ascending = $false }
+    )
+
+    if ($TotalMaxIssues -gt 0) {
+        $sorted = $sorted | Select-Object -First $TotalMaxIssues
+    }
+    return @($sorted)
+}
+
+# --- Helper: Group issues by repo for session assignment ---
+# Each session gets exactly 1 repo (never mix repos)
+function Get-SessionAssignments {
+    param(
+        [object[]]$Issues,
+        [int]$SessionCount,
+        [int]$MaxPerSession
+    )
+    # Group by repo, maintain priority order within each group
+    $byRepo = @{}
+    foreach ($issue in $Issues) {
+        $repo = $issue.RepoName
+        if (-not $byRepo.ContainsKey($repo)) { $byRepo[$repo] = @() }
+        $byRepo[$repo] += $issue
+    }
+
+    # Sort repo groups by their highest-priority issue
+    $repoOrder = $byRepo.Keys | Sort-Object {
+        ($byRepo[$_] | Measure-Object -Property Priority -Minimum).Minimum
+    }
+
+    $assignments = @()
+    $sessionIdx = 0
+    foreach ($repo in $repoOrder) {
+        if ($sessionIdx -ge $SessionCount) { break }
+        $repoIssues = $byRepo[$repo] | Select-Object -First $MaxPerSession
+        $assignments += @{
+            Repo   = $repo
+            GhRepo = $repoGitHubMap[$repo]
+            Issues = @($repoIssues)
+        }
+        $sessionIdx++
+    }
+    return ,@($assignments)
+}
+
+# --- Helper: Run a single copilot session ---
+function Invoke-CopilotSession {
+    param(
+        [string]$RepoFullName,
+        [object[]]$Issues,
+        [int]$SessionId,
+        [int]$Round
+    )
+    # Build issue lines for prompt
+    $issueLines = @()
+    foreach ($iss in $Issues) {
+        $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]"
+    }
+    $prompt = Build-SessionPrompt -RepoFullName $RepoFullName -IssueLines $issueLines
+
+    Write-Host "   [session $SessionId] Spawning copilot for $RepoFullName ($($Issues.Count) issues)..." -ForegroundColor Cyan
+    foreach ($line in $issueLines) {
+        Write-Host "      $line" -ForegroundColor DarkGray
+    }
+
+    $output = copilot --agent squad -p $prompt 2>&1 | Out-String
+    $exitCode = $LASTEXITCODE
+    return @{
+        Output   = $output
+        ExitCode = $exitCode
+        Repo     = $RepoFullName
+    }
+}
+
+# --- Helper: Run parallel copilot sessions via Start-Job ---
+function Invoke-ParallelSessions {
+    param(
+        [array]$Assignments,
+        [int]$Round
+    )
+    $jobs = @()
+    $sessionId = 0
+
+    foreach ($assignment in $Assignments) {
+        $sessionId++
+        $ghRepo = $assignment.GhRepo
+        $issues = $assignment.Issues
+        $sid = $sessionId
+
+        # Build issue lines
+        $issueLines = @()
+        foreach ($iss in $issues) {
+            $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]"
+        }
+        $prompt = Build-SessionPrompt -RepoFullName $ghRepo -IssueLines $issueLines
+
+        Write-Host "   [session $sid] Launching parallel job for $ghRepo ($($issues.Count) issues)..." -ForegroundColor Cyan
+        foreach ($line in $issueLines) {
+            Write-Host "      $line" -ForegroundColor DarkGray
+        }
+
+        $job = Start-Job -ScriptBlock {
+            param($sessionPrompt, $repoName, $sessionNum)
+            # UTF-8 in job context
+            [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+            $OutputEncoding = [System.Text.Encoding]::UTF8
+            $output = copilot --agent squad -p $sessionPrompt 2>&1 | Out-String
+            $code = $LASTEXITCODE
+            return @{
+                Output   = $output
+                ExitCode = $code
+                Repo     = $repoName
+                Session  = $sessionNum
+            }
+        } -ArgumentList $prompt, $ghRepo, $sid
+
+        $jobs += @{ Job = $job; SessionId = $sid; Repo = $ghRepo }
+    }
+
+    # Wait for all jobs, with mid-round heartbeat
+    $results = @()
+    $pending = $jobs.Count
+    while ($pending -gt 0) {
+        Start-Sleep -Seconds 30
+        Update-Heartbeat -Status "running" -Round $Round -Extra @{
+            phase = "copilot-sessions"
+            pendingJobs = $pending
+        }
+        $ts = (Get-Date -Format 'HH:mm:ss')
+
+        foreach ($j in $jobs) {
+            if ($j.Job.State -eq 'Completed' -or $j.Job.State -eq 'Failed') {
+                if (-not $j.Done) {
+                    $j.Done = $true
+                    $pending--
+                    try {
+                        $result = Receive-Job -Job $j.Job -ErrorAction SilentlyContinue
+                        $results += $result
+                    } catch {
+                        $results += @{ Output = ""; ExitCode = -1; Repo = $j.Repo; Session = $j.SessionId }
+                    }
+                    Remove-Job -Job $j.Job -Force -ErrorAction SilentlyContinue
+                    Write-Host "   [$ts] [session $($j.SessionId)] Completed ($($j.Repo))" -ForegroundColor Cyan
+                }
+            }
+        }
+        if ($pending -gt 0) {
+            Write-Host "   [$ts] [monitor] Waiting for $pending session(s)..." -ForegroundColor DarkCyan
+        }
+    }
+    return $results
+}
+
 # --- Validate repos: filter to only those that exist ---
 $validRepos = @()
 $skippedRepos = @()
@@ -360,12 +721,22 @@ if ($validRepos.Count -eq 0) {
     $validRepos = @(".")
 }
 
+# Build list of valid repo names for issue scheduling
+$validRepoNames = @()
+foreach ($repo in $validRepos) {
+    $name = Get-RepoName -RepoPath $repo
+    if ($repoGitHubMap.ContainsKey($name)) {
+        $validRepoNames += $name
+    }
+}
+
 # --- Main loop ---
 $round = 0
+$initMode = Get-ModeConfig
 
 Write-Host ""
-Write-Host "[ralph] Ralph Watch v2 - First Frame Studios" -ForegroundColor Cyan
-Write-Host "   Interval:  $IntervalMinutes minutes" -ForegroundColor Gray
+Write-Host "[ralph] Ralph Watch v3 - First Frame Studios (Night/Day Mode)" -ForegroundColor Cyan
+Write-Host "   Mode:      $($initMode.Mode) (sessions=$($initMode.Sessions), interval=$($initMode.Interval)m, maxIssues=$($initMode.MaxIssues)/session)" -ForegroundColor Gray
 Write-Host "   Repos:     $($validRepos -join ', ')" -ForegroundColor Gray
 if ($skippedRepos.Count -gt 0) {
     Write-Host "   Skipped:   $($skippedRepos -join ', ') (not found)" -ForegroundColor Yellow
@@ -374,7 +745,7 @@ Write-Host "   Heartbeat: $heartbeatFile" -ForegroundColor Gray
 Write-Host "   Logs:      $logsDir" -ForegroundColor Gray
 Write-Host "   Alerts:    $alertsFile" -ForegroundColor Gray
 Write-Host "   Lock:      $lockFile" -ForegroundColor Gray
-if ($DryRun)    { Write-Host "   Mode:      DRY RUN" -ForegroundColor Yellow }
+if ($DryRun)    { Write-Host "   DryRun:    YES" -ForegroundColor Yellow }
 if ($MaxRounds) { Write-Host "   MaxRounds: $MaxRounds" -ForegroundColor Yellow }
 Write-Host "   Press Ctrl+C to stop" -ForegroundColor Gray
 Write-Host ""
@@ -383,11 +754,46 @@ while ($true) {
     $round++
     $roundStart = Get-Date
     $timestamp = $roundStart.ToString('yyyy-MM-ddTHH:mm:ss')
+    $modeConfig = Get-ModeConfig
+    $currentMode = $modeConfig.Mode
+    $sessionCount = $modeConfig.Sessions
+    $intervalMinutes = $modeConfig.Interval
+    $maxIssuesPerSess = $modeConfig.MaxIssues
 
-    Write-Host "[$timestamp] [>>] Round $round starting..." -ForegroundColor Green
+    # Log mode transitions
+    if ($lastMode -ne "" -and $lastMode -ne $currentMode) {
+        Write-Host "[$timestamp] [mode] Transition: $lastMode -> $currentMode" -ForegroundColor Magenta
+        Write-RalphLog -Round $round -Status "MODE_CHANGE" -ExitCode 0 -DurationSeconds 0 -Phase "mode-transition" -LogMode $currentMode
+    }
+    $lastMode = $currentMode
+
+    Write-Host "[$timestamp] [>>] Round $round starting (mode=$currentMode, sessions=$sessionCount, interval=${intervalMinutes}m, maxIssues=$maxIssuesPerSess)..." -ForegroundColor Green
     Update-Heartbeat -Status "running" -Round $round
 
-    # Step 1: Pull latest code for each repo
+    # Step 1: Validate remote URLs for all repos
+    $remoteOk = $true
+    foreach ($repo in $validRepos) {
+        $resolvedPath = Resolve-Path $repo -ErrorAction SilentlyContinue
+        if ($resolvedPath) {
+            if (-not (Test-RemoteUrl -RepoPath $resolvedPath.Path)) {
+                $remoteOk = $false
+                Write-Host "   [BLOCK] Skipping round $round -- remote URL validation failed" -ForegroundColor Red
+                break
+            }
+        }
+    }
+    if (-not $remoteOk) {
+        Write-RalphLog -Round $round -Status "BLOCKED" -ExitCode -1 -DurationSeconds 0 -Phase "remote-validation"
+        $consecutiveFailures++
+        if ($consecutiveFailures -ge $alertThreshold) {
+            Write-FailureAlert -Round $round -Failures $consecutiveFailures -ExitCode -1 -ErrorMessage "Remote URL validation failed"
+        }
+        Write-Host "   Next round in $intervalMinutes minutes..." -ForegroundColor Gray
+        Start-Sleep -Seconds ($intervalMinutes * 60)
+        continue
+    }
+
+    # Step 2: Pull latest code for each repo
     foreach ($repo in $validRepos) {
         $resolvedPath = Resolve-Path $repo -ErrorAction SilentlyContinue
         if ($resolvedPath) {
@@ -397,41 +803,81 @@ while ($true) {
         }
     }
 
-    # Step 2: Run scheduler
+    # Step 3: Run scheduler
     Invoke-Scheduler
 
-    # Step 3: Spawn Copilot CLI with activity monitor
+    # Step 4: Fetch and schedule issues with governance filter
+    $totalMaxIssues = $sessionCount * $maxIssuesPerSess
     $exitCode = 0
     $copilotOutput = ""
-    $metrics = @{}
+    $metrics = @{ issuesClosed = 0; prsMerged = 0; prsOpened = 0; commitsCount = 0 }
     $monitor = $null
 
     try {
         if ($DryRun) {
-            Write-Host "   [DRY RUN] Would spawn: copilot --agent squad -p `"$($ralphPrompt.Substring(0, 60))...`"" -ForegroundColor Yellow
-            Write-Host "   [DRY RUN] Activity monitor would run in background" -ForegroundColor Yellow
-            Write-Host "   [DRY RUN] Would parse metrics from copilot output" -ForegroundColor Yellow
+            Write-Host "   [DRY RUN] Fetching issues for scheduling..." -ForegroundColor Yellow
+            $scheduledIssues = Get-ScheduledIssues -RepoNames $validRepoNames -TotalMaxIssues $totalMaxIssues
+            $assignments = Get-SessionAssignments -Issues $scheduledIssues -SessionCount $sessionCount -MaxPerSession $maxIssuesPerSess
+            Write-Host "   [DRY RUN] Would run $($assignments.Count) session(s) with $($scheduledIssues.Count) issue(s) total" -ForegroundColor Yellow
+            foreach ($a in $assignments) {
+                Write-Host "   [DRY RUN]   Session: $($a.GhRepo) -- $($a.Issues.Count) issues" -ForegroundColor Yellow
+                foreach ($iss in $a.Issues) {
+                    Write-Host "   [DRY RUN]     #$($iss.Number): $($iss.Title) [P$($iss.Priority)]" -ForegroundColor Yellow
+                }
+            }
             $exitCode = 0
             $copilotOutput = "[DRY RUN] No output captured"
-            $metrics = @{ issuesClosed = 0; prsMerged = 0; prsOpened = 0; commitsCount = 0 }
         } else {
-            Write-Host "   [>>] Spawning Copilot session..." -ForegroundColor Cyan
+            # Fetch and prioritize issues
+            $scheduledIssues = Get-ScheduledIssues -RepoNames $validRepoNames -TotalMaxIssues $totalMaxIssues
+            $assignments = Get-SessionAssignments -Issues $scheduledIssues -SessionCount $sessionCount -MaxPerSession $maxIssuesPerSess
 
-            # Start activity monitor in background runspace
-            $monitor = Start-ActivityMonitor -Round $round
-            Write-Host "   [monitor] Background activity monitor started" -ForegroundColor DarkCyan
+            if ($assignments.Count -eq 0) {
+                Write-Host "   [info] No actionable issues found across repos. Skipping copilot session." -ForegroundColor DarkGray
+                $exitCode = 0
+                $copilotOutput = "No issues to work on"
+            } elseif ($sessionCount -gt 1 -and $assignments.Count -gt 1) {
+                # Night mode: parallel sessions
+                Write-Host "   [night] Running $($assignments.Count) parallel session(s)..." -ForegroundColor Magenta
 
-            # Capture copilot output for metrics parsing
-            $copilotOutput = copilot --agent squad -p $ralphPrompt 2>&1 | Out-String
-            $exitCode = $LASTEXITCODE
+                Update-Heartbeat -Status "running" -Round $round -Extra @{ phase = "parallel-sessions" }
+                $results = Invoke-ParallelSessions -Assignments $assignments -Round $round
 
-            # Stop the activity monitor
-            Stop-ActivityMonitor -Monitor $monitor
-            $monitor = $null
-            Write-Host "   [monitor] Activity monitor stopped" -ForegroundColor DarkCyan
+                # Merge results
+                $allOutput = @()
+                $worstExit = 0
+                foreach ($r in $results) {
+                    if ($r.Output) { $allOutput += $r.Output }
+                    if ($r.ExitCode -ne 0) { $worstExit = $r.ExitCode }
+                }
+                $copilotOutput = $allOutput -join "`n---SESSION BOUNDARY---`n"
+                $exitCode = $worstExit
+            } else {
+                # Day mode (or single assignment): sequential single session
+                $a = $assignments[0]
+                $monitor = Start-ActivityMonitor -Round $round
+                Write-Host "   [monitor] Background activity monitor started" -ForegroundColor DarkCyan
+
+                Update-Heartbeat -Status "running" -Round $round -Extra @{ phase = "single-session" }
+                $result = Invoke-CopilotSession -RepoFullName $a.GhRepo -Issues $a.Issues -SessionId 1 -Round $round
+                $copilotOutput = $result.Output
+                $exitCode = $result.ExitCode
+
+                Stop-ActivityMonitor -Monitor $monitor
+                $monitor = $null
+                Write-Host "   [monitor] Activity monitor stopped" -ForegroundColor DarkCyan
+            }
 
             # Parse metrics from copilot output
             $metrics = Get-SessionMetrics -Output $copilotOutput
+
+            # Post-session: verify repos are on correct branches
+            foreach ($repo in $validRepos) {
+                $resolvedPath = Resolve-Path $repo -ErrorAction SilentlyContinue
+                if ($resolvedPath) {
+                    Test-RepoBranch -RepoPath $resolvedPath.Path
+                }
+            }
         }
 
         $roundEnd = Get-Date
@@ -492,7 +938,7 @@ while ($true) {
         break
     }
 
-    Write-Host "   Next round in $IntervalMinutes minutes..." -ForegroundColor Gray
+    Write-Host "   Next round in $intervalMinutes minutes..." -ForegroundColor Gray
     Write-Host ""
-    Start-Sleep -Seconds ($IntervalMinutes * 60)
+    Start-Sleep -Seconds ($intervalMinutes * 60)
 }
