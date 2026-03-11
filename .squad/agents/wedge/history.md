@@ -303,3 +303,22 @@ Refactored the monolithic dashboard into a component-based architecture with pro
 - API client tracks connectivity centrally; components subscribe via callback
 - Each component exports a `refresh*()` function and optional `init*()` for DOM binding
 - Vite handles module bundling — 13 modules → single JS/CSS output
+
+## ffs-squad-monitor — Activity Timeline (Issue #3, PR #10)
+**Date:** 2025-07-25
+**Branch:** `squad/3-activity-timeline`
+**Repo:** ffs-squad-monitor (jperezdelreal/ffs-squad-monitor)
+
+Implemented agent activity timeline with swim-lane visualization replacing the basic dot grid:
+
+- **Backend**: `/api/timeline` endpoint in Vite plugin reads structured JSONL logs, groups by agent, computes summary stats (success/error counts, avg/max duration), includes heartbeat status
+- **Frontend**: Swim-lane layout — each agent gets a horizontal track, rounds rendered as gradient bars (green=success, red=error), width proportional to duration relative to max
+- **Interactivity**: Click any bar to expand detail panel (animated max-height transition) showing round number, timestamp, duration, exit code, phase, consecutive failures, and metrics (PRs merged/opened, issues closed, commits)
+- **CSS**: Full dark-theme swim-lane styles with gradient bars, hover scale + brightness, active blue ring, responsive breakpoints for mobile
+- **Integration**: Dedicated `fetchTimeline` API function, `initTimeline()` for click delegation, 10s polling via Scheduler
+
+**Learnings:**
+- When branching from master and stashing changes from another branch, merge conflicts can arise — resolve carefully to avoid importing code from unrelated feature branches
+- Swim-lane pattern works well even with a single agent — the layout naturally supports future multi-agent monitoring
+- Using `_roundData` attached to DOM elements (expando property) for click handler data is simpler than maintaining a separate lookup map for this use case
+- The `/api/timeline` and `/api/logs` endpoints share the same `listLogFiles`/`readLogEntries` helpers — good code reuse within the Vite plugin

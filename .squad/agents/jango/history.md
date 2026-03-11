@@ -316,3 +316,33 @@ Implemented log viewer component for ffs-squad-monitor (PR #8, branch `squad/2-l
 4. **Middleware route ordering** — `/api/logs/files` and `/api/logs/stream` registered before `/api/logs` to prevent Connect prefix-matching collisions.
 
 **Status:** COMPLETE. PR #8 at github.com/jperezdelreal/ffs-squad-monitor/pull/8. Build passes.
+
+### 2026-03-11 — GitHub Actions Workflow Status Dashboard (ffs-squad-monitor #5)
+**Session:** Squad monitor feature build  
+**Role:** Tool Engineer — Pipeline automation, monitoring infrastructure
+
+**Task Executed:**
+Implemented GitHub Actions workflow status integration for ffs-squad-monitor (PR #9, branch `squad/5-actions-status`). Issue #5.
+
+**What Was Built:**
+
+1. **Backend — `/api/workflows` endpoint**
+   - Uses `gh run list` CLI to fetch latest workflow runs for all 4 FFS repos
+   - Groups by workflow name, returns only the latest run per workflow
+   - 2-minute cache (TTL) to avoid GitHub API rate limits
+   - Graceful error handling per-repo — one repo failure doesn't break others
+
+2. **Frontend — `workflows.js` component**
+   - Per-repo cards showing each workflow's latest run status
+   - Color-coded badges: green (success), red (failure), yellow (in-progress), muted (cancelled/skipped)
+   - Each row links directly to the workflow run on GitHub
+   - Displays workflow name, branch, and relative time ("2m ago")
+
+3. **Polling** — 60s interval via Scheduler, configurable via settings panel
+
+**Key Technical Decisions:**
+1. **`gh` CLI over raw fetch** — Already authenticated, no token management needed. Same pattern as `getOpenIssueCount()`.
+2. **2-minute cache** — Workflows don't change every second. Reduces `gh` calls from 4×/minute to 4 every 2 minutes.
+3. **Middleware ordering** — `/api/workflows` registered before `/api/repos` to avoid prefix collisions.
+
+**Status:** COMPLETE. PR #9 at github.com/jperezdelreal/ffs-squad-monitor/pull/9. Build passes.
