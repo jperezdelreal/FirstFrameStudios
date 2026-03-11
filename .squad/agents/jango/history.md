@@ -540,3 +540,28 @@ Future risk: Sprint 2 is combo system (high complexity, low tolerance for bugs).
 
 **Status:** ✅ COMPLETE — now.md points to ComeRosquillas, scheduler configured with 4 web-game tasks, ralph-watch dry-run passed, README rewritten, session logged
 
+### Session: ComeRosquillas Upstream Connection (Option C Hybrid)
+**Date:** 2026-07-24
+**Task:** Set up squad upstream connection between ComeRosquillas (subsquad) and FirstFrameStudios (hub)
+
+**Key Findings:**
+- `squad-cli v0.8.20` does **not** have native `upstream` commands (`add`, `sync`, `list`). The `upstream` subcommand is not recognized.
+- Previous session had already partially set up the connection (commit 82f6964) with upstream files and manifest
+- `squad init --no-workflows` ran cleanly — no interactive prompts, skipped existing files
+- Manual upstream setup works well: `upstream.json` + `upstream/manifest.json` + copied identity files + skills INDEX
+- The `config.json` `teamRoot` should use relative `.` not absolute paths (squad init sets absolute, had to fix)
+
+**Upstream Architecture (Option C Hybrid):**
+- FFS hub provides: identity (principles, mission-vision, company, quality-gates, wisdom), skills catalog, process
+- Game repos inherit via `.squad/upstream/` directory with copied identity files and skills index
+- Sync is manual — copy updated files from hub when they change
+- `upstream.json` tracks connection metadata and last sync timestamp
+- `upstream/manifest.json` defines sync policy (upstream-wins-for-identity, local-wins-for-project)
+
+**What's inherited:**
+- 5 identity files (principles, mission-vision, company, quality-gates, wisdom)
+- 41 skills referenced via INDEX.md (not full copies — too large, and they change)
+- Studio process and conventions flow through identity files
+
+**Status:** ✅ COMPLETE — ComeRosquillas connected as subsquad, upstream synced, committed and pushed to main
+
