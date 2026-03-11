@@ -1,17 +1,22 @@
 ---
-updated_at: 2026-07-24T00:00:00.000Z
-focus_area: ComeRosquillas — Homer's Donut Quest
+updated_at: 2026-03-11T09:53:00.000Z
+focus_area: Studio Hub — orchestrating active game repos
 team_size: 11 active + 3 hibernated + Scribe + Ralph
-current_phase: Active development. Autonomous loop being brought online.
-genre: Arcade / collectathon web game
-engine: HTML + JavaScript + Canvas 2D (no framework)
-scope: Web game at games/comerosquillas/. Studio autonomous infrastructure operational.
+current_phase: Hub operational. Two active game repos, monitor repo, autonomous loop ready.
+genre: N/A (studio hub)
+engine: N/A (studio hub)
+scope: Studio hub managing active projects via upstream. No game code lives here.
 ---
 
 # Now
 
 ## Current Focus
-ComeRosquillas (Homer's Donut Quest) — a browser-based arcade game built with vanilla HTML/JS/Canvas. Located at `games/comerosquillas/`.
+FFS is the **Studio Hub** — no game code, only studio infrastructure. Games live in their own repos and inherit via `squad upstream`.
+
+## Active Projects
+- **ComeRosquillas** — https://github.com/jperezdelreal/ComeRosquillas (HTML/JS/Canvas arcade)
+- **FLORA** — https://github.com/jperezdelreal/flora (Vite + TypeScript + PixiJS cozy roguelite)
+- **Squad Monitor** — https://github.com/jperezdelreal/ffs-squad-monitor (dashboard)
 
 ## Status
 - ComeRosquillas: 🟢 ACTIVE — `games/comerosquillas/`, HTML/JS/Canvas, playable prototype

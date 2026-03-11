@@ -18,6 +18,24 @@ Jango Fett — the original clone template. Every clone trooper was instantiated
 
 ## Learnings
 
+### 2026-03-11: Created ffs-squad-monitor Repo
+**Task:** Stand up a new public repo `jperezdelreal/ffs-squad-monitor` for real-time squad monitoring, inspired by Tamir Dresher's squad-monitor.
+
+**Deliverables:**
+1. **Repo created** — `jperezdelreal/ffs-squad-monitor` (public, on GitHub)
+2. **Sprint 0 scaffolding** — Vite + vanilla JS dashboard with heartbeat card, round stats, and activity log placeholder
+3. **5 roadmap issues** — heartbeat reader (#1), log viewer (#2), agent timeline (#3), dashboard UI (#4), GitHub Actions integration (#5)
+4. **Squad initialized** — `squad-cli init --no-workflows` + upstream linked to FirstFrameStudios
+5. **Committed and pushed** — single initial commit on master
+
+**Key Decisions:**
+- Vite + vanilla JS chosen (lightweight, Joaquín is learning web stack)
+- Mock heartbeat data for Sprint 0 — real backend in Sprint 1
+- Dashboard reads `tools/.ralph-heartbeat.json` from FFS — read-only observer pattern
+- No workflows installed yet (`--no-workflows` flag) — will add CI when there's code to test
+
+**Status:** ✅ COMPLETE
+
 ### Session 13: Tools Evaluation for Studio Strategy
 **Date:** 2025-07-22  
 **Task:** Evaluate reusable tools strategy — what tools give us the most leverage?

@@ -11,6 +11,13 @@ We build games. Not tech demos, not prototypes — **complete, playable games** 
 | Game | Repo | Status | Stack |
 |------|------|--------|-------|
 | 🌿 **FLORA** | [flora](https://github.com/jperezdelreal/flora) | 🌱 Starting | Vite + TypeScript + PixiJS v8 |
+| 🍩 **ComeRosquillas** | [ComeRosquillas](https://github.com/jperezdelreal/ComeRosquillas) | 🎮 Playable | HTML + JS + Canvas |
+
+## Studio Tools
+
+| Tool | Repo | Purpose |
+|------|------|---------|
+| 📊 **Squad Monitor** | [ffs-squad-monitor](https://github.com/jperezdelreal/ffs-squad-monitor) | Real-time dashboard for agent activity |
 
 ## Archived Projects
 
