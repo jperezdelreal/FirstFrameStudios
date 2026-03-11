@@ -419,3 +419,40 @@ Conducted comprehensive investigation of Squad CLI v0.8.25 ecosystem at founder'
 Decision written to .squad/decisions/inbox/solo-squad-ecosystem-audit.md.
 
 ---
+
+## Learnings
+
+### 2026-03-11: Autonomy Gap Audit & ComeRosquillas Issue Creation
+
+**What was done:**
+1. Read all 5 decisions inbox files + game code (1636 LOC game.js, 155 LOC index.html)
+2. Produced gap audit: .squad/decisions/inbox/solo-autonomy-gap-audit.md
+3. Created 12 GitHub issues (#152-#163) covering game development and infrastructure gaps
+4. Created game:comerosquillas label
+
+**Key findings:**
+- Infrastructure is more built than it appears. ralph-watch.ps1 and the scheduler are fully implemented — the gap is **activation, not construction**.
+- 20+ GitHub Actions workflows exist and are comprehensive (triage, heartbeat, daily-digest, drift-detection, label-enforce, CI, preview, release). This is the strongest implemented area.
+- The subsquad/upstream model from Option C was abandoned in favor of absorbing ComeRosquillas into the FFS monorepo. Fine for one game, won't scale.
+- Webhooks/notifications are the biggest true gap — no way for squad to proactively signal Joaquin.
+- ComeRosquillas is a surprisingly complete Pac-Man clone: 4 distinct ghost AIs with classic targeting, procedural audio, custom Simpsons character sprites, power-up system, bonus items, floating text, particle effects, background music. Quality is high for a web game.
+- The game's weakest areas: no mobile support, no score persistence, single maze layout, monolithic 1636-line file structure.
+
+**Issues created (12 total):**
+- #152: Activate ralph-watch.ps1 persistently (P0, infrastructure)
+- #153: Define schedule.json recurring tasks (P0, infrastructure)
+- #154: Modularize game.js monolith (P1, chore)
+- #155: Mobile/touch controls (P1, feature)
+- #156: High score persistence and leaderboard (P2, feature)
+- #157: Multiple maze layouts (P2, feature)
+- #158: Intermission cutscenes (P2, feature)
+- #159: Install Squad Monitor dashboard (P1, infrastructure)
+- #160: CI pipeline with GitHub Pages deployment (P1, infrastructure)
+- #161: Ghost AI personality and difficulty curve (P2, feature)
+- #162: Audio improvements (P2, audio)
+- #163: Webhook notifications for critical events (P1, infrastructure)
+
+**Patterns noted:**
+- The firstPunch lesson about monolithic files repeats: ComeRosquillas game.js = 1636 LOC, firstPunch gameplay.js = 695 LOC. Same anti-pattern, different game.
+- The Tamir blog patterns are well-documented but stalled at Phase 2-3. The team knows what to build but hasn't crossed the activation barrier.
+- ComeRosquillas being inside the FFS repo (not a subsquad) is a pragmatic choice but means upstream/subsquad patterns from Option C remain untested.
