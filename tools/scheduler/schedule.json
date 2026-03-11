@@ -7,7 +7,7 @@
       "action": {
         "type": "github-issue",
         "title": "🎮 Daily Playtest — {date}",
-        "body": "Open `games/comerosquillas/index.html` in a browser. Play for 5 minutes. Report: what works, what's broken, what feels off.\n\nChecklist:\n- [ ] Game loads without console errors\n- [ ] Controls respond (arrow keys + Enter)\n- [ ] Score increments correctly\n- [ ] Lives decrement correctly\n- [ ] Game over / level complete works",
+        "body": "Open ComeRosquillas from its repo (jperezdelreal/ComeRosquillas). Play for 5 minutes. Report: what works, what's broken, what feels off.\n\nChecklist:\n- [ ] Game loads without console errors\n- [ ] Controls respond (arrow keys + Enter)\n- [ ] Score increments correctly\n- [ ] Lives decrement correctly\n- [ ] Game over / level complete works",
         "labels": ["squad", "squad:ackbar", "type:task", "p2-medium"]
       },
       "enabled": true
@@ -43,7 +43,7 @@
       "action": {
         "type": "github-issue",
         "title": "🌐 Browser Compat Check — {date}",
-        "body": "Test `games/comerosquillas/index.html` in Chrome, Firefox, and Edge. Report any rendering or input differences.\n\n- [ ] Chrome: loads and plays correctly\n- [ ] Firefox: loads and plays correctly\n- [ ] Edge: loads and plays correctly\n- [ ] Mobile (optional): touch controls work",
+        "body": "Test ComeRosquillas from its repo (jperezdelreal/ComeRosquillas) in Chrome, Firefox, and Edge. Report any rendering or input differences.\n\n- [ ] Chrome: loads and plays correctly\n- [ ] Firefox: loads and plays correctly\n- [ ] Edge: loads and plays correctly\n- [ ] Mobile (optional): touch controls work",
         "labels": ["squad", "squad:ackbar", "type:task", "p3-low"]
       },
       "enabled": true
