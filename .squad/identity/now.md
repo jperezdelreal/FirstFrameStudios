@@ -1,22 +1,22 @@
 ---
 updated_at: 2026-03-11T08:00:00.000Z
-focus_area: Studio Restructuring + FLORA Project Setup
-team_size: 15 specialists + Scribe + Ralph
-current_phase: Transitioning from Ashfall closure to FLORA development
-genre: Cozy / Nature (FLORA)
-engine: Vite + TypeScript + PixiJS (web-first)
-scope: Studio hub restructured; FLORA repo pending
+focus_area: FLORA — Sprint 0 Ready
+team_size: 11 active + 3 hibernated + Scribe + Ralph
+current_phase: Infrastructure complete. FLORA repo live. Ready for Sprint 0.
+genre: Cozy gardening roguelite
+engine: Vite + TypeScript + PixiJS v8
+scope: Studio hub complete; FLORA repo created with squad infrastructure
 ---
 
 # Now
 
 ## Current Focus
-Studio restructuring in progress. Hybrid architecture approved (upstream + subsquad). Transforming FirstFrameStudios into the studio hub. FLORA game repo creation is next.
+FLORA infrastructure complete. All systems go for Sprint 0.
 
 ## Status
-- Studio Hub Restructure: 🏗️ IN PROGRESS — team.md and now.md updated for multi-game support
-- FLORA Repo: 🔜 PENDING — create repo, scaffold Vite+TS+PixiJS, squad init, squad upstream
-- Ashfall: ✅ ARCHIVED — 2 sprints shipped (Sprint 0: Foundation, Sprint 1: Art Phase)
+- Studio Hub Restructure: ✅ COMPLETE — team.md, routing.md, README, labels, workflows, ralph-watch, scheduler
+- FLORA Repo: ✅ LIVE — https://github.com/jperezdelreal/flora — Vite+TS+PixiJS scaffolded, .squad/ initialized, 11 agents chartered
+- Ashfall: ✅ ARCHIVED — 2 sprints shipped, games/ gitignored, issues closed, releases deleted
 - firstPunch: ✅ ARCHIVED — Canvas 2D prototype
 
 ## Key Decisions
