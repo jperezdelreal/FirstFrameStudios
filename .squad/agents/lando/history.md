@@ -81,3 +81,35 @@
 - **Hitbox deactivation during physics callback:** attack_state._deactivate_hitboxes() and hitbox.deactivate() set monitoring/disabled directly during area_entered signal → Godot error. Changed to set_deferred/call_deferred.
 - **Key learning — @onready timing:** In Godot 4, @onready vars are set right before the declaring node's _ready(). Sibling nodes' _ready() runs earlier (children before parent, siblings in tree order). Never access another node's @onready vars from a sibling's _ready() — access the node directly instead.
 - **Key learning — AnimationPlayer vs SpriteStateBridge conflict:** Both systems set CharacterSprite.pose each frame. AnimationPlayer runs after SpriteStateBridge in tree order, so it wins. When AnimationController can't find the right animation, stopping the AnimationPlayer lets SpriteStateBridge take over cleanly.
+
+### ComeRosquillas High Score System Implementation (2026-03-11)
+
+- **Project:** ComeRosquillas — HTML/JS/Canvas Pac-Man-style game themed on The Simpsons
+- **Task:** Implement high score persistence and leaderboard (Issue #3)
+- **No build step:** Pure HTML/JS/Canvas game with script tags, no framework
+- **Key integration points:**
+  - **Game state management:** Added ST_HIGH_SCORE_ENTRY = 7 to config.js game state constants
+  - **localStorage pattern:** HighScoreManager class wraps localStorage in try/catch for graceful private browsing fallback. Always validates parsed JSON structure before trusting it (check array + validate all entries have required string/number types).
+  - **Input handling for UI:** Game uses keydown event listener with e.code checks (not e.key). For high score entry, hijacked the main input handler to route ST_HIGH_SCORE_ENTRY to handleHighScoreInput() before other state checks. Arrow keys cycle through 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ' string (modulo for wrap), left/right move cursor position (0-2), Enter confirms.
+  - **HTML overlay messaging:** Game uses msgEl (div#message) positioned absolute over canvas. showHighScoreEntry() sets innerHTML with inline styles (color, font-size, text-decoration for cursor highlight). Added CSS @keyframes pulse animation by injecting style element into document.head (check for duplicate with getElementById guard).
+  - **HUD updates:** updateHUD() called after every score change. Extended it to set highScoreEl.textContent from highScores.getHighScore(). HUD uses inline spans with IDs (scoreDisplay, highScoreDisplay, levelDisplay, livesIcons).
+  - **Game over flow:** In ST_DYING state handler when lives hit 0, check highScores.isHighScore(score) → route to ST_HIGH_SCORE_ENTRY (show initials entry) or ST_GAME_OVER (standard message). After initials entry confirms, call highScores.addScore() → get rank → transition to ST_GAME_OVER with rank in message.
+  - **Start screen enhancement:** showStartScreen() calls highScores.getScores() and dynamically builds HTML string for top 10 table. Append it to msgEl.innerHTML subtitle section.
+- **Key pattern — localStorage graceful degradation:** Never assume localStorage is available. Wrap getItem/setItem in try/catch and return empty array / log warning on exceptions. Private browsing, storage quota exceeded, and browser security policies can all throw. The game must function without high scores.
+- **Key pattern — HTML message overlays in Canvas games:** When you can't render complex UI in canvas easily (text input, styled tables), use positioned HTML divs over the canvas. The game already had this pattern with msgEl for title/game-over screens — extending it for high score entry and leaderboard tables was natural.
+- **Key pattern — State machine integration:** The game uses numeric constants for states (ST_START, ST_PLAYING, etc.) and a single this.state property. Adding high score entry meant: (1) new constant in config.js, (2) new state handler in update loop (if state === X), (3) input routing in setupInput keydown listener. Keep the flow: dying → high score check → entry or game over → back to start screen.
+
+### Flora — 8x8 Garden Grid System (Issue #4, 2026-03-11)
+- **Project Context:** Flora is a cozy gardening roguelite (Vite + TypeScript + PixiJS v8). Core game loop and scene manager merged before this work.
+- **Implementation:** Created GardenGrid entity (8×8 tile array with state management), Tile entity (empty/occupied/pest states, soil quality 0–100%, moisture), and GridSystem for PixiJS rendering with click detection.
+- **PixiJS v8 patterns:**
+  - Container-based scene hierarchy: SceneManager.stage → scene containers → system containers
+  - eventMode = 'static' + custom hitArea for grid-level click detection
+  - FederatedPointerEvent.global → toLocal() for translating viewport coords to grid space
+  - Graphics.clear() → rebuild shapes per frame for dynamic state changes
+  - Color interpolation for visual feedback: lerp between 0x3d2817 (poor soil) → 0x6b4423 (rich soil) based on soil quality percentage
+- **Grid interaction model:** Click detection maps pointer position to grid coordinates via getTileAtPosition(x, y, gridX, gridY), returns Tile or null. Selection highlight renders as stroke-only Graphics rect over selected tile, updated per-frame from selectedTile reference.
+- **Key pattern — Separation of data and rendering:** Tile holds pure state (row, col, state enum, soil quality, moisture). GardenGrid manages tile array and spatial queries. GridSystem owns PixiJS rendering and user input. Clean split makes grid state testable without rendering concerns.
+- **Tile state persistence:** All tile state lives in Tile instances stored in GardenGrid.tiles[][] 2D array. State persists naturally across game loop frames since grid is held by scene. No manual serialization needed for within-season persistence.
+- **Viewport centering:** centerInViewport() calculates grid pixel dimensions (cols × tileSize, rows × tileSize) and sets container.x/y to center in screen. Responsive to window resize if called from scene resize handler.
+- **PR:** #17 (squad/4-garden-grid), merged to main. Built successfully with TypeScript strict mode, all acceptance criteria met.
