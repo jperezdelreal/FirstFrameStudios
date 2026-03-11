@@ -2,6 +2,96 @@
 
 ## Active Decisions
 
+### 2026-03-11: Create ffs-squad-monitor Repository (Jango)
+**Date:** 2026-03-11  
+**Author:** Jango (Tool Engineer)  
+**Requested by:** Joaquín  
+**Status:** ✅ Implemented
+
+**Context:**
+Joaquín wants a real-time monitoring dashboard for the FFS squad, inspired by [Tamir Dresher's squad-monitor](https://github.com/tamirdresher/squad-monitor). We already have `ralph-watch.ps1` writing heartbeat data and structured logs — we need a visual frontend.
+
+**Decision:**
+Created a new public repo `jperezdelreal/ffs-squad-monitor` with:
+- Vite + vanilla JS stack (lightweight, learning-friendly)
+- Sprint 0 scaffolding: dashboard HTML, heartbeat polling script, mock data
+- 5 roadmap issues covering heartbeat reader, log viewer, timeline, UI, and Actions integration
+- Squad initialized with upstream link to FirstFrameStudios
+
+**Rationale:**
+- **Separate repo** keeps monitoring concerns out of the main FFS codebase
+- **Vite + vanilla JS** is minimal, fast to iterate, and good for learning
+- **Read-only observer pattern** — monitor reads heartbeat/logs but never writes to FFS
+- **Sprint 0 = scaffolding only** — real implementation tracked via GitHub Issues
+
+**Links:**
+- Repo: https://github.com/jperezdelreal/ffs-squad-monitor
+- Issues: https://github.com/jperezdelreal/ffs-squad-monitor/issues
+- Inspiration: https://github.com/tamirdresher/squad-monitor
+
+---
+
+### 2026-03-11: Squad Upstream Setup — ComeRosquillas → FirstFrameStudios (Jango)
+**Author:** Jango (Tool Engineer)  
+**Date:** 2026-03-11  
+**Status:** IMPLEMENTED  
+**Scope:** Infrastructure / Squad Architecture
+
+**Context:**
+ComeRosquillas (Homer's Donut Quest) was absorbed into First Frame Studios at `games/comerosquillas/`. The standalone ComeRosquillas repo (jperezdelreal/ComeRosquillas) needs to inherit studio identity, skills, and process from the FFS hub.
+
+The approved architecture is **Option C Hybrid**:
+- **FirstFrameStudios** = Studio hub (parent squad with identity, skills, principles)
+- **Game repos** = Subsquads inheriting via upstream connection
+
+**Decision:**
+Set up a manual upstream connection since `squad-cli v0.8.20` does not yet have native `upstream` commands.
+
+**What Was Done:**
+1. **Squad initialized** in ComeRosquillas via `squad-cli init --no-workflows`
+2. **Upstream directory created** at `.squad/upstream/` with:
+   - `manifest.json` — connection metadata, sync policy, inherited content list
+   - `identity/` — copied identity files from FFS (principles, mission-vision, company, quality-gates, wisdom)
+   - `skills/INDEX.md` — reference index of 41 FFS skills (categorized by applicability)
+3. **Config updated** — `.squad/config.json` includes upstream hub reference
+4. **upstream.json enriched** — added repo, relationship, last_synced, synced_content fields
+5. **Committed and pushed** to `main`
+
+**Sync Policy:**
+
+| Content Type | Strategy | Notes |
+|---|---|---|
+| Identity files | Copy from hub | Upstream wins — these are studio-level |
+| Skills | Reference index only | Full content stays in hub repo |
+| Decisions | Reference only | Game-specific decisions stay local |
+| Project config | Local only | Game-specific settings |
+
+**How to Re-sync:**
+When FFS identity or skills change, manually copy updated files:
+```powershell
+cd "C:\Users\joperezd\GitHub Repos\ComeRosquillas"
+Copy-Item "C:\Users\joperezd\GitHub Repos\FirstFrameStudios\.squad\identity\{file}" ".squad\upstream\identity\{file}"
+# Update last_synced in .squad/upstream.json
+```
+
+**Alternatives Considered:**
+1. **Native `squad upstream` commands** — Not available in v0.8.20. When squad-cli adds this feature, migrate to native commands.
+2. **Git submodules** — Too heavy for configuration inheritance. Submodules are for code, not squad metadata.
+3. **Symlinks** — Don't work across repos on GitHub. Only viable for local development.
+
+**Migration Path:**
+When `squad-cli` ships `upstream add/sync/list`:
+1. Run `squad upstream add` pointing to FFS
+2. Run `squad upstream sync` to replace manual copies
+3. Remove manual `.squad/upstream/` directory if native upstream uses a different structure
+4. Update this decision document
+
+**Risks:**
+- **Manual sync drift** — If FFS identity changes and nobody syncs downstream, ComeRosquillas will have stale studio guidance. Mitigated by: checking sync date during ceremonies.
+- **squad-cli breaking changes** — If a future version introduces native upstream with a different structure, migration will be needed.
+
+---
+
 ### Cel-Shade Parameters for Fighting Game Sprite Quality (Boba)
 **Author:** Boba (Art Director)  
 **Date:** 2026-06-12  
