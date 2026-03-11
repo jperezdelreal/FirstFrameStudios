@@ -116,3 +116,42 @@
 - **Fix 3 — System interface**: Added `readonly name = 'PlayerSystem'` and `implements System` to `PlayerSystem` class, with import from `./index`. Follows same pattern as `PlantSystem`.
 - **Lesson**: When implementing resource-cost systems, always check acceptance criteria for what actions should be free vs costly. Movement being free on a small grid is a feel decision — 3 AP for 8x8 grid would make the game unplayable.
 - **Lesson**: Callback guards should only check if the callback exists, not filter valid values (null is a valid deselect signal).
+
+### Flora PR #20 Hazard UI Integration (2026-08-15)
+- **Task**: Add missing hazard UI indicators and pest removal action to Tarkin's hazard system (PR #20 QA feedback)
+- **Context**: Tarkin built hazard backend (HazardSystem, pest spawning, drought logic). QA flagged missing UI/gameplay: pest markers, click-to-remove, drought warning, TileState.PEST wiring.
+- **Files Modified**:
+  - `src/systems/GridSystem.ts` — Added `onTileClick()` callback registration for gameplay actions on tile clicks
+  - `src/scenes/GardenScene.ts` — Integrated HazardSystem + PlantSystem, wired pest removal on click, added drought UI updates, demo pest spawn with TileState.PEST sync
+- **Files Created**:
+  - `src/ui/HazardUI.ts` — Drought warning component (orange bordered box, shows days remaining + water multiplier, positioned at bottom center)
+  - `src/ui/index.ts` — Export HazardUI and DroughtWarningOptions type
+- **Architecture Patterns**:
+  - HazardSystem already had `trySpawnPestOnPlant()`, `removePest()`, `getDroughtInfo()`, `getPestAt()` — my job was UI/gameplay wiring
+  - Pest visual marker already existed in `GridSystem.renderPestMarker()` (red circle) — just needed TileState.PEST to trigger render
+  - GridSystem uses callback pattern for tile clicks instead of event bus — keeps scene layer in control
+  - GardenScene coordinates tile state + hazard state (when pest removed, tile.state = TileState.OCCUPIED)
+- **Integration Points**:
+  - `handleTileClick()` checks `tile.hasPest()`, gets pest via `hazardSystem.getPestAt(col, row)`, calls `removePest()`, updates tile state
+  - Drought warning updates every frame via `update()` checking `hazardSystem.getDroughtInfo()` and calling `hazardUI.showDroughtWarning()` or `hideDroughtWarning()`
+  - Demo tiles show pest spawning workflow: create plant → `trySpawnPestOnPlant()` → set `tile.state = TileState.PEST`
+- **Coordinate System**: Tile uses `row`/`col`, Plant/Hazard use `x`/`y` where x=col, y=row (standard grid convention)
+- **Lesson**: When integrating with others' backend code, respect their architecture — don't refactor, just add the UI layer on top. Tarkin's HazardSystem had all the hooks I needed.
+- **Lesson**: UI components like HazardUI should be pure presentation — data comes from systems, scene orchestrates updates.
+- **Known Gap**: Automatic TileState.PEST sync on pest spawn not fully wired — currently done manually in GardenScene demo. Future: PlantSystem or game manager should own tile state coordination.
+
+### Flora PR #18 Review Fixes (2026-08-16)
+- **Task**: Address Solo's 3 review items on PR #18 (Garden UI/HUD by Wedge) — under reviewer lockout, made fixes on Wedge's behalf
+- **Context**: Wedge authored PR #18 with HUD/UI components (HUD, SeedInventory, PlantInfo, ToolBar, PauseMenu, DaySummary). Solo requested changes: demo data cleanup, config-driven seeds, COLORS verification.
+- **Fix 1 — Math.random() Demo Data**: Replaced `showDemoPlantInfo()` in `GardenScene.ts` lines 159-170. Changed from `Math.random()` for growthPercent/waterStatus/health to static placeholder values (45%, 'Hydrated', 85%). Added TODO comment indicating replacement with PlantSystem integration when implemented. This is Sprint 0 — no actual game state yet, so typed defaults are cleaner than random values that imply dynamic state.
+- **Fix 2 — Hardcoded Seed Inventory**: Created `src/config/seeds.ts` with `SEED_CONFIG` constant (readonly Seed array). Moved inline seed data from `GardenScene.ts` lines 114-121 to config. Pattern matches Flora's existing config approach (GARDEN, COLORS). SeedInventory now receives `[...SEED_CONFIG]` spread copy for mutation safety.
+- **Fix 3 — COLORS Verification**: Confirmed `src/config/index.ts` lines 29-39 already exports properly typed COLORS constant with `as const` assertion. Added `export * from './seeds'` to config barrel for clean imports.
+- **Files Modified**:
+  - `src/config/index.ts` — Added seed config export
+  - `src/config/seeds.ts` — Created seed configuration constant
+  - `src/scenes/GardenScene.ts` — Import SEED_CONFIG, use in SeedInventory, replace Math.random() with static placeholder
+- **Type Safety**: `npx tsc --noEmit` passed — all changes type-safe
+- **Commit Message**: "fix: replace demo data with typed interfaces, config-driven seeds" with Co-authored-by trailer for Copilot
+- **Lesson**: When refactoring demo/placeholder data in early development (Sprint 0), prefer static typed defaults over Math.random() — makes tests deterministic and signals "waiting for real system" rather than "simulating behavior we don't have."
+- **Lesson**: Config-driven data should live in `/config` directory with proper types/exports. Inline data arrays in scene code are coupling smell.
+- **Lesson**: When under reviewer lockout (Wedge can't revise their own rejected PR), another developer can make fixes on same branch. This is standard PR collaboration workflow.
