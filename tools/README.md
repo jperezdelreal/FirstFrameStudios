@@ -1,175 +1,125 @@
-# Ashfall Tools — Wave 1
+# First Frame Studios — Tools
 
-This directory contains development and validation tools for the Ashfall project.
+Autonomous infrastructure for the squad. These tools keep the development loop running without human intervention.
 
-## Wave 1 Tools (Sprint A Quick Wins)
+## ⚡ Quickstart — One Command
 
-### 🔧 Tool 1: Branch Validation CI Action
-**Location:** `.github/workflows/branch-validation.yml`  
-**Purpose:** Prevents PRs from targeting incorrect branches  
-**How it works:** Automatically checks that all PRs target `main` branch
-
-**Usage:**
-- Runs automatically on every PR
-- Blocks merge if PR targets wrong branch
-- No manual action required
-
----
-
-### 🔧 Tool 2: PR Body Validator
-**Location:** `.github/workflows/pr-body-check.yml`  
-**Purpose:** Reminds developers to link PRs to issues  
-**How it works:** Checks for "Closes #N" pattern in PR body and posts a warning if missing
-
-**Usage:**
-- Runs automatically when PR is opened or edited
-- Posts a friendly reminder comment if issue reference is missing
-- Does NOT block merge (warning only)
-
----
-
-### 🔧 Tool 3: Autoload Dependency Analyzer
-**Location:** `tools/check-autoloads.py`  
-**Purpose:** Validates autoload order in `project.godot` matches dependency graph  
-**Impact:** Prevents M1+M2 Blocker #5 (autoload order violations)
-
-**Usage:**
-```bash
-# From repo root
-python tools/check-autoloads.py
+```powershell
+# From repo root:
+.\tools\ralph-watch.ps1
 ```
 
-**What it checks:**
-- ✅ All autoload script files exist
-- ✅ Autoload order respects dependencies (e.g., EventBus loads before systems that use it)
-- ✅ No circular dependencies
-- 💡 Suggests correct order if validation fails
+That's it. Ralph will:
+1. Pull latest code
+2. Run the scheduler (creates issues if any are due)
+3. Spawn a Copilot session that works all `squad` / `status:todo` issues
+4. Sleep 15 minutes, then repeat
 
-**Example output:**
-```
-============================================================
-🔧 AUTOLOAD DEPENDENCY ANALYZER
-============================================================
-
-📋 Found 6 autoload(s):
-   - EventBus: scripts/systems/event_bus.gd
-   - GameState: scripts/systems/game_state.gd
-   ...
-
-✅ EventBus: File exists
-✅ GameState: File exists
-...
-
-🔍 Dependency Analysis:
-   EventBus: No dependencies
-   GameState depends on: EventBus
-   ...
-
-✅ Autoload order is valid!
-============================================================
-✅ ALL CHECKS PASSED
-============================================================
+**To test without side effects:**
+```powershell
+.\tools\ralph-watch.ps1 -DryRun -MaxRounds 1
 ```
 
 ---
 
-### 🔧 Tool 4: Signal Wiring Validator
-**Location:** `tools/check-signals.py`  
-**Purpose:** Scans all GDScript files to find signal definitions, emissions, and connections  
-**Impact:** Prevents M1+M2 Blocker #2 (signals emitted but not wired)
+## 🔄 How the Autonomous Loop Works
 
-**Usage:**
-```bash
-# From repo root
-python tools/check-signals.py
+```
+┌──────────────┐     ┌───────────┐     ┌──────────┐     ┌─────────┐
+│ ralph-watch  │────▶│ scheduler │────▶│ copilot  │────▶│  sleep   │──┐
+│ (outer loop) │     │ (cron)    │     │ (agents) │     │ (15 min) │  │
+└──────────────┘     └───────────┘     └──────────┘     └─────────┘  │
+       ▲                                                              │
+       └──────────────────────────────────────────────────────────────┘
 ```
 
-**What it analyzes:**
-- 📝 Signal definitions (`signal my_signal`)
-- 📤 Signal emissions (`.emit()` calls)
-- 📥 Signal connections (`.connect()` calls)
-- ⚠️  Orphaned signals (emitted but never connected, or vice versa)
+### ralph-watch.ps1
+The outer loop. Runs indefinitely (or for N rounds with `-MaxRounds`).
 
-**Example output:**
-```
-================================================================================
-🔌 SIGNAL WIRING VALIDATOR
-================================================================================
+| Flag | Default | Description |
+|---|---|---|
+| `-IntervalMinutes` | 15 | Minutes between rounds |
+| `-DryRun` | off | Show what would happen, don't execute |
+| `-MaxRounds` | 0 (∞) | Stop after N rounds |
+| `-Repos` | `@(".")` | Repo paths to pull |
 
-📂 Found 32 GDScript file(s)
+**Files it manages:**
+- `tools/.ralph-heartbeat.json` — current status, round number, last result
+- `tools/logs/ralph-YYYY-MM-DD.jsonl` — structured round logs (auto-rotated at 1MB)
+- `~/.squad/ralph-watch.lock` — single-instance guard (auto-cleaned on exit)
 
-🔍 Scanning for signals...
-   Found 22 unique signal(s)
+### Scheduler (`tools/scheduler/`)
+Cron-based task creator. Checked every ralph-watch round.
 
-================================================================================
-📊 SIGNAL WIRING MATRIX
-================================================================================
+- **Config:** `tools/scheduler/schedule.json` — define tasks with cron expressions
+- **State:** `tools/scheduler/.state.json` — tracks last-run times (prevents duplicates)
+- **Engine:** `tools/scheduler/Invoke-SquadScheduler.ps1`
 
-✅ fighter_ko
-   📝 Defined in: games\ashfall\scripts\systems\event_bus.gd
-   📤 Emitted in: games\ashfall\scripts\fight_scene.gd
-   📥 Connected in: 
-      - games\ashfall\scripts\systems\vfx_manager.gd
-      - games\ashfall\scripts\systems\audio_manager.gd
+Current scheduled tasks:
+| Task | Schedule | What it does |
+|---|---|---|
+| Daily Playtest | 6 PM weekdays | Creates issue for Ackbar to playtest ComeRosquillas |
+| Weekly Retro | 4 PM Friday | Creates retro issue for Mace |
+| Backlog Grooming | 10 AM Wednesday | Creates grooming issue for Mace |
+| Browser Compat | 12 PM Monday | Creates browser testing issue for Ackbar |
 
-⚠️  ember_spent
-   📝 Defined in: games\ashfall\scripts\systems\event_bus.gd
-   📤 Emitted in: games\ashfall\scripts\systems\game_state.gd
-   ⚠️  WARNING: Signal is emitted but never connected
-
-================================================================================
-📈 SUMMARY
-================================================================================
-
-✅ Healthy signals (emitted AND connected): 11
-⚠️  Orphaned emissions (emitted but not connected): 1
-⚠️  Orphaned connections (connected but not emitted): 7
-```
-
-**Exit codes:**
-- `0`: All signals properly wired
-- `1`: Warnings detected (orphaned signals found)
+To see all tasks: `.\tools\scheduler\Invoke-SquadScheduler.ps1 -List`
 
 ---
 
-## Running All Checks
+## 🧑 What You (Joaquín) Need to Do
 
-```bash
-# Check autoloads
-python tools/check-autoloads.py
+1. **Start ralph-watch once** — run `.\tools\ralph-watch.ps1` in a terminal and leave it open
+2. **Review PRs** — agents create PRs, Jango reviews, you approve/merge if needed
+3. **Create issues** — label them `squad` + `status:todo` for agents to pick up
+4. **Stop when done** — press `Ctrl+C` in the ralph-watch terminal
 
-# Check signal wiring
-python tools/check-signals.py
+### What Runs Automatically
+- Git pull (every round)
+- Scheduler checks (creates issues on schedule)
+- Copilot spawns and works issues
+- Heartbeat updates
+- Log rotation
+
+---
+
+## 🔧 Running Persistently
+
+To keep ralph-watch running even after closing the terminal:
+
+```powershell
+# Option 1: Start in a new detached PowerShell window
+Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; .\tools\ralph-watch.ps1" -WindowStyle Minimized
+
+# Option 2: Just keep a terminal open (simplest)
+.\tools\ralph-watch.ps1
+```
+
+To check if it's running:
+```powershell
+Get-Content tools\.ralph-heartbeat.json
+```
+
+To stop it:
+```powershell
+# Read the PID from heartbeat, then:
+$hb = Get-Content tools\.ralph-heartbeat.json | ConvertFrom-Json
+Stop-Process -Id $hb.pid -Force
 ```
 
 ---
 
-## What's Next?
+## 📁 Legacy Tools
 
-**Wave 2** (Sprint A remainder):
-- Integration Gate Automation
-- Godot Headless Validator (CI)
-- Scene Integrity Checker
-- Test Scene Generator
-
-**Wave 3** (Sprint B):
-- VFX/Audio Test Bench
-- GDD Diff Reporter
-- Collision Layer Matrix Generator
-- Frame Data CSV Pipeline
-- Live Reload Watcher
+The following tools were built for previous projects (Ashfall/Godot) and are archived for reference:
+- `check-autoloads.py`, `check-signals.py`, `check-scenes.py` — Godot validators
+- `export-frame-data.py`, `import-frame-data.py` — Fighting game frame data pipeline
+- `generate-collision-matrix.py`, `generate-test-scenes.py` — Godot scene generators
+- `validate-project.py`, `watch-reload.py` — Godot project validators
+- `check-gdd-compliance.py`, `generate-milestone-report.py` — Design doc tools
+- `integration-gate.py` — Godot integration gate
 
 ---
 
-## Issues Closed
-
-- Closes #34 (Branch Validation CI Action)
-- Closes #36 (Autoload Dependency Analyzer)
-- Closes #39 (Signal Wiring Validator)
-- Closes #44 (PR Body Validator)
-
----
-
-**Built by:** Jango (Lead & Tool Engineer)  
-**Sprint:** A — Wave 1  
-**Status:** ✅ SHIPPED
+**Maintained by:** Jango (Tool Engineer)
+**Last updated:** 2026-07-24

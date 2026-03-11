@@ -493,3 +493,20 @@ Future risk: Sprint 2 is combo system (high complexity, low tolerance for bugs).
 6. **Config schema extended cleanly** — `communication` key added to `.squad/config.json` with channel, posting triggers, repo reference, and category name.
 
 **Deliverable:** Committed config + charter updates. Test discussion live.
+
+### Session 16: Autonomous Infrastructure — ComeRosquillas Pivot
+**Date:** 2026-07-24
+**Task:** Make the autonomous squad loop operational for ComeRosquillas (Homer's Donut Quest).
+
+**What Changed:**
+1. **now.md updated** — Focus shifted from FLORA (Vite+TS+PixiJS) to ComeRosquillas (HTML/JS/Canvas). Updated genre, engine, phase, and all status entries.
+2. **schedule.json overhauled** — Removed Godot-specific playtest wording. Updated daily playtest to reference games/comerosquillas/index.html with a browser checklist. Enabled backlog-grooming (was disabled). Added weekly browser-compat-check task. All 4 tasks now enabled and relevant to a web game.
+3. **ralph-watch.ps1 verified** — Dry run passed cleanly (-DryRun -MaxRounds 1). All paths resolve correctly, scheduler picks up all 4 enabled tasks, copilot spawn command is correct. No crashes, no missing dependencies.
+4. **tools/README.md rewritten** — Replaced Ashfall/Godot-specific Wave 1 docs with autonomous loop documentation: quickstart, architecture diagram, flag reference, scheduler task table, persistent running instructions, and "what you need to do" section for Joaquín.
+
+**Key Findings:**
+- ralph-watch.ps1 is well-built — single-instance guard, heartbeat, log rotation, lock cleanup all work. The issue was simply that nobody started it.
+- Scheduler state file (.state.json) correctly prevents duplicate issue creation. Task dedup is per-minute.
+- The gap wasn't infrastructure quality — it was operational: the tools exist but need someone to type .\tools\ralph-watch.ps1 and leave it running.
+
+**Lesson:** Tools that require manual startup must have dead-simple quickstart docs. One command, no setup, clear output. Pipeline-first means the pipeline must be trivially launchable.
