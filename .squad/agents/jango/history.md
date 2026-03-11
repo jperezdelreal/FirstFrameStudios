@@ -171,4 +171,8 @@
 - Separated validation job from PR comment job (clean separation of concerns)
 - Did not interfere with existing Astro docs deployment workflow
 
-**Status:** ✅ COMPLETE — CI workflow created, committed, pushed, PR opened
+**Status:** ✅ COMPLETE — CI workflow created, committed, pushed, PR #9 opened  
+**Session:** 2026-03-11 — Batch 2 (Chewie + Jango parallel execution)  
+**Orchestration Log:** `.squad/orchestration-log/2026-03-11T14-05-00Z-jango.md`  
+**Decision Merged:** Documented in `.squad/decisions.md` under "ComeRosquillas CI Pipeline Strategy"  
+**Cross-Agent Note:** Parallel with Chewie's game.js modularization (PR #10) — both unblock feature development

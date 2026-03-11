@@ -154,5 +154,9 @@
   5. **Game loop in main class, not engine module** — Unlike Godot's _process() separation, browser games often put requestAnimationFrame() in the Game class. Works fine when class is the only loop owner.
 - **File Structure:** Original 1789 lines split into 5 modules totaling 1804 lines (15-line overhead for module headers). Largest module is game-logic.js (791), smallest is main.js (13). Renderer at 720 lines is cohesive — all drawing code in one place.
 - **Testing:** Game loads and runs after modularization. All sounds, rendering, gameplay, scoring, and level progression work identically to monolith. Zero breaking changes.
+- **Session:** 2026-03-11 — Batch 2 (Chewie + Jango parallel execution)
+- **Orchestration Log:** `.squad/orchestration-log/2026-03-11T14-05-00Z-chewie.md`
+- **Decision Merged:** Documented in `.squad/decisions.md` under "ComeRosquillas Modularization Architecture"
 - **Branch:** squad/1-modularize-game-js, PR #10 created against main
 - **Original Backup:** js/game.js.backup preserved for rollback safety
+- **Cross-Agent Note:** Parallel with Jango's CI pipeline (PR #9) — both unblock parallel feature development

@@ -180,3 +180,86 @@ Infrastructure is 80% built; activation gap is the real blocker. ralph-watch.ps1
 10. **Three Laws of FFS Governance:** (1) Games autonomous, Hub authoritative. (2) Everything escalates by tier, nothing by default. (3) Knowledge flows up and down.
 
 **Status:** AWAITING FOUNDER APPROVAL
+
+---
+
+## ComeRosquillas Issue Triage (Current Session)
+
+### ComeRosquillas Issue Triage & Squad Labeling
+
+**Requested by:** Joaquín (joperezdelreal)  
+**Repo:** jperezdelreal/ComeRosquillas  
+**Context:** Game shipped to live at jperezdelreal.github.io/ComeRosquillas/play/. 8 open issues existed with no squad routing labels, blocking Ralph (Work Monitor) from auto-assigning work.
+
+**Work Completed:**
+
+1. **Created 14 labels in ComeRosquillas repo:**
+   - Squad base label + 10 squad:{member} labels (chewie, lando, wedge, greedo, tarkin, ackbar, jango, solo, copilot)
+   - 4 priority labels (p0, p1, p2, p3)
+
+2. **Triaged all 8 issues with routing decisions:**
+   - **#1: Modularize game.js (1636 LOC)** → squad:solo + squad:chewie, **P0**
+     Rationale: Architectural blocker. Unblocks all feature work (#3, #4, #5, #7, #8). Critical for team velocity.
+   
+   - **#2: Mobile/touch controls** → squad:wedge, **P2**
+     Rationale: Nice-to-have polish. Ship desktop first, mobile post-launch.
+   
+   - **#3: High score persistence & leaderboard** → squad:wedge + squad:lando, **P2**
+     Rationale: Engagement feature spanning UI (Wedge) + gameplay scoring (Lando). Post-launch content update candidate.
+   
+   - **#4: Multiple maze layouts & progression** → squad:tarkin + squad:lando, **P1**
+     Rationale: Essential for replayability & v1.0. Content design (Tarkin) + progression logic (Lando). Start after #1 refactor.
+   
+   - **#5: Simpsons cutscenes** → squad:wedge, **P3**
+     Rationale: Pure polish, zero gameplay impact. Deferred to post-launch.
+   
+   - **#6: CI pipeline & GitHub Pages deployment** → squad:jango, **P1**
+     Rationale: High-leverage tooling. Unblocks rapid iteration. Parallel stream to #1.
+   
+   - **#7: Ghost AI difficulty curve & personality** → squad:tarkin, **P1**
+     Rationale: Core gameplay quality. Enemy behavior design. Start after #1 enables cleaner architecture.
+   
+   - **#8: Sound effects variety & music** → squad:greedo, **P1**
+     Rationale: Essential for arcade feel. Poor audio = poor game feel. Parallel work to #1–#7.
+
+3. **Added triage comments to all 8 issues** with rationale, routing, and priority justification.
+
+**Routing Philosophy:**
+- P0 = Unblocks everything else (architecture refactor)
+- P1 = Essential for v1.0 shipping (content, tooling, audio, AI quality)
+- P2 = Important but non-critical (engagement features, UX enhancements)
+- P3 = Polish tier (narrative, charm, deferred to post-launch)
+
+**Pattern Observed:**
+The monolithic game.js problem repeats across projects (firstPunch gameplay.js = 695 LOC; ComeRosquillas game.js = 1636 LOC). Both games needed refactoring as P0 blocker. Architecture debt cascades into feature development friction.
+
+**Outcome:**
+Ralph (Work Monitor) can now auto-route all 8 issues to the correct squad members. Work items are prioritized and scoped. Ready for sprint planning.
+
+**Status:** ✅ COMPLETE
+
+---
+
+### 2026-07-24: PR #9 Architecture Review — ComeRosquillas CI Pipeline
+
+**Requested by:** Joaquín  
+**Repo:** jperezdelreal/ComeRosquillas  
+**PR:** #9 (squad/6-ci-pipeline → main), authored by Jango  
+**Issue:** #6 — Add CI pipeline with live preview deployment
+
+**Review Outcome:** ✅ APPROVED (comment review — same GH account prevented formal approval)
+
+**What was reviewed:**
+- `.github/workflows/ci.yml` (166 lines, single new file)
+- Workflow triggers, permissions, validation steps, PR comment mechanism, summary job
+
+**Findings:**
+1. **Right-sized CI.** No bundler, no npm install — just `node --check` syntax validation, HTML structure checks, asset verification, and debugger/TODO scanning. Perfect for vanilla HTML/JS.
+2. **Security clean.** Minimal permissions (`contents: read`, `pull-requests: write`), only official GitHub actions (`actions/checkout@v4`, `actions/setup-node@v4`, `actions/github-script@v7`), no secrets.
+3. **Docs deployment untouched.** CI validates game assets only — Astro docs site stays independent.
+4. **PR comment works.** Successfully posted on the PR itself as proof. Depends on validate job passing first.
+5. **Two non-blocking nits:** (a) PR comments accumulate on multi-push PRs (find-and-update pattern recommended later), (b) "Preview deployment" section shows production URLs (no actual preview env).
+
+**Pattern confirmed:** Jango delivers clean, scoped tooling. This matches the T1 tier — feature-level work that doesn't need architectural escalation.
+
+**Status:** ✅ COMPLETE

@@ -2,6 +2,162 @@
 
 ## Active Decisions
 
+### 2026-03-11: ComeRosquillas Modularization Architecture (Chewie)
+**Date:** 2026-03-11  
+**Author:** Chewie (Engine Developer)  
+**Issue:** #1 — Modularize game.js monolith  
+**Status:** ✅ Implemented (PR #10)  
+**Repo:** jperezdelreal/ComeRosquillas
+
+**Context:**
+ComeRosquillas shipped with a 1789-line game.js monolith containing all code: constants, audio, rendering, game logic, and initialization. This blocked parallel development and made code navigation difficult.
+
+**Decision:**
+Split game.js into 5 focused modules organized by responsibility with clean dependency flow.
+
+**Module Structure:**
+- **config.js** (114 lines): Constants, maze data (31×28), ghost configs, Simpsons colors, game states, direction vectors
+- **engine/audio.js** (166 lines): SoundManager class — Simpsons theme, D'oh sound, Duff jingle, background music
+- **engine/renderer.js** (720 lines): Sprites static class — Homer rendering, 4 ghost characters (Burns, Bob, Nelson, Snake), donut/Duff, maze
+- **game-logic.js** (791 lines): Game class — game loop, state machine (7 states), player movement, ghost AI (scatter/chase/frightened), scoring, level progression
+- **main.js** (13 lines): Entry point — thin instantiation of Game
+
+**Load Order (Dependency DAG):**
+```
+config.js (no deps)
+  ↓
+audio.js (uses config)
+  ↓
+renderer.js (uses config)
+  ↓
+game-logic.js (uses all)
+  ↓
+main.js (instantiates Game)
+```
+
+**Rationale:**
+1. **Config as Foundation** — Pure data, zero dependencies enables safe parallel work on rendering and game logic
+2. **Engine Separation** — Audio and renderer are orthogonal concerns, separate files enable parallel development
+3. **Static Renderer** — Sprites class uses static methods (no instance state), simplifies testing, eliminates object allocation
+4. **No Bundler** — Vanilla JS project with simple DAG, `<script>` tags provide explicit load order, low development friction
+
+**Alternatives Rejected:**
+1. **ES Modules** — Would require export/import syntax changes. Global namespace approach simpler for vanilla JS.
+2. **Split Renderer by Entity** (player.js, ghosts.js, maze.js) — Drawing code tightly coupled to config constants. 720-line cohesion preferable to fragmentation.
+3. **Webpack/Vite Bundle** — Adds build step complexity. Browser handles 5 files efficiently.
+
+**Consequences:**
+- ✅ Clear module responsibilities, parallel development enabled, static methods easily testable
+- ✅ Maintainability improved: code navigation easier, onboarding clearer
+- ❌ Global namespace risk if naming conflicts arise (mitigated by discipline)
+- ❌ Load order dependency — index.html must maintain correct script order (easy to break)
+
+**Testing:**
+- ✅ Game loads and plays after modularization
+- ✅ All sounds, rendering, gameplay, scoring, level progression work identically
+- ✅ Zero breaking changes
+
+**Future Work:**
+- Consider ES modules when browser support matures
+- Extract maze data to JSON if editing becomes frequent
+- Add JSDoc for IDE autocomplete
+- Split game-logic.js if it grows beyond 1000 lines
+
+---
+
+### 2026-03-11: ComeRosquillas CI Pipeline Strategy (Jango)
+**Date:** 2026-03-11  
+**Author:** Jango (Tool Engineer)  
+**Issue:** #6 — Add CI pipeline with validation and deploy checks  
+**Status:** ✅ Implemented (PR #9)  
+**Repo:** jperezdelreal/ComeRosquillas
+
+**Context:**
+ComeRosquillas is a vanilla HTML/JS/Canvas game (no build step). Need lightweight CI that validates code quality and enables live PR preview without adding bundler complexity.
+
+**Decision:**
+Implemented GitHub Actions workflow (`ci.yml`) with JavaScript syntax validation, HTML structure checks, and automated PR preview comments.
+
+**Workflow Details:**
+- **Triggers:** All PRs and main pushes
+- **Execution Time:** ~30 seconds
+- **Validations:**
+  - HTML structure (canvas element, script references)
+  - JavaScript syntax (`node --check` on all .js files)
+  - Game assets structure
+  - Code quality (no debugger statements, TODO awareness)
+- **Output:** Automated PR comment with validation results and deployment URLs
+
+**Rationale:**
+1. **Keep It Simple** — No build step for vanilla game. Bundlers (webpack, parcel) would slow development.
+2. **Fast Feedback** — 30-second runs provide immediate validation on every commit.
+3. **PR Experience** — Comments with validation + deploy links in one place improve developer workflow.
+4. **Separation of Concerns** — CI validation (this) ≠ Deployment (existing deploy-pages.yml) ≠ Squad framework (squad-ci.yml)
+5. **Node.js Native** — `node --check` for JS validation. Can extend with ESLint/Prettier later if needed.
+
+**Alternatives Rejected:**
+1. **Add ESLint/Prettier** — Too much config overhead for v1.0. Can add later if style becomes an issue.
+2. **HTML Validator Service** — External dependency + network calls. Simple grep sufficient for now.
+3. **Playwright/Puppeteer E2E Tests** — No test files exist yet. CI focuses on syntax first. E2E can be added in future sprints.
+4. **Combine with squad-ci.yml** — Squad-ci.yml is squad-framework specific. Kept separate for clarity.
+
+**Consequences:**
+- ✅ Fast CI runs, zero dependencies beyond Node.js, clear validation messages, improves developer experience
+- ✅ Does not interfere with existing Astro docs deployment
+- ❌ No code style enforcement yet (no linter), no E2E tests, manual grep checks
+- ✓ Can extend with ESLint, Prettier, Playwright later without major rearchitecture
+
+**Follow-up:**
+- Add ESLint + Prettier if code style issues arise
+- Add Playwright E2E tests when game stabilizes
+- Add Lighthouse CI for performance checks
+- Monitor CI run times — optimize if they exceed 2 minutes
+
+---
+
+### 2026-03-11: ComeRosquillas Issue Triage & Squad Routing (Solo)
+**Date:** 2026-03-11  
+**Author:** Solo (Lead/Architect)  
+**Scope:** Assign squad routing labels to all 8 open issues  
+**Status:** ✅ Complete  
+**Repo:** jperezdelreal/ComeRosquillas
+
+**Context:**
+ComeRosquillas shipped with 8 open GitHub issues. None had squad routing labels, blocking Ralph's auto-assignment workflow.
+
+**Decision:**
+Triaged all 8 issues with squad routing + priority labels, creating 14 labels in repo and applying them to each issue with rationale comments.
+
+**Triage Results:**
+
+| Issue | Title | Assigned To | Priority | Rationale |
+|---|---|---|---|---|
+| #1 | Modularize game.js | solo + chewie | P0 | Blocks everything downstream (cascades to #3, #4, #5, #7, #8) |
+| #2 | Mobile/touch controls | wedge | P2 | Platform expansion, non-blocking for v1.0, post-launch polish |
+| #3 | High score persistence | wedge + lando | P2 | Engagement feature, not critical for core loop, post-launch |
+| #4 | Multiple maze layouts | tarkin + lando | P1 | Critical for replayability, v1.0 essential, start after #1 |
+| #5 | Simpsons intermission cutscenes | wedge | P3 | Pure charm/narrative, deferred until core stable |
+| #6 | CI pipeline | jango | P1 | Unblocks velocity, tooling investment, parallel stream |
+| #7 | Ghost AI improvement | tarkin | P1 | Gameplay core (difficulty + personality), v1.0 essential |
+| #8 | Sound effects variety | greedo | P1 | Sound IS gameplay feel, v1.0 essential |
+
+**Routing Philosophy:**
+- **P0 (Critical):** Unblocks everything downstream (only #1)
+- **P1 (Ship-Blocking):** Must complete before v1.0 release (#4, #6, #7, #8). Can run in parallel.
+- **P2 (Medium):** Valuable engagement features, ship after v1.0 stable (#2, #3)
+- **P3 (Polish):** Pure charm/narrative, deferred (#5)
+
+**Key Insight — Monolithic Anti-Pattern Repeats:**
+- firstPunch: gameplay.js = 695 LOC → architecture refactor was P0
+- ComeRosquillas: game.js = 1636 LOC → architecture refactor is P0
+
+**Implication:** Studio should establish **architectural debt prevention pattern**:
+- Max 300-400 LOC per module before auto-triggering refactor review
+- Modular architecture designed upfront, not retrofitted
+- Code organization as critical as feature completion
+
+---
+
 ### 2026-03-11: Create ffs-squad-monitor Repository (Jango)
 **Date:** 2026-03-11  
 **Author:** Jango (Tool Engineer)  
