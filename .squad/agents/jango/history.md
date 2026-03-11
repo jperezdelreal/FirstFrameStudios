@@ -276,3 +276,43 @@ Implemented `/api/heartbeat` endpoint in ffs-squad-monitor (PR #6, branch `squad
 3. **Vite plugin middleware** is the right approach for dev-time APIs in this project — no need for a separate Express server.
 
 **Status:** COMPLETE. PR #6 open at github.com/jperezdelreal/ffs-squad-monitor/pull/6. Build passes. Smoke-tested locally.
+
+### 2025-07-25 — Log Viewer with SSE Streaming (ffs-squad-monitor #2)
+**Session:** Squad monitor feature build  
+**Role:** Tool Engineer — Pipeline automation, monitoring infrastructure
+
+**Task Executed:**
+Implemented log viewer component for ffs-squad-monitor (PR #8, branch `squad/2-log-viewer`). Issue #2.
+
+**What Was Built:**
+
+1. **Backend — SSE endpoint `/api/logs/stream`**
+   - Tails all `.jsonl` files in `tools/logs/` using `fs.watch` on the directory
+   - Tracks byte offsets per file to only send new lines (no re-reading entire files)
+   - Sends entries via Server-Sent Events with 15s keepalive pings
+   - Cleans up watcher and interval on client disconnect
+
+2. **Backend — `/api/logs/files`**
+   - Returns available agent names and dates extracted from log filenames (pattern: `{agent}-{YYYY-MM-DD}.jsonl`)
+   - Powers the frontend filter dropdowns
+
+3. **Backend — Enhanced `/api/logs`**
+   - Now supports `?date=` and `?agent=` query params
+   - Reads all matching log files, not just today's ralph log
+
+4. **Frontend — Real-time log viewer**
+   - SSE via `EventSource` replaces polling for logs
+   - Filter toolbar: agent dropdown, level dropdown (info/warn/error), date picker
+   - Grid layout: timestamp, color-coded level badge, agent name, message
+   - Auto-scroll follows latest entries; pauses on manual scroll up
+   - Entry count shows filtered/total in section header
+
+5. **Log level derivation** — Maps `exitCode` (0=info, non-0=error) and `consecutiveFailures` (>0 with exitCode 0=warn)
+
+**Key Technical Decisions:**
+1. **SSE over WebSocket** — Simpler protocol, sufficient for one-way log streaming, auto-reconnects natively via EventSource. No need for bidirectional communication.
+2. **Byte offset tracking** — Read only new bytes from log files instead of re-reading entire files. Prevents duplicate entries on each fs.watch trigger.
+3. **Client-side filtering** — All entries streamed to client, filtered in JS. Log volumes are low enough that server-side filtering adds complexity without benefit.
+4. **Middleware route ordering** — `/api/logs/files` and `/api/logs/stream` registered before `/api/logs` to prevent Connect prefix-matching collisions.
+
+**Status:** COMPLETE. PR #8 at github.com/jperezdelreal/ffs-squad-monitor/pull/8. Build passes.
