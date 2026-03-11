@@ -217,6 +217,26 @@
 ### 2026-03-11: Flora CI/CD and GitHub Pages Deployment (#11)
 Completed. PR #12 open on jperezdelreal/flora. CI green (23s). deploy-pages@v4 pattern.
 
+### 2026-03-11: ralph-watch v3 -- Night/Day Mode Scheduling (#167)
+**Task:** Implement automatic night/day scheduling with parallel copilot sessions, governance filter, and priority-based issue scheduling.
+
+**Deliverables:**
+1. **ralph-watch.ps1 upgraded** -- Night mode (2 parallel Start-Job sessions, 5 issues each, 2min interval) and day mode (1 session, 3 issues, 10min interval). Auto-detects via system clock; weekends always night mode.
+2. **Governance filter** -- T0 issues skipped (founder approval). T1 skipped unless labeled "approved". T2/T3 auto-assigned.
+3. **Priority scheduling** -- P0>P1>P2>P3, then repo issue count (busiest first), then game repos over hub.
+4. **Safety guards** -- Remote URL validation per round, post-session branch verification, mid-round heartbeats.
+5. **Mode logging** -- Transitions logged to JSONL, heartbeat includes mode/sessions/maxIssues.
+6. **New params** -- -Mode, -NightSessions, -DaySessions, -NightInterval, -DayInterval, -MaxIssuesPerSession.
+
+**Key Findings:**
+- PowerShell single-element array unwrapping bites again: hashtable.Count returns key count, not 1. Fixed with `,@()` return pattern.
+- Session-scoped prompts (1 repo per session) are cleaner than the old mega-prompt -- copilot focuses better.
+- ASCII-safe constraint verified: zero non-ASCII bytes in final script.
+
+**Testing:** Dry-run passed for both modes -- night shows 2 sessions with correct issue distribution, day shows 1 session with 3 issues max.
+
+**Status:** COMPLETE -- PR #169 open, branch squad/167-ralph-watch-v2
+
 
 **Task:** CI pipeline + GitHub Pages deployment for Flora (Vite + TS + PixiJS v8).
 
