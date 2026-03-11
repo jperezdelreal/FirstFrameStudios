@@ -603,3 +603,589 @@ What Was Done:
 3. Auto-wiki/devblog updates — Implement Jango's proposed automation
 4. Solo overloaded — needs role split (architecture review ≠ ops tasks)
 5. ADRs and integration testing — Evaluate and implement Solo's proposals
+
+
+---
+
+### 2026-03-11T11:20: User directive
+**By:** Joaquín (via Copilot)
+**What:** No Podcaster. No queremos integración de text-to-speech ni conversión de reports a audio.
+**Why:** User decision — out of scope for FFS.
+
+---
+
+### 2026-03-11T12:16Z: User directive — GitHub Pages architecture and purpose
+**By:** Joaquin (via Copilot)
+**What:** Each repo has its own GitHub Pages site with distinct purpose:
+- **FFS Hub Page** → Brand, identity, studio presentation. "AI Gaming Studio Hub". NOT game content.
+- **Game Pages** (ComeRosquillas, Flora, etc.) → Game showcase: screenshots, changelog, playable demo (Play button).
+- All Pages share a consistent Astro template/theme from FFS but with per-game branding/colors.
+- Updates are automated: push to main → Actions rebuild → Pages deploys.
+**Why:** User request — defines the purpose and content structure of each GitHub Pages site across the multi-repo architecture.
+
+---
+
+### 2026-03-11T12:19Z: User directive — FFS homepage and blog strategy
+**By:** Joaquin (via Copilot)
+**What:** 
+1. FFS homepage is practically perfect as-is — do NOT redesign it.
+2. FFS blog should auto-publish summarized progress updates from game repos (advances, milestones, releases).
+3. Push-to-main workflow is correct for both hub and game repos.
+**Why:** User request — preserves current hub design and establishes blog as the living chronicle of studio activity.
+
+---
+
+# Multi-Repo Studio Governance — First Frame Studios
+
+**Author:** Solo (Lead / Chief Architect)  
+**Date:** 2026-07-24  
+**Requested by:** Joaquín (Founder)  
+**Status:** ⏳ AWAITING FOUNDER APPROVAL  
+**Scope:** Studio-wide — defines how FFS operates as a multi-repo studio hub
+
+---
+
+## Preamble
+
+Joaquín asked the fundamental governance question: **how does everything flow in a multi-game studio?** This document answers that question across 9 domains. Once approved, it becomes the operating manual for First Frame Studios.
+
+**Studio Topology:**
+```
+FirstFrameStudios (Hub)
+├── jperezdelreal/ComeRosquillas  (Game repo — HTML/JS/Canvas)
+├── jperezdelreal/flora            (Game repo — Vite/TS/PixiJS, on hold)
+├── jperezdelreal/ffs-squad-monitor (Tool repo — Vite/JS)
+└── [future repos]                 (Created on demand per Repo Autonomy directive)
+```
+
+**Key Actors:**
+- **Joaquín** — Founder. Vision, direction, go/no-go decisions. Never reviews code.
+- **Solo** — Hub Lead / Chief Architect. Architecture, integration, governance.
+- **Jango** — Tool Engineer / PR Reviewer. All code reviews, CI/CD, tooling.
+- **Mace** — Producer. Sprint planning, ops, blocker tracking.
+- **Yoda** — Game Designer / Vision Keeper. Creative coherence per project.
+- **@copilot** — Coding agent. Executes well-defined tasks autonomously.
+- **Ralph** — Work Monitor. Heartbeat, scheduling, multi-repo watch.
+
+---
+
+## 1. APPROVAL FLOW
+
+### 1.1 Tiered Approval Model
+
+| Tier | What | Approver | Turnaround | Examples |
+|------|------|----------|------------|----------|
+| **T0 — Auto-Approved** | Routine work matching existing patterns | No human approval needed | Immediate | Bug fixes, test additions, dependency updates, docs updates, @copilot issue work |
+| **T1 — Agent-Reviewed** | Implementation PRs, feature work | Jango (PR Reviewer) | Same session | New features, refactors, gameplay changes, UI work, audio additions |
+| **T2 — Lead-Reviewed** | Architecture changes, cross-system work | Solo (Lead) + Jango | Same day | New systems, module restructuring, API changes, integration PRs |
+| **T3 — Founder-Decided** | Direction, vision, go/no-go | Joaquín | Async (via issue comment) | New game selection, project closure, team changes, budget decisions, this document |
+
+### 1.2 Per-Repo Approval Rules
+
+**Hub (FirstFrameStudios):**
+- Identity/principles/wisdom changes → T3 (Founder)
+- Team/routing/ceremonies changes → T2 (Solo)
+- Skills creation/updates → T1 (Jango reviews, domain expert authors)
+- Tool scripts (ralph-watch, scheduler) → T1 (Jango)
+- Decision documents → T2 (Solo proposes, Founder approves if T3)
+
+**Game Repos (ComeRosquillas, Flora, future games):**
+- Gameplay code PRs → T1 (Jango reviews)
+- Architecture decisions → T2 (Solo reviews)
+- Game-specific .squad/ config → T0 (auto-approved, game squad manages)
+- New game milestones/sprints → T2 (Mace + Solo + Yoda plan)
+- Ship/no-ship decision → T3 (Founder)
+
+**Tool Repos (ffs-squad-monitor, future tools):**
+- Implementation PRs → T1 (Jango reviews)
+- Creation of new tool repo → T0 (per Repo Autonomy directive, 2026-03-11)
+- Tool repo architecture → T1 (Jango, since tool repos are Jango's domain)
+
+### 1.3 Does Every PR Need Approval?
+
+**Yes, but the level varies:**
+- **T0 PRs** (bug fixes, docs, tests): Jango can fast-track approve or @copilot can self-merge if `copilot-auto-assign: true` is set and CI passes.
+- **T1 PRs** (features): Jango reviews. One approval required. No Joaquín involvement.
+- **T2 PRs** (architecture): Solo + Jango both review. Two approvals required.
+- **T3 PRs** (governance): Joaquín approves via issue comment. Squad implements.
+
+### 1.4 Can Game Repos Self-Approve?
+
+**Yes, within bounds.** Game squads operate autonomously for T0 and T1 work:
+- Game-internal features, bugs, and content → self-approved by game squad's reviewer (Jango)
+- Cross-repo changes (upstream sync, shared tool integration) → Hub review (Solo)
+- Game closure/archival → Founder decision (T3)
+
+**Rule:** If the change stays inside the game repo and doesn't affect studio identity, skills, or team structure, the game squad approves it. If it flows upstream, Hub reviews.
+
+---
+
+## 2. AUTONOMY LEVELS
+
+### 2.1 Autonomy Matrix by Repo Type
+
+| Autonomy Level | Hub | Game Repo | Tool Repo |
+|----------------|-----|-----------|-----------|
+| **Full Autonomy** (no ask needed) | Tool scripts, orchestration logs, session logs | Gameplay code, game-specific bugs, local .squad/ config, issue creation, sprint execution | All implementation, architecture, issues, releases |
+| **Notify Hub** (do it, then tell) | Skill updates, ceremony changes | New milestone start, dependency on hub skill, architecture deviations | Integration points with other repos |
+| **Ask Hub** (propose, wait for approval) | Identity/principle changes, team roster changes | Cross-repo PRs, requests for new hub skills, requests for team changes | N/A — tool repos are fully autonomous |
+| **Ask Founder** (escalate to Joaquín) | New game selection, project closures, budget | Ship decisions, IP/brand decisions | N/A |
+
+### 2.2 What Can a Game Squad Do WITHOUT Asking the Hub?
+
+1. ✅ Create issues, plan sprints, assign work within the game repo
+2. ✅ Implement features, fix bugs, write tests, ship builds
+3. ✅ Create game-specific .squad/ config, skills, and decisions
+4. ✅ Merge PRs after Jango review (T1)
+5. ✅ Create side-tool repos if needed (per Repo Autonomy directive)
+6. ✅ Run ceremonies (retrospectives, design reviews, playtests)
+7. ✅ Update game-specific documentation and README
+8. ✅ Deploy to GitHub Pages or other hosting
+
+### 2.3 What MUST Escalate to the Hub?
+
+1. 🔺 Changes to studio identity (principles, mission, company identity)
+2. 🔺 Requests for new studio-wide skills or skill modifications
+3. 🔺 Team roster changes (wake hibernated agents, create new agents)
+4. 🔺 Cross-repo dependencies (game A needs something from game B)
+5. 🔺 Architecture patterns that should become studio standards
+6. 🔺 Project closure, archival, or significant scope changes
+7. 🔺 Any change to upstream-inherited content
+
+### 2.4 @copilot Auto-Assign
+
+**Current state:** `copilot-auto-assign: false` in team.md.
+
+**Recommended policy:**
+- **Hub repo:** Keep `false`. Hub work is governance/architecture — not @copilot's strength (🔴 per capability profile).
+- **Game repos:** Set to `true` for issues labeled `squad:copilot`. Well-defined game tasks (HTML/JS/Canvas, TypeScript/Vite, PixiJS) are @copilot's sweet spot (🟢).
+- **Tool repos:** Set to `true`. Tool implementation is straightforward and well-scoped.
+
+**Guard rail:** @copilot PRs still require Jango review before merge. Auto-assign means auto-pickup, not auto-merge. The Lead triages which issues get `squad:copilot` per the routing table in routing.md.
+
+---
+
+## 3. SKILL FLOW BETWEEN REPOS
+
+### 3.1 How Skills Move Between Games
+
+```
+Game A discovers pattern → Game A writes draft skill → Hub reviews → Hub curates → All games inherit
+```
+
+**Step-by-step:**
+1. **Discovery:** During game development, an agent identifies a reusable pattern (e.g., "procedural maze generation for arcade games").
+2. **Draft:** The agent writes a draft skill in the game repo at `.squad/skills/{skill-name}/SKILL.md` (per Self-Improvement charter section).
+3. **Proposal:** Agent creates an issue in the Hub repo: `[Skill Proposal] {skill-name}` with link to draft.
+4. **Review:** Solo reviews for studio-wide applicability. Yoda validates game design relevance. Jango checks technical quality.
+5. **Promotion:** If approved, the skill is moved to the Hub's `.squad/skills/` directory and added to the skills index.
+6. **Inheritance:** All game repos receive the skill on next `squad upstream sync`.
+
+### 3.2 Studio Skills (Hub-Curated)
+
+The Hub maintains **studio skills** — patterns proven across 2+ projects or deemed universally applicable. These live in `.squad/skills/` and are indexed.
+
+**Current studio skills:** 41 skills across game design, audio, animation, level design, enemy design, studio craft, engine patterns, and more.
+
+**Categorization for inheritance:**
+
+| Category | Inherited By | Examples |
+|----------|-------------|---------|
+| **Universal** (all games) | All game repos | game-feel-juice, studio-craft, ui-ux-patterns, procedural-audio |
+| **Genre-Specific** (opt-in) | Games in that genre | beat-em-up-combat, arcade-game-patterns |
+| **Tech-Specific** (opt-in) | Games using that stack | canvas-2d-optimization, vite-typescript-patterns |
+| **Archived** | None (reference only) | godot-beat-em-up-patterns, godot-tooling |
+
+### 3.3 When a Game Discovers a Pattern
+
+**Threshold for promotion:** A pattern becomes a studio skill when:
+1. It solved a real problem in a shipped game (not theoretical)
+2. It's documented with examples (not just a vague principle)
+3. It applies to at least one other game genre/stack (or is demonstrably universal)
+4. An agent explicitly proposes it (patterns don't promote themselves)
+
+**Anti-pattern:** "This pattern works in ComeRosquillas so let's make it a studio skill." → Does it apply to Flora? To a future 3D game? If it's Pac-Man-specific, it stays in ComeRosquillas.
+
+### 3.4 `squad upstream sync` — When and How
+
+**When to sync:**
+- After Hub identity changes (principles, wisdom, quality-gates)
+- After new studio skills are approved
+- At project kickoff (fresh sync before Sprint 0)
+- Monthly maintenance sync (drift prevention)
+
+**How to sync (until squad-cli ships native upstream):**
+```powershell
+# From game repo root
+cd "C:\Users\joperezd\GitHub Repos\ComeRosquillas"
+
+# Sync identity (upstream wins)
+Copy-Item "..\FirstFrameStudios\.squad\identity\principles.md" ".squad\upstream\identity\"
+Copy-Item "..\FirstFrameStudios\.squad\identity\wisdom.md" ".squad\upstream\identity\"
+Copy-Item "..\FirstFrameStudios\.squad\identity\quality-gates.md" ".squad\upstream\identity\"
+
+# Update skills index
+Copy-Item "..\FirstFrameStudios\.squad\skills\INDEX.md" ".squad\upstream\skills\"
+
+# Update timestamp
+# Edit .squad/upstream/manifest.json → last_synced: (current ISO 8601)
+```
+
+**Who syncs:** Jango (Tool Engineer) owns the sync process. Mace tracks sync dates in ceremony checklists.
+
+---
+
+## 4. HUB'S ROLE IN GAME DEVELOPMENT
+
+### 4.1 What Does the Hub Squad DO During Active Game Dev?
+
+The Hub is **not idle** during game development. It operates as the **studio brain**:
+
+| Hub Activity | Owner | Cadence |
+|-------------|-------|---------|
+| Skill curation and growth | Solo + domain experts | Ongoing — as proposals arrive |
+| Cross-project pattern recognition | Solo | Per milestone review |
+| Team health monitoring | Mace | Weekly |
+| Tool development and maintenance | Jango | As needed |
+| Ralph multi-repo watch | Ralph | Continuous (when activated) |
+| Studio ceremonies (kickoff, ship, postmortem) | Solo + Yoda + Mace | Per lifecycle event |
+| Upstream sync to game repos | Jango | Monthly + on-change |
+| Quality gate evolution | Solo + Ackbar | Post-milestone |
+| Dashboard/monitor maintenance | Jango | As needed |
+
+### 4.2 Does Solo Review Game PRs?
+
+**Only T2 PRs** (architecture changes). Solo does NOT review routine game PRs:
+- **Jango** reviews all T0 and T1 PRs (bug fixes, features, content)
+- **Solo** reviews T2 PRs (new systems, module restructuring, cross-system integration)
+- **Solo** performs integration gate verification after parallel agent waves
+
+**Rationale:** Per the Jango-Solo role split decision (2026-03-09), Solo does deep architecture work. Routine PR review is Jango's domain. Context-switching between architecture and line-by-line review degrades both.
+
+### 4.3 How Does Hub Identity/Wisdom Flow Downstream?
+
+Three mechanisms:
+
+1. **Upstream sync** — Identity files (principles, wisdom, quality-gates) copied to game repos. Upstream wins on conflicts.
+2. **Agent charters** — All agents carry studio-scoped charters that reference hub principles. Charters travel with the agent regardless of which repo they work in.
+3. **Ceremony outputs** — Kickoff ceremony includes "read the principles" step. Retrospective outputs flow back to hub as lessons. Skills flow through promotion pipeline.
+
+### 4.4 Does the Hub Create Issues for Games?
+
+**Both models coexist:**
+
+| Issue Source | Where Filed | Examples |
+|-------------|------------|---------|
+| Game squad self-manages | Game repo | Bugs, features, sprint work, playtesting |
+| Hub identifies cross-project issue | Hub repo (tagged `game:{name}`) | Upstream sync needed, skill gap identified, pattern to promote |
+| Founder requests | Game repo (if game-specific) or Hub (if studio-wide) | "Add mobile controls", "Ship by Friday" |
+| Ralph/Scheduler creates | Game repo | Recurring tasks (weekly playtest, backlog grooming) |
+
+**Rule:** Games are self-managing by default. The Hub intervenes when it spots cross-project patterns, upstream drift, or quality gate failures that the game squad missed.
+
+---
+
+## 5. SIDE PROJECT LIFECYCLE
+
+### 5.1 When a Game Needs a New Tool
+
+**Per the Repo Autonomy directive (2026-03-11):** Any agent can create a public repo for a side project without prior approval. They decide the name, agent assignments, and everything needed.
+
+**Process:**
+1. Agent identifies need (e.g., "we need a sprite consistency checker")
+2. Agent creates repo under `jperezdelreal/` (or proposes under `FirstFrameStudios/` org if created)
+3. Agent runs `squad init` in the new repo
+4. Agent sets up `squad upstream add FirstFrameStudios` for inherited context
+5. Agent creates initial issues and starts building
+6. Agent notifies Hub (issue in FFS: `[New Tool] {tool-name} created`)
+
+### 5.2 Where Is Tool Development Tracked?
+
+**In the tool repo itself.** The tool is a first-class project with its own issues, PRs, and milestones.
+
+**Hub tracking:** The Hub maintains a reference in `team.md` (Active Projects table) and `routing.md` (Multi-Repo Issue Routing). Hub does NOT duplicate the tool's issue board.
+
+**Cross-reference:**
+- Tool repo README links back to FFS as parent studio
+- FFS team.md lists the tool repo with status
+- Ralph's multi-repo watch includes tool repos
+
+### 5.3 How Tools Get Shared Across Games
+
+1. **NPM/package:** If the tool is a library, publish to npm or use git submodule
+2. **Script copy:** If the tool is a script (like integration-gate.py), copy to game repos that need it
+3. **Studio skill:** If the tool embodies a pattern, promote the pattern to a hub skill
+4. **Direct dependency:** If the tool is a standalone app (like squad-monitor), games don't depend on it — it reads from them
+
+**Rule:** Tools should be **read-only observers** of game repos where possible (like squad-monitor reads heartbeat data but never writes to game repos). This prevents coupling.
+
+---
+
+## 6. CEREMONY SCHEDULE
+
+### 6.1 Studio Ceremony Calendar
+
+| Ceremony | When | Facilitator | Participants | Output |
+|----------|------|-------------|-------------|--------|
+| **Project Kickoff** | When Founder greenlights a new game | Solo (Lead) | Solo + Yoda + Mace + Jango + Joaquín | Repo created, squad initialized, Sprint 0 plan, architecture proposal, GDD skeleton |
+| **Sprint Planning** | Start of each sprint (biweekly) | Mace (Producer) | Mace + Yoda + Solo | Sprint scope, assignments, milestone, success criteria |
+| **Mid-Sprint Review** | Midpoint of sprint | Mace (Producer) | Mace + active agents | Progress check, blocker identification, scope adjustment |
+| **Sprint Retrospective** | End of each sprint | Solo (Lead) | All involved agents | 5 went-right / 5 went-wrong, action items, lessons for hub |
+| **Integration Gate** | After parallel agent waves | Solo (Architect) | Solo + Ackbar | Systems verified connected, blockers documented |
+| **Ship Ceremony** | When a game is "done" | Yoda (Vision Keeper) | Full team + Joaquín | Ship decision, release checklist, launch announcement |
+| **Post-Mortem** | After project closure | Solo (Lead) | Full team | Lessons document, skill proposals, process improvements |
+| **Next Project Selection** | After post-mortem + cooldown | Yoda (Game Designer) | Full team proposals, Joaquín decides | Game proposals ranked, Founder selects, kickoff scheduled |
+| **Monthly Upstream Sync** | First Monday of month | Jango (Tool Engineer) | Jango | All game repos synced with latest hub identity/skills |
+| **Quarterly Studio Review** | Every 3 months | Mace (Producer) | Solo + Mace + Joaquín | Studio health metrics, team assessment, strategic direction |
+
+### 6.2 Ceremony Details
+
+#### Project Kickoff (Solo facilitates)
+
+**Trigger:** Joaquín greenlights a new game from the proposals list.
+
+**Agenda (Day 1-2):**
+1. Create game repo under `jperezdelreal/`
+2. Run `squad init --no-workflows` (or full init when CLI supports it)
+3. Set up `squad upstream` connection to FFS hub
+4. Yoda drafts Game Design Document skeleton
+5. Solo delivers Architecture v1.0 (per New Project Playbook)
+6. Mace creates Sprint 0 plan with milestones and success criteria
+7. Jango sets up CI/CD, issue templates, labels, workflows
+8. Team reads principles.md (required — Principle #12)
+9. Hub issue: `[Kickoff Complete] {game-name}` with all links
+
+**Output:** Playable repo with architecture locked, GDD skeleton, Sprint 0 plan, CI green, upstream connected.
+
+#### Ship Ceremony (Yoda facilitates)
+
+**Trigger:** Game meets ship criteria (defined in Sprint N's Definition of Success).
+
+**Agenda:**
+1. Yoda performs final Vision Keeper review: "Does this feel like THIS game?"
+2. Ackbar runs full smoke test on target platform(s)
+3. Solo verifies integration gate passes
+4. Mace confirms all milestone issues closed
+5. Joaquín gives ship/no-ship decision (T3)
+6. If ship: Jango triggers release workflow, Mace posts Dev Diary, Mace updates Wiki
+7. Celebration. The team earned it.
+
+**Output:** Released game, Dev Diary post, Wiki milestone entry, release tag.
+
+#### Post-Mortem (Solo facilitates)
+
+**Trigger:** After Ship Ceremony or after project closure/archival.
+
+**Agenda (per Principle #15):**
+1. Each agent contributes "5 went right / 5 went wrong" (async, before ceremony)
+2. Solo synthesizes into patterns
+3. Identify skills to promote to hub
+4. Identify process improvements for next project
+5. Write lessons to `.squad/analysis/{game}-postmortem.md`
+6. Create action items as Hub issues
+
+**Output:** Postmortem document, skill proposals, process improvement issues, updated hub wisdom.
+
+#### Next Project Selection (Yoda facilitates)
+
+**Trigger:** After post-mortem cooldown (minimum 1 day, recommended 1 week).
+
+**Agenda:**
+1. Yoda calls for proposals: each agent may submit 1-3 game concepts
+2. Proposals scored on: AI-friendliness, scope (MVP ≤ 4 weeks), visual impact, learning opportunity, viral potential
+3. Top 5 presented to Joaquín with ranked recommendations
+4. Joaquín selects (T3 decision)
+5. Project Kickoff ceremony scheduled
+
+**Output:** Ranked proposals document, Founder selection, kickoff date.
+
+---
+
+## 7. PROJECT LIFECYCLE
+
+### 7.1 When a Game Is DONE
+
+**"Done" means one of two states:**
+
+#### State A: SHIPPED ✅
+The game is released, playable, and the team is satisfied.
+
+**Post-ship checklist:**
+1. ✅ Release tag created (`v1.0.0`)
+2. ✅ GitHub Pages deployment live (or other hosting)
+3. ✅ All milestone issues closed with `Closes #N`
+4. ✅ Post-Mortem ceremony completed
+5. ✅ Lessons promoted to hub skills (where applicable)
+6. ✅ Dev Diary final post published
+7. ✅ Wiki updated with final status
+8. ✅ Repo stays **ACTIVE** for patches and maintenance
+9. ✅ README updated with "Released" badge and play link
+
+**The repo does NOT get archived.** Shipped games may receive patches, community fixes, and minor updates. The repo goes into **maintenance mode** — new features are unlikely, but bugs get fixed.
+
+#### State B: SHELVED 📦
+The game is abandoned before shipping (like Ashfall).
+
+**Post-shelve checklist:**
+1. ✅ Post-Mortem ceremony completed (this is MORE important for shelved games)
+2. ✅ Lessons promoted to hub skills aggressively (this is the game's legacy)
+3. ✅ All useful patterns extracted before archival
+4. ✅ Repo marked as archived on GitHub (Settings → Archive)
+5. ✅ Hub team.md updated: project status → ✅ ARCHIVED
+6. ✅ Final decision document explaining WHY it was shelved
+7. ✅ Game-specific agents hibernated (if they have no cross-game role)
+
+### 7.2 How Is the NEXT Game Selected?
+
+**Who proposes:** Any agent on the team. Agents are encouraged to research trends, analyze what's working in the indie space, and propose games that match FFS strengths.
+
+**Who decides:** Joaquín (Founder). Always. T3 decision. The team recommends, the Founder chooses.
+
+**Game Jam option:** Yoda can propose a "48-hour game jam" ceremony where 3-4 agents each prototype a different game concept. The prototypes are played, and the best one becomes the next project. This is optional — Joaquín can also just pick from written proposals.
+
+**Timeline from idea to repo:**
+
+| Step | Time | Who |
+|------|------|-----|
+| Proposal written | 1-2 hours | Any agent |
+| Team review & ranking | 1 session | Yoda facilitates, all agents vote |
+| Founder selects | Async | Joaquín |
+| Repo created + squad init | 30 minutes | Jango |
+| Upstream connected | 15 minutes | Jango |
+| Architecture v1.0 | 2-4 hours | Solo |
+| GDD skeleton | 2-4 hours | Yoda |
+| Sprint 0 plan | 1-2 hours | Mace |
+| **Total: Idea → Building** | **~1-2 days** | — |
+
+---
+
+## 8. LOGGING AND OBSERVABILITY
+
+### 8.1 Where Each Layer Logs
+
+| Layer | Log Location | Format | Owner |
+|-------|-------------|--------|-------|
+| **Hub orchestration** | `.squad/orchestration-log/` | Markdown per session (`{date}-{agent}.md`) | Solo |
+| **Hub tools** | `tools/logs/` | Structured JSON (ralph heartbeat, scheduler state) | Ralph / Jango |
+| **Hub sessions** | `.squad/sessions/` | Session artifacts | Scribe |
+| **Hub decisions** | `.squad/decisions/` + `.squad/decisions/inbox/` | Markdown decision docs | All agents |
+| **Game repo squad** | Game's `.squad/log/` | Game-specific session logs | Game squad |
+| **Game repo CI** | GitHub Actions logs | Standard CI output | Jango / GitHub |
+| **Ralph heartbeat** | `tools/logs/heartbeat.json` | `{timestamp, repos_checked, issues_found, status}` | Ralph |
+| **Ralph structured logs** | `tools/logs/ralph-{date}.jsonl` | One JSON object per line, per action | Ralph |
+
+### 8.2 Cross-Repo Visibility
+
+| Reader | Can Read | Cannot Read |
+|--------|----------|-------------|
+| **Hub agents** | All Hub logs, game repo public logs (via git clone/API) | Game repo local-only files |
+| **Game agents** | Own repo logs, Hub upstream identity/skills (via sync) | Other game repo logs, Hub orchestration logs |
+| **Ralph** | All repos (multi-repo watch), all heartbeat files | N/A — Ralph reads everything |
+| **Joaquín** | Everything (founder access to all repos) | N/A |
+| **Squad Monitor** | Hub + game heartbeat.json, ralph logs | Agent session content (too verbose) |
+
+### 8.3 Monitor Dashboard Aggregation
+
+**ffs-squad-monitor** aggregates by reading:
+1. `heartbeat.json` from each repo (polling or webhook)
+2. GitHub API for issue counts, PR status, CI status per repo
+3. Ralph's structured logs for activity timeline
+
+**Dashboard views (planned):**
+- **Studio Overview:** All repos, their status, last activity
+- **Agent Activity:** Who did what, when (from orchestration logs)
+- **Issue Burndown:** Open/closed per repo over time
+- **CI Health:** Green/red status per repo
+- **Heartbeat Timeline:** When Ralph last checked each repo
+
+---
+
+## 9. BRAND AND QUALITY GUIDELINES
+
+### 9.1 Studio-Level Rules (ALL Games Must Follow)
+
+#### Code Standards
+| Rule | Enforcement | Details |
+|------|-------------|---------|
+| **Branch naming** | CI check (label-enforce workflow) | `squad/{issue-number}-{slug}` |
+| **Commit format** | Convention (CONTRIBUTING.md) | `type(scope): description` — types: feat, fix, chore, docs, style, refactor, test |
+| **PR template** | Required | `Closes #N` MUST be in body. Agent name in description. |
+| **PR review required** | Branch protection | Minimum 1 approval (Jango for T1, Solo+Jango for T2) |
+| **CI must pass** | Branch protection | No merge with red CI |
+| **No unused infrastructure** | PR review gate (Quality Gate C5) | Every system created must be wired to at least one consumer |
+
+#### Issue Conventions
+| Rule | Details |
+|------|---------|
+| **Labels** | `type:bug`, `type:feature`, `type:chore`, `priority:P0-P3`, `squad:{agent}`, `game:{name}` |
+| **TLDR convention** | Every issue comment by an agent starts with a `**TLDR:**` line. Joaquín reads TLDRs only. |
+| **Issue template** | Use `.github/ISSUE_TEMPLATE/squad-task.yml` for squad work |
+| **Stale issue cleanup** | Issues untouched for 14 days get `status:stale` label (via workflow) |
+
+#### README Structure (All Repos)
+Every FFS repo README must include:
+1. **Game/tool name + one-line description**
+2. **Play/demo link** (GitHub Pages or equivalent)
+3. **Screenshot or GIF** (visual-first — Principle #4: Ship the Playable)
+4. **Tech stack badge(s)**
+5. **"Part of First Frame Studios"** with link to hub repo
+6. **Development section** (how to run locally, how to contribute)
+7. **Squad section** (team members, how issues work)
+
+#### Visual Identity
+| Element | Standard |
+|---------|----------|
+| **Studio name** | "First Frame Studios" (always full name in READMEs and about pages) |
+| **Tagline** | "Forged in Play" (optional, for marketing materials) |
+| **Repo descriptions** | Include "First Frame Studios" or "FFS" for discoverability |
+| **Dev Diary branding** | `🔥 Dev Diary #X:` format (Mace's established convention) |
+
+### 9.2 How Are These Enforced?
+
+| Mechanism | What It Enforces | Where |
+|-----------|-----------------|-------|
+| **Upstream sync** | Identity, principles, quality gates | All game repos (via .squad/upstream/) |
+| **GitHub Actions workflows** | Branch naming, label enforcement, stale issues, CI, heartbeat | Per repo (copied from hub templates) |
+| **PR review** | Code quality, commit format, PR template, TLDR | Jango reviews all PRs |
+| **Ceremonies** | Process adherence, retrospective lessons | Solo/Mace facilitate |
+| **Agent charters** | Domain expertise, skill references, self-improvement protocol | .squad/agents/{name}/charter.md |
+| **CONTRIBUTING.md** | Workflow documentation, branch naming, commit format, label system | Per repo (synced from hub template) |
+
+### 9.3 What's NOT Standardized (Game Autonomy)
+
+Games have full freedom over:
+- Art style and visual direction (per-game identity)
+- Tech stack choice (HTML/Canvas, Vite/TS/PixiJS, future engines)
+- Game-specific mechanics and design decisions
+- Internal file structure and module organization
+- Game-specific CI/CD beyond the baseline
+- Marketing and community engagement approach
+
+---
+
+## Summary: The Three Laws of FFS Governance
+
+1. **Games are autonomous, Hub is authoritative.** Games run their own sprints, merge their own PRs, and manage their own issues. The Hub owns identity, skills, quality standards, and team composition.
+
+2. **Everything escalates by tier, nothing escalates by default.** T0 auto-approves. T1 goes to Jango. T2 goes to Solo. T3 goes to Joaquín. When in doubt, check the tier table.
+
+3. **Knowledge flows up and down.** Patterns discovered in games flow UP to hub skills. Identity and standards flow DOWN via upstream sync. Ralph watches everything. The monitor shows everything. Nothing is siloed.
+
+---
+
+## Approval
+
+This document requires Founder approval (T3) to become active.
+
+**To approve:** Comment on the Hub issue with "APPROVED" or "APPROVED WITH CHANGES: {details}".
+
+**Once approved:**
+- This document moves from `.squad/decisions/inbox/` to `.squad/decisions/`
+- All game repos receive a sync with the new governance rules
+- routing.md and team.md are updated to reference this document
+- Mace adds ceremony schedule to project board
+
+---
+
+*Written by Solo (Lead / Chief Architect) — First Frame Studios*  
+*"The studio grows when the rules are clear enough to follow and flexible enough to not need exceptions."*

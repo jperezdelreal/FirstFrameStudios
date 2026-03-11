@@ -509,3 +509,39 @@ Infrastructure is 80% built; activation gap is the real blocker. ralph-watch.ps1
 **Deliverable:** `.squad/decisions/inbox/solo-studio-restructure-ceremony.md` — full 7-area audit with specific files, counts, and prioritized actions.
 
 **Status:** AWAITING FOUNDER APPROVAL
+
+---
+
+### 2026-07-24: Multi-Repo Studio Governance Document
+
+**Ceremony Type:** Governance Architecture — Studio-Wide Operating Manual  
+**Requested by:** Joaquín  
+**Scope:** Defines how FFS operates as a multi-repo studio hub across 9 governance domains
+
+**Context:** Joaquín asked the fundamental governance question — how does everything flow in a multi-game studio? This is not a quick answer; it's the operating manual.
+
+**Deliverable:** `.squad/decisions/inbox/solo-multi-repo-governance.md` (~28 KB, 9 sections)
+
+**Key Decisions Proposed:**
+
+1. **Tiered Approval Model (T0-T3):** T0 auto-approved (bugs/docs), T1 Jango reviews (features), T2 Solo+Jango (architecture), T3 Joaquín decides (direction/vision). Every PR needs approval but the LEVEL varies.
+
+2. **Game Repos Are Autonomous for T0-T1 Work.** Games manage their own sprints, issues, and PRs. Cross-repo changes and identity modifications escalate to Hub.
+
+3. **@copilot auto-assign: `true` in game/tool repos, `false` in hub.** Hub work is governance — not @copilot's strength. Game tasks are implementation — @copilot's sweet spot.
+
+4. **Skill Promotion Pipeline:** Game discovers pattern → drafts skill → proposes to Hub → Solo reviews → approved skill synced to all games via upstream.
+
+5. **Hub Role During Game Dev:** Skill curation, cross-project pattern recognition, tool maintenance, Ralph multi-repo watch, upstream sync, ceremony facilitation. Hub is the studio brain, not idle.
+
+6. **Solo Reviews Only T2 PRs.** Routine game PRs are Jango's domain. Solo does architecture reviews and integration gate verification only.
+
+7. **Six Studio Ceremonies Defined:** Project Kickoff (Solo), Sprint Planning (Mace), Sprint Retro (Solo), Ship Ceremony (Yoda), Post-Mortem (Solo), Next Project Selection (Yoda + Joaquín decides).
+
+8. **Shipped Games Stay Active** (maintenance mode, not archived). Shelved games get archived after aggressive lesson extraction.
+
+9. **Idea-to-Building Timeline: ~1-2 days.** Proposal → Team review → Founder selects → Repo + squad init + upstream + architecture + GDD + Sprint 0 plan.
+
+10. **Three Laws of FFS Governance:** (1) Games autonomous, Hub authoritative. (2) Everything escalates by tier, nothing by default. (3) Knowledge flows up and down.
+
+**Status:** AWAITING FOUNDER APPROVAL
