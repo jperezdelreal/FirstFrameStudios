@@ -10,6 +10,45 @@ scope: Studio hub managing active projects via upstream. No game code lives here
 
 # Now
 
+## Next Session Plan (Session 3)
+
+**Start with:** "Continuemos"
+
+### Step 1: Ralph ON (5 min)
+- Fix schedule.json emojis (ASCII-safe)
+- Start ralph-watch.ps1 in persistent mode (-MaxRounds 0)
+- Close issue #152
+
+### Step 2: Game Development — ALL repos in parallel
+Ralph scans all repos and picks up open issues. The squad works on:
+
+**ComeRosquillas** (8 open issues → ship to v1.0):
+- Existing issues #1-#8 cover gameplay polish, UI, audio, mobile
+- Goal: first shipped game from the studio
+- Pages already live at jperezdelreal.github.io/ComeRosquillas/
+
+**Flora** (Kickoff → Sprint 0):
+- T3 already approved (Joaquin selected Flora)
+- Solo runs Kickoff ceremony (T2, no founder needed)
+- Yoda drafts GDD, Solo does architecture, Jango sets up CI/Pages
+- Stack: Vite + TypeScript + PixiJS v8
+
+**Squad Monitor** (5 open issues):
+- Vite dashboard for agent activity
+- Jango owns, low priority vs games
+
+### Step 3: Founder role
+- Joaquin does NOT need to approve anything until ship/no-ship
+- All work is T0-T2 (auto-approved or agent-reviewed)
+- Check Status page and Board when curious
+- Say "Ralph, status" anytime for a snapshot
+
+### Key URLs
+- Hub: https://jperezdelreal.github.io/FirstFrameStudios/
+- Status: https://jperezdelreal.github.io/FirstFrameStudios/status/
+- ComeRosquillas: https://jperezdelreal.github.io/ComeRosquillas/play/
+- Board: https://github.com/users/jperezdelreal/projects/5
+
 ## Current Focus
 FFS is the **Studio Hub** — no game code, only studio infrastructure. Games live in their own repos and inherit via `squad upstream`.
 
