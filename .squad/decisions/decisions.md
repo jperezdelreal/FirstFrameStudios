@@ -3003,3 +3003,100 @@ Joaquín — please review and approve/modify. Upon approval, Solo will orchestr
 
 *Prepared by Solo (Lead / Chief Architect) — 2026-07-24*
 
+
+---
+
+## Decision: Game Pages Template and Blog Automation Skills
+
+**Author:** Chewie  
+**Date:** 2026-03-11T12:21Z  
+**Status:** Approved  
+
+### Summary
+
+Two new skills created to standardize and automate web presence across game repositories:
+
+1. **game-pages-template** — Reusable Astro Pages template for consistent showcase sites across all game repos
+2. **blog-automation** — Auto-generated blog posts from ceremonies, milestones, and releases
+
+### Rationale
+
+Enables any new game repository to quickly set up branded Pages with proper styling and structure. Ensures the hub blog stays current with game progress through automated feed generation.
+
+### Impact
+
+- Standardized web presence across FFS Studio projects
+- Reduced setup time for new games
+- Hub blog automatically reflects game milestones and releases
+
+---
+
+## Decision: User Directive — Scroll Animations Standard
+
+**Author:** Joaquín (via Copilot)  
+**Date:** 2026-03-11T13:30Z  
+**Status:** Active Directive  
+**Type:** UX/Design Authority
+
+### Directive
+
+The fade-in scroll animations and hover glow effects from the Status page v2 must be applied to **ALL Pages** sites:
+- FFS Hub
+- ComeRosquillas
+- Flora
+- Future games
+
+### Rationale
+
+These animations are:
+- **Aesthetic**: Visually polished and modern
+- **Non-intrusive**: Don't distract from content
+- **User-requested**: Joaquín directive
+
+Establishes a consistent visual animation standard across the studio's entire web presence.
+
+### Scope
+
+Apply to all Astro-based Pages repositories. Consider this a platform standard, not project-specific.
+
+### Implementation
+
+Add scroll animations and hover effects to all .astro components across ComeRosquillas, Flora, and future Pages sites.
+
+---
+
+## Decision: ASCII-Safe schedule.json for PowerShell 5.1
+
+**Date:** 2026-03-11  
+**Owner:** Jango (Tool Engineer)  
+**Issue:** #153  
+**Status:** Implemented
+
+### Problem
+
+Windows PowerShell 5.1 reads .ps1 files using Windows-1252 encoding (no UTF-8 BOM). When ralph-watch.ps1 parses schedule.json, emoji UTF-8 bytes and em-dashes become garbled smart quotes, breaking JSON parsing.
+
+### Solution
+
+Replaced all non-ASCII characters in 	ools/scheduler/schedule.json:
+
+| Character | Replacement | Occurrences |
+|-----------|------------|-------------|
+| 🎮 | [GAME] | Daily Playtest title |
+| 📋 | [LOG] | Weekly Retro title |
+| 🧹 | [MAINT] | Backlog Grooming title |
+| 🌐 | [TEST] | Browser Compat Check title |
+| — (em-dash U+2014) | -- (double hyphen) | All 4 titles |
+
+### Outcome
+
+✅ All emoji replaced with descriptive ASCII tags (brackets preserve readability)  
+✅ All em-dashes converted to double hyphens  
+✅ JSON validated with ConvertFrom-Json (PowerShell 5.1 compatible)  
+✅ Scheduled tasks remain semantically correct for issue creation  
+
+### Future Implications
+
+- schedule.json is now 100% ASCII-safe for Windows PowerShell 5.1
+- ralph-watch.ps1 can safely parse and execute scheduled tasks without encoding errors
+- Any future JSON config files in tools/ should follow this ASCII-first convention per history.md guidelines
