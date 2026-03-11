@@ -42,6 +42,7 @@ Built with [Squad v0.8.25](https://github.com/bradygaster/squad) — Star Wars u
 
 ## Quick Links
 
+- 🌐 [**Studio Blog**](https://jperezdelreal.github.io/FirstFrameStudios/) — Dev blog with project updates and studio learnings
 - [New Project Proposals](/.squad/analysis/new-project-proposals-2026-03-10.md)
 - [Studio Principles](/.squad/identity/mission-vision.md)
 - [Team Wisdom](/.squad/identity/wisdom.md)

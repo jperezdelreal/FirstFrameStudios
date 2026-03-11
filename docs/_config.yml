@@ -1,0 +1,34 @@
+title: First Frame Studios
+description: >-
+  AI-powered game development studio — shipping games with a 15-agent Squad team.
+  Dev blog, project updates, and studio learnings.
+baseurl: ""
+url: "https://jperezdelreal.github.io/FirstFrameStudios"
+
+theme: minima
+
+author:
+  name: First Frame Studios
+  email: ""
+
+header_pages:
+  - about.md
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+show_excerpts: true
+
+permalink: /blog/:year/:month/:day/:title/
+
+defaults:
+  - scope:
+      path: "_posts"
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+    values:
+      layout: "default"
