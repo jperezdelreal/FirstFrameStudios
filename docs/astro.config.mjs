@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://jperezdelreal.github.io',
-  base: '/FirstFrameStudios',
+  base: '/FirstFrameStudios/',
   output: 'static',
   vite: {
     plugins: [tailwindcss()],
