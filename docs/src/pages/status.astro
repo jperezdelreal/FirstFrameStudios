@@ -455,17 +455,6 @@ const timeline = [
 
   <!-- Client-side scripts for animations -->
   <script>
-    // Fade-in on scroll via IntersectionObserver
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.fade-on-scroll').forEach(el => observer.observe(el));
-
     // Animated counters for hero stats
     const counterObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
