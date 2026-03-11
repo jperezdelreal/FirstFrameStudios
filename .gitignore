@@ -1,5 +1,6 @@
 # Archived games stay local, not on GitHub
 games/
+!games/comerosquillas/
 
 # Godot
 .godot/
