@@ -1,0 +1,40 @@
+{
+  "tasks": [
+    {
+      "id": "daily-playtest-reminder",
+      "name": "Daily Playtest Reminder",
+      "trigger": { "type": "cron", "expression": "0 18 * * 1-5" },
+      "action": {
+        "type": "github-issue",
+        "title": "🎮 Daily Playtest — {date}",
+        "body": "Play the latest build for 5 minutes. Report: what works, what's broken, what feels off.",
+        "labels": ["squad", "squad:ackbar", "type:task", "p2-medium"]
+      },
+      "enabled": true
+    },
+    {
+      "id": "weekly-retro",
+      "name": "Weekly Retrospective",
+      "trigger": { "type": "cron", "expression": "0 16 * * 5" },
+      "action": {
+        "type": "github-issue",
+        "title": "📋 Weekly Retro — Week of {date}",
+        "body": "What shipped this week? What blocked? What should change? What's the plan for next week?",
+        "labels": ["squad", "squad:mace", "type:task", "p1-high"]
+      },
+      "enabled": true
+    },
+    {
+      "id": "backlog-grooming",
+      "name": "Backlog Grooming",
+      "trigger": { "type": "cron", "expression": "0 10 * * 3" },
+      "action": {
+        "type": "github-issue",
+        "title": "🧹 Backlog Grooming — {date}",
+        "body": "Review all open issues older than 14 days. Close stale ones, re-prioritize active ones.",
+        "labels": ["squad", "squad:mace", "type:task", "p2-medium"]
+      },
+      "enabled": false
+    }
+  ]
+}
