@@ -4,27 +4,11 @@ import '../styles/global.css';
 
 const base = import.meta.env.BASE_URL;
 
-const stats = [
-  {
-    icon: '🎮',
-    label: '4 repositories',
-    detail: 'One hub, two games, one dashboard — all connected',
-  },
-  {
-    icon: '🤖',
-    label: '15 AI agents',
-    detail: 'Specialized roles from architecture to testing, working in parallel',
-  },
-  {
-    icon: '🔗',
-    label: '3 integrations',
-    detail: 'GitHub, Playwright, and Fetch — tools that extend the team\'s reach',
-  },
-  {
-    icon: '📋',
-    label: 'Tiered governance',
-    detail: '4 approval tiers from auto-approved to founder decisions',
-  },
+const heroStats = [
+  { icon: '🎮', value: 4, label: 'Repos' },
+  { icon: '🤖', value: 15, label: 'Agents' },
+  { icon: '🔗', value: 3, label: 'Integrations' },
+  { icon: '📋', value: 4, label: 'Approval Tiers' },
 ];
 
 const games = [
@@ -70,100 +54,351 @@ const capabilities = [
   {
     icon: '🎮',
     title: 'Game Development',
-    tint: 'purple',
     pillBg: 'bg-[#8b5cf6]/10 text-[#c4b5fd] border-[#8b5cf6]/20',
-    oneLiner: 'From pixel-perfect rendering to procedural worlds — battle-tested patterns from shipped games',
-    skills: ['Canvas 2D Rendering', 'Game Loop Architecture', 'Input Systems', 'Audio Integration', 'Procedural Generation'],
+    oneLiner: 'From pixel-perfect rendering to procedural worlds — battle-tested patterns from shipped games.',
+    skills: [
+      { name: 'Canvas 2D Rendering', featured: true },
+      { name: 'Game Loop Architecture', featured: true },
+      { name: 'Input Systems', featured: false },
+      { name: 'Audio Integration', featured: false },
+      { name: 'Procedural Generation', featured: true },
+    ],
   },
   {
     icon: '⚙️',
     title: 'Studio Operations',
-    tint: 'cyan',
     pillBg: 'bg-[#06b6d4]/10 text-[#67e8f9] border-[#06b6d4]/20',
-    oneLiner: 'The studio runs itself — Ralph watches, agents build, Pages deploy on every push',
-    skills: ['Autonomous Monitoring', 'Multi-Repo Governance', 'Automated Deployments', 'Project Board Management', 'Blog Automation'],
+    oneLiner: 'The studio runs itself — Ralph watches, agents build, Pages deploy on every push.',
+    skills: [
+      { name: 'Autonomous Monitoring', featured: true },
+      { name: 'Multi-Repo Governance', featured: true },
+      { name: 'Automated Deployments', featured: false },
+      { name: 'Project Board Management', featured: false },
+      { name: 'Blog Automation', featured: true },
+    ],
   },
   {
     icon: '🌐',
     title: 'Web & Tooling',
-    tint: 'green',
     pillBg: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
-    oneLiner: 'Modern web stack for game showcases, studio pages, and developer tooling',
-    skills: ['Astro Sites', 'Tailwind CSS', 'GitHub Pages', 'GitHub Actions', 'MCP Integrations'],
+    oneLiner: 'Modern web stack for game showcases, studio pages, and developer tooling.',
+    skills: [
+      { name: 'Astro Sites', featured: true },
+      { name: 'Tailwind CSS', featured: false },
+      { name: 'GitHub Pages', featured: true },
+      { name: 'GitHub Actions', featured: true },
+      { name: 'MCP Integrations', featured: false },
+    ],
   },
 ];
 
 const activeAgents = [
-  { emoji: '🎖️', name: 'Solo', role: 'Lead' },
-  { emoji: '🔧', name: 'Jango', role: 'Tools' },
-  { emoji: '⚙️', name: 'Chewie', role: 'Engine' },
-  { emoji: '📋', name: 'Mace', role: 'Producer' },
-  { emoji: '🧠', name: 'Yoda', role: 'Design' },
-  { emoji: '🛡️', name: 'Ackbar', role: 'QA' },
-  { emoji: '🖥️', name: 'Wedge', role: 'Frontend' },
-  { emoji: '🔊', name: 'Tarkin', role: 'Audio' },
-  { emoji: '👁️', name: 'Ralph', role: 'Monitor' },
-  { emoji: '📝', name: 'Scribe', role: 'Memory' },
-  { emoji: '🤖', name: '@copilot', role: 'Coding Agent' },
+  {
+    emoji: '🏗️', name: 'Solo', role: 'Lead',
+    fullRole: 'Lead / Chief Architect',
+    responsibilities: ['Architecture decisions and code review', 'Integration gates and quality standards', 'Multi-repo governance design'],
+    domains: 'Architecture, Governance, Integration',
+    status: '✅ Active',
+  },
+  {
+    emoji: '🔧', name: 'Jango', role: 'Tools',
+    fullRole: 'Tool Engineer',
+    responsibilities: ['CI/CD pipelines and GitHub Actions', 'Developer tooling and automation scripts', 'MCP integrations and build systems'],
+    domains: 'Tooling, CI/CD, Automation',
+    status: '✅ Active',
+  },
+  {
+    emoji: '⚙️', name: 'Chewie', role: 'Engine',
+    fullRole: 'Engine / Runtime Engineer',
+    responsibilities: ['Game loop and rendering pipeline', 'Performance optimization', 'Core engine systems and physics'],
+    domains: 'Engine, Rendering, Performance',
+    status: '✅ Active',
+  },
+  {
+    emoji: '📋', name: 'Mace', role: 'Producer',
+    fullRole: 'Producer / Project Manager',
+    responsibilities: ['Sprint planning and issue triage', 'Project board management', 'Cross-agent coordination'],
+    domains: 'Planning, Tracking, Coordination',
+    status: '✅ Active',
+  },
+  {
+    emoji: '🧠', name: 'Yoda', role: 'Design',
+    fullRole: 'Game Designer',
+    responsibilities: ['Game mechanics and balance design', 'Player experience and progression', 'Level design and content planning'],
+    domains: 'Design, Mechanics, UX',
+    status: '✅ Active',
+  },
+  {
+    emoji: '🛡️', name: 'Ackbar', role: 'QA',
+    fullRole: 'QA / Testing Lead',
+    responsibilities: ['Test strategy and automation', 'Bug triage and regression tracking', 'Cross-browser and device testing'],
+    domains: 'Testing, Quality, Automation',
+    status: '✅ Active',
+  },
+  {
+    emoji: '🖥️', name: 'Wedge', role: 'Frontend',
+    fullRole: 'Frontend Engineer',
+    responsibilities: ['UI implementation and styling', 'Responsive layouts and accessibility', 'Astro components and pages'],
+    domains: 'Frontend, UI, Accessibility',
+    status: '✅ Active',
+  },
+  {
+    emoji: '🔊', name: 'Tarkin', role: 'Audio',
+    fullRole: 'Audio Engineer',
+    responsibilities: ['Sound effects and music integration', 'Audio asset pipeline', 'Web Audio API implementation'],
+    domains: 'Audio, Sound Design, Media',
+    status: '✅ Active',
+  },
+  {
+    emoji: '👁️', name: 'Ralph', role: 'Monitor',
+    fullRole: 'Autonomous Monitor',
+    responsibilities: ['Multi-repo health checks every 15 minutes', 'Failure detection and alerting', 'Deployment status tracking'],
+    domains: 'Monitoring, Alerting, Observability',
+    status: '✅ Active',
+  },
+  {
+    emoji: '📝', name: 'Scribe', role: 'Memory',
+    fullRole: 'Memory / Documentation',
+    responsibilities: ['Studio knowledge base maintenance', 'Decision logging and context capture', 'Blog posts and changelog generation'],
+    domains: 'Documentation, Knowledge, Writing',
+    status: '✅ Active',
+  },
+  {
+    emoji: '🤖', name: '@copilot', role: 'Coding Agent',
+    fullRole: 'GitHub Copilot Coding Agent',
+    responsibilities: ['Issue-to-PR automation', 'Code generation from specs', 'Automated fixes and refactors'],
+    domains: 'Code Generation, Automation, AI',
+    status: '✅ Active',
+  },
 ];
 
 const hibernatedAgents = [
-  { emoji: '🎯', name: 'Boba' },
-  { emoji: '👑', name: 'Leia' },
-  { emoji: '🦎', name: 'Bossk' },
-  { emoji: '🚀', name: 'Nien' },
+  {
+    emoji: '🎯', name: 'Boba',
+    fullRole: 'Specialist / Bounty Hunter',
+    responsibilities: ['One-off specialized tasks', 'Cross-cutting concerns', 'Spike investigations'],
+    domains: 'Specialist, Research',
+    status: '💤 Hibernated',
+  },
+  {
+    emoji: '👑', name: 'Leia',
+    fullRole: 'Diplomacy / External Relations',
+    responsibilities: ['Community engagement strategy', 'External communications', 'Partnership coordination'],
+    domains: 'Community, Communications',
+    status: '💤 Hibernated',
+  },
+  {
+    emoji: '🦎', name: 'Bossk',
+    fullRole: 'Security / Hardening',
+    responsibilities: ['Security audits and hardening', 'Dependency vulnerability scanning', 'Access control review'],
+    domains: 'Security, Compliance',
+    status: '💤 Hibernated',
+  },
+  {
+    emoji: '🚀', name: 'Nien',
+    fullRole: 'DevOps / Infrastructure',
+    responsibilities: ['Infrastructure provisioning', 'Cloud resource management', 'Deployment orchestration'],
+    domains: 'DevOps, Infrastructure',
+    status: '💤 Hibernated',
+  },
 ];
 
 const timeline = [
-  { date: 'March 11', event: 'Studio governance approved — 9 domains, 4 approval tiers, 3 laws' },
-  { date: 'March 11', event: 'ComeRosquillas goes live on GitHub Pages — playable in browser' },
-  { date: 'March 11', event: 'Project Board enriched — Priority, Game, Size fields across 17 issues' },
-  { date: 'March 11', event: 'Studio restructure ceremony — Godot archived, web stack adopted' },
-  { date: 'March 10', event: 'Ralph-watch v2 deployed — multi-repo monitoring with failure alerts' },
-  { date: 'March 9', event: 'ComeRosquillas synced to GitHub and absorbed into FFS' },
+  {
+    date: 'March 11',
+    title: 'Studio Governance Approved',
+    detail: '9 domains, 4 approval tiers, 3 laws. The operating manual that lets 15 agents work autonomously while one founder keeps the wheel.',
+  },
+  {
+    date: 'March 11',
+    title: 'ComeRosquillas Goes Live',
+    detail: "Homer's Donut Quest is playable in your browser. Astro showcase site with donut-themed branding, deployed automatically on every push.",
+  },
+  {
+    date: 'March 11',
+    title: 'Project Board Enriched',
+    detail: 'Priority, Game, Size, Agent, Sprint — 5 custom fields across 17 tracked issues. Three views: Sprint Board, Priority, Roadmap.',
+  },
+  {
+    date: 'March 11',
+    title: 'Studio Status Page Created',
+    detail: "You're looking at it. A living snapshot of the studio's capabilities, team, and progress.",
+  },
+  {
+    date: 'March 11',
+    title: 'Studio Restructure Ceremony',
+    detail: 'Godot archived, web stack adopted. 16 tools deleted, 6 skills archived, 3 new web skills created. 4 agents hibernated, 11 active.',
+  },
+  {
+    date: 'March 10',
+    title: 'Ralph-Watch v2 Deployed',
+    detail: 'Multi-repo autonomous monitoring with failure alerts. 401 lines of PowerShell watching 4 repos every 15 minutes.',
+  },
+  {
+    date: 'March 9',
+    title: 'ComeRosquillas Joins FFS',
+    detail: 'Synced from OneDrive to GitHub, connected via squad upstream. 8 issues created, development pipeline established.',
+  },
+  {
+    date: 'March 9',
+    title: 'First Frame Studios Founded',
+    detail: 'One founder, one idea: can AI agents ship real games? The answer starts here.',
+  },
 ];
 ---
 
 <BaseLayout title="Status">
-  <!-- Hero Section -->
+  <!-- Hero Section (compact, with At-a-Glance stats integrated) -->
   <section class="relative overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-br from-[#8b5cf6]/10 via-transparent to-[#06b6d4]/10"></div>
     <div class="absolute top-20 left-1/4 w-96 h-96 bg-[#8b5cf6]/5 rounded-full blur-3xl"></div>
     <div class="absolute bottom-20 right-1/4 w-96 h-96 bg-[#06b6d4]/5 rounded-full blur-3xl"></div>
 
-    <div class="relative max-w-6xl mx-auto px-6 py-28 md:py-40 text-center">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#8b5cf6]/30 bg-[#8b5cf6]/10 text-sm text-[#a78bfa] mb-8">
+    <div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#8b5cf6]/30 bg-[#8b5cf6]/10 text-sm text-[#a78bfa] mb-6">
         <span>Last updated: March 2026</span>
       </div>
-      <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight">
         🏗️ Inside the Studio
       </h1>
-      <p class="text-xl md:text-2xl text-[#9890b0] max-w-2xl mx-auto leading-relaxed">
+      <p class="text-lg md:text-xl text-[#9890b0] max-w-2xl mx-auto leading-relaxed mb-10">
         A living snapshot of how <span class="text-[#a78bfa] font-semibold">First Frame Studios</span> operates
       </p>
+
+      <!-- At-a-Glance counters integrated into hero -->
+      <div class="flex flex-wrap justify-center gap-8 md:gap-12">
+        {heroStats.map((stat) => (
+          <div class="flex flex-col items-center">
+            <span class="text-2xl mb-1">{stat.icon}</span>
+            <span class="text-3xl md:text-4xl font-bold text-white" data-count={stat.value}>0</span>
+            <span class="text-xs text-[#9890b0] mt-1 uppercase tracking-wider">{stat.label}</span>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
-  <!-- The Studio at a Glance -->
-  <section class="max-w-6xl mx-auto px-6 py-20">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">The Studio at a Glance</h2>
-      <p class="text-[#9890b0] max-w-xl mx-auto">The vital signs of a studio that never sleeps.</p>
+  <!-- ═══ What Powers the Studio (THE STAR SECTION) ═══ -->
+  <section class="max-w-6xl mx-auto px-6 py-24 fade-on-scroll">
+    <div class="text-center mb-20">
+      <p class="text-sm text-[#a78bfa] uppercase tracking-widest font-medium mb-3">Core Capabilities</p>
+      <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">What Powers the Studio</h2>
+      <p class="text-lg text-[#9890b0] max-w-2xl mx-auto leading-relaxed">
+        Capabilities forged through shipped games and running infrastructure.
+      </p>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      {stats.map((stat) => (
-        <div class="group p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#8b5cf6]/30 transition-all duration-300">
-          <div class="text-3xl mb-4">{stat.icon}</div>
-          <h3 class="text-white font-semibold text-lg mb-2">{stat.label}</h3>
-          <p class="text-sm text-[#9890b0] leading-relaxed">{stat.detail}</p>
-        </div>
+
+    <div class="space-y-16">
+      {capabilities.map((cap, idx) => (
+        <>
+          <div class="fade-on-scroll">
+            <div class="flex items-center gap-4 mb-4">
+              <span class="text-4xl">{cap.icon}</span>
+              <h3 class="text-2xl md:text-3xl font-bold text-white">{cap.title}</h3>
+            </div>
+            <p class="text-[#9890b0] text-base leading-relaxed mb-6 max-w-2xl italic">{cap.oneLiner}</p>
+            <div class="flex flex-wrap gap-3">
+              {cap.skills.map((skill: { name: string; featured: boolean }) => (
+                <span class={`capability-pill cursor-default border rounded-full font-medium ${cap.pillBg} ${skill.featured ? 'text-sm px-5 py-2.5' : 'text-xs px-4 py-2'}`}>
+                  {skill.name}
+                </span>
+              ))}
+            </div>
+          </div>
+          {idx < capabilities.length - 1 && <div class="category-separator"></div>}
+        </>
       ))}
     </div>
   </section>
 
-  <!-- Games Showcase -->
-  <section class="max-w-6xl mx-auto px-6 py-20">
+  <!-- ═══ The Team — Clickable Expandable Cards ═══ -->
+  <section class="max-w-6xl mx-auto px-6 py-20 fade-on-scroll">
+    <div class="text-center mb-14">
+      <p class="text-sm text-[#06b6d4] uppercase tracking-widest font-medium mb-3">The Squad</p>
+      <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">The Team</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">One human founder and a squad of specialized AI agents. Click any card to learn more.</p>
+    </div>
+
+    <!-- Active agents -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+      {activeAgents.map((agent) => (
+        <details class="team-card rounded-xl border border-white/10 bg-white/[0.03] transition-all duration-300">
+          <summary class="p-4 rounded-xl hover:bg-white/[0.06] hover:border-[#8b5cf6]/30 transition-all duration-300 text-center">
+            <div class="text-2xl mb-2">{agent.emoji}</div>
+            <div class="text-white font-semibold text-sm">{agent.name}</div>
+            <div class="text-xs text-[#9890b0] mt-1">{agent.role}</div>
+            <div class="expand-hint text-[10px] text-[#9890b0]/50 mt-2">▼</div>
+          </summary>
+          <div class="px-4 pb-4 border-t border-white/5 pt-3">
+            <p class="text-xs text-[#a78bfa] font-semibold mb-2">{agent.emoji} {agent.name} — {agent.fullRole}</p>
+            <div class="text-xs text-[#9890b0]/60 mb-2">━━━</div>
+            <ul class="text-xs text-[#e2e0f0] space-y-1 mb-3">
+              {agent.responsibilities.map((r: string) => (
+                <li>• {r}</li>
+              ))}
+            </ul>
+            <p class="text-[10px] text-[#9890b0]">Domains: {agent.domains}</p>
+            <p class="text-[10px] text-[#9890b0]">Status: {agent.status}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- Hibernated agents -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+      {hibernatedAgents.map((agent) => (
+        <details class="team-card rounded-xl border border-white/5 bg-white/[0.01] opacity-50 transition-all duration-300">
+          <summary class="p-4 rounded-xl hover:opacity-80 transition-all duration-300 text-center">
+            <div class="text-2xl mb-2 relative inline-block">
+              {agent.emoji}
+              <span class="absolute -top-1 -right-3 text-xs">💤</span>
+            </div>
+            <div class="text-white/60 font-semibold text-sm">{agent.name}</div>
+            <div class="text-xs text-[#9890b0]/60 mt-1">Hibernated</div>
+            <div class="expand-hint text-[10px] text-[#9890b0]/30 mt-2">▼</div>
+          </summary>
+          <div class="px-4 pb-4 border-t border-white/5 pt-3">
+            <p class="text-xs text-[#a78bfa]/60 font-semibold mb-2">{agent.emoji} {agent.name} — {agent.fullRole}</p>
+            <div class="text-xs text-[#9890b0]/40 mb-2">━━━</div>
+            <ul class="text-xs text-[#e2e0f0]/60 space-y-1 mb-3">
+              {agent.responsibilities.map((r: string) => (
+                <li>• {r}</li>
+              ))}
+            </ul>
+            <p class="text-[10px] text-[#9890b0]/50">Domains: {agent.domains}</p>
+            <p class="text-[10px] text-[#9890b0]/50">Status: {agent.status}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- ═══ What's New — Expanded Timeline ═══ -->
+  <section class="max-w-4xl mx-auto px-6 py-20 fade-on-scroll">
+    <div class="text-center mb-16">
+      <p class="text-sm text-[#06b6d4] uppercase tracking-widest font-medium mb-3">Studio Journal</p>
+      <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">What's New</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">The story so far — every milestone in the studio's journey.</p>
+    </div>
+    <div class="relative">
+      <div class="absolute left-4 md:left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[#8b5cf6]/60 via-[#06b6d4]/40 to-transparent"></div>
+      <div class="space-y-10">
+        {timeline.map((entry, i) => (
+          <div class="relative pl-12 md:pl-16 fade-on-scroll">
+            <div class={`absolute left-2.5 md:left-4.5 top-1.5 w-3 h-3 rounded-full border-2 ${i === 0 ? 'bg-[#8b5cf6] border-[#8b5cf6] shadow-[0_0_8px_rgba(139,92,246,0.5)]' : 'bg-[#0f0d1a] border-[#06b6d4]/60'}`}></div>
+            <div class="text-xs text-[#a78bfa] font-medium mb-1">{entry.date}</div>
+            <h4 class="text-white font-semibold text-base mb-1">{entry.title}</h4>
+            <p class="text-[#9890b0] text-sm leading-relaxed italic">"{entry.detail}"</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Games & Tools (secondary — pushed down) ═══ -->
+  <section class="max-w-6xl mx-auto px-6 py-20 fade-on-scroll">
     <div class="text-center mb-12">
+      <p class="text-sm text-[#a78bfa] uppercase tracking-widest font-medium mb-3">What We Ship</p>
       <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Games &amp; Tools</h2>
       <p class="text-[#9890b0] max-w-xl mx-auto">What the studio is building right now.</p>
     </div>
@@ -204,77 +439,8 @@ const timeline = [
     </div>
   </section>
 
-  <!-- Capabilities -->
-  <section class="max-w-6xl mx-auto px-6 py-20">
-    <div class="text-center mb-16">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">What Powers the Studio</h2>
-      <p class="text-[#9890b0] max-w-xl mx-auto">Capabilities forged through shipped games and running infrastructure.</p>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {capabilities.map((cap) => (
-        <div class="p-8 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-300">
-          <div class="text-3xl mb-4">{cap.icon}</div>
-          <h3 class="text-white font-bold text-lg mb-4">{cap.title}</h3>
-          <div class="flex flex-wrap gap-2 mb-5">
-            {cap.skills.map((skill: string) => (
-              <span class={`text-xs px-3 py-1.5 rounded-full border ${cap.pillBg} font-medium`}>{skill}</span>
-            ))}
-          </div>
-          <p class="text-sm text-[#9890b0] leading-relaxed italic">{cap.oneLiner}</p>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- The Team -->
-  <section class="max-w-6xl mx-auto px-6 py-20">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">The Team</h2>
-      <p class="text-[#9890b0] max-w-xl mx-auto">One human founder and a squad of specialized AI agents.</p>
-    </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-      {activeAgents.map((agent) => (
-        <div class="group p-4 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#8b5cf6]/30 transition-all duration-300 text-center">
-          <div class="text-2xl mb-2">{agent.emoji}</div>
-          <div class="text-white font-semibold text-sm">{agent.name}</div>
-          <div class="text-xs text-[#9890b0] mt-1">{agent.role}</div>
-        </div>
-      ))}
-      {hibernatedAgents.map((agent) => (
-        <div class="p-4 rounded-xl border border-white/5 bg-white/[0.01] text-center opacity-40">
-          <div class="text-2xl mb-2 relative inline-block">
-            {agent.emoji}
-            <span class="absolute -top-1 -right-3 text-xs">💤</span>
-          </div>
-          <div class="text-white/60 font-semibold text-sm">{agent.name}</div>
-          <div class="text-xs text-[#9890b0]/60 mt-1">Hibernated</div>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- What's New — Timeline -->
-  <section class="max-w-4xl mx-auto px-6 py-20">
-    <div class="text-center mb-16">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">What's New</h2>
-      <p class="text-[#9890b0] max-w-xl mx-auto">Recent milestones in the studio's journey.</p>
-    </div>
-    <div class="relative">
-      <div class="absolute left-4 md:left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[#8b5cf6]/60 via-[#06b6d4]/40 to-transparent"></div>
-      <div class="space-y-8">
-        {timeline.map((entry, i) => (
-          <div class="relative pl-12 md:pl-16">
-            <div class={`absolute left-2.5 md:left-4.5 top-1.5 w-3 h-3 rounded-full border-2 ${i === 0 ? 'bg-[#8b5cf6] border-[#8b5cf6] shadow-[0_0_8px_rgba(139,92,246,0.5)]' : 'bg-[#0f0d1a] border-[#06b6d4]/60'}`}></div>
-            <div class="text-xs text-[#a78bfa] font-medium mb-1">{entry.date}</div>
-            <p class="text-[#e2e0f0] text-sm leading-relaxed">{entry.event}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
   <!-- Footer CTA -->
-  <section class="max-w-4xl mx-auto px-6 py-20 text-center">
+  <section class="max-w-4xl mx-auto px-6 py-20 text-center fade-on-scroll">
     <div class="p-10 rounded-2xl border border-[#8b5cf6]/20 bg-gradient-to-br from-[#8b5cf6]/5 to-transparent">
       <h2 class="text-3xl font-bold text-white mb-4">Built with Squad 🌌</h2>
       <p class="text-[#9890b0] max-w-lg mx-auto mb-6">
@@ -286,4 +452,37 @@ const timeline = [
       </a>
     </div>
   </section>
+
+  <!-- Client-side scripts for animations -->
+  <script>
+    // Fade-in on scroll via IntersectionObserver
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-on-scroll').forEach(el => observer.observe(el));
+
+    // Animated counters for hero stats
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target as HTMLElement;
+          const target = parseInt(el.dataset.count || '0');
+          let current = 0;
+          const increment = Math.ceil(target / 30);
+          const timer = setInterval(() => {
+            current = Math.min(current + increment, target);
+            el.textContent = String(current);
+            if (current >= target) clearInterval(timer);
+          }, 40);
+          counterObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+  </script>
 </BaseLayout>
