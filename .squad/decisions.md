@@ -1637,3 +1637,154 @@ Every design decision prioritizes:
 - **Genre Pillars:** "Game Feel is Differentiator" (2026-03-08)
 - **Tech Stack:** Vite + TypeScript + PixiJS v8 (from now.md)
 - **Scope Governance:** MVP-lock principle (from Mace's Sprint 0 plan, Ashfall)
+
+---
+
+### 2026-03-11T14:28: User directive
+**By:** Joaquín (via Copilot)
+**What:** When creating repos, always enable "Automatically delete head branches" and set up rulesets for code review.
+**Why:** User request — captured for team memory. Ensures clean branch hygiene and enforced PR reviews across all FFS repos.
+
+---
+
+# Decision: ComeRosquillas Audio Architecture (Greedo)
+
+**Date:** 2026-03-11  
+**Author:** Greedo (Sound Designer)  
+**Issue:** #8 — Sound effects variety and improved music  
+**PR:** #12  
+**Repo:** jperezdelreal/ComeRosquillas
+
+## Decision
+
+Implemented mix bus architecture (sfxBus + musicBus → compressor → destination) and expanded procedural audio to 8 SFX types with variation systems. All sounds procedural via Web Audio API — no external audio files.
+
+## Key Choices
+
+1. **Mix bus with compressor:** DynamicsCompressor on master prevents clipping when SFX and music overlap. This is zero-cost and should be standard on all projects.
+2. **Variation via cycling + pitch spread:** Chomp cycles through 4 patterns with ±8% random pitch. Death randomly picks from 3 variants. Ghost-eat pitch escalates with combo. These techniques prevent repetition fatigue without adding complexity.
+3. **Backward-compatible API:** `play(type, data)` accepts optional second parameter. Existing `play('chomp')` calls work unchanged. Only 2 lines changed in game-logic.js.
+4. **Smooth mute transitions:** `linearRampToValueAtTime` instead of hard gain cuts. Prevents audio pops.
+
+## Impact on Other Agents
+
+- **Lando/Tarkin:** If adding new game events (bonus collect, combo chain), call `this.sound.play('newType')` and add a case in audio.js. The API pattern is established.
+- **Chewie:** Bus architecture is initialized in SoundManager constructor. No engine changes needed.
+- **Wedge:** If adding audio settings UI, use `toggleMute()` for music and the bus gain values for volume sliders.
+
+---
+
+# Decision: ralph-watch README ASCII-safe and v2-accurate
+
+**Date:** 2026-03-11
+**Author:** Jango (Tool Engineer)
+**Issue:** #152
+
+## Context
+tools/README.md was out of date -- it documented ralph-watch v1 defaults (single repo) and omitted v2 features (failure alerts, activity monitor, metrics parsing, multi-repo).
+
+## Decision
+Rewrote README to accurately reflect ralph-watch v2:
+- Default `-Repos` is all 4 FFS repos, not just `.`
+- Documented failure alerts (alerts.json after 3+ consecutive failures)
+- Documented activity monitor (background runspace)
+- Documented metrics parsing (issues closed, PRs merged/opened)
+- Added prerequisites section (gh CLI, copilot extension)
+- All text ASCII-safe (no emojis, no Unicode dashes) for PS 5.1 compatibility
+
+## Impact
+- Any agent or human reading tools/README.md now gets accurate activation instructions
+- Startup is one command: `.\tools\ralph-watch.ps1`
+
+---
+
+# Decision: Flora Architecture — Module Structure & Patterns
+
+**Author:** Solo (Lead Architect)  
+**Date:** 2026-03-11  
+**Repo:** jperezdelreal/flora  
+**PR:** #2  
+**Status:** PROPOSED (awaiting merge)
+
+## Context
+
+Flora is FFS's second game — a cozy gardening roguelite built on Vite + TypeScript + PixiJS v8. Needed a clean architecture from day one to avoid the monolithic anti-pattern that plagued ComeRosquillas (1636 LOC game.js) and firstPunch (695 LOC gameplay.js).
+
+## Decision
+
+### Module Structure (7 modules)
+
+| Module | Responsibility | Rules |
+|--------|---------------|-------|
+| `core/` | SceneManager, EventBus, (future: input, asset loader) | Owns the game loop |
+| `scenes/` | Individual game screens (boot, menu, garden, etc.) | One active at a time |
+| `entities/` | Game objects (plants, player, tools) | Scene-agnostic |
+| `systems/` | ECS-lite update loops (growth, weather, inventory) | Communicate via EventBus |
+| `ui/` | HUD, menus, dialogs | Subscribe to events, never mutate state |
+| `utils/` | Math, RNG, helpers | Pure functions, no imports from other src/ modules |
+| `config/` | Constants, balance values, tuning | Pure data, no side effects |
+
+### Key Patterns
+
+1. **Scene-Based Architecture** — All game states are Scenes managed by SceneManager. One active at a time. Clean init/update/destroy lifecycle.
+
+2. **ECS-Lite** — Not a full Entity-Component-System framework. Lightweight systems that iterate typed entity collections. Keeps complexity proportional to game scope.
+
+3. **Typed Event Bus** — Pub-sub with EventMap type for compile-time safety. Prevents circular dependencies between systems, UI, and scenes.
+
+4. **PixiJS v8 Patterns** — Async `Application.init()`, `app.canvas` (not `app.view`), `Text({text, style})` object syntax, `Assets.load()` API.
+
+### Dependency Direction
+
+main.ts → core → scenes → entities/systems/ui
+config ← imported by anything
+utils ← imported by anything
+EventBus ← imported by scenes, systems, ui
+
+## Rationale
+
+- Modular from day one prevents the monolith anti-pattern (lesson from ComeRosquillas and firstPunch)
+- Scene-based is simpler than FSM for a small-medium game
+- ECS-lite avoids framework overhead while keeping separation of concerns
+- Event bus is the standard decoupling pattern for game modules
+
+## Implications
+
+- All new features go in the appropriate module (no cross-cutting monoliths)
+- New scenes implement the Scene interface
+- New systems implement the System interface
+- Inter-module communication goes through EventBus, not direct imports
+
+---
+
+### ComeRosquillas Ghost AI Architecture Decision
+**Date:** 2026-03-11  
+**Author:** Tarkin (Enemy/Content Designer)  
+**Issue:** #7 — Improve ghost AI with difficulty curve and personality  
+**Status:** ✅ Implemented (PR #11)  
+**Repo:** jperezdelreal/ComeRosquillas
+
+**Context:**
+Ghost AI in ComeRosquillas was functional but all four villains behaved nearly identically (classic Pac-Man Blinky/Pinky/Inky/Clyde targeting with no personality feel). No difficulty scaling beyond minimal speed increase.
+
+**Decision:**
+Implement personality-based targeting through the existing `getChaseTarget()` method + random direction overrides in `moveGhost()`, plus a 0..1 difficulty ramp that scales 6 parameters across 9 levels.
+
+**Ghost Personality Mapping:**
+- Burns → Ambush (targets ahead of Homer)
+- Bob Patiño → Aggressive (direct chase, speed bonus)
+- Nelson → Patrol/Guard (zone defense with proximity trigger)
+- Snake → Erratic (random directions + random targets)
+
+**Difficulty Scaling Parameters:**
+Ghost speed, fright duration, scatter/chase time ratios, ghost house exit delays, frightened ghost speed, personality aggression values — all driven by single `getDifficultyRamp()` function.
+
+**Rationale:**
+1. Personality through target selection keeps one unified `moveGhost()` — no per-ghost state machines needed for a Pac-Man clone
+2. Difficulty ramp as 0..1 float makes all scaling parameters easy to tune from one place
+3. All changes confined to `js/game-logic.js` per the modularization architecture (Chewie's decision)
+
+**Impact on other agents:**
+- Lando: Scoring/progression unaffected — ghost point values unchanged
+- Chewie: Engine untouched — no renderer or audio changes
+- Wedge: UI/HUD untouched
