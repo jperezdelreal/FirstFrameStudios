@@ -616,3 +616,26 @@ Created `games/ashfall/docs/ARCHITECTURE.md` — the complete technical blueprin
 - 1 stage + 2 characters as initial scope
 - GDScript, Godot-native patterns
 - Local multiplayer + AI opponent
+
+### Flora PR Reviews — Round 2 (Garden UI/HUD + Audio Foundation)
+**Date:** 2026-03-11
+
+Reviewed and approved Flora PRs #18 (Garden UI/HUD, +1033/-22) and #19 (Audio Foundation, +1003/-0).
+
+**PR #18 — Garden UI/HUD (Wedge):**
+- 6 new UI components: HUD, ToolBar, PlantInfo, DaySummary, SeedInventory, PauseMenu
+- Clean Container-based architecture, proper PixiJS v8 patterns, full type safety
+- All 7 acceptance criteria met; approved with minor notes on s any button background pattern
+- Advisory: Consider Map<Container, Graphics> instead of s any casting for 2 spots
+
+**PR #19 — Audio Foundation (Greedo):**
+- Full Web Audio API system: 3-bus routing → masterGain → compressor → destination
+- 5 procedural SFX (plant/water/harvest/wilt/pest) + ambient loop with noise/oscillators/chirps
+- Config externalized, localStorage persistence, per-channel mute with smooth ramps
+- All 6 acceptance criteria met; approved with advisory notes:
+  - Singleton audioManager vs SceneContext injection pattern (defensible for audio but note for future)
+  - Cache noise buffer instead of reallocating per water SFX
+  - Move audioExample.ts out of src/systems/
+  - copilot-instructions.md is a good addition but separate concern from audio
+
+**Key insight:** Both PRs demonstrate strong module boundaries. Flora's UI and audio systems are fully decoupled — they can be integrated independently with gameplay systems.
