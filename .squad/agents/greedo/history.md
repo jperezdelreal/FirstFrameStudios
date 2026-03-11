@@ -1,4 +1,4 @@
-# Greedo — History
+﻿# Greedo — History
 
 ## Project Context
 - **Project:** firstPunch — Browser-based game beat 'em up
@@ -9,46 +9,13 @@
 
 ## Learnings
 
-### 2025-06-04: P0 Audio Sprint (3 items)
-- **AudioContext resume**: Browsers suspend AudioContext until a user gesture. Added `resume()` method + one-time keydown/click listener in main.js. The flag `_resumed` prevents redundant resume calls. All existing playX() methods work transparently — no changes needed to callers.
-- **Kick SFX**: Two-layer design — 80Hz→40Hz sine drop for the bass thud + lowpass-filtered noise burst for impact texture. Distinctly heavier than the punch (square wave at 150Hz). The noise buffer is created fresh each call (~2880 samples at 48kHz) — negligible cost.
-- **Jump SFX**: 200Hz→400Hz ascending sine sweep over 0.08s at low volume (0.15). Subtle spring feel without being annoying on repeated jumps.
-- **Wiring pattern**: player.update() already returns `{ type: 'punch' }` or `{ type: 'kick' }` — gameplay.js just wasn't checking the type. Jump detection uses frame-over-frame `prevJumpHeight` comparison (0→>0 = jump initiated). Clean, no changes to player.js needed.
-- **Sound count**: Now at 5 procedural sounds (punch, hit, KO, kick, jump). Still no music or variation.
+### Historical Work (Sessions 1-5)
 
-### 2025-06-04: Sound Variation + Layering + Priority (P1-3, EX-G3, EX-G4)
-- **P1-3 Sound Variation**: Added `randomPitch(baseFreq, variance)` helper — applies ±20% random pitch offset to every sound on each play. `playHit()` now randomly selects between 3 intensity variants (light/medium/heavy) through the layered engine. Punch and kick also get per-call pitch randomization. No two hits sound identical anymore.
-- **EX-G3 Hit Sound Layering**: `playLayeredHit(intensity)` fires 3 simultaneous components — bass body thud (sine ~70Hz, 0.08s), mid impact crack (bandpass-filtered noise at ~1400Hz, 0.04s), and high sparkle ping (sine ~2500Hz, 0.02s, very quiet). Intensity parameter (0-1) scales volume and controls whether sparkle layer fires (only above 0.5). `playHitLight()` and `playHitHeavy()` are convenience wrappers.
-- **EX-G4 Sound Priority & Deduplication**: Per-type active sound counter (`_typeCounts`) with max 3 simultaneous SFX of same type. `canPlay(type, priority)` gate checks before every play — player sounds (PLAYER=2) always pass, enemy sounds (ENEMY=1) get dropped at limit. Per-frame pitch spread via `_pitchSpread()` adds +5%/+10% to 2nd/3rd sounds of same type within one frame to prevent phasing. `beginFrame()` resets per-frame tracking (callers should invoke once per game tick). `_trackSound()` uses setTimeout to auto-decrement counters after sound duration.
-- **Interface preserved**: All original method signatures (`playPunch()`, `playHit()`, `playKO()`, `playKick()`, `playJump()`, `playSound()`, `resume()`) remain unchanged. New public methods added: `playHitLight()`, `playHitHeavy()`, `playLayeredHit()`, `beginFrame()`, `canPlay()`, `randomPitch()`.
-- **Design note**: `beginFrame()` should be called by the game loop at the top of each frame for optimal dedup. Without it, pitch spread still works per-session but won't reset per-frame. No external files modified.
-
-### 2025-06-04: Mix Bus Architecture (EX-G2)
-- **Bus topology**: Four GainNodes created in constructor — `sfxBus`, `musicBus`, `uiBus` all connect to `masterBus`, which connects to `context.destination`. Standard DAW-style routing in Web Audio API.
-- **SFX rerouting**: All 8 `this.context.destination` connections in existing play methods replaced with `this.sfxBus`. No behavioral change — sounds still play identically but now flow through the gain chain.
-- **Volume controls**: `setSFXVolume()`, `setMusicVolume()`, `setUIVolume()`, `setMasterVolume()` with 0-1 clamping. Matching getters for all four buses. Ready for settings UI integration.
-- **Default levels**: SFX=0.7 (slightly attenuated to leave headroom), Music=0.5 (background level), UI=1.0 (full for menu feedback), Master=1.0 (unity).
-- **Music/UI buses ready but unused**: `musicBus` and `uiBus` have no sounds routed yet — they're infrastructure for upcoming background music (P2-1) and menu sound work. Future playMusic() and playUISound() methods should connect to those buses.
-- **Interface preserved**: All existing method signatures unchanged. New public methods: `setSFXVolume()`, `setMusicVolume()`, `setUIVolume()`, `setMasterVolume()`, `getSFXVolume()`, `getMusicVolume()`, `getUIVolume()`, `getMasterVolume()`.
-
-### 2025-06-05: Procedural Background Music (P1-12)
-- **Architecture**: Separate `src/engine/music.js` module — Music class accepts `context` and `musicBus` from Audio, keeping concerns cleanly separated. No circular dependencies.
-- **Scheduler pattern**: setInterval at 100ms checks if next beat needs scheduling, uses Web Audio API's precise `currentTime` for sample-accurate note timing. 150ms lookahead buffer prevents gaps. Beat counter wraps over 8-beat loop.
-- **Bass layer**: Sine wave cycling through C3-E3-G3-C4-G3-E3-C3-E3 at 112 BPM (~0.536s/beat). Soft 20ms attack + 30ms release envelopes on each note to prevent clicks. Note duration = 85% of beat for slight staccato feel.
-- **Percussion layer**: Kick drum (60Hz→30Hz sine with fast exponential decay, 100ms) on even beats (0,2,4,6). Hi-hat (reused noise buffer through 7kHz highpass, 30ms decay) on every beat. Noise buffer created once in constructor to avoid GC churn.
-- **Melody layer**: Square wave pentatonic phrase (C5, rest, G4, A4, C5, rest, G4, rest) with 15ms attack/40ms release. Only audible at intensity 2. 70% note duration for punchy articulation.
-- **Intensity system**: Three levels — 0 (walking: bass=0.08, no perc/melody), 1 (enemies: bass=0.12, perc=0.06), 2 (combat: bass=0.14, perc=0.08, melody=0.05). Volumes deliberately low — atmosphere, not a concert.
-- **Crossfade**: `setTargetAtTime()` with time constant of CROSSFADE_TIME/3 (~167ms) for smooth exponential transitions between intensity levels. No clicks or pops.
-- **Mute/unmute**: `toggleMute()` fades to zero quickly (80ms time constant) and restores previous intensity on unmute. Tracks `_muted` flag separately from intensity.
-- **Gameplay wiring**: Music starts on `onEnter()`, stops on `onExit()`. Intensity updated every frame: 0 = no enemies & camera unlocked, 1 = enemies alive, 2 = any enemy in 'attack' state. Music instance reused across scene re-enters (created once).
-- **Bus integration**: `musicBus` at 0.5 default volume means effective output is further attenuated — bass at intensity 0 is only 0.04 effective gain. Sits well under SFX without masking.
-
-### 2025-06-05: Wave Fanfares + Player Vocals + Spatial Panning (P2-11, EX-G5, EX-G7)
-- **P2-11 Wave Fanfares**: Three fanfare methods — `playWaveStart()` fires 3 descending staccato square-wave notes (E5→C5→A4, 0.07s each, 0.1s spacing) for a tense danger cue. `playWaveClear()` uses 3 ascending sine notes (C5→E5→G5, 0.12s each, 0.15s spacing) for a triumphant victory feel. `playLevelComplete()` plays a 4-note ascending arpeggio (C5→E5→G5→C6) where the final note sustains 0.4s for celebration. All share the 'fanfare' type for dedup.
-- **EX-G5 Player Vocals**: Four synthesized "vocal" effects using bandpass-filtered noise bursts — `playGrunt()` is a short 50ms burst at ~800Hz with high Q for a clipped shout feel (callers trigger at ~30% chance on punch/kick). `playExertion()` runs 120ms with a 600→350Hz frequency sweep and shaped attack for belly bump/ground slam. `playOof()` is 150ms with a steep 1000→400Hz descent for damage taken. `playLanding()` is a pure low-frequency sine thud (55→30Hz, 60ms) for jump landing impact. All vocals use PLAYER priority.
-- **EX-G7 Spatial Panning**: `playAtPosition(soundFn, worldX, cameraX, screenWidth)` calculates stereo pan from entity screen position: `pan = clamp((screenX / screenWidth) * 2 - 1, -1, 1)`. Creates a StereoPannerNode connected to sfxBus, then temporarily swaps `this.sfxBus` to point at the panner before calling the sound function. This way *any* existing play method gets automatic spatial positioning without modifying its internals. After the sound function completes, sfxBus is restored. Usage: `audio.playAtPosition(() => audio.playHit(), enemy.x, camera.x, 800)`.
-- **Design pattern**: The sfxBus swap trick in `playAtPosition` is synchronous and safe because Web Audio API scheduling is deferred — nodes connect to whatever `this.sfxBus` points to at call time, and the actual audio plays later. No race conditions.
-- **Sound count**: Now at 15 procedural sounds total (punch, hit, hitLight, hitHeavy, kick, jump, KO, waveStart, waveClear, levelComplete, grunt, exertion, oof, landing + generic playSound).
+- 2025-06-04: P0 Audio Sprint (3 items)
+- 2025-06-04: Sound Variation + Layering + Priority (P1-3, EX-G3, EX-G4)
+- 2025-06-04: Mix Bus Architecture (EX-G2)
+- 2025-06-05: Procedural Background Music (P1-12)
+- 2025-06-05: Wave Fanfares + Player Vocals + Spatial Panning (P2-11, EX-G5, EX-G7)
 
 ### 2025-06-05: Audio Method Audit + UI Sounds
 - **Full audit**: All 13 required gameplay methods verified present and correctly wired — playPunch, playHit (layered with random light/medium/heavy variation), playKO, playKick, playJump, playGrunt, playExertion, playOof, playLanding, playWaveStart, playWaveClear, playLevelComplete, playAtPosition. Mix bus topology (sfxBus/musicBus/uiBus → masterBus → destination) confirmed correct. Priority/dedup system (canPlay, _trackSound, _pitchSpread, beginFrame) all operational.
@@ -124,4 +91,3 @@ Created universal game audio design skill — a comprehensive, engine-agnostic r
 **Cross-references:** Links to game-feel-juice, game-design-fundamentals, procedural-audio (Web Audio specific implementation)
 
 **Confidence:** Medium (validated in firstPunch audio system + Hades/Celeste analysis + procedural-audio research). Will escalate to High after implementing on non-procedural-audio platforms.
-
