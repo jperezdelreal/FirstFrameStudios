@@ -6,20 +6,29 @@ How to decide who handles what.
 
 | Work Type | Route To | Examples |
 |-----------|----------|----------|
-| Game engine, loop, timing, systems | Chewie | Game loop, renderer, input, animation system, event bus, particles |
-| Player mechanics, combat, combos | Lando | Player entity, combo system, jump attacks, special moves, grab/throw |
-| Enemy AI, bosses, content, pickups | Tarkin | Enemy types, boss patterns, wave design, pickups, difficulty, levels |
-| UI, canvas, HUD, menus, screens | Wedge | HUD, title screen, game over, pause, score displays, transitions |
-| VFX, art, characters, backgrounds | Boba | Character art, backgrounds, impact VFX, animations, particles |
-| Audio, SFX, music, sound design | Greedo | Sound effects, procedural music, audio events, Web Audio API |
-| QA, playtesting, balance, feel | Ackbar | Playtesting, combat feel, balance tuning, regression, edge cases |
-| Tooling, scaffolding, templates, conventions | Jango | EditorPlugins, scene templates, GDScript style guide, build/export automation, project.godot config, linting, asset pipelines |
-| Architecture, integration review | Solo | Project structure, integration verification, decisions, scene tree conventions, architecture reviews |
-| Ops, blockers, branch management, stale issues | Mace | Blocker tracking/unblocking, branch rebasing, stale issue cleanup, branch validation |
-| Sprint planning, timelines, workload | Mace | Sprint planning, milestone tracking, scope management, developer joy, release planning |
-| Feature triage, scope decisions | Yoda + Mace | Vision Keeper (Yoda) + Producer (Mace) evaluate features against four-test framework |
-| Async issue work (bugs, tests, small features) | @copilot 🤖 | Well-defined tasks matching capability profile |
+| Game engine, loop, timing, systems | Chewie | Game loop, renderer, input, animation system, physics, collision |
+| Player mechanics, combat, abilities | Lando | Player entity, combat system, special moves, player state machine |
+| Enemy AI, content, levels, pickups | Tarkin | Enemy types, boss patterns, wave/level design, pickups, difficulty |
+| UI, HUD, menus, screens, web layout | Wedge | HUD, title screen, game over, pause, score displays, CSS/HTML |
+| Audio, SFX, music, sound design | Greedo | Sound effects, procedural music, Web Audio API, audio events |
+| QA, playtesting, balance, browser testing | Ackbar | Playtesting, combat feel, cross-browser, regression, edge cases |
+| Tooling, CI/CD, workflows, build pipelines | Jango | GitHub workflows, ralph-watch, scheduler, Vite config, build automation |
+| Architecture, integration review | Solo | Project structure, integration verification, decisions, architecture reviews |
+| Ops, blockers, branch management | Mace | Blocker tracking, branch rebasing, stale issue cleanup |
+| Sprint planning, timelines, workload | Mace | Sprint planning, milestone tracking, scope management |
+| Feature triage, scope decisions | Yoda + Mace | Vision Keeper evaluates features against four-test framework |
+| Async issue work (bugs, tests, features) | @copilot 🤖 | Well-defined tasks: HTML/JS/Canvas, TypeScript/Vite, PixiJS |
 | Session logging | Scribe | Automatic — never needs routing |
+
+## Multi-Repo Issue Routing
+
+| Issue About | Goes To | Examples |
+|-------------|---------|----------|
+| ComeRosquillas gameplay/bugs | [jperezdelreal/ComeRosquillas](https://github.com/jperezdelreal/ComeRosquillas) | Ghost AI, scoring, maze layout, mobile controls |
+| Flora gameplay/bugs | [jperezdelreal/flora](https://github.com/jperezdelreal/flora) | PixiJS systems, gardening mechanics, roguelite features |
+| Squad Monitor features | [jperezdelreal/ffs-squad-monitor](https://github.com/jperezdelreal/ffs-squad-monitor) | Dashboard UI, heartbeat reader, log viewer |
+| Studio infra / tooling | [jperezdelreal/FirstFrameStudios](https://github.com/jperezdelreal/FirstFrameStudios) | ralph-watch, scheduler, team changes, docs site |
+| Cross-project process | [jperezdelreal/FirstFrameStudios](https://github.com/jperezdelreal/FirstFrameStudios) | Ceremonies, skills, team decisions, routing |
 
 ## Issue Routing
 
@@ -52,18 +61,18 @@ When triaging, the Lead should ask:
 
 | Work Type | Route To | Trigger |
 |-----------|----------|---------|
-| Integration verification (post-wave) | Solo (Architect) | After every parallel agent wave — verify systems connect, signals wired, project loads |
-| GDD spec compliance in PR reviews | Jango (Tool Engineer) | Every PR that implements a GDD-specified system — compare code against GDD before approving |
-| Post-merge smoke test | Ackbar (QA/Playtester) | After milestone PRs merge — open Godot, run full game flow, verify end-to-end |
+| Integration verification (post-wave) | Solo (Architect) | After every parallel agent wave — verify systems connect, modules import correctly, app loads |
+| Spec compliance in PR reviews | Jango (Tool Engineer) | Every PR that implements a spec-defined system — compare code against design doc before approving |
+| Post-merge smoke test | Ackbar (QA/Playtester) | After milestone PRs merge — open browser, run full game flow, verify end-to-end |
 | Branch management & base validation | Mace (Producer) | Before spawning parallel agents — verify all branches target main, base branch is current |
 
 ### Why These Exist
 
 These gates were added after M1+M2 retrospective revealed that:
-- **Integration was nobody's job.** 5 blockers (RoundManager not instantiated, signals not wired, state machine won't start) reached code review undetected because no agent owned "do systems work together?"
-- **Spec validation didn't happen.** GDD specified 6 buttons, only 4 were implemented. Nobody compared code against the GDD before merging.
-- **Nobody tested the game.** 8 PRs merged across two milestones without anyone opening Godot. The project was never verified to run.
-- **Branch management was unowned.** AI controller (298 LOC) was stranded on a dead branch because nobody validated the PR target branch.
+- **Integration was nobody's job.** Blockers reached code review undetected because no agent owned "do systems work together?"
+- **Spec validation didn't happen.** Specs defined features that weren't fully implemented. Nobody compared code against the design doc before merging.
+- **Nobody tested the game.** PRs merged without anyone testing in a browser. The game was never verified to run.
+- **Branch management was unowned.** Code was stranded on dead branches because nobody validated the PR target branch.
 
 ## Rules
 
@@ -75,3 +84,4 @@ These gates were added after M1+M2 retrospective revealed that:
 6. **Anticipate downstream work.** If a feature is being built, spawn the tester to write test cases from requirements simultaneously.
 7. **Issue-labeled work** — when a `squad:{member}` label is applied to an issue, route to that member. The Lead handles all `squad` (base label) triage.
 8. **@copilot routing** — when evaluating issues, check @copilot's capability profile in `team.md`. Route 🟢 good-fit tasks to `squad:copilot`. Flag 🟡 needs-review tasks for PR review. Keep 🔴 not-suitable tasks with squad members.
+9. **Multi-repo awareness** — check which repo the issue belongs to before routing. Game bugs go to game repos; infra/process goes to FFS hub.

@@ -23,7 +23,6 @@ UI/UX developer for First Frame Studios projects. Builds polished, responsive us
 ## Skills
 - Should reference `.squad/skills/ui-ux-patterns/` for responsive, player-friendly interfaces
 - May reference `.squad/skills/canvas-2d-optimization/` if rendering to Canvas
-- Should reference Godot UI patterns if building in Godot
 
 ## Self-Improvement
 - If during a task you identify a missing skill, tool, or process that would improve your work, you may:

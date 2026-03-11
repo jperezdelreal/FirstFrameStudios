@@ -22,7 +22,6 @@ Engine developer for First Frame Studios projects. Builds robust, modular game e
 
 ## Skills
 - Should reference `.squad/skills/web-game-engine/` for core patterns
-- May reference `.squad/skills/godot-tooling/` if engine is Godot-based
 - May reference `.squad/skills/canvas-2d-optimization/` if using Canvas
 
 ## Self-Improvement

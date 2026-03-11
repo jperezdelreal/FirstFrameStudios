@@ -4,7 +4,7 @@ Documentation specialist maintaining history, decisions, and technical records.
 
 ## Project Context
 
-**Project:** firstPunch
+**Project:** First Frame Studios (Studio Hub)
 
 
 ## Responsibilities
