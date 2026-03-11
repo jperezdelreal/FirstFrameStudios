@@ -103,6 +103,20 @@ PR MANAGEMENT: Check for PRs needing attention:
 - CI failing: fix the build
 - Approved + CI green: merge via gh pr merge
 
+PROJECT BOARD: Read .squad/skills/github-project-board/SKILL.md BEFORE starting.
+Update the GitHub Project board status for every issue you touch.
+BEFORE spawning an agent, move the issue to In Progress on the board.
+When work completes and PR merges, move to Done.
+When blocked or waiting for user, move to Blocked or Pending User.
+
+DUPLICATE PREVENTION: Before creating any new issue, check existing open issues first.
+Search across all FFS repos: gh search issues --owner jperezdelreal --state open "keywords"
+Do NOT create duplicates for things already tracked.
+
+DONE ITEMS ARCHIVING: Check for issues in Done status for 3+ days.
+Close them with a summary comment of what was accomplished.
+Archive them from the project board.
+
 AFTER completing work, report counts: issues closed, PRs merged, PRs opened.
 COMMIT all .squad/ changes before finishing.
 "@
