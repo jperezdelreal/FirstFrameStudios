@@ -1,6 +1,6 @@
 # Squad Team
 
-> firstPunch — Browser-based game beat 'em up arcade game
+> First Frame Studios — AI Game Development Studio
 
 ## Coordinator
 
@@ -46,15 +46,16 @@
 
 ## Project Context
 
-- **Project:** firstPunch
+- **Project:** First Frame Studios (Studio Hub)
 - **User:** joperezd
 - **Created:** 2026-03-06
-- **Stack:** HTML + CSS + JavaScript (ES modules), HTML5 Canvas, Web Audio API
-- **Description:** Browser-based beat 'em up inspired by classic arcade beat 'em ups, Final Fight, Streets of Rage. Modern 2D visuals, side-scrolling with 2.5D plane, combat with hitstun/knockback. No build step, no frameworks.
+- **Description:** AI-powered game development studio. Parent squad managing studio-wide knowledge, skills, and team coordination. Game-specific work happens in subsquad repos.
+- **Active Games:** FLORA (planned — repo pending)
+- **Archived Games:** Ashfall (Godot 4, 2 sprints shipped), firstPunch (Canvas 2D)
 - **Universe:** Star Wars
 
 ## Issue Source
 
 - **Repository:** jperezdelreal/FirstFrameStudios
 - **Connected:** 2026-03-08
-- **Filters:** game:ashfall (current sprint)
+- **Scope:** Studio-level issues (cross-game coordination, tooling, team management)

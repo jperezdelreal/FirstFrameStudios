@@ -1,24 +1,40 @@
 ---
-updated_at: 2026-03-10T18:42:00.000Z
-focus_area: New Project Selection — Post-Ashfall
+updated_at: 2026-03-11T08:00:00.000Z
+focus_area: Studio Restructuring + FLORA Project Setup
 team_size: 15 specialists + Scribe + Ralph
-current_phase: Project Selection — Ashfall shelved, 18 proposals generated, awaiting founder decision
-genre: TBD (candidates: horror, cozy, arcade, automation, stealth)
-engine: TBD (web-first preferred: Vite + Canvas 2D / Phaser / WebGL)
-scope: TBD
+current_phase: Transitioning from Ashfall closure to FLORA development
+genre: Cozy / Nature (FLORA)
+engine: Vite + TypeScript + PixiJS (web-first)
+scope: Studio hub restructured; FLORA repo pending
 ---
 
 # Now
 
 ## Current Focus
-Ashfall closure ceremony complete. 18 new project proposals generated. Awaiting Joaquín's decision on next game.
+Studio restructuring in progress. Hybrid architecture approved (upstream + subsquad). Transforming FirstFrameStudios into the studio hub. FLORA game repo creation is next.
 
 ## Status
-- Sprint 0 (Foundation): ✅ SHIPPED — All 5 PRs merged; M0-M4 gates passed; playable 1v1 prototype (tag: sprint-0-shipped)
-- Sprint 1 (Art Phase): ✅ SHIPPED — All 3 PRs merged (#103, #104, #105); Character sprites, stage art, VFX complete; playable with final art (tag: sprint-1-shipped)
-- Sprint 2 (Visual Quality & Code Hardening): 🔜 SHIPPING — All 10 feature PRs merged (#122-#150); Camera, sprites, stage, HUD, AI complete; integration testing in progress
+- Studio Hub Restructure: 🏗️ IN PROGRESS — team.md and now.md updated for multi-game support
+- FLORA Repo: 🔜 PENDING — create repo, scaffold Vite+TS+PixiJS, squad init, squad upstream
+- Ashfall: ✅ ARCHIVED — 2 sprints shipped (Sprint 0: Foundation, Sprint 1: Art Phase)
+- firstPunch: ✅ ARCHIVED — Canvas 2D prototype
 
-## Sprint 0 Complete — Foundation Shipped (2026-03-09)
+## Key Decisions
+- **Hybrid Architecture (Option C) approved** — FirstFrameStudios = studio hub (parent squad), game repos = subsquads inheriting via `squad upstream`
+- **FLORA selected as next game** — Cozy/nature genre, Vite + TypeScript + PixiJS stack
+- **11 agents active for FLORA**, 3 hibernated (Leia, Bossk, Nien) — hibernation happens when FLORA repo is created
+- **Blog patterns adopted** — TLDR convention, issue templates, heartbeat cron, archive/notify workflows
+
+## Next Actions
+1. Create FLORA repo (`jperezdelreal/flora`)
+2. Scaffold Vite + TypeScript + PixiJS project
+3. Run `squad init` + `squad upstream add FirstFrameStudios`
+4. Set up CI/CD, issue templates, project board
+5. Begin FLORA Sprint 0
+
+## Ashfall History
+
+### Sprint 0 — Foundation Shipped (2026-03-09)
 
 **The Result:** Ashfall 1v1 fighting game prototype is **playable, shipped, and playtested PASS**. Full game loop works (menu → select → fight → victory). 2 characters with distinct play styles (Kael shoto, Rhena rushdown). Deterministic 60 FPS physics. All P0/P1 blockers fixed in Sprint 0 PRs.
 
@@ -29,16 +45,7 @@ Ashfall closure ceremony complete. 18 new project proposals generated. Awaiting 
 - Ackbar playtest verdict: PASS WITH NOTES
 - Time: 1 week (2026-03-02 to 2026-03-09)
 
-**What's Shipped:**
-- Complete round management (best of 3, 99s timer, KO detection, double KO handling)
-- Input buffer (141 LOC, 8-frame window, SOCD resolution, motion detection)
-- AI opponent with decision tree
-- Procedural 8-voice SFX pool (no external audio dependencies)
-- Screen shake + VFX on hit/block/KO
-- HUD (health, timer, ember meter, round count, combo counter)
-- Git tag: `sprint-0-shipped`
-
-## Sprint 1 Complete — Art Phase Shipped (2026-03-20)
+### Sprint 1 — Art Phase Shipped (2026-03-20)
 
 **The Result:** Ashfall now plays with **final character art, stage backgrounds, and character-specific VFX**. Full visual identity established. All 45 animation states per character rendered and integrated. Stage shows 3-round visual progression (dormant → warming → eruption). Ackbar playtest verdict: **PASS**.
 
@@ -49,35 +56,8 @@ Ashfall closure ceremony complete. 18 new project proposals generated. Awaiting 
 - Ackbar playtest verdict: PASS
 - Time: 10 days (2026-03-10 to 2026-03-20)
 
-**What's Shipped:**
-- Kael & Rhena final sprites (all ~45 P0+P1 animation states each)
-- EmberGrounds stage with 3-round visual progression
-- Character-specific VFX (Kael embers, Rhena bursts)
-- AnimationPlayer fully wired; sprite loading pipeline complete
-- Art Direction document locked (silhouettes, palettes, animation timing, naming convention)
-- 60 FPS maintained across all visual effects
-- Git tag: `sprint-1-shipped`
-
-**Key Process Wins:**
-- Parallel execution model validated (0 conflicts, 4 PRs merged same day)
-- Scope de-scope criteria worked (P2 animation states deferred per plan; no last-minute panic)
-- Art direction lock prevented rework (Boba M0 completed Days 1–2; all downstream shipped first-pass)
-- Definition of Success framework proved effective (all criteria measurable and verified at sprint end)
-
-**Next Sprint (Sprint 2 — UI/Polish Phase):** P2 animation states (throw mechanics, win/lose poses), character select visual upgrade, HUD alignment, post-playtest polish.
-
-**What's Shipped:**
-- Complete round management (best of 3, 99s timer, KO detection, double KO handling)
-- Input buffer (141 LOC, 8-frame window, SOCD resolution, motion detection)
-- AI opponent with decision tree
-- Procedural 8-voice SFX pool (no external audio dependencies)
-- Screen shake + VFX on hit/block/KO
-- HUD (health, timer, ember meter, round count, combo counter)
-- Git tag: `sprint-0-shipped`
-
-**Next Sprint (Sprint 1 — Art Phase):** Final character art, stage art, animation polish. Scope TBD pending founder input.
-
 ## Active Directives
+- **Repo autonomy** — Agents can create public repos on demand without prior approval. They decide name, agent assignments, and everything needed for side projects. Full autonomy in repo management. (Directive 2026-03-11, Joaquín)
 - **Joaquín never reviews code** — Jango handles all PR reviews (founder focus on vision, not implementation)
 - **Wiki updates automatic** — Mace updates GitHub Wiki within 24h of milestone completion
 - **Dev Diary automatic** — Mace posts discussion update within 24h of milestone completion
@@ -86,12 +66,11 @@ Ashfall closure ceremony complete. 18 new project proposals generated. Awaiting 
 ## Key Agreements
 - All agents branch from LATEST main (not old commits or non-main branches)
 - File ownership is enforced — no two agents edit the same file in parallel
-- project.godot gatekeeper: Jango (designate ONE agent per wave to modify it)
 - PR template required: `Closes #N` MUST be in body, not title
 - Integration pass before marking milestone complete (3–5 min per build, saves hours later)
 
 ---
 
-**Updated by Solo (Chief Architect) on 2026-03-08 after M1+M2 completion.**
+**Updated by Solo (Chief Architect) on 2026-03-11 after studio restructuring (E1+E8).**
 
-We've built a solid foundation. Next: fix integration gaps, then ship character art in M3.
+Studio hub established. Next: create FLORA repo and scaffold the project.
