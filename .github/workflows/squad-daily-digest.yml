@@ -1,0 +1,121 @@
+name: Squad Daily Digest
+
+on:
+  schedule:
+    - cron: '0 8 * * 1-5'  # Weekdays 8 AM UTC
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  daily-digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate daily digest
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const now = new Date();
+            const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+            const since = yesterday.toISOString();
+            const dateStr = now.toISOString().split('T')[0];
+
+            // Query issues closed in last 24h
+            const { data: closedIssues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              since: since,
+              sort: 'updated',
+              per_page: 100
+            });
+            const recentlyClosed = closedIssues.filter(i => {
+              return !i.pull_request && i.closed_at && new Date(i.closed_at) >= yesterday;
+            });
+
+            // Query PRs merged in last 24h
+            const { data: closedPRs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              sort: 'updated',
+              direction: 'desc',
+              per_page: 100
+            });
+            const mergedPRs = closedPRs.filter(pr => {
+              return pr.merged_at && new Date(pr.merged_at) >= yesterday;
+            });
+
+            // Query in-progress issues
+            const { data: inProgress } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'status:in-progress',
+              state: 'open',
+              per_page: 100
+            });
+
+            // Query open blockers
+            const { data: blockers } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'status:blocked',
+              state: 'open',
+              per_page: 100
+            });
+
+            // Build digest body
+            const sections = [`## 📊 Daily Digest — ${dateStr}\n`];
+
+            sections.push('### ✅ Issues Closed (last 24h)');
+            if (recentlyClosed.length === 0) {
+              sections.push('_None_\n');
+            } else {
+              for (const issue of recentlyClosed) {
+                sections.push(`- #${issue.number} ${issue.title}`);
+              }
+              sections.push('');
+            }
+
+            sections.push('### 🔀 PRs Merged (last 24h)');
+            if (mergedPRs.length === 0) {
+              sections.push('_None_\n');
+            } else {
+              for (const pr of mergedPRs) {
+                sections.push(`- #${pr.number} ${pr.title}`);
+              }
+              sections.push('');
+            }
+
+            sections.push('### 🚧 In Progress');
+            if (inProgress.length === 0) {
+              sections.push('_None_\n');
+            } else {
+              for (const issue of inProgress) {
+                sections.push(`- #${issue.number} ${issue.title}`);
+              }
+              sections.push('');
+            }
+
+            sections.push('### 🚫 Open Blockers');
+            if (blockers.length === 0) {
+              sections.push('_None_\n');
+            } else {
+              for (const issue of blockers) {
+                sections.push(`- #${issue.number} ${issue.title}`);
+              }
+              sections.push('');
+            }
+
+            // Create digest issue
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📊 Daily Digest — ${dateStr}`,
+              body: sections.join('\n'),
+              labels: ['digest']
+            });
+
+            core.info(`Created daily digest for ${dateStr}`);

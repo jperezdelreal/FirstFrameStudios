@@ -1,0 +1,73 @@
+name: Squad Archive Done Issues
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly Monday 6 AM UTC
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  archive-done:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Archive stale done issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const now = new Date();
+            const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            const cutoffDate = sevenDaysAgo.toISOString().split('T')[0];
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'status:done',
+              state: 'open',
+              sort: 'updated',
+              direction: 'asc',
+              per_page: 100
+            });
+
+            const stale = issues.filter(i => {
+              const updated = new Date(i.updated_at);
+              return updated < sevenDaysAgo;
+            });
+
+            if (stale.length === 0) {
+              core.info('No stale done issues to archive');
+              return;
+            }
+
+            for (const issue of stale) {
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  labels: ['archived']
+                });
+
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: '🗄️ Auto-archived: This issue has been done for 7+ days.'
+                });
+
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed'
+                });
+
+                core.info(`Archived #${issue.number}: ${issue.title}`);
+              } catch (e) {
+                core.warning(`Failed to archive #${issue.number}: ${e.message}`);
+              }
+            }
+
+            core.info(`🗄️ Archived ${stale.length} done issue(s)`);

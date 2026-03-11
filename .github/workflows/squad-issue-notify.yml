@@ -1,0 +1,30 @@
+name: Squad Issue Close Notify
+
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  notify-closed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post closure summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const labels = issue.labels.map(l => l.name).join(', ') || 'none';
+            const actor = context.actor;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: `✅ Issue closed. Summary: ${issue.title}. Labels: ${labels}. Closed by: ${actor}.`
+            });
+
+            core.info(`Posted closure summary on #${issue.number}`);
