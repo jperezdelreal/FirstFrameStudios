@@ -1,0 +1,70 @@
+name: Squad Task
+description: Create a new task for the squad to work on
+labels: ["squad"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Title
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: "Describe the task. Include acceptance criteria."
+    validations:
+      required: true
+
+  - type: input
+    id: tldr
+    attributes:
+      label: TLDR
+      placeholder: "One-sentence summary of what needs to happen"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Assign to Agent
+      options:
+        - Auto-triage
+        - Solo
+        - Chewie
+        - Lando
+        - Wedge
+        - Boba
+        - Greedo
+        - Tarkin
+        - Ackbar
+        - Yoda
+        - Mace
+        - Jango
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - p1-high
+        - p2-medium
+        - p3-low
+    validations:
+      required: false
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      options:
+        - feature
+        - bug
+        - task
+        - research
+        - design
+    validations:
+      required: false

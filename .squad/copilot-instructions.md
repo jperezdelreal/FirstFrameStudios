@@ -44,3 +44,13 @@ If you make a decision that affects other team members, write it to:
 .squad/decisions/inbox/copilot-{brief-slug}.md
 ```
 The Scribe will merge it into the shared decisions file.
+
+## Comment Convention: TLDR Required
+
+Every issue comment and PR description MUST start with:
+
+**TLDR:** [One sentence summary]
+
+[Full content below]
+
+This is non-negotiable. Joaquín manages by scanning TLDRs.
