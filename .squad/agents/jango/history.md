@@ -583,3 +583,23 @@ Future risk: Sprint 2 is combo system (high complexity, low tolerance for bugs).
 
 **Status:** ✅ COMPLETE — ComeRosquillas connected as subsquad, upstream synced, committed and pushed to main
 
+
+### GitHub Pages Blog Setup
+**Date:** 2026-07-24
+**Task:** Set up GitHub Pages as a studio dev blog using Jekyll.
+
+**Deliverables:**
+1. **Jekyll site structure in docs/** — _config.yml (minima theme), Gemfile, index.md, about.md, _posts/
+2. **Homepage (index.md)** — Studio intro, active projects table, archived projects, Powered by Squad section, studio hub description
+3. **About page** — Studio philosophy, journey narrative, links
+4. **First blog post** — `2026-03-11-studio-launch.md` — Full studio launch announcement covering Ashfall → firstPunch → ComeRosquillas + Flora journey, how AI agents work, all repo links
+5. **GitHub Pages enabled** — Serving from `/docs` on main branch at https://jperezdelreal.github.io/FirstFrameStudios/
+6. **README.md updated** — Added blog link to Quick Links section
+
+**Key Decisions:**
+- Jekyll with minima theme — GitHub Pages native, zero CI config needed
+- Serving from `/docs` on main branch (not gh-pages branch) — keeps everything in one branch
+- Blog post dated 2026-03-11 to match actual studio launch date
+- No custom layouts yet — minima defaults are clean enough for launch
+
+**Status:** ✅ COMPLETE
