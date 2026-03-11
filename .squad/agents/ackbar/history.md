@@ -316,3 +316,12 @@ Created .squad/analysis/team-evaluation-v3.md (22 KB) — comprehensive post-res
 
 - **Key QA Pattern Learned:** Both PRs use localStorage for persistence with nearly identical defensive patterns (try/catch, structure validation, graceful degradation). This is becoming a studio convention worth formalizing.
 - **Cross-Project Observation:** Both games now have meta-progression systems (encyclopedia discovery in Flora, high score tables in ComeRosquillas) — these are critical for player retention. Good to see the team independently converging on this pattern.
+
+### 2026-03-11: QA Review of ffs-squad-monitor PRs #6 and #7
+- **PR #6 (Heartbeat Reader by Jango):** APPROVED (9/10). Implements /api/heartbeat with fs.watch caching, BOM-safe parsing, graceful offline fallback. Tested 9 edge cases: missing file, malformed JSON, partial write race, watcher error, directory missing, env override. All handled correctly. Minor: watcher never explicitly closed (acceptable for dev server).
+- **PR #7 (Dashboard UI by Wedge):** APPROVED with Notes (8/10). Major architecture refactor — monolithic monitor.js split into 6 components + 3 shared libs. Excellent component isolation, scheduler with pause/resume, responsive breakpoints, dark theme with proper contrast ratios (~15:1 WCAG AAA). Three issues flagged:
+  1. Merge conflict with PR #6: heartbeat.js statusMap missing `offline` mapping that PR #6's backend returns
+  2. Inconsistent XSS sanitization: repos.js uses escapeHtml() but heartbeat.js/log-viewer.js/timeline.js inject innerHTML without escaping
+  3. Log viewer comment says "cached data" but implementation makes fresh network request on filter change
+- **Key QA Pattern:** innerHTML without escapeHtml is becoming a recurring pattern across the team. Even with server-controlled data, consistent sanitization prevents future issues if data sources change. Worth formalizing as a coding standard.
+- **Cross-PR Coordination:** Both PRs modify monitor.js — whoever merges second must reconcile. Flagged in both reviews.
