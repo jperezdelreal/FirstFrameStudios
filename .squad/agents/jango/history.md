@@ -198,3 +198,19 @@
 **Orchestration Log:** `.squad/orchestration-log/2026-03-11T14-05-00Z-jango.md`  
 **Decision Merged:** Documented in `.squad/decisions.md` under "ComeRosquillas CI Pipeline Strategy"  
 **Cross-Agent Note:** Parallel with Chewie's game.js modularization (PR #10) — both unblock feature development
+
+### 2026-03-11: ralph-watch Activation Docs (#152)
+**Task:** Verify ralph-watch.ps1 runs correctly and document startup procedure.
+
+**Verification:**
+- Dry-run 1 round: PASS (all 4 repos resolved, scheduler ran, heartbeat written)
+- Dry-run 3 rounds: PASS (all 3 rounds complete, logs accumulate, heartbeat updates each round)
+- Heartbeat file: correctly shows round, status, metrics, PID, repos
+- Log rotation: JSONL entries accumulate in tools/logs/ralph-YYYY-MM-DD.jsonl
+
+**Deliverables:**
+1. **tools/README.md rewritten** -- Fixed incorrect -Repos default (was `@(".")`, actual is all 4 FFS repos). Added v2 features section (failure alerts, activity monitor, metrics parsing). Added dedicated startup section with persistent mode, prerequisites, and stop/check commands. Made all text ASCII-safe (no emojis, no em-dashes).
+
+**Key Finding:** README was out of date -- it showed single-repo default when the script actually defaults to all 4 FFS repos. The v2 features (alerts, monitor, metrics) were undocumented.
+
+**Status:** COMPLETE -- committed to main (2c259c2), pushed, closes #152
