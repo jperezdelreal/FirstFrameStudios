@@ -308,6 +308,19 @@ function Invoke-GitPull {
         if ($DryRun) {
             Write-Host "   [DRY RUN] Would run: git fetch origin; git pull --rebase --autostash" -ForegroundColor Yellow
         } else {
+            # Ensure we are on the default branch before pulling
+            $defaultBranch = git symbolic-ref refs/remotes/origin/HEAD 2>$null
+            if ($defaultBranch) {
+                $defaultBranch = $defaultBranch -replace 'refs/remotes/origin/', ''
+            } else {
+                $defaultBranch = "main"
+            }
+            $currentBranch = git branch --show-current 2>$null
+            if ($currentBranch -ne $defaultBranch) {
+                Write-Host "      [fix] Switching from '$currentBranch' to '$defaultBranch'" -ForegroundColor Yellow
+                git stash 2>&1 | Out-Null
+                git checkout $defaultBranch 2>&1 | Out-Null
+            }
             git fetch origin 2>&1 | Out-Null
             git pull --rebase --autostash 2>&1 | ForEach-Object { Write-Host "      $_" -ForegroundColor DarkGray }
         }
