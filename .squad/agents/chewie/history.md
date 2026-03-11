@@ -129,3 +129,30 @@
 - **Filtering:** `TEXTURE_FILTER_LINEAR` for clean 512→77px downscaling (NEAREST would pixelate badly at 6:1 reduction).
 - **Flip handling:** Parent `CharacterSprite.scale.x = -1` propagates to the AnimatedSprite2D child — no separate flip logic needed.
 - **Fallback:** If `_get_character_id()` returns "" or no sprite files exist, procedural `_draw()` rendering continues unchanged. Both paths coexist cleanly.
+
+### ComeRosquillas Game Modularization (Issue #1)
+- **Project:** ComeRosquillas — HTML/JS/Canvas Pac-Man-style arcade (Simpsons-themed: Homer collecting donuts)
+- **Task:** Modularize 1789-line game.js monolith into clean, maintainable modules
+- **Approach:** Split into engine (audio, renderer), game logic, config, and main entry point
+- **Module Structure Created:**
+  - **js/config.js** (114 lines): All constants, maze data (31×28 grid), ghost configs, Simpsons color palette, game states, direction vectors
+  - **js/engine/audio.js** (166 lines): SoundManager class with Web Audio API — Simpsons theme jingle, D'oh death sound, Duff power-up, background music loop
+  - **js/engine/renderer.js** (720 lines): Sprites static class — detailed Homer with hair/eyes/stubble, 4 Simpsons villain ghosts (Burns, Bob, Nelson, Snake), donut/Duff sprites, maze rendering
+  - **js/game-logic.js** (791 lines): Game class — game loop, state machine (7 states), Homer movement + collision, ghost AI with scatter/chase/frightened modes, scoring, level progression
+  - **js/main.js** (13 lines): Thin entry point that initializes Game on window load
+- **Loading Strategy:** Plain <script> tags in dependency order (config → audio → renderer → game-logic → main), no bundler required, global namespace pattern
+- **Architecture Decisions:**
+  - Config as pure data module with zero dependencies — enables parallel work on game logic and rendering
+  - Static methods on Sprites class — all drawing functions stateless, take ctx + params, no instance state
+  - SoundManager as stateful singleton — manages Web Audio context lifecycle and music loop scheduling
+  - Game class as orchestrator — depends on all modules, owns game state, drives render/update loop
+- **Key Learnings:**
+  1. **Module boundaries follow data flow** — Config consumed by all, renderer consumed by game logic, audio triggered by game events. Clean DAG prevents circular deps.
+  2. **Static classes work for stateless rendering** — Sprites.drawHomer(ctx, x, y, ...) pattern eliminates sprite object allocation, enables easy testing of individual draw functions
+  3. **IIFE wrapping unnecessary for module isolation** — Original game.js used IIFE to create closure scope. With separate files + load order, global namespace is explicit and controlled.
+  4. **Large switch-case sprite renderers are maintainable** — The 4 ghost character drawing methods (Burns/Bob/Nelson/Snake) use consistent structure: body → head → facial features → unique detail. Template pattern emerges naturally.
+  5. **Game loop in main class, not engine module** — Unlike Godot's _process() separation, browser games often put requestAnimationFrame() in the Game class. Works fine when class is the only loop owner.
+- **File Structure:** Original 1789 lines split into 5 modules totaling 1804 lines (15-line overhead for module headers). Largest module is game-logic.js (791), smallest is main.js (13). Renderer at 720 lines is cohesive — all drawing code in one place.
+- **Testing:** Game loads and runs after modularization. All sounds, rendering, gameplay, scoring, and level progression work identically to monolith. Zero breaking changes.
+- **Branch:** squad/1-modularize-game-js, PR #10 created against main
+- **Original Backup:** js/game.js.backup preserved for rollback safety
