@@ -1,0 +1,289 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/global.css';
+
+const base = import.meta.env.BASE_URL;
+
+const stats = [
+  {
+    icon: '🎮',
+    label: '4 repositories',
+    detail: 'One hub, two games, one dashboard — all connected',
+  },
+  {
+    icon: '🤖',
+    label: '15 AI agents',
+    detail: 'Specialized roles from architecture to testing, working in parallel',
+  },
+  {
+    icon: '🔗',
+    label: '3 integrations',
+    detail: 'GitHub, Playwright, and Fetch — tools that extend the team\'s reach',
+  },
+  {
+    icon: '📋',
+    label: 'Tiered governance',
+    detail: '4 approval tiers from auto-approved to founder decisions',
+  },
+];
+
+const games = [
+  {
+    emoji: '🍩',
+    title: "Homer's Donut Quest",
+    subtitle: 'ComeRosquillas',
+    description: 'Arcade web game — playable right now in your browser',
+    stack: ['HTML', 'Canvas', 'Vanilla JS'],
+    status: '🎮 Playable',
+    statusColor: 'text-green-400',
+    statusBg: 'bg-green-400/10 border-green-400/20',
+    playUrl: 'https://jperezdelreal.github.io/ComeRosquillas/play/',
+    sourceUrl: 'https://github.com/jperezdelreal/ComeRosquillas',
+  },
+  {
+    emoji: '🌿',
+    title: 'Cozy Roguelite',
+    subtitle: 'FLORA',
+    description: 'Procedural worlds and resource gathering — coming soon',
+    stack: ['Vite', 'TypeScript', 'PixiJS v8'],
+    status: '🌱 Starting',
+    statusColor: 'text-yellow-400',
+    statusBg: 'bg-yellow-400/10 border-yellow-400/20',
+    playUrl: null,
+    sourceUrl: 'https://github.com/jperezdelreal/flora',
+  },
+  {
+    emoji: '📊',
+    title: 'Studio Dashboard',
+    subtitle: 'Squad Monitor',
+    description: 'Real-time visibility into agent activity across all repos',
+    stack: ['Vite', 'Vanilla JS'],
+    status: '🔧 Sprint 0',
+    statusColor: 'text-cyan-400',
+    statusBg: 'bg-cyan-400/10 border-cyan-400/20',
+    playUrl: null,
+    sourceUrl: 'https://github.com/jperezdelreal/ffs-squad-monitor',
+  },
+];
+
+const capabilities = [
+  {
+    icon: '🎮',
+    title: 'Game Development',
+    tint: 'purple',
+    pillBg: 'bg-[#8b5cf6]/10 text-[#c4b5fd] border-[#8b5cf6]/20',
+    oneLiner: 'From pixel-perfect rendering to procedural worlds — battle-tested patterns from shipped games',
+    skills: ['Canvas 2D Rendering', 'Game Loop Architecture', 'Input Systems', 'Audio Integration', 'Procedural Generation'],
+  },
+  {
+    icon: '⚙️',
+    title: 'Studio Operations',
+    tint: 'cyan',
+    pillBg: 'bg-[#06b6d4]/10 text-[#67e8f9] border-[#06b6d4]/20',
+    oneLiner: 'The studio runs itself — Ralph watches, agents build, Pages deploy on every push',
+    skills: ['Autonomous Monitoring', 'Multi-Repo Governance', 'Automated Deployments', 'Project Board Management', 'Blog Automation'],
+  },
+  {
+    icon: '🌐',
+    title: 'Web & Tooling',
+    tint: 'green',
+    pillBg: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
+    oneLiner: 'Modern web stack for game showcases, studio pages, and developer tooling',
+    skills: ['Astro Sites', 'Tailwind CSS', 'GitHub Pages', 'GitHub Actions', 'MCP Integrations'],
+  },
+];
+
+const activeAgents = [
+  { emoji: '🎖️', name: 'Solo', role: 'Lead' },
+  { emoji: '🔧', name: 'Jango', role: 'Tools' },
+  { emoji: '⚙️', name: 'Chewie', role: 'Engine' },
+  { emoji: '📋', name: 'Mace', role: 'Producer' },
+  { emoji: '🧠', name: 'Yoda', role: 'Design' },
+  { emoji: '🛡️', name: 'Ackbar', role: 'QA' },
+  { emoji: '🖥️', name: 'Wedge', role: 'Frontend' },
+  { emoji: '🔊', name: 'Tarkin', role: 'Audio' },
+  { emoji: '👁️', name: 'Ralph', role: 'Monitor' },
+  { emoji: '📝', name: 'Scribe', role: 'Memory' },
+  { emoji: '🤖', name: '@copilot', role: 'Coding Agent' },
+];
+
+const hibernatedAgents = [
+  { emoji: '🎯', name: 'Boba' },
+  { emoji: '👑', name: 'Leia' },
+  { emoji: '🦎', name: 'Bossk' },
+  { emoji: '🚀', name: 'Nien' },
+];
+
+const timeline = [
+  { date: 'March 11', event: 'Studio governance approved — 9 domains, 4 approval tiers, 3 laws' },
+  { date: 'March 11', event: 'ComeRosquillas goes live on GitHub Pages — playable in browser' },
+  { date: 'March 11', event: 'Project Board enriched — Priority, Game, Size fields across 17 issues' },
+  { date: 'March 11', event: 'Studio restructure ceremony — Godot archived, web stack adopted' },
+  { date: 'March 10', event: 'Ralph-watch v2 deployed — multi-repo monitoring with failure alerts' },
+  { date: 'March 9', event: 'ComeRosquillas synced to GitHub and absorbed into FFS' },
+];
+---
+
+<BaseLayout title="Status">
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-[#8b5cf6]/10 via-transparent to-[#06b6d4]/10"></div>
+    <div class="absolute top-20 left-1/4 w-96 h-96 bg-[#8b5cf6]/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-1/4 w-96 h-96 bg-[#06b6d4]/5 rounded-full blur-3xl"></div>
+
+    <div class="relative max-w-6xl mx-auto px-6 py-28 md:py-40 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#8b5cf6]/30 bg-[#8b5cf6]/10 text-sm text-[#a78bfa] mb-8">
+        <span>Last updated: March 2026</span>
+      </div>
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
+        🏗️ Inside the Studio
+      </h1>
+      <p class="text-xl md:text-2xl text-[#9890b0] max-w-2xl mx-auto leading-relaxed">
+        A living snapshot of how <span class="text-[#a78bfa] font-semibold">First Frame Studios</span> operates
+      </p>
+    </div>
+  </section>
+
+  <!-- The Studio at a Glance -->
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">The Studio at a Glance</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">The vital signs of a studio that never sleeps.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {stats.map((stat) => (
+        <div class="group p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#8b5cf6]/30 transition-all duration-300">
+          <div class="text-3xl mb-4">{stat.icon}</div>
+          <h3 class="text-white font-semibold text-lg mb-2">{stat.label}</h3>
+          <p class="text-sm text-[#9890b0] leading-relaxed">{stat.detail}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Games Showcase -->
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Games &amp; Tools</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">What the studio is building right now.</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {games.map((game) => (
+        <div class="group relative p-8 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#8b5cf6]/30 transition-all duration-300 flex flex-col">
+          <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#8b5cf6]/5 via-transparent to-[#06b6d4]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+          <div class="relative flex-1">
+            <div class="flex items-start justify-between mb-4">
+              <span class="text-5xl">{game.emoji}</span>
+              <span class={`text-xs font-medium px-3 py-1 rounded-full border ${game.statusBg} ${game.statusColor}`}>
+                {game.status}
+              </span>
+            </div>
+            <h3 class="text-white font-bold text-xl mb-1 group-hover:text-[#a78bfa] transition-colors">{game.title}</h3>
+            <p class="text-xs text-[#a78bfa]/60 font-medium mb-3">{game.subtitle}</p>
+            <p class="text-sm text-[#9890b0] mb-5 leading-relaxed">{game.description}</p>
+            <div class="flex flex-wrap gap-2 mb-6">
+              {game.stack.map((tech: string) => (
+                <span class="text-xs px-2.5 py-1 rounded-md bg-white/5 text-[#9890b0] border border-white/5">{tech}</span>
+              ))}
+            </div>
+          </div>
+          <div class="relative flex flex-wrap gap-3 mt-auto">
+            {game.playUrl && (
+              <a href={game.playUrl} target="_blank" rel="noopener"
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white rounded-lg text-sm font-medium transition-colors">
+                Play Now →
+              </a>
+            )}
+            <a href={game.sourceUrl} target="_blank" rel="noopener"
+              class="inline-flex items-center gap-2 px-5 py-2.5 border border-white/20 hover:border-white/40 text-white rounded-lg text-sm font-medium transition-colors">
+              Source →
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Capabilities -->
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">What Powers the Studio</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">Capabilities forged through shipped games and running infrastructure.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {capabilities.map((cap) => (
+        <div class="p-8 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] transition-all duration-300">
+          <div class="text-3xl mb-4">{cap.icon}</div>
+          <h3 class="text-white font-bold text-lg mb-4">{cap.title}</h3>
+          <div class="flex flex-wrap gap-2 mb-5">
+            {cap.skills.map((skill: string) => (
+              <span class={`text-xs px-3 py-1.5 rounded-full border ${cap.pillBg} font-medium`}>{skill}</span>
+            ))}
+          </div>
+          <p class="text-sm text-[#9890b0] leading-relaxed italic">{cap.oneLiner}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- The Team -->
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">The Team</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">One human founder and a squad of specialized AI agents.</p>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      {activeAgents.map((agent) => (
+        <div class="group p-4 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#8b5cf6]/30 transition-all duration-300 text-center">
+          <div class="text-2xl mb-2">{agent.emoji}</div>
+          <div class="text-white font-semibold text-sm">{agent.name}</div>
+          <div class="text-xs text-[#9890b0] mt-1">{agent.role}</div>
+        </div>
+      ))}
+      {hibernatedAgents.map((agent) => (
+        <div class="p-4 rounded-xl border border-white/5 bg-white/[0.01] text-center opacity-40">
+          <div class="text-2xl mb-2 relative inline-block">
+            {agent.emoji}
+            <span class="absolute -top-1 -right-3 text-xs">💤</span>
+          </div>
+          <div class="text-white/60 font-semibold text-sm">{agent.name}</div>
+          <div class="text-xs text-[#9890b0]/60 mt-1">Hibernated</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- What's New — Timeline -->
+  <section class="max-w-4xl mx-auto px-6 py-20">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">What's New</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">Recent milestones in the studio's journey.</p>
+    </div>
+    <div class="relative">
+      <div class="absolute left-4 md:left-6 top-0 bottom-0 w-px bg-gradient-to-b from-[#8b5cf6]/60 via-[#06b6d4]/40 to-transparent"></div>
+      <div class="space-y-8">
+        {timeline.map((entry, i) => (
+          <div class="relative pl-12 md:pl-16">
+            <div class={`absolute left-2.5 md:left-4.5 top-1.5 w-3 h-3 rounded-full border-2 ${i === 0 ? 'bg-[#8b5cf6] border-[#8b5cf6] shadow-[0_0_8px_rgba(139,92,246,0.5)]' : 'bg-[#0f0d1a] border-[#06b6d4]/60'}`}></div>
+            <div class="text-xs text-[#a78bfa] font-medium mb-1">{entry.date}</div>
+            <p class="text-[#e2e0f0] text-sm leading-relaxed">{entry.event}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer CTA -->
+  <section class="max-w-4xl mx-auto px-6 py-20 text-center">
+    <div class="p-10 rounded-2xl border border-[#8b5cf6]/20 bg-gradient-to-br from-[#8b5cf6]/5 to-transparent">
+      <h2 class="text-3xl font-bold text-white mb-4">Built with Squad 🌌</h2>
+      <p class="text-[#9890b0] max-w-lg mx-auto mb-6">
+        15 AI agents, Star Wars universe casting, structured autonomy. One human founder + specialized agents = a studio that ships.
+      </p>
+      <a href="https://github.com/bradygaster/squad" target="_blank"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/15 text-white rounded-lg font-medium transition-colors">
+        Learn about Squad →
+      </a>
+    </div>
+  </section>
+</BaseLayout>
