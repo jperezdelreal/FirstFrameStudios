@@ -1,0 +1,204 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/global.css';
+
+const features = [
+  {
+    icon: '🎮',
+    title: 'Multi-Game Studio',
+    description: 'Multiple game projects running in parallel — arcade, roguelite, and more. Each with its own repo, its own squad, its own pipeline.',
+  },
+  {
+    icon: '🤖',
+    title: 'Autonomous Agents',
+    description: '15 specialized AI agents with domain ownership. They branch, code, file PRs, and merge — structured autonomy at machine speed.',
+  },
+  {
+    icon: '🔗',
+    title: 'Squad Upstream',
+    description: 'Game repos inherit studio identity, skills, and process from this hub via upstream connections. One source of truth, many games.',
+  },
+  {
+    icon: '🌐',
+    title: 'Open Source',
+    description: 'Every line of code, every decision, every sprint log — all public on GitHub. Follow the journey in real time.',
+  },
+];
+
+const projects = [
+  {
+    emoji: '🍩',
+    name: 'ComeRosquillas',
+    description: 'Arcade web game — fast, fun, replayable. Homer\'s donut quest.',
+    stack: 'HTML + JS + Canvas',
+    status: '🎮 Playable',
+    statusColor: 'text-green-400',
+    url: 'https://github.com/jperezdelreal/ComeRosquillas',
+  },
+  {
+    emoji: '🌿',
+    name: 'FLORA',
+    description: 'Cozy roguelite with procedural worlds and resource gathering.',
+    stack: 'Vite + TypeScript + PixiJS v8',
+    status: '🌱 Starting',
+    statusColor: 'text-yellow-400',
+    url: 'https://github.com/jperezdelreal/flora',
+  },
+  {
+    emoji: '📊',
+    name: 'Squad Monitor',
+    description: 'Real-time dashboard for agent activity across all repos.',
+    stack: 'Vite + vanilla JS',
+    status: '🔧 Sprint 0',
+    statusColor: 'text-cyan-400',
+    url: 'https://github.com/jperezdelreal/ffs-squad-monitor',
+  },
+];
+
+const steps = [
+  {
+    number: '01',
+    title: 'Studio Hub',
+    description: 'FirstFrameStudios is the parent repo — it holds team identity, skills, decisions, and shared tooling. No game code lives here.',
+  },
+  {
+    number: '02',
+    title: 'Upstream Inheritance',
+    description: 'Game repos connect to the hub and inherit studio principles, quality gates, and process. One source of truth flows downstream.',
+  },
+  {
+    number: '03',
+    title: 'Agent Autonomy',
+    description: 'Each agent owns a domain. Ralph watches for issues. Agents branch, code, and file PRs. Jango reviews and merges. The loop runs 24/7.',
+  },
+  {
+    number: '04',
+    title: 'Ship Games',
+    description: 'The goal isn\'t impressive architecture — it\'s playable games that real players enjoy. Every sprint targets a build players can touch.',
+  },
+];
+---
+
+<BaseLayout title="Home">
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-[#8b5cf6]/10 via-transparent to-[#06b6d4]/10"></div>
+    <div class="absolute top-20 left-1/4 w-96 h-96 bg-[#8b5cf6]/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-1/4 w-96 h-96 bg-[#06b6d4]/5 rounded-full blur-3xl"></div>
+
+    <div class="relative max-w-6xl mx-auto px-6 py-28 md:py-40 text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#8b5cf6]/30 bg-[#8b5cf6]/10 text-sm text-[#a78bfa] mb-8">
+        <span>Powered by Squad v0.8.25</span>
+      </div>
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">
+        🎮 First Frame Studios
+      </h1>
+      <p class="text-xl md:text-2xl text-[#9890b0] max-w-2xl mx-auto mb-10 leading-relaxed">
+        AI-powered game development studio — shipping real games with a team of <span class="text-[#a78bfa] font-semibold">15 specialized AI agents</span>.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="https://github.com/jperezdelreal/FirstFrameStudios" target="_blank"
+          class="inline-flex items-center gap-2 px-6 py-3 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white rounded-lg font-medium transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+        <a href={`${import.meta.env.BASE_URL}blog/`}
+          class="inline-flex items-center gap-2 px-6 py-3 border border-white/20 hover:border-white/40 text-white rounded-lg font-medium transition-colors">
+          Read the Blog →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Cards -->
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {features.map((feature) => (
+        <div class="group p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#8b5cf6]/30 transition-all duration-300">
+          <div class="text-3xl mb-4">{feature.icon}</div>
+          <h3 class="text-white font-semibold text-lg mb-2">{feature.title}</h3>
+          <p class="text-sm text-[#9890b0] leading-relaxed">{feature.description}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Active Projects -->
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Active Projects</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">Games and tools currently in development across the studio.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {projects.map((project) => (
+        <a href={project.url} target="_blank" rel="noopener"
+          class="group block p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#8b5cf6]/30 transition-all duration-300">
+          <div class="flex items-start justify-between mb-3">
+            <span class="text-3xl">{project.emoji}</span>
+            <span class={`text-xs font-medium ${project.statusColor}`}>{project.status}</span>
+          </div>
+          <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-[#a78bfa] transition-colors">{project.name}</h3>
+          <p class="text-sm text-[#9890b0] mb-3">{project.description}</p>
+          <span class="inline-block text-xs px-2 py-1 rounded-md bg-white/5 text-[#9890b0]">{project.stack}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">How It Works</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">The hub + upstream model that powers multi-game development.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {steps.map((step) => (
+        <div class="relative">
+          <div class="text-5xl font-black text-[#8b5cf6]/20 mb-4">{step.number}</div>
+          <h3 class="text-white font-semibold text-lg mb-2">{step.title}</h3>
+          <p class="text-sm text-[#9890b0] leading-relaxed">{step.description}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Archived Projects -->
+  <section class="max-w-6xl mx-auto px-6 py-20">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">What We've Built Before</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">Archived projects that shaped the studio's DNA.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+      <div class="p-6 rounded-xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-2xl">🔥</span>
+          <h3 class="text-white font-semibold">Ashfall</h3>
+          <span class="text-xs px-2 py-0.5 rounded bg-white/5 text-[#9890b0]">Archived</span>
+        </div>
+        <p class="text-sm text-[#9890b0]">1v1 fighting game in Godot 4. AI teams build infrastructure fast, but fighting games need human feel-tuning. 2 sprints shipped.</p>
+      </div>
+      <div class="p-6 rounded-xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-2xl">👊</span>
+          <h3 class="text-white font-semibold">firstPunch</h3>
+          <span class="text-xs px-2 py-0.5 rounded bg-white/5 text-[#9890b0]">Archived</span>
+        </div>
+        <p class="text-sm text-[#9890b0]">Beat 'em up with a 1,931 LOC custom engine in vanilla JS. Proved AI agents can build real, interconnected game systems from scratch.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team CTA -->
+  <section class="max-w-4xl mx-auto px-6 py-20 text-center">
+    <div class="p-10 rounded-2xl border border-[#8b5cf6]/20 bg-gradient-to-br from-[#8b5cf6]/5 to-transparent">
+      <h2 class="text-3xl font-bold text-white mb-4">Built with Squad 🌌</h2>
+      <p class="text-[#9890b0] max-w-lg mx-auto mb-6">
+        15 AI agents, Star Wars universe casting, structured autonomy. One human founder + specialized agents = a studio that ships.
+      </p>
+      <a href="https://github.com/bradygaster/squad" target="_blank"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/15 text-white rounded-lg font-medium transition-colors">
+        Learn about Squad →
+      </a>
+    </div>
+  </section>
+</BaseLayout>

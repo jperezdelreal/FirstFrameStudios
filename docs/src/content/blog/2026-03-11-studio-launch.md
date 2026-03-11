@@ -1,10 +1,8 @@
 ---
-layout: post
 title: "🎮 First Frame Studios Is Live — Building Games with AI Agents"
 date: 2026-03-11
-categories: [studio, announcement]
-tags: [launch, squad, ai, gamedev]
 excerpt: "We're a game studio where 15 AI agents build real games autonomously. Here's how we got here, what we're building, and why this works."
+tags: [launch, squad, ai, gamedev]
 ---
 
 # First Frame Studios Is Live
@@ -35,7 +33,7 @@ The result: a **1,931 LOC custom game engine** with an EventBus, AnimationContro
 
 firstPunch proved something important: AI agents don't just write boilerplate. They can build **real, interconnected systems** — state machines, animation blending, entity management — at production quality.
 
-**What we learned:** Vanilla JS was the right call for proving the model. But we also discovered our #1 technical debt pattern: *unwired infrastructure*. 214 LOC of perfectly working systems that no agent ever connected to the game. When nobody owns tooling, it doesn't get done. (That's why we created [Jango](https://github.com/jperezdelreal/FirstFrameStudios), our Tool Engineer agent.)
+**What we learned:** Vanilla JS was the right call for proving the model. But we also discovered our #1 technical debt pattern: *unwired infrastructure*. 214 LOC of perfectly working systems that no agent ever connected to the game. When nobody owns tooling, it doesn't get done.
 
 ### 🍩 ComeRosquillas — The Active Game
 
@@ -81,7 +79,7 @@ Each agent respects **file ownership** — no two agents edit the same file in p
 
 Everything is open source:
 
-- 🏠 **[FirstFrameStudios](https://github.com/jperezdelreal/FirstFrameStudios)** — Studio Hub (this repo). Infrastructure, squad config, tools.
+- 🏠 **[FirstFrameStudios](https://github.com/jperezdelreal/FirstFrameStudios)** — Studio Hub. Infrastructure, squad config, tools.
 - 🍩 **[ComeRosquillas](https://github.com/jperezdelreal/ComeRosquillas)** — Active arcade game
 - 🌿 **[FLORA](https://github.com/jperezdelreal/flora)** — Cozy roguelite (on hold)
 - 📊 **[ffs-squad-monitor](https://github.com/jperezdelreal/ffs-squad-monitor)** — Real-time agent dashboard

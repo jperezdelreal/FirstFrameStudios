@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/global.css';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<BaseLayout title="Blog" description="Dev blog — project updates, studio learnings, and the journey of building games with AI agents.">
+  <div class="max-w-4xl mx-auto px-6 py-20">
+    <div class="mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Blog</h1>
+      <p class="text-lg text-[#9890b0]">Dev updates, studio learnings, and the journey of building games with AI agents.</p>
+    </div>
+
+    <div class="space-y-6">
+      {posts.map((post) => (
+        <a href={`${import.meta.env.BASE_URL}blog/${post.id}/`}
+          class="group block p-6 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.06] hover:border-[#8b5cf6]/30 transition-all duration-300">
+          <div class="flex items-center gap-3 mb-3">
+            <time class="text-sm text-[#9890b0]">{formatDate(post.data.date)}</time>
+            {post.data.tags?.map((tag: string) => (
+              <span class="text-xs px-2 py-0.5 rounded-full bg-[#8b5cf6]/10 text-[#a78bfa]">{tag}</span>
+            ))}
+          </div>
+          <h2 class="text-xl md:text-2xl font-semibold text-white group-hover:text-[#a78bfa] transition-colors mb-2">
+            {post.data.title}
+          </h2>
+          <p class="text-[#9890b0] line-clamp-2">{post.data.excerpt}</p>
+        </a>
+      ))}
+    </div>
+
+    {posts.length === 0 && (
+      <div class="text-center py-20">
+        <p class="text-2xl mb-2">📝</p>
+        <p class="text-[#9890b0]">No posts yet. Check back soon!</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>

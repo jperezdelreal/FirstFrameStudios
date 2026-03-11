@@ -1,0 +1,96 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'AI-powered game development studio — shipping games with a 15-agent Squad team.' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <title>{title} | First Frame Studios</title>
+  </head>
+  <body class="min-h-screen bg-[#0f0d1a] text-[#e2e0f0] font-sans antialiased">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 border-b border-white/10 backdrop-blur-xl bg-[#0f0d1a]/70">
+      <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href={base} class="flex items-center gap-2 text-lg font-bold text-white hover:text-[#a78bfa] transition-colors">
+          <span class="text-2xl">🎮</span>
+          <span>First Frame Studios</span>
+        </a>
+        <div class="hidden sm:flex items-center gap-6">
+          <a href={base} class="text-sm text-[#9890b0] hover:text-white transition-colors">Home</a>
+          <a href={`${base}blog/`} class="text-sm text-[#9890b0] hover:text-white transition-colors">Blog</a>
+          <a href="https://github.com/jperezdelreal/FirstFrameStudios" target="_blank" rel="noopener" class="text-sm text-[#9890b0] hover:text-white transition-colors flex items-center gap-1">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </div>
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-btn" class="sm:hidden text-[#9890b0] hover:text-white" aria-label="Toggle menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </nav>
+      <!-- Mobile menu -->
+      <div id="mobile-menu" class="hidden sm:hidden border-t border-white/10 bg-[#0f0d1a]/95 backdrop-blur-xl">
+        <div class="px-6 py-4 flex flex-col gap-3">
+          <a href={base} class="text-sm text-[#9890b0] hover:text-white transition-colors">Home</a>
+          <a href={`${base}blog/`} class="text-sm text-[#9890b0] hover:text-white transition-colors">Blog</a>
+          <a href="https://github.com/jperezdelreal/FirstFrameStudios" target="_blank" rel="noopener" class="text-sm text-[#9890b0] hover:text-white transition-colors">GitHub</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="pt-16">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 mt-24">
+      <div class="max-w-6xl mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="text-white font-semibold mb-3">🎮 First Frame Studios</h3>
+            <p class="text-sm text-[#9890b0]">AI-powered game development studio. Shipping real games with 15 specialized AI agents.</p>
+          </div>
+          <div>
+            <h3 class="text-white font-semibold mb-3">Projects</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="https://github.com/jperezdelreal/ComeRosquillas" target="_blank" class="text-[#9890b0] hover:text-[#a78bfa] transition-colors">🍩 ComeRosquillas</a></li>
+              <li><a href="https://github.com/jperezdelreal/flora" target="_blank" class="text-[#9890b0] hover:text-[#a78bfa] transition-colors">🌿 FLORA</a></li>
+              <li><a href="https://github.com/jperezdelreal/ffs-squad-monitor" target="_blank" class="text-[#9890b0] hover:text-[#a78bfa] transition-colors">📊 Squad Monitor</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-white font-semibold mb-3">Links</h3>
+            <ul class="space-y-2 text-sm">
+              <li><a href="https://github.com/jperezdelreal/FirstFrameStudios" target="_blank" class="text-[#9890b0] hover:text-[#a78bfa] transition-colors">Studio Hub on GitHub</a></li>
+              <li><a href="https://github.com/bradygaster/squad" target="_blank" class="text-[#9890b0] hover:text-[#a78bfa] transition-colors">Squad Framework</a></li>
+              <li><a href="https://bradygaster.github.io/squad/" target="_blank" class="text-[#9890b0] hover:text-[#a78bfa] transition-colors">Squad Docs</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-8 pt-6 border-t border-white/10 text-center text-xs text-[#9890b0]">
+          <p>Built with <a href="https://astro.build" target="_blank" class="text-[#a78bfa] hover:underline">Astro</a> · Powered by <a href="https://github.com/bradygaster/squad" target="_blank" class="text-[#a78bfa] hover:underline">Squad v0.8.25</a></p>
+          <p class="mt-1">© 2026 First Frame Studios · <a href="https://github.com/jperezdelreal" target="_blank" class="hover:underline">Joaquín Pérez del Real</a></p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const btn = document.getElementById('mobile-menu-btn');
+      const menu = document.getElementById('mobile-menu');
+      btn?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+    </script>
+  </body>
+</html>
