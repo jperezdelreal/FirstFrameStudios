@@ -1,102 +1,41 @@
-<div align="center">
-
 # 🎮 First Frame Studios
 
-### *Small team. Big craft. Forged in Play.*
+> AI-powered game development studio — shipping games with a 15-agent Squad team.
 
-![Status](https://img.shields.io/badge/Status-Shipping-brightgreen?style=for-the-badge)
-![Engine](https://img.shields.io/badge/Engine-Canvas%202D-blue?style=for-the-badge)
-![Built With](https://img.shields.io/badge/Built%20With-Squad-blueviolet?style=for-the-badge)
+## What We Do
 
-We believe the first frame tells you everything — and we spend every frame after that proving it.
+We build games. Not tech demos, not prototypes — **complete, playable games** that players want to come back to. Our secret weapon: a team of specialized AI agents coordinated by [Squad](https://github.com/bradygaster/squad), each owning a domain (engine, gameplay, art, audio, QA, production).
 
-An AI-powered game development studio making experiences that feel *right* in your hands.<br/>
-This monorepo is our workshop — games, tools, shared assets, and the decisions that shape them.
+## Active Projects
 
-</div>
+| Game | Repo | Status | Stack |
+|------|------|--------|-------|
+| 🌿 **FLORA** | [flora](https://github.com/jperezdelreal/flora) | 🌱 Starting | Vite + TypeScript + PixiJS v8 |
 
----
+## Archived Projects
 
-## 🕹️ The Games
+| Game | Genre | What We Learned |
+|------|-------|----------------|
+| 🔥 Ashfall | 1v1 Fighting (Godot 4) | AI teams can build infrastructure fast but fighting games need human feel-tuning |
+| 👊 firstPunch | Beat 'em Up (Canvas 2D) | Vanilla JS game engine from scratch — 1,931 LOC custom engine |
 
-| Game | Engine | Status |
-|------|--------|--------|
-| **[First Punch](games/first-punch/)** | Canvas 2D (HTML/JS) | ✅ Playable MVP |
-| **[Ashfall](games/ashfall/)** | Godot 4 | 🏗️ Pre-production |
+## Studio Infrastructure
 
----
+This repo is the **Studio Hub** — the parent Squad that manages studio-wide knowledge:
 
-## 👥 The Squad
+- **`.squad/`** — Team roster, decisions, skills, casting, ceremonies
+- **`tools/`** — ralph-watch (autonomous loop), scheduler, shared tooling
+- **`.github/workflows/`** — Triage, heartbeat, daily digest, drift detection
 
-| | Agent | Role |
-|---|---|---|
-| 🏗️ | **Solo** | Lead — Vision & Execution |
-| ⚙️ | **Chewie** | Engine Dev — Canvas & Core Systems |
-| ⚔️ | **Lando** | Gameplay Dev — Combat & Feel |
-| ⚛️ | **Wedge** | UI/UX Dev — Player Interface |
-| 🎨 | **Boba** | Art Director — Visual Language |
-| 🔊 | **Greedo** | Sound Designer — Audio & Feedback |
-| 👾 | **Tarkin** | Content Dev — Enemies & Encounters |
-| 🧪 | **Ackbar** | QA & Playtester — Craft Quality |
-| 🎯 | **Yoda** | Game Designer & Vision Keeper |
-| 🏞️ | **Leia** | Environment Artist — Worlds |
-| ✨ | **Bossk** | VFX Artist — Polish & Reaction |
-| 👤 | **Nien** | Character Artist — Characters & Sprites |
-| ⚙️ | **Jango** | Tool Engineer — Workflows & Pipeline |
-| 📊 | **Mace** | Producer — Scope & Schedule |
-| 📋 | **Scribe** | Session Logger — Memory & History |
+Game-specific repos inherit studio knowledge via `squad upstream`.
 
----
+## The Team
 
-## 📂 Navigate
+Built with [Squad v0.8.25](https://github.com/bradygaster/squad) — Star Wars universe casting 🌌
 
-- **[`.squad/`](.squad/)** — Team charters, decisions, studio identity
-- **[`games/`](games/)** — Game projects
-- **[`shared/`](shared/)** — Shared assets and utilities
-- **[`docs/`](docs/)** — Studio guides and [getting started](docs/GETTING_STARTED.md)
+## Quick Links
 
----
-
-## 🔧 Development
-
-### Work Coordination
-
-All work is tracked and coordinated through GitHub:
-
-- **[Issues Board](https://github.com/jperezdelreal/FirstFrameStudios/issues)** — Feature requests, bugs, and tasks live here
-- **[Project Board](https://github.com/jperezdelreal/FirstFrameStudios/projects)** — Create and manage sprints in GitHub Projects; filter by game tag and priority
-- **[Wiki](https://github.com/jperezdelreal/FirstFrameStudios/wiki)** — Design docs, architecture, and studio playbooks
-
-### How Squad Agents Work
-
-All work follows this flow:
-
-```
-Issue (game:*, squad:*, priority:*) 
-  → Branch (squad/{issue-number}-{slug})
-  → Pull Request (with checks)
-  → Review (squad agents verify)
-  → Merge to main
-```
-
-See [**CONTRIBUTING.md**](CONTRIBUTING.md) for full workflow, label system, and commit conventions.
-
----
-
-<div align="center">
-
-> *"The game tells you what it wants to be if you listen."*
-
-</div>
-
----
-
-<div align="center">
-
-### ⚡ Built With Squad
-
-This studio runs on [**Squad**](https://bradygaster.github.io/squad) by [Brady Gaster](https://github.com/bradygaster) — a multi-agent runtime for GitHub Copilot that lets AI teams fan out, build in parallel, and land work in minutes.
-
-Our entire squad wouldn't exist without it. 🙏
-
-</div>
+- [New Project Proposals](/.squad/analysis/new-project-proposals-2026-03-10.md)
+- [Studio Principles](/.squad/identity/mission-vision.md)
+- [Team Wisdom](/.squad/identity/wisdom.md)
+- [Blog: Organized by AI](https://www.tamirdresher.com/blog/2026/03/10/organized-by-ai) (inspiration)

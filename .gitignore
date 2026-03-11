@@ -1,3 +1,6 @@
+# Archived games stay local, not on GitHub
+games/
+
 # Godot
 .godot/
 *.import
