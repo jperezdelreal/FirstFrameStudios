@@ -108,3 +108,11 @@
 - **Addresses Ackbar's audit (P0 gap):** Game feel had no dedicated skill; patterns were scattered across 3 skills. This unified reference aligns with Principle #1 (Player Hands First) — now the first skill new agents should read when implementing ANY feature with impact.
 - **Cross-referenced:** state-machine-patterns (state triggers), beat-em-up-combat (frame data), 2d-game-art (particles), game-qa-testing (juice toggle test), godot-beat-em-up-patterns (GDScript examples)
 - **Session tag:** Skills Gap Remediation (2026-03-07T12:57:00Z) — Orchestration log: `.squad/orchestration-log/2026-03-07T12-57-skills-creation.md`
+
+### Flora PR #21 Review Fixes (2026-07-25)
+- **Task**: Address Solo's 3 must-fix review items on PR #21 (Player Controller)
+- **Fix 1 — Movement AP**: Removed `consumeAction()` from `startMove()` and removed auto-day-advance check from `updateMovementAnimation()`. Movement is free; only tool use costs action points and can advance the day. This matches the acceptance criteria: "using tool ends turn."
+- **Fix 2 — ToolBar deselect**: Changed `selectTool()` callback guard from `if (this.onToolSelect && this.selectedTool !== null)` to `if (this.onToolSelect)`. Now fires `onToolSelect(null)` on deselect, so Player entity properly clears its selected tool.
+- **Fix 3 — System interface**: Added `readonly name = 'PlayerSystem'` and `implements System` to `PlayerSystem` class, with import from `./index`. Follows same pattern as `PlantSystem`.
+- **Lesson**: When implementing resource-cost systems, always check acceptance criteria for what actions should be free vs costly. Movement being free on a small grid is a feel decision — 3 AP for 8x8 grid would make the game unplayable.
+- **Lesson**: Callback guards should only check if the callback exists, not filter valid values (null is a valid deselect signal).

@@ -270,3 +270,36 @@ Fixed critical touch input bug preventing mobile users from entering high score 
 - When integrating touch controls with keyboard-driven input handlers, must dispatch actual keyboard events (`new KeyboardEvent()`) for state-dependent logic, not just set key flags in `game.keys[]` object. Setting flags works for real-time gameplay movement but fails for event-driven state machines like menu navigation.
 - State-aware input: Touch handlers should check `game.state` and adapt behavior appropriately. Same touch gesture can mean different things: tap-to-start on title screen, tap-to-confirm during high score entry, tap-to-continue on game over.
 - The mobile controls PR (#16) already established the pattern with `triggerKey()` method for pause/mute buttons — extending this pattern to D-pad arrows during specific states maintains consistency and reuses proven approach.
+
+## ffs-squad-monitor — Dashboard UI (Issue #4, PR #7)
+**Date:** 2025-07-24  
+**Branch:** `squad/4-dashboard-ui`  
+**Repo:** ffs-squad-monitor (jperezdelreal/ffs-squad-monitor)
+
+Refactored the monolithic dashboard into a component-based architecture with proper CSS extraction and configurable refresh.
+
+**What was built:**
+- Extracted all inline CSS (186 lines) to `src/styles.css` with CSS custom properties for theming
+- Created 6 component modules under `src/components/`: heartbeat, log-viewer, repos, timeline, settings, connection-status
+- Created 3 shared lib modules under `src/lib/`: api.js (centralized fetch + connectivity tracking), scheduler.js (configurable polling with pause/resume), util.js (escapeHtml, timeAgo, formatDuration)
+- Added round timeline visualization — compact dot chart showing success/failure streaks with hover tooltips
+- Added log viewer filter toolbar (All / Success / Errors)
+- Added settings panel with refresh interval presets (5s/10s/30s/1m) and pause/resume
+- Added footer with repo link
+- Responsive breakpoints at 768px (single-column) and 480px (compact headers)
+
+**UI patterns used:**
+- GitHub dark theme palette (--bg: #0d1117, --surface: #161b22, etc.)
+- Sticky top bar with connection indicator and settings dropdown
+- Card-based layout with hover glow (box-shadow + border-color transition)
+- Dot-based timeline (GitHub contribution graph pattern, but horizontal)
+- Filter toolbar with active state highlighting
+- Custom scrollbar styling for log viewer
+- Status dots with glow effect (box-shadow) and pulse animation
+
+**Tech decisions:**
+- No build-time CSS framework — pure CSS custom properties for theming
+- Scheduler class manages all polling with runtime interval changes
+- API client tracks connectivity centrally; components subscribe via callback
+- Each component exports a `refresh*()` function and optional `init*()` for DOM binding
+- Vite handles module bundling — 13 modules → single JS/CSS output

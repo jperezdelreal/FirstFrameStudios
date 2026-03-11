@@ -294,6 +294,122 @@ Set up GitHub Issues as the project management backbone for Ashfall Sprint 0 in 
 
 ---
 
+### Heartbeat Reader Architecture (Jango, Tool Engineer)
+**Author:** Jango (Tool Engineer)  
+**Date:** 2025-07-25  
+**Status:** Implemented  
+**Scope:** ffs-squad-monitor — monitoring infrastructure
+
+**Decision:**  
+The `/api/heartbeat` endpoint uses a **file-watch + cache** pattern rather than read-on-request:
+
+1. **fs.watch on directory** — Watches parent directory of heartbeat file, survives file deletion/recreation cycles
+2. **In-memory cache** — Heartbeat JSON parsed once on change and cached; requests serve from memory
+3. **Configurable path** — `FFS_HEARTBEAT_PATH` env var enables deployment flexibility
+4. **Graceful degradation** — File-not-found returns `{ status: 'offline' }` with HTTP 200 (not 404)
+5. **BOM stripping** — All file reads strip UTF-8 BOM before JSON.parse (PowerShell generates files with BOM)
+
+**Impact on Team:**
+- Any agent writing heartbeat files should write plain UTF-8 without BOM, or consumers must strip it
+- Vite plugin middleware pattern is how all dev-time APIs work; no separate server needed
+- Offline state is first-class status (gray dot, not error); UI shows graceful degradation
+- Solo/Chewie: Production deployment requires Node.js server equivalent (Vite middleware is dev-only)
+- Ralph: Heartbeat file format is the contract; field name changes break the dashboard
+
+**Why:** Avoids file I/O on every request. Atomic file rewriting ensures consistency. Environment configuration supports Docker deployment.
+
+---
+
+### Squad Monitor Dashboard Architecture (Wedge, UI/UX Developer)
+**Author:** Wedge (UI/UX Developer)  
+**Date:** 2025-07-24  
+**Status:** Implemented  
+**Scope:** ffs-squad-monitor project
+
+**Decision:**  
+Squad monitor dashboard uses component-based vanilla JS architecture without frameworks. Each UI section (heartbeat, log-viewer, repos, timeline, settings, connection-status) is an independent ES module under `src/components/`. Shared concerns live in `src/lib/`.
+
+**Key Patterns:**
+1. **Component contract:** Export `refresh*()` (async, called by scheduler) + optionally `init*()` (DOM event binding)
+2. **Centralized API client** (`src/lib/api.js`): All fetch calls via `safeFetch()`. Connectivity tracked centrally; components subscribe via `onConnectionChange()`
+3. **Configurable Scheduler** (`src/lib/scheduler.js`): Manages polling intervals with `register()`, `setInterval()`, `pause()`, `resume()`. UI settings wired to scheduler
+4. **CSS custom properties** (`src/styles.css`): All colors/fonts/radii as `--tokens`. Dark theme matches GitHub. No CSS framework
+
+**Impact on Team:**
+- Any agent adding dashboard sections should follow component pattern (export `refresh*` + `init*`, use `lib/api.js`)
+- CSS changes use existing custom properties, not hardcoded colors
+- Monitor repo uses `master` as default branch (not `main`)
+- Vanilla JS keeps bundle small (8KB gzipped), avoids framework lock-in
+
+**Why:** Simplicity and modularity. Component pattern provides clear ownership boundaries and independent testability. Scheduler abstraction enables runtime polling configuration.
+
+---
+
+### localStorage Convention — Defensive Patterns (Ackbar, QA Lead)
+**Author:** Ackbar (QA Lead)  
+**Date:** 2025-07-24  
+**Status:** Proposed  
+**Scope:** Studio-wide localStorage usage
+
+**Decision:**  
+Formalize a studio convention for all localStorage usage based on patterns in Flora PR #22 (Encyclopedia) and ComeRosquillas PR #17 (High Scores). Both independently implemented identical defensive patterns:
+
+- try/catch on load AND save
+- Structure validation before trusting stored data
+- Graceful degradation to empty state on corruption
+- Console warnings (not errors) on failure
+
+**Impact on Team:**
+- All new games/features using localStorage must follow this pattern
+- Consider extracting a shared `SafeStorage` utility if pattern is used in 3+ games
+- Non-negotiable: console warnings should not escalate to errors; users should not see corruption as a fatal failure
+
+**Why:** Data persistence is fragile (corruption, quota, deletion). Defensive patterns discovered independently by multiple agents should be standardized to prevent bugs in future projects.
+
+---
+
+### Flora Sprint 0 PR Review Outcomes (Solo, Lead/Chief Architect)
+**Author:** Solo (Lead / Chief Architect)  
+**Date:** 2026-03-11  
+**Status:** Active  
+**Scope:** Flora project — Sprint 0 integration and PR review gates
+
+**Decisions Made:**
+
+1. **PR #20 Hazard System — Approved** ✅
+   - Architecturally sound, ready to merge
+   - Clean config→entity→system separation
+   - Integration wiring (tile state on pest spawn) handled by Solo in dedicated integration PR
+
+2. **PR #21 Player Controller — Changes Requested**
+   - Three must-fix issues before merge:
+     - Movement must not consume action points (only tool use; per GDD §3)
+     - ToolBar deselect callback bug (onToolSelect never fires with null on toggle)
+     - System interface conformance (PlayerSystem needs `readonly name` property)
+   - Lando assigned to fix in Round 2
+
+3. **Integration Gap Identified: Pest ↔ Tile State**
+   - Neither PR #20 nor #21 updates Tile.state to TileState.PEST when pests spawn
+   - remove-pest tool checks tile.hasPest()
+   - Solo will wire this in Sprint 0 integration PR
+
+4. **Architecture Pattern Confirmation**
+   - Flora Sprint 0 code correctly follows established patterns:
+     - SceneContext injection (no singletons)
+     - Fixed-timestep accumulator
+     - Entity/System interfaces
+     - Config-as-data for extensibility
+
+**Impact on Team:**
+- Tarkin: PR #20 can merge as-is
+- Lando: PR #21 needs 3 targeted fixes + re-review
+- Solo: Will create integration PR for HazardSystem ↔ GardenScene ↔ tile state
+- Yoda: Should confirm pest spawn behavior (one-shot per season vs. ongoing pressure)
+
+**Why:** Code review gates ensure architectural coherence. Pattern confirmation enables confident parallel work on future Flora features.
+
+---
+
 ## Governance
 
 - All meaningful changes require team consensus

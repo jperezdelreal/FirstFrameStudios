@@ -401,6 +401,33 @@ Completed comprehensive technical architecture for Ashfall, a 1v1 fighting game 
 - Resource-driven design allows content iteration without rebuilds
 - Deterministic architecture guarantees reproducibility for balance tuning
 
+### Flora PR Reviews — Sprint 0 (2026-03-11)
+Reviewed two Flora Sprint 0 PRs as first architecture gate for the Flora project:
+
+**PR #20 — Hazard System (Tarkin): APPROVED ✅**
+- Clean 3-layer architecture: config → entity → system. Textbook module separation.
+- Config-driven difficulty scaling with season-based 0→1 ramp.
+- System interface conformance correct. Day-based hazard logic, not frame-based.
+- Non-blocking notes: tile state not updated on pest spawn (integration gap I'll wire), empty spawnPests() stub is misleading, Math.random() acceptable for MVP.
+- All acceptance criteria met (pest spawn window, plant resistance, drought multiplier, no instant-fail).
+
+**PR #21 — Player Controller (Lando): CHANGES REQUESTED 🔄**
+- Good foundation: SceneContext injection, InputManager edge detection, PixiJS v8 API all correct.
+- Data-driven ToolConfig pattern is clean and extensible.
+- 3 required fixes: (1) Movement consuming action points is gameplay-breaking — only tool use should cost actions per the GDD. (2) ToolBar deselect callback never fires with null — real bug. (3) PlayerSystem missing System interface name property.
+- Additional concerns flagged: setTimeout not lifecycle-safe, plant lookup fragile with grid offset, non-adjacent click teleports.
+
+**Architecture Patterns Confirmed for Flora:**
+- SceneContext injection (no singletons) — both PRs respect this
+- Fixed-timestep GameLoop with accumulator — PlayerSystem correctly receives fixedDt
+- Entity interface (id, x, y, active) — Player and Hazard both conform
+- System interface (name, update, destroy) — HazardSystem conforms, PlayerSystem needs fix
+- Config-as-data pattern — both tools and hazards use data-driven configs
+
+**Integration Notes:**
+- HazardSystem and PlayerSystem's remove-pest tool have a coupling point: tile.state must be set to TileState.PEST when pests spawn. Neither PR does this. I'll wire it in the integration pass.
+- Tool action results (ToolActionResult) have an advanceDay flag that composes well with the day-based hazard system.
+
 ### Status
 ✅ Architecture gate (M0) cleared. GDD and architecture locked. Parallel implementation unblocked.
 

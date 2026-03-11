@@ -300,3 +300,19 @@ Created .squad/analysis/team-evaluation-v3.md (22 KB) — comprehensive post-res
 "We're as ready as we can be to start another project. Do the P0 prep work (Vision Keeper role formalization, charter updates), and we'll exceed firstPunch quality on the next one because we fixed the structural problems before they became bottlenecks."
 
 **Status:** COMPLETE. Team evaluation ready; all agents have clear development plans; ready for next project sprint with minor P0 prep.
+
+### 2025-07-24: Cross-Project PR QA Reviews (Flora #22, ComeRosquillas #17)
+- **Flora PR #22 — Encyclopedia & Seed Discovery System (Wedge):** APPROVED ✅
+  - +962 lines: EncyclopediaSystem, Encyclopedia UI, DiscoveryPopup, PlantSystem integration
+  - **Strong points:** localStorage persistence with legacy format migration, proper try/catch error handling, clean destroy() with listener cleanup, undiscovered plant silhouettes (no spoilers), 3-method scrolling (wheel/drag/keyboard)
+  - **Edge cases found (non-blocking):** setTimeout race in updateInfoText on rapid harvests, discovery popup drops concurrent events (no queue), no Escape key to close encyclopedia, no click-through blocking behind encyclopedia overlay, no Pixi mask on scroll area (potential visual overflow)
+  - **Game feel:** Discovery popup timing (0.3s/2.2s/0.5s) feels rewarding without interrupting. Rarity color coding drives collection motivation.
+
+- **ComeRosquillas PR #17 — High Score Persistence & Leaderboard + Touch Input (Lando/Wedge):** APPROVED ✅
+  - +481 lines: HighScoreManager, TouchInput (D-pad + swipe), high score entry UI, responsive CSS
+  - **Strong points:** localStorage with full structure validation, arcade-style initials entry (A-Z/0-9/space cycling), SVG D-pad overlay, proper media query touch detection, touchcancel handling, aria-labels, responsive scaling
+  - **Edge cases found (non-blocking):** `addScore` rank uses object identity (`===`) after sort/slice — could return rank 0 on edge ties; score of 0 qualifies as high score when table <10 entries; no escape from high score entry; silence during initials entry (no celebratory sound)
+  - **Game feel:** Initials entry with pink highlight + pulsing title nails the arcade aesthetic. HUD high score display creates constant motivation. Title screen leaderboard drives "one more try" loop.
+
+- **Key QA Pattern Learned:** Both PRs use localStorage for persistence with nearly identical defensive patterns (try/catch, structure validation, graceful degradation). This is becoming a studio convention worth formalizing.
+- **Cross-Project Observation:** Both games now have meta-progression systems (encyclopedia discovery in Flora, high score tables in ComeRosquillas) — these are critical for player retention. Good to see the team independently converging on this pattern.

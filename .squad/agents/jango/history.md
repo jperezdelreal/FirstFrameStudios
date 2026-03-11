@@ -254,3 +254,25 @@ Restructured the source IPKong repository into a multi-game monorepo layout.
 3. **Discovery timestamp pattern is common bug** - Seen this in other PRs: storing state but querying it incorrectly. Need to emphasize difference between "what exists in memory" vs "what gets persisted" vs "what gets read back."
 
 **Status:** NONE MERGED. All 3 PRs need fixes before approval. Review feedback posted. Waiting for developer iteration.
+
+### 2025-07-25 — Heartbeat Reader Endpoint (ffs-squad-monitor #1)
+**Session:** Squad monitor infrastructure build  
+**Role:** Tool Engineer — Pipeline automation, monitoring infrastructure
+
+**Task Executed:**
+Implemented `/api/heartbeat` endpoint in ffs-squad-monitor (PR #6, branch `squad/1-heartbeat-reader`).
+
+**What Was Built:**
+1. **Configurable heartbeat path** — `FFS_HEARTBEAT_PATH` env var with fallback to `../FirstFrameStudios/tools/.ralph-heartbeat.json`
+2. **fs.watch file watcher** — Watches the directory containing the heartbeat file; cache updated on every change event. No polling overhead.
+3. **Graceful offline handling** — Returns `{ status: 'offline' }` when file is missing/unreadable instead of HTTP 404
+4. **Structured JSON response** — Parses and serves: status, round, pid, interval, lastStatus, lastDuration, timestamp, consecutiveFailures, repos
+5. **BOM-safe parsing** — Strips UTF-8 BOM before `JSON.parse` (PowerShell's `ConvertTo-Json` writes BOM)
+6. **Frontend update** — Added `offline` to status color map in monitor.js
+
+**Key Technical Findings:**
+1. **PowerShell BOM issue:** Files written by PowerShell's `ConvertTo-Json | Set-Content` include a UTF-8 BOM (U+FEFF) that breaks `JSON.parse`. Always strip BOM when reading files from Windows/PowerShell toolchain.
+2. **fs.watch directory strategy:** Watching the directory instead of the file handles file deletion/recreation cycles (e.g., when Ralph rewrites the heartbeat). Watching the file directly would lose the watcher on delete.
+3. **Vite plugin middleware** is the right approach for dev-time APIs in this project — no need for a separate Express server.
+
+**Status:** COMPLETE. PR #6 open at github.com/jperezdelreal/ffs-squad-monitor/pull/6. Build passes. Smoke-tested locally.
