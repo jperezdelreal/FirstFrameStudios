@@ -13,6 +13,10 @@ First Frame Studios operates a **hub-and-spoke multi-repo architecture**. The hu
 
 This document defines nine domains of governance that together answer every question about authority, autonomy, flow, and coordination across the multi-repo ecosystem.
 
+### Hub Philosophy
+
+> FFS must be 99% autonomous. The founder decides WHAT games to make, not HOW. The hub is the Bible — everything downstream inherits and respects it. Each game breathes FFS values but has creative freedom.
+
 ### Current Repositories
 
 | Repository | Type | Stack | Description |
@@ -74,18 +78,13 @@ Not all changes carry equal risk. A typo fix in a README and a new repository cr
 
 T0 changes are irreversible or foundational decisions that shape the studio's identity, structure, or strategic direction. These are the decisions that, if made poorly, cannot be easily undone and would require rebuilding rather than patching.
 
-**Examples:**
-- Creating a new game repository (e.g., deciding to build a new game)
-- Archiving or sunsetting a game repository
-- Changing the studio name, tagline, or core DNA (`company.md`)
-- Adding or removing a team member (agent) from the roster
-- Changing the hub-downstream authority model (this document)
-- Approving a new engine or major technology pivot (e.g., moving from Godot 4 to Unreal)
-- Modifying the approval tier system itself
-- Changing the studio's mission or vision (`mission-vision.md`)
-- Approving multi-repo structural changes (e.g., merging repos, splitting repos)
-- Financial or licensing decisions affecting the studio
-- Changing the Growth Framework's stage gates (`growth-framework.md`)
+> *"FFS must be 99% autonomous. Founder decides WHAT games, not HOW."*
+
+**Examples (exhaustive — T0 is deliberately minimal):**
+- Creating a new game repository (deciding what NEW GAMES to build — the founder's only "capricho")
+- Modifying studio principles (`principles.md`) — these are foundational and shape all decisions downstream
+- Major refactors to `.squad/` directory structure — foundational infrastructure, too risky for autonomous changes
+- Adding or removing agents from the **FFS Hub roster** — hub agents influence studio-wide decisions
 
 **Process:**
 1. Proposer (any agent) writes a decision proposal to `.squad/decisions/inbox/`
@@ -106,10 +105,9 @@ T1 changes are significant decisions that affect multiple repos, multiple agents
 
 **Examples:**
 - Creating a new tool/utility repository (e.g., ffs-metrics-dashboard, ffs-release-bot) — Lead proposes, Founder approves via hub PR
-- Major features that span multiple repositories (e.g., a shared component library used by Flora and ComeRosquillas)
 - Cross-repo architectural decisions (e.g., standardizing on a shared event bus pattern across all games)
 - Changing quality gates or the Definition of Done (`quality-gates.md`)
-- Modifying studio principles (`principles.md`)
+- Major features that span multiple repositories (e.g., a shared component library used by Flora and ComeRosquillas)
 - Adding new studio-wide skills to the hub
 - Changing the routing table or issue routing rules (`routing.md`)
 - Modifying ceremonies that apply across repos (`ceremonies.md`)
@@ -151,6 +149,9 @@ T2 changes are normal development work — features, bug fixes, content creation
 - Creating game-specific CI/CD workflows
 - Updating local configuration files in a downstream repo
 - Writing tests for code within their domain
+- Adding or removing agents in a **game repo roster** — project-scoped, does not affect hub
+- Creating project-specific tools, plugins, or MCP connections — total freedom within the project repo
+- Forking or cloning an existing tool for project use
 
 **Process:**
 1. Agent picks up the issue (via `squad:{agent}` label or sprint assignment)
@@ -211,18 +212,34 @@ Use this matrix when you're unsure which tier applies:
 
 | Question | If Yes → | If No → |
 |----------|----------|---------|
-| Does this create or destroy a repository? | T0 | Continue ↓ |
-| Does this change studio identity, mission, or core DNA? | T0 | Continue ↓ |
-| Does this add or remove a team member? | T0 | Continue ↓ |
+| Does this create a new **game** repository? | T0 | Continue ↓ |
+| Does this modify studio principles (`principles.md`)? | T0 | Continue ↓ |
+| Does this refactor `.squad/` directory structure? | T0 | Continue ↓ |
+| Does this add or remove an agent from the **FFS Hub** roster? | T0 | Continue ↓ |
+| Does this create a new **tool/utility** repository? | T1 | Continue ↓ |
 | Does this affect multiple repositories? | T1 | Continue ↓ |
-| Does this change studio-wide standards (quality gates, principles, skills)? | T1 | Continue ↓ |
+| Does this change studio-wide standards (quality gates, skills)? | T1 | Continue ↓ |
 | Does this change cross-repo contracts or interfaces? | T1 | Continue ↓ |
 | Does this change the routing table or ceremonies? | T1 | Continue ↓ |
+| Does this add or remove an agent from a **game repo** roster? | T2 | Continue ↓ |
+| Does this create project-specific tools, plugins, or MCP connections? | T2 | Continue ↓ |
 | Does this involve implementing a feature, fixing a bug, or creating content? | T2 | Continue ↓ |
 | Does this change any code logic or configuration? | T2 | Continue ↓ |
 | Is this purely documentation, formatting, or cosmetic? | T3 | Ask Solo |
 
 **When tiers conflict:** If a change spans multiple tiers, the **highest tier wins**. A documentation change (T3) that also modifies a quality gate (T1) is a T1 change.
+
+---
+
+### Repo Creation Tiers
+
+Not all repository creation carries the same weight. The tier depends on what the repo represents:
+
+| Repo Type | Tier | Who Decides | Rationale |
+|-----------|------|-------------|-----------|
+| **Game repo** | T0 | Founder only | New games change studio direction — this is the founder's only "capricho" |
+| **Tool/utility repo** (e.g., ffs-squad-monitor, ffs-release-bot) | T1 | Lead proposes, Founder approves via hub PR | Tools are infrastructure, not strategic direction changes |
+| **Fork/experimental repo** (clone of existing tool, proof-of-concept) | T2 | Assigned agent, if issue justifies | Low-risk exploration that doesn't commit studio resources |
 
 ---
 
@@ -502,6 +519,39 @@ These ceremonies happen within a single repo and are owned by that repo's team.
 | **Retrospective** (local) | Per-repo reflection | Mace | Sprint end, build failure, or rejection |
 
 **Rule:** Repo-local ceremonies cannot contradict studio-wide ceremony decisions. If a Studio Retrospective produces an action item, repo-local sprint planning must accommodate it.
+
+---
+
+#### Mandatory Ceremonies
+
+Certain ceremonies are **required** at specific project milestones, regardless of repo type or team composition.
+
+| Milestone | Ceremony Required | Content |
+|-----------|-------------------|---------|
+| **Project START** | Kickoff Review | Team assignment, skills assessment, architecture plan, upstream relationship verification |
+| **Project MIDPOINT** | Mid-Project Health Check | Skills assessment, team member evaluation, course correction, hub alignment check |
+| **Project END** | Closeout & Harvest | Final team member evaluation, skill harvest, lessons learned, hub skill promotion |
+
+**Skills Assessment:** At each mandatory ceremony, every active agent's skills are evaluated against the project's needs. Gaps are identified and addressed (training, reassignment, or skill creation).
+
+**Team Member Evaluation:** Performance, collaboration quality, and growth trajectory are reviewed. Results inform future team composition decisions.
+
+---
+
+### Project Autonomy Model
+
+Each project (game or tool) has **total freedom** to create its own tools, plugins, and MCP connections within its repository. This is T2 authority — no hub approval needed for project-scoped tooling.
+
+**The Escalation Rule:** If a project-specific tool has **cross-repo application** (i.e., another project could benefit from it), the owning team must escalate to FFS hub level:
+
+1. **Inherit from hub** — if the hub already has an equivalent, use it instead of building locally
+2. **Create a new tool repo** — if no equivalent exists, propose a new tool repository (T1: Lead proposes, Founder approves)
+
+**Examples:**
+- Flora creates a PixiJS debug overlay → stays local (T2, project-specific)
+- Flora creates a multi-repo heartbeat monitor → escalate to FFS, create tool repo (T1)
+- ComeRosquillas builds a custom sprite packer → stays local (T2)
+- ComeRosquillas builds a CI/CD dashboard useful to all repos → escalate to FFS (T1)
 
 ---
 
@@ -948,9 +998,9 @@ In time-critical situations (production outage, critical bug in a shipped game, 
 
 | Tier | Who Decides | Examples (3-word summary) |
 |------|-------------|--------------------------|
-| **T0** | Founder only | New repo, identity change, team change |
-| **T1** | Lead + Founder | Cross-repo change, standard update, skill addition |
-| **T2** | Assigned agent | Feature work, bug fix, content creation |
+| **T0** | Founder only | New game, principles, .squad refactors, hub roster |
+| **T1** | Lead + Founder | Tool repos, cross-repo decisions, quality gates |
+| **T2** | Assigned agent | Feature work, bug fix, game roster, project tools |
 | **T3** | Any agent | Typo fix, formatting, comment addition |
 
 ### Zone Cheat Sheet
@@ -990,6 +1040,7 @@ The governance document is reviewed during every Hub Health Check ceremony (quar
 | Date | Change | Tier | Author |
 |------|--------|------|--------|
 | 2025 | Initial creation — 9 domains of multi-repo governance | T0 | Solo (Lead / Chief Architect) |
+| 2026-03-11 | Founder vision applied — T0 minimized, repo creation tiers, mandatory ceremonies, project autonomy model, hub philosophy | T0 | Solo (Lead / Chief Architect), per Founder directives |
 
 ---
 
