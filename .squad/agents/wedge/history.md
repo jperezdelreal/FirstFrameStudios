@@ -206,3 +206,19 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
   - Verified all 11 EventBus signals the HUD listens to exist: `fighter_damaged`, `fighter_ko`, `round_started`, `round_ended`, `match_ended`, `timer_updated`, `announce`, `ember_changed`, `combo_updated`, `combo_ended`, `round_draw`.
   - Fighter `max_health` default (1000) matches HUD `p1_max_hp`/`p2_max_hp` default (1000.0) — no sync needed.
   - **Lesson:** When a UI system is fully decoupled via signal bus, prefer `.tscn` instancing over runtime `load()`/`add_child()` — it's visible in the editor scene tree, requires no code, and the node is ready before `_ready()` runs.
+
+- **ComeRosquillas Mobile Touch Controls (PR #16):**
+  - Created `js/engine/touch-input.js` module with comprehensive mobile input support for HTML/Canvas game
+  - **Swipe Detection:** touchstart → touchmove → touchend pattern calculates delta and direction (min 30px, max 300ms)
+  - **On-screen D-pad:** SVG-based directional pad with semi-transparent Simpson's yellow styling, positioned bottom-left (fixed)
+  - **Touch Buttons:** Pause (⏸️) and Mute (🔇) buttons positioned top-right as circular overlays
+  - **Touch-to-Start:** Tap anywhere on canvas during title or game-over screens to start/restart
+  - **Responsive Canvas:** Added `max-width: 100vw`, `height: auto` to canvas CSS for viewport scaling
+  - **Media Query Strategy:** `@media (hover: none) and (pointer: coarse)` shows touch controls only on touch devices
+  - **Desktop Preservation:** All keyboard controls unchanged, touch input simulates keyboard events via `keys[keyCode] = true`
+  - **Touch Event Handling:** `{ passive: false }` + `preventDefault()` prevents browser scroll during gameplay
+  - **CSS Layout:** HUD/bottomBar use `width: 100%; max-width: 672px` for responsive width while maintaining fixed game canvas aspect
+  - **Integration Pattern:** TouchInput class instantiated in Game constructor, takes game instance for direct state/keys access
+  - **Visual Feedback:** D-pad buttons change fill opacity on touch (0.3 → 0.7), buttons scale down (0.9) on press
+  - **Lesson:** For canvas games needing mobile support, layer touch UI as fixed-position overlays rather than inline DOM, use media queries to conditionally display, and simulate keyboard input rather than refactoring core game logic — preserves desktop experience while adding mobile support with zero conflicts.
+
