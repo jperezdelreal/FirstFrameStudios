@@ -331,3 +331,24 @@ Completed. PR #12 open on jperezdelreal/flora. CI green (23s). deploy-pages@v4 p
 - Touch controls implementation pattern: swipe detection + on-screen D-pad + media query detection
 
 **Status:** 5/5 PRs merged successfully, all issues moved to Done on project board
+
+### 2026-03-11: Daily Metrics Collector (#164)
+**Task:** Create daily metrics collector script for all FFS repos.
+
+**Deliverables:**
+1. **`tools/collect-daily-metrics.ps1`** -- PowerShell script collecting daily productivity metrics
+   - Issues opened/closed per repo via `gh issue list` with date search filters
+   - PRs opened/merged per repo via `gh pr list` with date search filters
+   - Active contributors from commit history via `gh api`
+   - Ralph-watch round metrics parsed from `tools/logs/ralph-YYYY-MM-DD.jsonl`
+2. **Output**: `tools/metrics/YYYY-MM-DD.json` with per-repo breakdown, ralph metrics, totals, contributors
+3. **Branch & PR**: `squad/164-daily-metrics` -> PR #168
+
+**Learnings:**
+- `gh issue list --search "created:DATE..DATE"` combined with `--json createdAt` is the most reliable way to filter by date
+- `gh pr list --state merged` requires `--search "merged:DATE..DATE"` for date filtering
+- Contributors list from `gh api repos/.../commits` may include both login and commit author name -- dedup with Sort-Object -Unique
+- Ralph JSONL logs use `phase=round, status=OK` to identify completed rounds; metrics are nested in a `metrics` object
+- Script supports `-DryRun`, `-Date`, and `-RepoNames` params for flexibility
+
+**Status:** PR #168 opened, dry-run tested successfully across all 4 repos
