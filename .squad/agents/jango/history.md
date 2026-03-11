@@ -134,3 +134,41 @@
 **Tested:** `.\tools\ralph-watch.ps1 -DryRun -MaxRounds 1` — clean pass, all 4 repos resolved, heartbeat written with metrics.
 
 **Status:** COMPLETE
+
+## Learnings
+
+### 2025-01-XX: ComeRosquillas CI Pipeline (#6)
+**Task:** Add CI pipeline with validation and live preview deployment for ComeRosquillas game.
+
+**Deliverables:**
+1. **CI Workflow** (`.github/workflows/ci.yml`) — Runs on push to main and all PRs
+   - HTML structure validation (checks for canvas element, script references)
+   - JavaScript syntax checking using `node --check` on all .js files
+   - Game assets verification (directory structure, main game file)
+   - Basic code quality checks (debugger statements, TODO comments)
+2. **PR Preview Comments** — Automated PR comment with:
+   - Validation check results
+   - Commit SHA
+   - Deployment URLs (game + docs site)
+   - Powered by GitHub Actions
+3. **Branch & PR** — Created `squad/6-ci-pipeline` branch, pushed to origin, opened PR #9
+
+**Context:**
+- ComeRosquillas is a vanilla HTML/JS/Canvas game (no build step needed)
+- Existing deploy-pages.yml workflow already handles GitHub Pages deployment
+- The game is deployed to `/game/` path, Astro docs site at root
+- Existing squad-ci.yml runs node tests but no test files exist yet
+
+**Workflow Paths:**
+- Main CI: `.github/workflows/ci.yml`
+- Existing deploy: `.github/workflows/deploy-pages.yml` (Astro + game files)
+- Squad CI: `.github/workflows/squad-ci.yml` (existing, runs node tests)
+
+**Key Decisions:**
+- Kept CI simple and fast — no build step, no complex tooling
+- Used native Node.js `--check` flag for JS syntax validation
+- Added PR comments for developer experience (shows deploy URLs)
+- Separated validation job from PR comment job (clean separation of concerns)
+- Did not interfere with existing Astro docs deployment workflow
+
+**Status:** ✅ COMPLETE — CI workflow created, committed, pushed, PR opened
