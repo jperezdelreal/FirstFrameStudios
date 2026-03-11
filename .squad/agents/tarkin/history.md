@@ -90,3 +90,19 @@ Created universal enemy and encounter design skill — a comprehensive framework
 - **Decision cadence scaling:** `BASE_DECISION_INTERVAL` (24f) shortened dynamically by `aggression_factor * 14` frames, so Hard AI re-evaluates every ~10f vs Easy's ~20f. Makes aggressive AI feel relentless.
 - **DASH_IN state:** Added to `AIState` enum and spacing logic. Currently functions as forward walk (no dash state exists in state machine yet) but architecturally ready for when dash mechanics are added.
 - **Key insight:** Anti-pattern caps are more effective than probability tuning for preventing passive AI. No matter how weighted the rolls are, pure randomness can still produce long passive streaks — hard frame limits guarantee the AI stays active.
+
+### ComeRosquillas Issue #7 — Ghost AI Personalities & Difficulty Curve (2026-03-11)
+- **PR:** #11 (`squad/7-ghost-ai`) — repo: jperezdelreal/ComeRosquillas
+- **Ghost personality system:** 4 distinct villain AIs in `getChaseTarget()`:
+  - Burns (idx 0): Ambush — targets 4–8 tiles ahead of Homer's direction, look-ahead distance scales with level
+  - Bob Patiño (idx 1): Aggressive — always targets Homer's exact tile, slightly faster speed (+5% at max ramp)
+  - Nelson (idx 2): Patrol/Guard — cycles between 4 waypoints near power pellets, switches to direct chase within 8–14 tile radius (scales with level)
+  - Snake (idx 3): Erratic — 30% chance to ignore target and pick random direction, chase target itself is random 40-75% of the time (inverts with level)
+- **Difficulty curve (0..1 ramp over 9 levels):**
+  - Ghost base speed: 0.9x → scales +0.06x per level (was +0.05x)
+  - Fright time: 360 → 120 frames (67% reduction at max ramp)
+  - Scatter durations: shrink 50%, chase durations: grow 30%
+  - Ghost exit delays: shrink 60% (ghosts leave house faster)
+  - Frightened ghost speed: 0.5x → 0.65x (harder to catch at high levels)
+- **Key insight for arcade games:** Personality differentiation in Pac-Man clones is best done through target selection (getChaseTarget) + random overrides in direction picking (moveGhost), not through separate state machines per ghost. Keeps the code simple and the architecture flat — one moveGhost function handles all ghosts, personality only diverges at decision points.
+- **Modular codebase note:** ComeRosquillas uses global namespace (no ES modules), `<script>` tag loading order. All ghost AI stays in `js/game-logic.js` per the modularization decision (Chewie's PR #10).

@@ -1345,3 +1345,295 @@ This document requires Founder approval (T3) to become active.
 
 *Written by Solo (Lead / Chief Architect) — First Frame Studios*  
 *"The studio grows when the rules are clear enough to follow and flexible enough to not need exceptions."*
+
+---
+
+## 2026-03-11T14:28: User Directive — Auto-Delete Branches + Code Review Rulesets
+
+**By:** Joaquín (via Copilot)  
+**What:** When creating repos, always enable "Automatically delete head branches" and set up rulesets for code review.  
+**Why:** User request — captured for team memory. Ensures clean branch hygiene and enforced PR reviews across all FFS repos.
+
+---
+
+## 2026-03-11: ComeRosquillas Ghost AI Architecture Decision
+
+**Date:** 2026-03-11  
+**Author:** Tarkin (Enemy/Content Designer)  
+**Issue:** #7 — Improve ghost AI with difficulty curve and personality  
+**Status:** ✅ Implemented (PR #11)  
+**Repo:** jperezdelreal/ComeRosquillas
+
+**Context:**
+Ghost AI in ComeRosquillas was functional but all four villains behaved nearly identically (classic Pac-Man Blinky/Pinky/Inky/Clyde targeting with no personality feel). No difficulty scaling beyond minimal speed increase.
+
+**Decision:**
+Implement personality-based targeting through the existing `getChaseTarget()` method + random direction overrides in `moveGhost()`, plus a 0..1 difficulty ramp that scales 6 parameters across 9 levels.
+
+**Ghost Personality Mapping:**
+- Burns → Ambush (targets ahead of Homer)
+- Bob Patiño → Aggressive (direct chase, speed bonus)
+- Nelson → Patrol/Guard (zone defense with proximity trigger)
+- Snake → Erratic (random directions + random targets)
+
+**Difficulty Scaling Parameters:**
+Ghost speed, fright duration, scatter/chase time ratios, ghost house exit delays, frightened ghost speed, personality aggression values — all driven by single `getDifficultyRamp()` function.
+
+**Rationale:**
+1. Personality through target selection keeps one unified `moveGhost()` — no per-ghost state machines needed for a Pac-Man clone
+2. Difficulty ramp as 0..1 float makes all scaling parameters easy to tune from one place
+3. All changes confined to `js/game-logic.js` per the modularization architecture (Chewie's decision)
+
+**Impact on other agents:**
+- Lando: Scoring/progression unaffected — ghost point values unchanged
+- Chewie: Engine untouched — no renderer or audio changes
+- Wedge: UI/HUD untouched
+
+---
+
+## 2026-03-11: ComeRosquillas Audio Architecture (Greedo)
+
+**Date:** 2026-03-11  
+**Author:** Greedo (Sound Designer)  
+**Issue:** #8 — Sound effects variety and improved music  
+**PR:** #12  
+**Repo:** jperezdelreal/ComeRosquillas
+
+**Decision:**
+
+Implemented mix bus architecture (sfxBus + musicBus → compressor → destination) and expanded procedural audio to 8 SFX types with variation systems. All sounds procedural via Web Audio API — no external audio files.
+
+**Key Choices:**
+
+1. **Mix bus with compressor:** DynamicsCompressor on master prevents clipping when SFX and music overlap. This is zero-cost and should be standard on all projects.
+2. **Variation via cycling + pitch spread:** Chomp cycles through 4 patterns with ±8% random pitch. Death randomly picks from 3 variants. Ghost-eat pitch escalates with combo. These techniques prevent repetition fatigue without adding complexity.
+3. **Backward-compatible API:** `play(type, data)` accepts optional second parameter. Existing `play('chomp')` calls work unchanged. Only 2 lines changed in game-logic.js.
+4. **Smooth mute transitions:** `linearRampToValueAtTime` instead of hard gain cuts. Prevents audio pops.
+
+**Impact on Other Agents:**
+
+- **Lando/Tarkin:** If adding new game events (bonus collect, combo chain), call `this.sound.play('newType')` and add a case in audio.js. The API pattern is established.
+- **Chewie:** Bus architecture is initialized in SoundManager constructor. No engine changes needed.
+- **Wedge:** If adding audio settings UI, use `toggleMute()` for music and the bus gain values for volume sliders.
+
+---
+
+## 2026-03-11: ralph-watch README ASCII-safe and v2-accurate
+
+**Date:** 2026-03-11  
+**Author:** Jango (Tool Engineer)  
+**Issue:** #152
+
+**Context:**
+tools/README.md was out of date -- it documented ralph-watch v1 defaults (single repo) and omitted v2 features (failure alerts, activity monitor, metrics parsing, multi-repo).
+
+**Decision:**
+Rewrote README to accurately reflect ralph-watch v2:
+- Default `-Repos` is all 4 FFS repos, not just `.`
+- Documented failure alerts (alerts.json after 3+ consecutive failures)
+- Documented activity monitor (background runspace)
+- Documented metrics parsing (issues closed, PRs merged/opened)
+- Added prerequisites section (gh CLI, copilot extension)
+- All text ASCII-safe (no emojis, no Unicode dashes) for PS 5.1 compatibility
+
+**Impact:**
+- Any agent or human reading tools/README.md now gets accurate activation instructions
+- Startup is one command: `.\tools\ralph-watch.ps1`
+
+---
+
+## 2026-03-11: Flora Architecture — Module Structure & Patterns
+
+**Author:** Solo (Lead Architect)  
+**Date:** 2026-03-11  
+**Repo:** jperezdelreal/flora  
+**PR:** #2  
+**Status:** PROPOSED (awaiting merge)
+
+**Context:**
+
+Flora is FFS's second game — a cozy gardening roguelite built on Vite + TypeScript + PixiJS v8. Needed a clean architecture from day one to avoid the monolithic anti-pattern that plagued ComeRosquillas (1636 LOC game.js) and firstPunch (695 LOC gameplay.js).
+
+**Decision:**
+
+### Module Structure (7 modules)
+
+| Module | Responsibility | Rules |
+|--------|---------------|-------|
+| `core/` | SceneManager, EventBus, (future: input, asset loader) | Owns the game loop |
+| `scenes/` | Individual game screens (boot, menu, garden, etc.) | One active at a time |
+| `entities/` | Game objects (plants, player, tools) | Scene-agnostic |
+| `systems/` | ECS-lite update loops (growth, weather, inventory) | Communicate via EventBus |
+| `ui/` | HUD, menus, dialogs | Subscribe to events, never mutate state |
+| `utils/` | Math, RNG, helpers | Pure functions, no imports from other src/ modules |
+| `config/` | Constants, balance values, tuning | Pure data, no side effects |
+
+### Key Patterns
+
+1. **Scene-Based Architecture** — All game states are Scenes managed by SceneManager. One active at a time. Clean init/update/destroy lifecycle.
+
+2. **ECS-Lite** — Not a full Entity-Component-System framework. Lightweight systems that iterate typed entity collections. Keeps complexity proportional to game scope.
+
+3. **Typed Event Bus** — Pub-sub with EventMap type for compile-time safety. Prevents circular dependencies between systems, UI, and scenes.
+
+4. **PixiJS v8 Patterns** — Async `Application.init()`, `app.canvas` (not `app.view`), `Text({text, style})` object syntax, `Assets.load()` API.
+
+### Dependency Direction
+
+```
+main.ts → core → scenes → entities/systems/ui
+config ← imported by anything
+utils ← imported by anything
+EventBus ← imported by scenes, systems, ui
+```
+
+**Rationale:**
+
+- Modular from day one prevents the monolith anti-pattern (lesson from ComeRosquillas and firstPunch)
+- Scene-based is simpler than FSM for a small-medium game
+- ECS-lite avoids framework overhead while keeping separation of concerns
+- Event bus is the standard decoupling pattern for game modules
+
+**Implications:**
+
+- All new features go in the appropriate module (no cross-cutting monoliths)
+- New scenes implement the Scene interface
+- New systems implement the System interface
+- Inter-module communication goes through EventBus, not direct imports
+
+---
+
+## 2026-03-11: Flora Game Design Document (GDD v1.0)
+
+**Date:** 2026-03-11  
+**Decided By:** Yoda (Game Designer)  
+**Status:** READY FOR ARCHITECTURE REVIEW  
+**Artifact:** `jperezdelreal/flora/docs/GDD.md` (PR #1)
+
+### Decision Summary
+
+**What:** Approved Flora GDD v1.0 as the design foundation for Sprint 0 development.
+
+**Why:** 
+1. Aligns with "cozy first, challenge second" directive from Joaquín
+2. MVP scope is realistic for AI-developed game (12 plants, one-season loop, basic hazards)
+3. Roguelite elements are light (discovery-driven, not punishment-driven)
+4. Design decisions support tech stack (Vite + TypeScript + PixiJS v8)
+5. Clear progression loop ensures engagement without grinding
+
+**Scope:** 
+- Sprint 0 MVP: 8×8 garden, 12 plants, 20–40 min per run, 3–5 runs per session
+- Post-MVP deferred: garden expansion, complex synergies, cosmetics, seasonal variety, save/load
+
+### Key Design Pillars
+
+1. **Cozy but Intentional** — Relaxing tone, meaningful choices, no punishment
+2. **Every Run is Different** — Randomized seeds, unique scenarios each time
+3. **Grow & Discover** — Incremental unlocks, botanical encyclopedia grows with playtime
+4. **The Garden Reflects You** — Aesthetic choices are expressive; memories persist
+
+### Core Loop
+
+**One Run = 20–40 minutes**
+
+1. **Seeding (3–5 min):** Choose from 4–6 random plants; arrange on 8×8 plot
+2. **Tending (12–25 min):** Water, harvest, manage pests, adapt to weather (12 in-game days)
+3. **Harvest & Reflection (2–5 min):** Collect new seeds, update encyclopedia, unlock rewards
+
+**Each Season Resets:** Garden, weather, available seeds, plant states  
+**Each Season Persists:** Encyclopedia, tools, garden upgrades, achievements
+
+### Meta-Progression (Session Level)
+
+Unlocks per run:
+- **Runs 1–2:** Common seeds (8–10), basic tools
+- **Runs 3–5:** Rare seeds, soil upgrades, compost system
+- **Runs 6–10:** Heirloom seeds, garden structures, advanced tools
+
+After 5–10 runs, player feels measurably more powerful and has discovered 15–20 unique plants.
+
+### Garden Mechanics
+
+#### Plant System
+- **Growth Time:** 3–8 in-game days (varies per plant)
+- **Water Need:** 1–5 waterings per cycle
+- **Health:** 0–100% (affected by water, pests, weather)
+- **Yield:** 1–3 seeds per harvest + bonus fruit (aesthetic)
+
+#### Hazards (All Solvable, No Combat)
+- **Pests:** Appear on day 6–8; player removes manually or uses tools
+- **Drought:** Increases watering frequency (Summer hazard)
+- **Frost:** Sensitive plants wilt if not harvested in time (Winter hazard)
+- **Weeds:** Occupy space or slow growth; removable or compostable
+
+### Art & Audio Direction
+
+**Art:**
+- Tilebase pixel art (16×16 grid, 32×32 plants/player)
+- Warm earthy palette (soil browns, greens, sky blues, accent flower colors)
+- Seasonal shifts (spring pastels → summer gold → fall rust → winter cool)
+- Smooth growth animations; satisfying harvest pop
+
+**Audio:**
+- Ambient loops (60–90 BPM, cozy lo-fi style)
+- Soft SFX (water pour, soil tap, harvest chime, pest rustle)
+- No stressful cues; total mix encourages relaxation
+
+### MVP Scope (Hard Boundary for Sprint 0)
+
+#### IN MVP
+- One-season loop (12 in-game days)
+- 12 plant types (4 common, 4 uncommon, 2 rare, 2 heirloom)
+- 8×8 garden plot
+- Hazards: pests, drought
+- Tools: basic watering can, hand, pest remover
+- Encyclopedia (discover/unlock mechanic)
+- Soil quality (basic feedback)
+- One tool unlock per first harvest
+- One plant unlock per season completion
+
+#### OUT of MVP (Deferred)
+- Garden expansion
+- Complex synergies (polyculture bonus, shade mechanic)
+- Advanced tools (soil tester, compost bin, trellis)
+- Seasonal variety (MVP = same season all runs)
+- Cosmetics / achievements
+- Save/load (single session only)
+- Mobile optimization
+
+### Success Criteria
+
+Players will:
+1. ✓ Complete 3–5 runs in one session
+2. ✓ Discover at least 1 new plant per run
+3. ✓ Feel harvesting is rewarding (audio + visual works)
+4. ✓ Play for 30–40 minutes without rushing
+5. ✓ See encyclopedia growth; feel progression
+6. ✓ No frustration; hazards solvable by restart
+
+### Next Steps
+
+1. **Architecture Review (Solo):** Validate tech stack feasibility; suggest data structures
+2. **Sprint 0 Planning (Jango, Squad):** Timeline, asset needs, task breakdown
+3. **Art Spike:** Plant sprite concepts (16×16, growth frames)
+4. **Audio Spike:** Ambient track (90 sec loop) + 5 SFX
+
+### Design Philosophy Reinforced
+
+> *"Cozy First, Challenge Second."*
+
+Every design decision prioritizes:
+1. **Player agency** — Hazards are puzzles, not punishments
+2. **Discovery** — Unlocking feels like loot drops in traditional roguelikes
+3. **Accessibility** — Failed run = "next season, I'll try different" not "I lost progress"
+4. **Visible progress** — Encyclopedia fills; tools appear; garden expands
+
+**Approved by:** Yoda, Game Designer  
+**For:** First Frame Studios Squad  
+**Date:** 2026-03-11
+
+**Related Decisions:**
+- **Studio Philosophy:** "Player Hands First" (session 7)
+- **Genre Pillars:** "Game Feel is Differentiator" (2026-03-08)
+- **Tech Stack:** Vite + TypeScript + PixiJS v8 (from now.md)
+- **Scope Governance:** MVP-lock principle (from Mace's Sprint 0 plan, Ashfall)

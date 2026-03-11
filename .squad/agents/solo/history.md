@@ -263,3 +263,45 @@ Ralph (Work Monitor) can now auto-route all 8 issues to the correct squad member
 **Pattern confirmed:** Jango delivers clean, scoped tooling. This matches the T1 tier — feature-level work that doesn't need architectural escalation.
 
 **Status:** ✅ COMPLETE
+
+---
+
+### 2026-07-24: Flora Architecture Definition & Project Scaffold
+
+**Requested by:** Joaquín  
+**Repo:** jperezdelreal/flora  
+**PR:** #2 (feat/flora-architecture → main)
+
+**Context:** Flora is FFS's second game — a cozy gardening roguelite. Stack: Vite + TypeScript + PixiJS v8. Repo had basic Vite scaffold; needed architecture definition and module structure.
+
+**What was delivered:**
+
+1. **Architecture Document** (`docs/ARCHITECTURE.md`):
+   - 7-module structure: core, scenes, entities, systems, ui, utils, config
+   - Scene-based architecture with SceneManager pattern
+   - ECS-lite for game systems (lightweight, not full framework)
+   - Typed event bus for decoupling modules
+   - PixiJS Assets API for asset pipeline
+   - Dependency direction rules (config/utils = pure, entities scene-agnostic, UI never mutates state)
+   - PixiJS v8 API notes (async init, app.canvas, Text object syntax)
+
+2. **Module Scaffold** (13 files):
+   - `src/core/SceneManager.ts` — Scene interface + manager with register/switchTo/update
+   - `src/core/EventBus.ts` — Typed pub-sub with EventMap interface
+   - `src/scenes/BootScene.ts` — First scene with title/subtitle/credit
+   - `src/config/index.ts` — Game constants (GAME, SCENES)
+   - `src/utils/index.ts` — clamp, lerp, seeded RNG helpers
+   - `src/entities/index.ts`, `src/systems/index.ts`, `src/ui/index.ts` — Interface stubs
+   - `src/main.ts` — PixiJS v8 Application.init(), SceneManager wiring, game loop ticker
+
+3. **Build Verification:**
+   - `npx tsc --noEmit` — zero type errors
+   - `npm run build` — production build in 10s, 268KB bundle (84KB gzipped)
+
+**Key architectural decisions:**
+- Scene-based, not state-machine-based (simpler for a small game)
+- ECS-lite, not full ECS framework (avoid over-engineering)
+- Event bus for cross-module communication (prevents circular deps)
+- Config and utils are pure modules — no side effects, importable by anything
+
+**Status:** ✅ COMPLETE — PR #2 open, build passing

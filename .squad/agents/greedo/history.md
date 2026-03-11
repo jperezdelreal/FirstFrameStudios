@@ -91,3 +91,30 @@ Created universal game audio design skill — a comprehensive, engine-agnostic r
 **Cross-references:** Links to game-feel-juice, game-design-fundamentals, procedural-audio (Web Audio specific implementation)
 
 **Confidence:** Medium (validated in firstPunch audio system + Hades/Celeste analysis + procedural-audio research). Will escalate to High after implementing on non-procedural-audio platforms.
+
+### 2026-03-11: ComeRosquillas Audio Enhancement (Issue #8)
+- **Project:** ComeRosquillas — Simpsons-themed Pac-Man arcade game (vanilla HTML/JS/Canvas)
+- **PR:** #12 (squad/8-sound-effects)
+- **Changes to audio.js:**
+  - **Mix bus architecture:** sfxBus + musicBus → masterGain → DynamicsCompressor → destination. Clean routing replaces direct-to-destination approach.
+  - **Chomp variation (4 waka-waka patterns):** Cycling through 4 frequency patterns with ±8% random pitch spread. Added subtle bandpass noise layer for mouth-close texture.
+  - **Power-up sparkle:** Enhanced Duff beer gulp with ascending sine sparkle + triangle harmony + highpass fizz noise. 3 layers total.
+  - **Ghost eat combo escalation:** Base pitch rises by 150Hz per consecutive ghost (400→550→700→850). Includes sub-bass impact thud + sparkle that pitches up with combo.
+  - **Death sound (3 D'oh variations):** Classic descending, exasperated (higher/sharper with noise), defeated (low/drawn-out with extra sine layer).
+  - **Game over (sad trombone):** Descending B-Bb-A-Gb notes + LFO vibrato on sustained wah note (5Hz modulation). Sub-bass layer.
+  - **Level complete fanfare:** Full ascending C-D-E-G-A-C fanfare with harmony thirds + celebration bass + highpass sparkle noise.
+  - **Extra life shimmer:** Enhanced arpeggio with triangle harmony + highpass noise shimmer.
+  - **Simpsons jingle:** Added harmony voice (thirds) to existing melody.
+  - **Background music:** Two alternating melody patterns (A/B) + harmony voice (triangle at 0.8× melody frequency) + alternating bass patterns. 3-voice arrangement vs. original 2-voice.
+  - **Smooth mute transitions:** toggleMute() uses linearRampToValueAtTime instead of hard gain switch. startMusic() cancels scheduled values and resets bus gain properly.
+  - **Noise helper:** New `_noise()` method for creating filtered noise bursts (bandpass, highpass, lowpass). Used across power-up, chomp, ghost-eat, death, level-complete, extra-life.
+- **Changes to game-logic.js (2 lines):**
+  - Line 575: `play('eatGhost')` → `play('eatGhost', this.ghostsEaten)` — passes combo count for pitch escalation.
+  - Line 250: Added `this.sound.play('gameOver')` — previously no sound played on game over.
+- **Sound count:** 8 SFX types total (chomp×4 variants, power, eatGhost×escalating, die×3 variants, start, levelComplete, extraLife, gameOver). Music: 3-voice loop with 2 alternating patterns.
+- **Key design decisions:**
+  - All sounds procedural (Web Audio API oscillators + noise) — zero external files.
+  - DynamicsCompressor on master bus prevents peak clipping during SFX + music overlap.
+  - Kept `play(type, data)` API backward-compatible — second parameter optional.
+  - Minimal game-logic.js changes (2 lines) — audio owns its own module.
+- **Reusable pattern:** The `_noise()` helper + mix bus architecture ported well from firstPunch. Confirmed: procedural-audio skill patterns transfer directly to new projects.
