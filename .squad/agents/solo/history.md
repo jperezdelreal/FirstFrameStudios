@@ -477,3 +477,35 @@ Decision written to .squad/decisions/inbox/solo-squad-ecosystem-audit.md.
 Infrastructure is 80% built; activation gap is the real blocker. ralph-watch.ps1, scheduler, and 20+ GitHub Actions workflows all exist and are production-ready. What's missing: persistent execution, task definitions, webhook notifications, and subsquad/upstream model adoption.
 
 **Status:** ✅ COMPLETE — Audit in decisions inbox (merged to decisions.md by Scribe), 12 issues created and tagged game:comerosquillas, session logged
+
+---
+
+### 2026-07-24: Studio Restructure Ceremony — Multi-Repo Hub Audit
+
+**Ceremony Type:** Major — Studio-Wide Restructuring Review  
+**Requested by:** Joaquín  
+**Scope:** Full audit of team, files, skills, tools, routing, and decisions after monorepo → multi-repo pivot
+
+**Context:** Studio completed massive pivot — FFS became hub-only (no game code), ComeRosquillas/Flora/ffs-squad-monitor split to own repos, ralph-watch upgraded to v2, GitHub Pages deployed, 8 game issues migrated.
+
+**Key Findings:**
+
+1. **Hub still holds 1.6 GB of Ashfall Godot files** (6,071 files in games/ashfall/). This is the #1 cleanup item.
+2. **5 of 15 agents should be hibernated** (Boba, Leia, Bossk, Nien — created for Ashfall art pipeline, no work in web stack). Greedo stays active (Web Audio API).
+3. **decisions.md is 164 KB with 161 entries** — ~70% Ashfall-specific. Must archive to <30 KB.
+4. **12 Python tools are all Godot-specific** — none work for web games. Delete from hub.
+5. **3 Godot GitHub workflows will never trigger** — godot-project-guard, godot-release, integration-gate. Delete.
+6. **8 Godot skills should be archived** (not deleted) to `.squad/skills/_archived/`.
+7. **routing.md has no multi-repo routing** — doesn't tell agents which repo to file issues in.
+8. **MCP config is just a Trello example** — not actually configured.
+9. **Lean roster: 11 active + 4 hibernated + Scribe + Ralph + @copilot** covers all web game needs.
+10. **Discord webhook is the highest-leverage unbuilt feature** — Joaquín has zero proactive notifications.
+
+**Top 3 Actions:**
+1. Delete games/ashfall/ + games/first-punch/ (1.6 GB cleanup)
+2. Archive ~30 Ashfall decisions, compress decisions.md to <30 KB
+3. Rewrite team.md + routing.md for multi-repo web game stack
+
+**Deliverable:** `.squad/decisions/inbox/solo-studio-restructure-ceremony.md` — full 7-area audit with specific files, counts, and prioritized actions.
+
+**Status:** AWAITING FOUNDER APPROVAL
