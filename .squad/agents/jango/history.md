@@ -18,6 +18,28 @@ Jango Fett — the original clone template. Every clone trooper was instantiated
 
 ## Learnings
 
+### 2026-03-11: Replaced Jekyll Docs with Astro Site
+**Task:** Replace the Jekyll-based docs/ site with an Astro-powered studio site inspired by Brady Gaster's Squad docs.
+
+**Deliverables:**
+1. **Jekyll removed** — Gemfile, _config.yml, _layouts, _posts all gone
+2. **Astro 6 site created** in docs/ with Tailwind CSS v4 (`@tailwindcss/vite` plugin, not `@astrojs/tailwind` which only supports Astro ≤5)
+3. **Landing page** — hero section, 4 feature cards, 3 active project cards, "How It Works" steps, archived projects section, Squad CTA
+4. **Blog section** — content collections with `glob` loader (Astro 6 API), listing page, individual post pages with styled prose
+5. **BaseLayout** — glassmorphism header, mobile hamburger nav, footer with project links
+6. **GitHub Actions workflow** — `deploy-pages.yml` triggers on push to main when docs/ changes
+7. **Blog post migrated** — studio launch post moved from Jekyll `_posts/` to Astro content collections
+8. **Dark theme** — deep purple/indigo palette fitting for a game studio
+
+**Key Decisions:**
+- Astro 6 (latest from `create-astro@latest`) — not Astro 5 as originally planned, but works better
+- `@astrojs/tailwind` integration is incompatible with Astro 6 (peer dep: astro ≤5). Used `@tailwindcss/vite` plugin directly instead
+- Content collections use `glob` loader (Astro 5+ API change from `type: 'content'`)
+- Dark theme by default — no light/dark toggle (simplicity > feature count)
+- Build output: static, deployed via GitHub Pages with `actions/deploy-pages@v4`
+
+**Status:** ✅ COMPLETE
+
 ### 2026-03-11: Created ffs-squad-monitor Repo
 **Task:** Stand up a new public repo `jperezdelreal/ffs-squad-monitor` for real-time squad monitoring, inspired by Tamir Dresher's squad-monitor.
 
