@@ -1,9 +1,17 @@
 ﻿{
-    "timestamp":  "2026-03-11T10:36:48Z",
-    "status":  "idle",
+    "timestamp":  "2026-03-12T14:48:46Z",
+    "status":  "stopped",
     "round":  1,
-    "pid":  499052,
-    "interval":  15,
-    "lastStatus":  "OK",
-    "lastDuration":  0.2
+    "pid":  642216,
+    "mode":  "day",
+    "sessions":  1,
+    "interval":  10,
+    "maxIssues":  3,
+    "repos":  [
+                  ".",
+                  "../ComeRosquillas",
+                  "../flora",
+                  "../ffs-squad-monitor"
+              ],
+    "consecutiveFailures":  0
 }

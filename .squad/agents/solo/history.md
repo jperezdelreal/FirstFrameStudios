@@ -564,3 +564,31 @@ The "prepare but don't merge" rule is the critical innovation. Agents can make u
 
 **Status:** ✅ COMPLETE
 
+### 2026-03-12: Pre-Autonomy Diagnostic (Pre-merge gate)
+
+**Requested by:** Joaquín (Founder)
+**Scope:** Full ecosystem diagnostic before merging optimization branch and starting ralph-watch in autonomous mode.
+
+**What was checked:**
+- Squad infrastructure across all 4 repos (team.md, decisions.md, agents, gitattributes, upstream)
+- Ralph-watch readiness: all 7 functions validated, dry-run successful
+- GitHub state: issues, PRs, labels across all repos
+- Stale references: Ashfall/Godot/hibernated agents in active config files
+- Workflow health: all 25 workflows active, cron intervals G9-compliant
+
+**Verdict:** 🟡 READY WITH CAVEATS — no blockers, but 10 recommended fixes.
+
+**Key findings:**
+1. `decisions.md` at 8.2KB exceeds G1 limit (5KB) — needs Scribe archive pass
+2. Hub issues #187-189 are open but work is DONE — should be closed
+3. Stale Godot references in ceremonies.md (Godot Smoke Test), PR template ("Tested in Godot editor"), CONTRIBUTING.md
+4. Downstream repos missing `blocked-by:*` and `tier:*` labels — dependency tracking won't work until created
+5. Flora issue #9 assigned to `squad:wedge` (hub hibernated agent name, not Flora agent)
+6. Flora and ffs-squad-monitor `upstream.json` never synced (`last_synced: null`) — first ralph-watch run will fix
+
+**Deliverable:** `.squad/optimization-plan-check.md`
+
+**Key insight:** The optimization plan execution was thorough — all 7 phases are genuinely complete. The remaining issues are "last mile" cleanup (stale text, missing labels) not structural gaps. Ralph-watch can operate safely; the caveats are about agent clarity, not system integrity.
+
+**Status:** ✅ COMPLETE
+

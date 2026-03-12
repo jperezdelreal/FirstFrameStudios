@@ -1,321 +1,287 @@
-# FFS Optimization Plan Review — Pre-Flight Diagnostic
+# Pre-Autonomy Review — Ralph Watch Readiness
 
-> Diagnóstico completo de los 4 repos antes de habilitar Ralph Watch autónomo.
-> Fecha: 2026-03-12 | Solicitado por: José (Founder)
-> Contexto: Las 33 mejoras del optimization-plan.md están implementadas (✅ Done).
-> Objetivo: ¿Estamos listos para Ralph Watch autónomo?
-
----
-
-## Veredicto Ejecutivo
-
-**❌ NO LANZAR RALPH WATCH AUTÓNOMO TODAVÍA.**
-
-El hub está en buen estado (95% health), pero hay problemas cruzados que harían que Ralph entre en un loop de fallos:
-
-| Dimensión | Estado | Bloqueante |
-|-----------|--------|------------|
-| Hub (.squad/) | 🟢 Saludable con warnings | No |
-| ComeRosquillas | 🟢 Listo | No |
-| Flora | 🔴 Merge conflict bloquea build | **Sí** |
-| FFS Monitor | 🟡 Sin workflows ni labels | **Sí** |
-| Labels cross-repo | 🔴 Inconsistentes | **Sí** |
-| Ralph-watch logs | 🔴 96% failure rate | **Sí** |
-| Issues hub sin labels | 🔴 Invisibles para Ralph | **Sí** |
-
-**Estimación para estar listo:** ~2-3 horas de trabajo (ver Fase de Remediación).
+> Fecha: 2026-03-12 | Solicitado por: Jose (Founder)
+> Fuentes: 5 rondas diagnosticas (12 agentes) + diagnostico Solo (dry-run) + verificacion manual
+> Contexto: 33 mejoras del optimization-plan.md implementadas. Este documento evalua si estamos listos para Ralph Watch autonomo.
 
 ---
 
-## 1. FFS Hub (FirstFrameStudios)
+## Veredicto
 
-### ✅ Lo que está bien (19/20 checks)
+**LISTO CON CAVEATS.** Ralph-watch funciona (dry-run verificado por Solo). Los bloqueantes son de higiene: labels incorrectos, workflows no desplegados, refs Godot en config activos.
 
-- Governance T0-T3 completa (17.9 KB, Constitution-grade)
-- Identity completa (10 ficheros, ninguno vacío)
-- 4 charters activos (Solo, Jango, Mace, Scribe) — todos bien definidos
-- 10 agentes hibernados correctamente en `_alumni/`
-- 43 skills, todas SKILL.md < 5KB (G2 cumplido)
-- Casting state consistente (registry/policy/history)
-- 24 workflows con paths correctos, crons ≥1h (G9 cumplido)
-- `.gitattributes` con `merge=union` para append-only
-- `copilot-instructions.md` completo (3.8 KB)
-- `now.md` actualizado (2026-03-12)
-- `config.json` válido, GitHub Discussions configurado
-- ralph-watch.ps1 operativo (1,165 líneas, multi-repo, governance-aware)
-- Orchestration log activo (51 entries recientes)
+```
+Dry-run exitoso:
+  [ralph] Ralph Watch v3 - First Frame Studios (Night/Day Mode)
+  Mode: day | DryRun: YES | MaxRounds: 1
+  [sync] Hub -> 3 downstream: all up to date
+  [sched] Hub #189,#188,#187: SKIPPED (needs-research)
+  [sched] Flora #9: SELECTED (P1, squad:wedge)
+  Round 1 complete (4.5s)
+```
 
-### ⚠️ Warnings
+---
 
-| # | Hallazgo | Impacto | Acción |
-|---|----------|---------|--------|
-| H1 | `decisions.md` a 8KB (límite G1: 5KB) | Spawn tokens extra | Archivar entries >14 días |
-| H2 | Solo `history.md` 33.5KB (límite: 12KB) | Spawn tokens extra | Scribe summarize |
-| H3 | Jango `history.md` 33.1KB (límite: 12KB) | Spawn tokens extra | Scribe summarize |
-| H4 | CODEOWNERS referencia `games/ashfall/` | Cosmético | Eliminar línea |
+## 1. Hub (FirstFrameStudios)
 
-### ❌ Problemas
+**Branch:** `squad/172-governance-safeguards` (necesita merge a main)
 
-| # | Hallazgo | Impacto | Bloqueante |
-|---|----------|---------|------------|
-| H5 | Issues #187, #188, #189 sin labels | Ralph no los ve | **Sí** |
+| Area | Estado | Detalle |
+|------|--------|---------|
+| Governance T0-T3 | OK | Completa, 17.9KB |
+| Identity (10 files) | OK | Todos presentes, now.md actualizado |
+| Charters activos | OK | Solo, Jango, Mace, Scribe, Ackbar |
+| Skills (43 dirs) | WARN | 4 skills Godot no archivadas |
+| Casting registry | WARN | Boba="active" pero en _alumni; Nien/Leia/Bossk no en registry |
+| Workflows (24) | FAIL | ralph-heartbeat-notify y pr-body-check fallando |
+| squad.agent.md | OK | v0.8.25, identico en 4 repos (MD5: B789E063) |
+| Copilot-instructions | OK | 3.8KB, sin refs stale |
+| Ralph-watch.ps1 | OK | Multi-repo, governance-aware, dry-run pasa |
+
+**Ficheros sobre limites:**
+
+| Fichero | Tamano | Limite | Accion |
+|---------|--------|--------|--------|
+| decisions.md | 10.3KB | 5KB (G1) | Archivar + fix duplicado P0-P3 |
+| solo/history.md | 35.9KB | 12KB | Summarizar |
+| jango/history.md | 33.9KB | 12KB | Summarizar |
+| ackbar/history.md | 13.1KB | 12KB | Summarizar |
+
+**Ackbar inconsistencia:**
+
+| Fuente | Status |
+|--------|--------|
+| team.md Members | AUSENTE |
+| registry.json | "active" |
+| charter.md | Existe (en agents/, no _alumni) |
+| routing.md + ceremonies.md | Referenciado |
+
+Decision necesaria: add a Members o hibernate.
+
+**Stale Godot/Ashfall en ficheros ACTIVOS:**
+
+| Fichero | Refs | Impacto |
+|---------|------|---------|
+| .github/pull_request_template.md | 5/5 checkboxes GDScript | ALTO -- cada PR lo muestra |
+| ceremonies.md | Integration Gate + Godot Smoke Test | ALTO -- agentes las leen |
+| CONTRIBUTING.md | 12+ refs (labels, ejemplos, style guides) | ALTO -- onboarding |
+| .gitignore | .godot/, *.import, *.uid | BAJO -- vestigial |
+| .editorconfig | [*.gd] section | BAJO -- vestigial |
+| CODEOWNERS | games/ashfall/ | BAJO -- path no existe |
+
+Refs en archivos pasivos (analysis/, _alumni/, skills/_archived/, decisions-archive.md, blog) estan correctamente aislados -- NO TOCAR.
+
+**Issues abiertos completados:**
+
+| # | Titulo | Labels | Accion |
+|---|--------|--------|--------|
+| 189 | Design priority system P0-P3 | squad:solo, go:needs-research | CERRAR |
+| 188 | Phase 6: Implement guardrails G1-G14 | squad:solo, squad:ackbar | CERRAR |
+| 187 | Phase 5: Reduce GitHub Actions cron | squad:jango, squad:wedge | CERRAR |
+
+**Estructura legacy:** `games/ComeRosquillas/` dentro del hub (viola modelo hub declarado). `squad.config.ts` permite `games/**`. Decision founder pendiente.
 
 ---
 
 ## 2. ComeRosquillas
 
-### ✅ Lo que está bien
+**Branch:** main (OK) | **Upstream synced:** 2026-07-24 (OK)
 
-- `## Members` header correcto — 5 agentes (Moe, Barney, Lenny, Nelson, Scribe)
-- Universo: The Simpsons (casting consistente)
-- Routing completo, ceremonies configuradas
-- Todos los charters presentes y detallados
-- Historiales bajo 12KB (< 1KB cada uno)
-- upstream.json con `last_synced: 2026-07-24`, 6 contenidos sincronizados
-- Upstream directory con manifest.json + identity + skills
-- 13 squad workflows desplegados
-- `.gitattributes` configurado
-- GitHub labels squad completos (squad:moe, squad:barney, etc.)
-- 0 issues abiertas (backlog limpio)
+| Area | Estado |
+|------|--------|
+| Team (Moe,Barney,Lenny,Nelson) | OK |
+| Charters, routing, ceremonies | OK |
+| Squad workflows (11) | OK |
+| Squad labels locales | OK (moe,barney,lenny,nelson,ralph) |
+| Git state | Clean |
 
-### ⚠️ Warnings
-
-| # | Hallazgo | Impacto | Acción |
-|---|----------|---------|--------|
-| C1 | Sin `copilot-instructions.md` | @copilot sin contexto local | Crear |
-| C2 | Labels heredados de Star Wars (squad:chewie, etc.) | Cosmético, no rompe nada | Limpiar labels obsoletos |
-| C3 | Sin `blocked-by:*` labels | Ralph no detecta dependencias | Crear labels |
-| C4 | Sin `.github/squad.labels.json` | Labels ya existen en GitHub, pero no hay definición local | Crear fichero |
-
-### ❌ Problemas
-
-Ninguno bloqueante.
+| Area | Estado | Accion |
+|------|--------|--------|
+| blocked-by labels | FALTAN | Crear 5 tipos |
+| copilot-instructions.md | FALTA (.github/ y .squad/) | Crear |
+| Heartbeat cron | DESHABILITADO (comentado) | Re-habilitar |
+| sync-squad-labels.yml | Desincronizado (p lowercase, sin P3, sin blocked-by) | Sync con hub |
+| Labels Star Wars heredados | squad:chewie,solo,jango etc. | Limpiar (cosmetic) |
+| Upstream cache quality-gates.md | Refs Godot (hub source limpia) | Re-sync |
 
 ---
 
 ## 3. Flora
 
-### ✅ Lo que está bien
+**Branch:** main (OK) | **Upstream synced:** NUNCA (null)
 
-- `## Members` header correcto — 6 agentes (Oak, Brock, Erika, Misty, Sabrina, Scribe)
-- Universo: Pokémon (casting consistente, migrado desde Star Wars)
-- 35 ficheros TypeScript con código real de juego
-- Routing y ceremonies configurados
-- Todos los charters presentes
-- `.gitattributes` configurado
-- Quality gates completas (216 líneas)
-- 1 orchestration log entry (migración)
+| Area | Estado |
+|------|--------|
+| Team (Oak,Brock,Erika,Misty,Sabrina) | OK |
+| Charters, routing, ceremonies | OK |
+| copilot-instructions.md | OK (.github/) |
+| 35 ficheros TypeScript (juego real) | OK |
+| Git state | Clean |
 
-### ⚠️ Warnings
-
-| # | Hallazgo | Impacto | Acción |
-|---|----------|---------|--------|
-| F1 | `upstream.json` `last_synced: null` | Nunca sincronizado con hub | Ejecutar sync |
-| F2 | Historiales vacíos (98 bytes, solo stub) | No hay learnings | Se poblará naturalmente |
-| F3 | `decisions.md` vacío | Normal para squad nuevo | — |
-| F4 | Sin directorio `.squad/skills/` | Hereda del hub | Crear si necesario |
-| F5 | Labels GitHub son Star Wars pero equipo es Pokémon | Ralph no puede asignar al equipo local | **Crear labels Pokémon** |
-| F6 | Falta label `P3` | Prioridad incompleta | Crear |
-| F7 | Sin `blocked-by:*` labels | Ralph no detecta dependencias | Crear |
-| F8 | Sin `copilot-instructions.md` | @copilot sin contexto | Crear |
-| F9 | `bitECS` en team.md pero no en package.json | Confusión de stack | Limpiar referencia o instalar |
-
-### ❌ Problemas
-
-| # | Hallazgo | Impacto | Bloqueante |
-|---|----------|---------|------------|
-| F10 | **Merge conflict en `GardenScene.ts`** | Build roto, no compila | **Sí** |
-| F11 | Sin squad-* workflows desplegados | No hay CI, triage, ni labels automáticos | **Sí** |
+| Area | Estado | Accion |
+|------|--------|--------|
+| **Merge conflict GardenScene.ts** | BLOQUEANTE | Resolver |
+| **0 squad workflows** | BLOQUEANTE | Desplegar desde templates |
+| **Labels squad:{local}** | TODOS FALTAN (solo tiene Star Wars) | Crear oak,brock,erika,misty,sabrina |
+| Label P3 | FALTA (tiene P0,P1,P2) | Crear |
+| blocked-by labels | FALTAN | Crear 5 tipos |
+| Issue #9 label | squad:wedge (agente hub hibernado) | Re-etiquetar a agente local |
+| PR #18 | Sin labels | Etiquetar |
+| GDD.md sign-off | "Solo reviews", "Jango plans" | Cambiar a Oak |
+| Flora CI/deploy | Todas FAILURE (por merge conflict) | Se arregla con R1.1 |
 
 ---
 
 ## 4. FFS Squad Monitor
 
-### ✅ Lo que está bien
+**Branch:** `squad/13-real-data` (necesita merge a master) | **Upstream synced:** NUNCA (null)
+**Nota:** Usa `master` como default branch (otros repos usan `main`)
 
-- `## Members` header correcto — 5 agentes (Ripley, Dallas, Lambert, Kane, Scribe)
-- Universo: Alien 1979 (casting consistente)
-- Routing completo, ceremonies configuradas
-- Todos los charters presentes (23-52 líneas)
-- Build pasa (Vite, 289ms, sin errores)
-- Git limpio, branches activas
-- `.gitattributes` configurado
-- Templates completos (19 ficheros + 11 workflows)
-- 0 issues abiertas
+| Area | Estado |
+|------|--------|
+| Team (Ripley,Dallas,Lambert,Kane) | OK |
+| Charters, routing, ceremonies | OK |
+| Build Vite | OK (289ms, sin errores) |
+| Git state | Clean |
 
-### ⚠️ Warnings
-
-| # | Hallazgo | Impacto | Acción |
-|---|----------|---------|--------|
-| M1 | `upstream.json` `last_synced: null` | Nunca sincronizado | Ejecutar sync |
-| M2 | Sin `copilot-instructions.md` | @copilot sin contexto | Crear |
-
-### ❌ Problemas
-
-| # | Hallazgo | Impacto | Bloqueante |
-|---|----------|---------|------------|
-| M3 | **Sin workflows en `.github/workflows/`** | No hay CI, triage, labels, heartbeat | **Sí** |
-| M4 | **Solo 2 squad labels** (squad:jango, squad:wedge) — del equipo anterior | Ralph no puede asignar a Ripley/Dallas/Lambert/Kane | **Sí** |
-| M5 | Faltan labels P0, P3 | Prioridades incompletas | **Sí** |
-| M6 | Sin `blocked-by:*` labels | Sin tracking de dependencias | Sí (menor) |
+| Area | Estado | Accion |
+|------|--------|--------|
+| **0 squad workflows** | BLOQUEANTE | Desplegar desde templates |
+| **Labels squad:{local}** | TODOS FALTAN (solo tiene jango,wedge) | Crear ripley,dallas,lambert,kane |
+| **SQUAD_AGENTS en vite.config.js** | CRITICO -- hardcoded Star Wars (12 agentes) | Actualizar con todos los squads |
+| Labels P0, P3 | FALTAN (solo P1,P2) | Crear |
+| blocked-by labels | FALTAN | Crear 5 tipos |
+| copilot-instructions.md | FALTA | Crear |
 
 ---
 
-## 5. Ralph-watch.ps1 — Estado Operativo
+## 5. Cross-Repo: Labels
 
-### ✅ Arquitectura del script (9/10)
+| Label | Hub | ComeRosq | Flora | Monitor |
+|-------|-----|----------|-------|---------|
+| squad | OK | OK | OK | OK |
+| squad:{local} | OK (13) | OK (4) | FALTAN 5 | FALTAN 4 |
+| P0 | OK | OK | OK | FALTA |
+| P1 | OK | OK | OK | OK |
+| P2 | OK | OK | OK | OK |
+| P3 | OK | OK | FALTA | FALTA |
+| blocked-by:* | OK (5) | FALTAN | FALTAN | FALTAN |
+| tier:t0-t3 | FALTAN | FALTAN | FALTAN | FALTAN |
 
-| Feature | Estado |
-|---------|--------|
-| Multi-repo (4 repos) | ✅ |
-| `## Members` header check | ✅ |
-| Upstream sync antes de cada repo (G11) | ✅ |
-| Governance tier filtering (skip T0/T1) | ✅ |
-| Git remote URL validation | ✅ |
-| Night/day mode auto-detection | ✅ |
-| UTF-8 encoding | ✅ |
-| Sin paths hardcodeados | ✅ |
-| Sin referencias a repos antiguos | ✅ |
+## 6. Cross-Repo: Workflows
 
-### ❌ Estado de ejecución (0/10)
+| Workflow | Hub | ComeRosq | Flora | Monitor |
+|----------|-----|----------|-------|---------|
+| squad-triage | OK | OK | FALTA | FALTA |
+| squad-heartbeat | OK | OK (cron off) | FALTA | FALTA |
+| squad-issue-assign | OK | OK | FALTA | FALTA |
+| sync-squad-labels | OK | OK (desync) | FALTA | FALTA |
+| squad-ci | OK | OK | FALTA | FALTA |
 
-**Datos del log `ralph-2026-03-12.jsonl`:**
+## 7. Casting Inconsistencies
+
+| Agente | team.md | registry.json | Carpeta | Fix |
+|--------|---------|---------------|---------|-----|
+| Ackbar | AUSENTE | active | agents/ackbar/ | Decidir: add o hibernate |
+| Boba | Hibernated | active | _alumni/ | registry -> retired |
+| Nien | Hibernated | NO EXISTE | _alumni/ | Anadir como retired |
+| Leia | Hibernated | NO EXISTE | _alumni/ | Anadir como retired |
+| Bossk | Hibernated | NO EXISTE | _alumni/ | Anadir como retired |
+
+---
+
+## Plan de Remediacion
+
+### R1 -- Bloqueantes (~2h)
+
+| # | Que | Repo |
+|---|-----|------|
+| 1 | Mergear squad/172-governance-safeguards a main | Hub |
+| 2 | Resolver merge conflict GardenScene.ts | Flora |
+| 3 | Desplegar squad workflows | Flora |
+| 4 | Desplegar squad workflows | Monitor |
+| 5 | Crear labels squad:{oak,brock,erika,misty,sabrina} | Flora |
+| 6 | Crear labels squad:{ripley,dallas,lambert,kane} | Monitor |
+| 7 | Crear labels P3 (Flora) + P0,P3 (Monitor) | Flora+Monitor |
+| 8 | Crear labels blocked-by:* (5 tipos) | ComeRosq+Flora+Monitor |
+| 9 | Cerrar issues #187,#188,#189 | Hub |
+| 10 | Re-etiquetar Flora #9 a agente local | Flora |
+| 11 | Resolver inconsistencia Ackbar | Hub |
+| 12 | Reescribir PR template (GDScript -> web) | Hub |
+| 13 | Actualizar SQUAD_AGENTS en vite.config.js | Monitor |
+
+### R2 -- Pre-desatender (~2.5h)
+
+| # | Que | Repo |
+|---|-----|------|
+| 1 | Archivar decisions.md (10.3KB -> <5KB) + fix duplicado | Hub |
+| 2 | Summarizar historiales Solo/Jango/Ackbar -> <12KB | Hub |
+| 3 | Limpiar ceremonies.md (Godot Smoke Test + Integration Gate) | Hub |
+| 4 | Limpiar CONTRIBUTING.md (12+ refs stale) | Hub |
+| 5 | Debug workflows fallando (ralph-heartbeat-notify, pr-body-check) | Hub |
+| 6 | Crear copilot-instructions.md | ComeRosq+Monitor |
+| 7 | Crear labels tier:t0-t3 | Todos |
+| 8 | Archivar 4 skills stale a _archived/ | Hub |
+| 9 | Fix registry.json (Boba->retired, anadir Nien/Leia/Bossk) | Hub |
+| 10 | Re-habilitar heartbeat cron | ComeRosq |
+| 11 | Sync sync-squad-labels.yml con hub | ComeRosq |
+| 12 | Limpiar .gitignore + .editorconfig (Godot patterns) | Hub |
+| 13 | Flora GDD.md sign-off Solo/Jango -> Oak | Flora |
+
+### R3 -- Limpieza
+
+| # | Que | Repo |
+|---|-----|------|
+| 1 | Mergear/cerrar squad/13-real-data | Monitor |
+| 2 | Limpiar 27 stashes | Hub |
+| 3 | Limpiar branches sin mergear (20+) | Todos |
+| 4 | Anadir Issue Source a team.md | ComeRosq+Monitor |
+| 5 | Regenerar squad.labels.json | Hub |
+| 6 | Limpiar labels Star Wars obsoletos | Flora+ComeRosq |
+| 7 | DECISION: mover ComeRosquillas fuera de games/ | Hub (Founder) |
+| 8 | Si R3.7 si: eliminar games/** de squad.config.ts | Hub |
+| 9 | Eliminar games/ComeRosquillas/docs/ duplicado | Hub |
+| 10 | Renombrar master -> main | Monitor |
+| 11 | Eliminar games/ashfall de CODEOWNERS | Hub |
+
+---
+
+## Checklist
 
 ```
-Total entries:    162
-FAIL:             156 (96.3%)
-OK:                 5 (3.1%)
-MODE_CHANGE:        1 (0.6%)
-Consecutive fails: 170+
-```
+R1 (no lanzar sin completar):
+[ ] Hub: merge branch a main
+[ ] Hub: Ackbar decision
+[ ] Hub: PR template rewrite
+[ ] Hub: cerrar #187-189
+[ ] Flora: merge conflict
+[ ] Flora: workflows
+[ ] Flora: labels locales + P3
+[ ] Flora: re-etiquetar #9
+[ ] Monitor: workflows
+[ ] Monitor: labels locales + P0,P3
+[ ] Monitor: SQUAD_AGENTS vite.config.js
+[ ] Todos downstream: blocked-by labels
 
-- **Todos los fallos**: exit code 1, sin `errorDetail` capturado
-- **Sin mecanismo de circuit breaker**: sigue en loop infinito de fallos
-- **Causa probable**: Copilot CLI failing silently (auth, network, o prompt issue)
-
----
-
-## 6. Consistencia de Labels Cross-Repo
-
-| Label Type | FFS Hub | ComeRosquillas | Flora | FFS Monitor |
-|------------|---------|----------------|-------|-------------|
-| `squad` | ✅ | ✅ | ✅ | ✅ |
-| `squad:{local-members}` | ✅ (13) | ✅ (moe, barney, lenny, nelson) | ❌ Star Wars, no Pokémon | ❌ Solo jango, wedge |
-| `P0` | ✅ | ✅ | ✅ | ❌ |
-| `P1` | ✅ | ✅ | ✅ | ✅ |
-| `P2` | ✅ | ✅ | ✅ | ✅ |
-| `P3` | ✅ | ✅ | ❌ | ❌ |
-| `blocked-by:*` | ✅ (5 tipos) | ❌ | ❌ | ❌ |
-
-**Impacto**: Ralph no puede hacer triage correcto en Flora ni FFS Monitor. ComeRosquillas funciona pero sin dependency tracking.
-
----
-
-## 7. Workflows Cross-Repo
-
-| Workflow | FFS Hub | ComeRosquillas | Flora | FFS Monitor |
-|----------|---------|----------------|-------|-------------|
-| squad-triage.yml | ✅ | ✅ | ❌ | ❌ |
-| squad-issue-assign.yml | ✅ | ✅ | ❌ | ❌ |
-| sync-squad-labels.yml | ✅ | ✅ | ❌ | ❌ |
-| squad-heartbeat.yml | ✅ | ✅ | ❌ | ❌ |
-| squad-ci.yml | ✅ | ✅ | ❌ | ❌ |
-| squad-label-enforce.yml | ✅ | ✅ | ❌ | ❌ |
-| squad-main-guard.yml | ✅ | ✅ | ❌ | ❌ |
-
-**Flora y FFS Monitor no tienen workflows squad desplegados.** Los templates existen en `.squad/templates/workflows/` pero nunca se copiaron a `.github/workflows/`.
-
----
-
-## Plan de Remediación
-
-### Fase R1 — Bloqueantes (hacer ANTES de Ralph Watch)
-
-| # | Qué | Repo | Esfuerzo |
-|---|-----|------|----------|
-| R1.1 | Resolver merge conflict `GardenScene.ts` | Flora | 15 min |
-| R1.2 | Desplegar squad workflows a `.github/workflows/` | Flora | 15 min |
-| R1.3 | Desplegar squad workflows a `.github/workflows/` | FFS Monitor | 15 min |
-| R1.4 | Crear labels squad:{member} para equipo local (Oak, Brock, Erika, Misty, Sabrina) | Flora | 10 min |
-| R1.5 | Crear labels squad:{member} para equipo local (Ripley, Dallas, Lambert, Kane) | FFS Monitor | 10 min |
-| R1.6 | Crear labels P0, P3 donde falten | Flora + FFS Monitor | 5 min |
-| R1.7 | Crear labels `blocked-by:*` (5 tipos) | ComeRosquillas, Flora, FFS Monitor | 10 min |
-| R1.8 | Etiquetar issues #187, #188, #189 con squad + squad:{member} + P-level | FFS Hub | 5 min |
-| R1.9 | Diagnosticar por qué Copilot CLI falla (exit code 1) en ralph-watch | FFS Hub | 30 min |
-| R1.10 | Añadir captura de stderr en ralph-watch logs | FFS Hub | 15 min |
-
-**Total Fase R1: ~2 horas**
-
-### Fase R2 — Importantes (hacer antes de dejar Ralph desatendido)
-
-| # | Qué | Repo | Esfuerzo |
-|---|-----|------|----------|
-| R2.1 | Summarizar Solo history.md (33.5KB → <12KB) | FFS Hub | 20 min |
-| R2.2 | Summarizar Jango history.md (33.1KB → <12KB) | FFS Hub | 20 min |
-| R2.3 | Archivar decisions.md (8KB → <5KB) | FFS Hub | 10 min |
-| R2.4 | Upstream sync (last_synced: null) | Flora | 10 min |
-| R2.5 | Upstream sync (last_synced: null) | FFS Monitor | 10 min |
-| R2.6 | Añadir circuit breaker a ralph-watch (parar tras 50 fallos consecutivos) | FFS Hub | 30 min |
-| R2.7 | Crear `copilot-instructions.md` | ComeRosquillas, Flora, FFS Monitor | 15 min |
-
-**Total Fase R2: ~2 horas**
-
-### Fase R3 — Limpieza (nice-to-have)
-
-| # | Qué | Repo | Esfuerzo |
-|---|-----|------|----------|
-| R3.1 | Limpiar labels Star Wars obsoletos | Flora | 5 min |
-| R3.2 | Limpiar labels Star Wars heredados | ComeRosquillas | 5 min |
-| R3.3 | Eliminar `games/ashfall/` de CODEOWNERS | FFS Hub | 2 min |
-| R3.4 | Limpiar referencia bitECS de team.md (o instalar) | Flora | 5 min |
-| R3.5 | Crear `.github/squad.labels.json` | ComeRosquillas | 5 min |
-
----
-
-## Checklist Pre-Launch Ralph Watch
-
-```
-FASE R1 (BLOQUEANTE):
-[ ] Flora: merge conflict resuelto, build pasa
-[ ] Flora: squad workflows desplegados
-[ ] FFS Monitor: squad workflows desplegados
-[ ] Flora: labels squad:{oak,brock,erika,misty,sabrina} creados
-[ ] FFS Monitor: labels squad:{ripley,dallas,lambert,kane} creados
-[ ] Todos repos: labels P0-P3 completos
-[ ] Todos repos: labels blocked-by:* creados
-[ ] Hub: issues #187-189 etiquetados
-[ ] Ralph-watch: copilot CLI funciona (exit code 0)
-[ ] Ralph-watch: stderr capturado en logs
-
-FASE R2 (ANTES DE DESATENDER):
-[ ] Hub: Solo history <12KB
-[ ] Hub: Jango history <12KB
+R2 (antes de dejar solo):
 [ ] Hub: decisions.md <5KB
-[ ] Flora: upstream sincronizado
-[ ] FFS Monitor: upstream sincronizado
-[ ] Ralph-watch: circuit breaker implementado
-[ ] Todos repos: copilot-instructions.md presente
+[ ] Hub: historiales <12KB
+[ ] Hub: ceremonies.md limpio
+[ ] Hub: CONTRIBUTING.md limpio
+[ ] Hub: debug workflows
+[ ] Hub: skills stale archived
+[ ] Hub: registry.json fixed
+[ ] Hub: .gitignore + .editorconfig
+[ ] ComeRosq: heartbeat cron
+[ ] ComeRosq: sync labels workflow
+[ ] ComeRosq+Monitor: copilot-instructions
+[ ] Flora: GDD.md sign-off
+[ ] Todos: tier labels
 
-POST-LAUNCH:
-[ ] Ejecutar ralph-watch -DryRun -MaxRounds 3 (validar)
-[ ] Ejecutar ralph-watch -MaxRounds 5 (real, supervisado)
-[ ] Dejar ralph-watch autónomo en night mode
+Post-launch:
+[ ] checkout main/master en repos divergidos
+[ ] ralph-watch -DryRun -MaxRounds 1
+[ ] ralph-watch -MaxRounds 3 (supervisado)
+[ ] verificar heartbeat + upstream sync
+[ ] night mode autonomo
 ```
-
----
-
-## Comparación: Estado Post-Optimization vs Ahora
-
-| Métrica | Post-Optimization | Estado Actual | Veredicto |
-|---------|-------------------|---------------|-----------|
-| decisions.md | 3.8KB ✅ | 8KB ⚠️ | Necesita archive |
-| Skills < 5KB | ✅ | ✅ | Mantenido |
-| Agentes hub | 3 activos ✅ | 4 activos (+ Ackbar) | OK |
-| Ceremonies | 1 auto-triggered ✅ | ✅ | Mantenido |
-| Context per spawn | ~400-600 líneas | ⚠️ Histories inflados | Necesita summarize |
-| GitHub Actions runs/mes | ~900 ✅ | ✅ | Mantenido (crons ≥1h) |
-| Downstream repos funcionales | 3/3 ✅ | 1/3 ❌ | Flora roto, Monitor sin infra |
-
----
-
-*Generado automáticamente por Squad Coordinator — diagnóstico de 5 agentes en paralelo.*
