@@ -724,6 +724,16 @@ function Check-ProjectLifecycle {
                 $nextSprint = $sprint + 1
                 $body = "Sprint Planning ceremony triggered. Lead: read the design doc at ``$designDoc``, compare with open issues, create Sprint $nextSprint issues. See .squad/ceremonies.md for the full process."
                 $labels = "squad,squad:$leadName,ceremony:sprint-planning,go:ready"
+
+                # Ensure required labels exist before creating ceremony issue (gh label create is idempotent)
+                $requiredLabels = @(
+                    @{ name = "ceremony:sprint-planning"; color = "0E8A16"; description = "Sprint Planning ceremony trigger" },
+                    @{ name = "go:ready"; color = "0E8A16"; description = "Ready for implementation" }
+                )
+                foreach ($lbl in $requiredLabels) {
+                    gh label create $lbl.name --repo $ghRepo --color $lbl.color --description $lbl.description 2>$null
+                }
+
                 Write-Host "   [lifecycle] $repoName -- creating Sprint Planning ceremony issue" -ForegroundColor Cyan
                 if (-not $DryRun) {
                     gh issue create -R $ghRepo --title "[CEREMONY] Sprint Planning" --body $body --label $labels 2>$null
@@ -762,6 +772,16 @@ function Check-ProjectLifecycle {
                         $nextSprint = $sprint + 1
                         $body = "Sprint Planning ceremony triggered. Lead: read the design doc at ``$designDoc``, compare with open issues, create Sprint $nextSprint issues. See .squad/ceremonies.md for the full process."
                         $labels = "squad,squad:$leadName,ceremony:sprint-planning,go:ready"
+
+                        # Ensure required labels exist before creating ceremony issue (gh label create is idempotent)
+                        $requiredLabels = @(
+                            @{ name = "ceremony:sprint-planning"; color = "0E8A16"; description = "Sprint Planning ceremony trigger" },
+                            @{ name = "go:ready"; color = "0E8A16"; description = "Ready for implementation" }
+                        )
+                        foreach ($lbl in $requiredLabels) {
+                            gh label create $lbl.name --repo $ghRepo --color $lbl.color --description $lbl.description 2>$null
+                        }
+
                         Write-Host "   [lifecycle] $repoName -- creating Sprint Planning ceremony issue" -ForegroundColor Cyan
                         gh issue create -R $ghRepo --title "[CEREMONY] Sprint Planning" --body $body --label $labels 2>$null
                     }
