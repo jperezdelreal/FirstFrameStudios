@@ -1,11 +1,11 @@
 name: Squad Notify - Ralph Heartbeat
 
 # Scheduled check of Ralph's heartbeat status
-# Sends notification when Ralph completes a round (every 30 minutes during active hours)
+# Sends notification when Ralph completes a round (every 4 hours)
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # Every 30 minutes
+    - cron: '0 */4 * * *'  # Every 4 hours
   workflow_dispatch:  # Manual trigger
 
 permissions:

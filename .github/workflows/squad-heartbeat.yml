@@ -7,9 +7,9 @@ name: Squad Heartbeat (Ralph)
 # Run 'squad upgrade' to sync installed copies from source templates.
 
 on:
-  # Ralph heartbeat — auto-triage every 15 minutes
+  # Ralph heartbeat — auto-triage every hour
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 * * * *'
 
   # React to completed work or new squad work
   issues:
