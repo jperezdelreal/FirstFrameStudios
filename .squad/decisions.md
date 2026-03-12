@@ -58,36 +58,14 @@ FFS homepage is practically perfect. Do NOT redesign. Blog auto-publishes progre
 
 ## Active Architecture Decisions
 
-### ComeRosquillas: Modular Architecture
-**By:** Chewie | **Date:** 2026-03-11 | **Status:** Implemented
-Split game.js monolith into 5 modules: config.js, audio.js, renderer.js, game-logic.js, main.js. Vanilla JS, no bundler, script tag load order.
-
-### ComeRosquillas: CI Pipeline
-**By:** Jango | **Date:** 2026-03-11 | **Status:** Implemented
-GitHub Actions CI for linting, build verification, and Pages deployment on push to main.
-
 ### Multi-Repo Hub Architecture
 **By:** Solo | **Date:** 2026-03-11 | **Status:** Active
 FFS is hub-and-spoke. Hub = no game code, only infrastructure. Each game/tool has its own repo with `squad upstream` to hub. Skills, quality gates, and governance cascade down.
 
 
-
-### Skill Template Update — SKILL.md + REFERENCE.md Split
-**By:** Jango | **Date:** 2026-01-30 | **Status:** Implemented
-Two-file structure for skills: SKILL.md (max 5KB) with frontmatter, core patterns, and key examples; REFERENCE.md (on-demand) with deep dive, full examples, and implementation guides.
-
 ---
 
 ## Active Process Decisions
-
-### Prepare-Mode for Blocked Issues in ralph-watch.ps1
-**By:** Jango (Tool Engineer) | **Date:** 2026-03-12 | **Status:** Implemented
-
-Implemented two-layer enforcement in ralph-watch.ps1:
-1. **Scheduler layer:** Detects `blocked-by:*` labels, skips blocked P3, sorts blocked issues last, adds `IsBlocked` property to issue objects.
-2. **Prompt layer:** Adds `[PREPARE-ONLY]` marker to issue lines and includes a `PREPARE MODE` instruction block in the Ralph prompt template, restricting actions to tests/scaffold/draft PRs only.
-
-Defense in depth: even if the prompt is ignored, blocked P3s never reach Ralph. Blocked P1/P2 still get worked (tests, scaffolding), so they're ready to merge as soon as the blocker resolves.
 
 ### Priority & Dependency System (P0-P3)
 **By:** Solo | **Date:** 2026-03-12 | **Status:** Active (T1, Founder-reviewed)
@@ -119,19 +97,4 @@ Scan code for TODOs, auto-create issues. Lead adjusts workload independently.
 
 
 
-
-### Priority & Dependency System (P0-P3)
-**By:** Solo (Lead / Chief Architect) | **Date:** 2026-07-26 | **Status:** Implemented (T1 Authority)
-Implemented priority and dependency tracking system per T1 governance. Independent from approval tiers.
-- **Levels:** P0=Blocker, P1=Sprint-critical, P2=Normal (default), P3=Nice-to-have
-- **Dependencies:** `blocked-by:*` labels + issue body `## Dependencies` section
-- **Blocked work rule:** Prepare (tests, scaffold, draft PR) but don't merge until blocker resolves
-- **Emergency follow-up:** Auto-labeled P1; Lead can bump to P0
-- **Ralph auto-unblock:** 24h after blocker closes; Lead can re-block
-- **G13 advisory:** No CI enforcement on priority inflation; Lead judgment prevails
-- **No preemption:** P0 work finishes current task first, doesn't interrupt
-
----
-
 *Last cleaned: 2026-03-12. Previous content archived to `decisions-archive.md`.*
-
