@@ -28,17 +28,17 @@ const config: SquadConfig = {
     rules: [
       {
         workType: 'feature-dev',
-        agents: ['@solo', '@chewie', '@lando'],
+        agents: ['@solo', '@jango', '@mace'],
         confidence: 'high'
       },
       {
         workType: 'bug-fix',
-        agents: ['@chewie', '@lando'],
+        agents: ['@jango', '@mace'],
         confidence: 'high'
       },
       {
         workType: 'testing',
-        agents: ['@ackbar'],
+        agents: ['@mace'],
         confidence: 'high'
       },
       {
@@ -70,7 +70,7 @@ const config: SquadConfig = {
   },
 
   hooks: {
-    allowedWritePaths: ['games/**', '.squad/**', 'tools/**', 'docs/**'],
+    allowedWritePaths: ['.squad/**', 'tools/**', 'docs/**'],
     blockedCommands: ['rm -rf', 'DROP TABLE', 'format c:'],
     scrubPii: true,
   }
