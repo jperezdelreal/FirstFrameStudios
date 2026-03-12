@@ -151,7 +151,7 @@ FFS creció orgánicamente desde Ashfall (Godot) hasta un estudio multi-repo de 
 | 7b | Implementar dependency tracking (labels `blocked-by`, `needs-decision`) | Solo + Jango | ✅ Done |
 | 7c | Actualizar Ralph para chequear dependencias antes de asignar | Jango | ✅ Done |
 | 7d | Actualizar Lead triage con evaluación de dependencias | Solo | ✅ Done |
-| 7e | Implementar "prepare but don't merge" mode en spawn template | Solo | ⚠️ Partial |
+| 7e | Implementar "prepare but don't merge" mode en spawn template | Solo/Jango | ✅ Done |
 | 7f | Crear labels P0-P3 + blocked-by en GitHub (hub + downstream) | Jango | ✅ Done |
 
 > **Prerequisito:** Solo diseña la propuesta completa en issue #189 antes de implementar.

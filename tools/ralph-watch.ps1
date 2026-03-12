@@ -170,6 +170,21 @@ PR MANAGEMENT: Check for PRs needing attention:
   All PRs require Lead/Founder review before merge.
   After opening a PR, move the issue to "In Review" and move on.
 
+PREPARE MODE (blocked issues):
+Issues marked [PREPARE-ONLY] are blocked by dependencies (blocked-by:* labels).
+For these issues, you may ONLY:
+  - Write tests (TDD approach -- document expected behavior)
+  - Scaffold code structure (empty functions, interfaces, module stubs)
+  - Write spike code to explore the problem space
+  - Open a Draft PR with [WIP] prefix in the title
+You must NOT:
+  - Mark the PR as Ready for Review
+  - Merge to main
+  - Close the issue
+  - Run "gh pr merge" on these issues
+After preparing, move the issue to "Blocked" on the project board and comment:
+  "Prepared in prepare-mode (blocked by dependencies). Tests/scaffold ready. Waiting for blocker resolution."
+
 PROJECT BOARD: Read .squad/skills/github-project-board/SKILL.md BEFORE starting.
 Update the GitHub Project board status for every issue you touch.
 BEFORE spawning an agent, move the issue to In Progress on the board.
@@ -663,6 +678,21 @@ function Get-ScheduledIssues {
                     }
                 }
 
+                # Check for blocked-by:* labels
+                $isBlocked = $false
+                foreach ($l in $labelNames) {
+                    if ($l -match '^blocked-by:') {
+                        $isBlocked = $true
+                        break
+                    }
+                }
+
+                # Skip blocked P3 issues entirely
+                if ($isBlocked -and $priority -ge 3) {
+                    Write-Host "      [dep] Skipping #$($issue.number) ($($issue.title)) -- blocked P3, not worth preparing" -ForegroundColor DarkYellow
+                    continue
+                }
+
                 $isGame = $gameRepoNames -contains $repoName
                 $allIssues += [PSCustomObject]@{
                     Number    = $issue.number
@@ -671,6 +701,7 @@ function Get-ScheduledIssues {
                     GhRepo    = $ghRepo
                     Priority  = $priority
                     IsGame    = $isGame
+                    IsBlocked = $isBlocked
                     Labels    = $labelNames
                 }
             }
@@ -679,8 +710,9 @@ function Get-ScheduledIssues {
         }
     }
 
-    # Sort: priority ASC (P0 first), repo issue count DESC, game repos first
+    # Sort: blocked last, then priority ASC (P0 first), repo issue count DESC, game repos first
     $sorted = $allIssues | Sort-Object @(
+        @{ Expression = { $_.IsBlocked }; Ascending = $true },
         @{ Expression = { $_.Priority }; Ascending = $true },
         @{ Expression = { $repoIssueCounts[$_.RepoName] }; Ascending = $false },
         @{ Expression = { $_.IsGame }; Ascending = $false }
@@ -743,7 +775,8 @@ function Invoke-CopilotSession {
         if ($iss.Labels -and $iss.Labels.Count -gt 0) {
             $labelStr = " labels:($($iss.Labels -join ', '))"
         }
-        $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]$labelStr"
+        $blockStr = if ($iss.IsBlocked) { " [PREPARE-ONLY]" } else { "" }
+        $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]$blockStr$labelStr"
     }
     $prompt = Build-SessionPrompt -RepoFullName $RepoFullName -IssueLines $issueLines
 
@@ -783,7 +816,8 @@ function Invoke-ParallelSessions {
             if ($iss.Labels -and $iss.Labels.Count -gt 0) {
                 $labelStr = " labels:($($iss.Labels -join ', '))"
             }
-            $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]$labelStr"
+            $blockStr = if ($iss.IsBlocked) { " [PREPARE-ONLY]" } else { "" }
+            $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]$blockStr$labelStr"
         }
         $prompt = Build-SessionPrompt -RepoFullName $ghRepo -IssueLines $issueLines
 

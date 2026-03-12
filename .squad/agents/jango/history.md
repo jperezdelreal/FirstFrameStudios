@@ -452,3 +452,22 @@ Completed. PR #12 open on jperezdelreal/flora. CI green (23s). deploy-pages@v4 p
 **Date:** 2026-03-12
 **Task:** Implemented G8 guardrail — added squad.agent.md to upstream sync items in ralph-watch.ps1 and added drift detection task to Scribe charter.
 **Changes:** ralph-watch.ps1 (1 line to syncItems), scribe/charter.md (1 conditional task)
+
+### Prepare-Mode for Blocked Issues in ralph-watch.ps1
+**Date:** 2026-03-12
+**Task:** Implemented "prepare but don't merge" mode per governance.md section 5 (Dependencies and Blocked Work).
+
+**What Changed:**
+1. **blocked-by detection** -- `Get-ScheduledIssues` now scans labels for `blocked-by:*` pattern and sets `IsBlocked` flag on each issue object.
+2. **P3 blocked skip** -- Blocked P3 issues are skipped entirely (not worth preparing). Logged with `[dep]` marker.
+3. **IsBlocked property** -- Added to PSCustomObject so it flows through session assignment and prompt building.
+4. **Sort order updated** -- Blocked issues sort after non-blocked (non-blocked first, then by priority/repo/game as before).
+5. **[PREPARE-ONLY] marker** -- Issue lines in both `Invoke-CopilotSession` and `Invoke-ParallelSessions` append `[PREPARE-ONLY]` tag for blocked issues.
+6. **Prompt template** -- Added `PREPARE MODE (blocked issues)` section to `$ralphPromptBase` after PR MANAGEMENT, instructing Ralph to only write tests, scaffold, open Draft PRs with [WIP] prefix, and never merge/close blocked issues.
+
+**Learnings:**
+- Governance rules should be enforced at the scheduler level (skip/filter) AND prompt level (instructions) for defense in depth.
+- ASCII-safe constraint means no unicode markers -- used `[dep]` and `[PREPARE-ONLY]` text tags instead.
+- The `blocked-by:*` label pattern is a prefix match, not exact -- any label starting with `blocked-by:` triggers prepare mode.
+
+**File Modified:** `tools/ralph-watch.ps1` (verified parse OK, ASCII-safe, dry run passed)

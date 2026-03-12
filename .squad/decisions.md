@@ -80,6 +80,15 @@ Two-file structure for skills: SKILL.md (max 5KB) with frontmatter, core pattern
 
 ## Active Process Decisions
 
+### Prepare-Mode for Blocked Issues in ralph-watch.ps1
+**By:** Jango (Tool Engineer) | **Date:** 2026-03-12 | **Status:** Implemented
+
+Implemented two-layer enforcement in ralph-watch.ps1:
+1. **Scheduler layer:** Detects `blocked-by:*` labels, skips blocked P3, sorts blocked issues last, adds `IsBlocked` property to issue objects.
+2. **Prompt layer:** Adds `[PREPARE-ONLY]` marker to issue lines and includes a `PREPARE MODE` instruction block in the Ralph prompt template, restricting actions to tests/scaffold/draft PRs only.
+
+Defense in depth: even if the prompt is ignored, blocked P3s never reach Ralph. Blocked P1/P2 still get worked (tests, scaffolding), so they're ready to merge as soon as the blocker resolves.
+
 ### Priority & Dependency System (P0-P3)
 **By:** Solo | **Date:** 2026-03-12 | **Status:** Active (T1, Founder-reviewed)
 Priority (P0-P3) determines execution order; Tiers (T0-T3) determine approval authority. Independent axes.
