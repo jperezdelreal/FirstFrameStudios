@@ -1,9 +1,9 @@
 # Quality Gates & Definition of Done — First Frame Studios
 
 **Author:** Solo (Lead / Chief Architect)  
-**Date:** 2025-07-21  
-**Context:** Closing readiness gap #2 from CEO Readiness Evaluation. Incorporates Ackbar's Quality Excellence Proposal findings.  
-**Applies to:** All deliverables in Godot 4 projects, effective Sprint 0.
+**Date:** 2026-03-12  
+**Context:** Phase 2 — Rewritten for web games. Covers HTML/JS/Canvas and TypeScript/Vite/PixiJS stacks.  
+**Applies to:** All deliverables in web game projects, effective this phase.
 
 ---
 
@@ -13,73 +13,72 @@ Every deliverable must pass the relevant gate(s) before it is accepted. Gates ar
 
 ---
 
-### 🔧 Code Quality Gate
+### 🌐 Web Code Quality Gate
 
 A code deliverable is accepted when ALL of the following are true:
 
 | # | Requirement | Rationale |
 |---|-------------|-----------|
-| C1 | **Compiles and runs without errors or warnings** | No `push_error()`, no orphan nodes, no null reference crashes. Zero-warning policy. |
-| C2 | **State machine audit passed** | Every state has a documented entry condition, per-frame behavior, AND exit condition. No dead-end states. (Lesson: firstPunch Bug #1 — player frozen in `hit` state because exit path was missing.) |
-| C3 | **All imports/dependencies valid** | Every `preload()`, `load()`, `@onready`, and `class_name` reference resolves. No dangling references to deleted scenes or scripts. |
-| C4 | **Tested in Godot editor AND exported build** | Runs correctly in editor play mode AND at least one export target (desktop or web). Editor-only code paths caught here. |
-| C5 | **No unused infrastructure** | Every system created must be wired into at least one consumer. No orphan autoloads, no dead signals, no comment-only integration contracts. (Lesson: 214 LOC of unwired infrastructure in firstPunch.) |
-| C6 | **Cross-reviewed by a second engineer** | Chewie reviews Lando's code, Lando reviews Chewie's. Solo reviews anything touching autoloads, scene tree structure, or signal bus. (Recommendation from Ackbar's quality proposal: separate code review from QA.) |
-| C7 | **GDScript style conventions followed** | Naming, indentation, signal naming, and file organization match `project-conventions` skill document. |
-| C8 | **Frame-by-frame trace completed for critical paths** | For state transitions, combat interactions, and AI behaviors: trace at least 3 consecutive frames of execution. Document in PR description. |
+| WC1 | **Browser console: zero errors, zero 404s** | No `console.error()`, no failed asset loads, no CORS warnings. Inspect in DevTools on main browsers (Chrome, Firefox, Safari). |
+| WC2 | **Event flow audit passed** | Every event listener has a removal path. No memory leaks from dangling listeners. Event bus wired correctly. |
+| WC3 | **All imports/dependencies resolve** | All `import` statements, asset paths, and module references resolve. No 404s in network tab. |
+| WC4 | **Tested in browser AND exported build** | Runs correctly in dev server AND in production build. Build output verified on staging/production domain. |
+| WC5 | **No dead/orphaned code** | Every module, listener, and handler is wired to a consumer. No commented-out integration stubs. |
+| WC6 | **Cross-reviewed by a second engineer** | Solo reviews anything touching event bus, global state, or canvas rendering. Peer reviews game logic. Separate code review from QA. |
+| WC7 | **Web style conventions followed** | Naming (camelCase), module organization, ES6+ patterns, and async handling match project standards. |
+| WC8 | **Responsive layout verified** | Game responds to viewport changes. Test on desktop (1920×1080), tablet (768×1024), and mobile (360×640). |
 
 **Gate owner:** Solo (Lead) + cross-review engineer.
 
 ---
 
-### 🎨 Art Quality Gate
+### 🎮 Canvas/JS Quality Gate
 
-An art deliverable is accepted when ALL of the following are true:
-
-| # | Requirement | Rationale |
-|---|-------------|-----------|
-| A1 | **Consistent with art direction document** | Matches Boba's art direction for palette, style, proportions, and mood. |
-| A2 | **Proper resolution and format** | Sprites at project-standard resolution (defined per project). PNG for sprites, `.tres` for Godot resources. No upscaled raster, no mismatched pixel density. |
-| A3 | **Cohesive style across all assets in scene** | New art doesn't clash with existing art in the same scene. Side-by-side comparison required. |
-| A4 | **Readable at game camera zoom** | Character silhouettes identifiable at default camera zoom. Test at smallest supported resolution. |
-| A5 | **Animation frames complete** | All required animation states have frames (idle, walk, attack, hit, death at minimum for characters). No placeholder frames in shipped animations. |
-| A6 | **Import settings correct** | Filter mode, atlas packing, and compression match project conventions. No blurry pixel art from wrong filter settings. |
-
-**Gate owner:** Boba (Art Director). Advisory review from Ackbar (first-impression score).
-
----
-
-### 🔊 Audio Quality Gate
-
-An audio deliverable is accepted when ALL of the following are true:
+A canvas/rendering deliverable is accepted when ALL of the following are true:
 
 | # | Requirement | Rationale |
 |---|-------------|-----------|
-| AU1 | **Mix levels balanced** | No sound effect drowns out others. Music sits below SFX in the mix. Master bus peaks below 0dB. |
-| AU2 | **No clipping or distortion** | All audio streams tested at max simultaneous playback (worst-case scenario). No digital clipping. |
-| AU3 | **Spatial panning correct** | Sounds positioned in 2D space pan appropriately with camera movement. Left-side events sound left, right-side events sound right. |
-| AU4 | **AudioBus routing verified** | Every AudioStreamPlayer routed to the correct bus (SFX, Music, Ambient). Volume sliders in options affect the correct bus. |
-| AU5 | **No audio leaks** | Sounds stop when their source is removed. No phantom audio continuing after scene transitions. |
-| AU6 | **Variation implemented for repeated sounds** | Hit sounds, footsteps, and other frequent SFX have at least 2 variations OR pitch randomization to avoid machine-gun repetition. |
+| CG1 | **Game loop maintains 60 FPS** | Measured on target device. Frame time ≤ 16.67ms. Use `requestAnimationFrame` timing or canvas FPS counter. |
+| CG2 | **No memory leaks** | Heap snapshot shows stable memory after 5+ minutes of play. No orphaned canvas contexts. Textures/sprites released on unload. |
+| CG3 | **Input responsive (keyboard + touch)** | Keyboard events fire instantly. Touch events register within 100ms. Multi-touch handled correctly. Test on actual device or emulator. |
+| CG4 | **Canvas cleanup on unload** | Canvas context released, listeners removed, animation frame cancelled. No memory retained after game/scene transition. |
+| CG5 | **Rendering correct across browsers** | WebGL contexts initialize correctly. Canvas scale and DPI handled. Test on Chrome, Firefox, Safari (desktop + mobile). |
+| CG6 | **Asset management verified** | Images loaded, spritesheet frames calculated correctly. No texture bleeding or scaling artifacts. |
 
-**Gate owner:** Greedo (Audio). Technical review by Chewie for AudioBus wiring.
+**Gate owner:** Solo (Lead) for architecture. QA for performance verification.
 
 ---
 
-### 🎮 Design Quality Gate
+### 🔷 TypeScript Quality Gate (TS/Vite/PixiJS projects)
+
+A TypeScript deliverable is accepted when ALL of the following are true:
+
+| # | Requirement | Rationale |
+|---|-------------|-----------|
+| TS1 | **Strict mode: zero type errors** | `tsconfig.json` has `strict: true`. No `any` without justification comment. No implicit `any`. Run `tsc --noEmit`. |
+| TS2 | **All type imports/exports valid** | Imported types resolve. No circular dependencies. Exports match consumers. |
+| TS3 | **No `any` without comment** | If `any` is unavoidable (third-party library without types), justify with `// @ts-ignore: {reason}`. |
+| TS4 | **Build produces no warnings** | `npm run build` (or equivalent) emits zero TypeScript warnings. Vite build clean. |
+| TS5 | **Type coverage documented** | New public APIs have JSDoc with `@param` and `@returns`. Complex logic has inline type guards explained. |
+
+**Gate owner:** Solo (Lead). Build verification by CI.
+
+---
+
+### 🎨 Design Quality Gate
 
 A design deliverable is accepted when ALL of the following are true:
 
 | # | Requirement | Rationale |
 |---|-------------|-----------|
-| D1 | **Aligns with GDD** | Feature serves the core loop defined in the Game Design Document. If it doesn't appear in the GDD, it needs Yoda's sign-off before implementation. |
-| D2 | **Serves player experience** | Passes the "Player Hands First" test: does this make the game feel better to play? Evaluated by playtesting, not by reading code. |
-| D3 | **Difficulty tested** | Playtested at intended difficulty. Clear time, damage taken, and deaths recorded. Metrics fall within target ranges (defined per encounter/wave). |
-| D4 | **Difficulty curve maintained** | New content doesn't create difficulty spikes or dead zones. Tested in sequence, not isolation. |
-| D5 | **Player feedback clear** | Player can tell what happened and why. Hits have impact feedback, damage has visual/audio cue, state changes are communicated. |
-| D6 | **No degenerate strategies** | Playtester attempts to cheese the mechanic. If one strategy dominates all others, redesign. (Lesson: jump-attack dominance in firstPunch.) |
+| D1 | **Aligns with GDD** | Feature serves the core loop. If not in GDD, needs lead approval. |
+| D2 | **Player feel tested** | Playtested: does this feel good to play? Keyboard/touch response, visual feedback, audio cues. |
+| D3 | **Difficulty tested** | Playtested at intended difficulty. Clear time, damage, deaths recorded. Metrics in target range. |
+| D4 | **Difficulty curve maintained** | New content doesn't spike or dead-zone difficulty. Tested in sequence. |
+| D5 | **Player feedback clear** | Player sees what happened (hit, damage, state change). Visual + audio cues present. |
+| D6 | **No degenerate strategies** | Playtester attempts exploits. If one strategy dominates, redesign. |
 
-**Gate owner:** Yoda (Game Designer). Playtesting by Ackbar.
+**Gate owner:** Lead (Design). Playtesting by team.
 
 ---
 
@@ -89,26 +88,25 @@ An integration deliverable is accepted when ALL of the following are true:
 
 | # | Requirement | Rationale |
 |---|-------------|-----------|
-| I1 | **No regressions** | Ackbar's regression checklist passes. All previously working features still work after the change. |
-| I2 | **All systems wired** | New systems connected to their consumers. Signals connected. Autoloads accessible. No isolated subsystems. |
-| I3 | **Performance budget met** | Frame time ≤ 16.67ms (60 FPS target). No metric in critical range. Tested with max entity count for the current milestone. |
-| I4 | **Scene tree clean** | No orphan nodes, no nodes in wrong groups, no duplicate autoloads. Scene tree matches architectural diagram. |
-| I5 | **Export targets verified** | Game runs on all target export platforms without platform-specific bugs. |
-| I6 | **Save/load integrity** | If feature touches persistent state: save, quit, reload, verify state survived. |
+| I1 | **No regressions** | Regression checklist passes. All previously working features still work. |
+| I2 | **All systems wired** | New modules imported, event handlers registered, game state connected. No isolated subsystems. |
+| I3 | **Performance budget met** | FPS ≥ 60, frame time ≤ 16.67ms. Bundle size ≤ target. Load time ≤ target. Tested on target device. |
+| I4 | **Module imports correct** | All `import` statements resolve. No circular dependencies. Build tree-shakes unused code. |
+| I5 | **Game loads in browser** | Fresh page load: asset loads, canvas renders, game starts. No console errors. |
+| I6 | **Persistent state integrity** | If feature touches localStorage/sessionStorage: save, reload, verify state survived. |
 
-**Gate owner:** Solo (Lead) for architecture. Ackbar (QA) for regression and playtesting.
+**Gate owner:** Solo (Lead) for architecture. QA for regression and integration.
 
-**Performance Budget Reference (Godot 4):**
+**Performance Budget Reference (Web):**
 
 | Metric | Target | Warning | Critical |
 |--------|--------|---------|----------|
 | FPS | ≥ 60 | < 55 | < 45 |
 | Frame time | ≤ 16.67ms | > 18ms | > 22ms |
-| Active nodes | ≤ 200 | > 300 | > 500 |
-| Physics bodies | ≤ 30 | > 50 | > 80 |
-| Draw calls | ≤ 50 | > 80 | > 120 |
-| Memory | ≤ 100MB | > 150MB | > 250MB |
-| Scene load time | ≤ 1s | > 2s | > 4s |
+| Bundle size (gzipped) | ≤ 500KB | > 600KB | > 800KB |
+| Initial load time | ≤ 3s | > 4s | > 6s |
+| Time to interactive | ≤ 2s | > 3s | > 5s |
+| Memory (heap) | ≤ 150MB | > 200MB | > 300MB |
 
 ---
 
@@ -116,24 +114,25 @@ An integration deliverable is accepted when ALL of the following are true:
 
 A deliverable is **DONE** when all applicable items are checked:
 
-- [ ] **Runs without errors** — Code compiles, game launches, feature works as specified
-- [ ] **Cross-reviewed** — Reviewed by at least one other agent (code review for code, art review for art, design review for design)
-- [ ] **QA tested** — Ackbar has tested for functionality using regression checklist + smoke test
-- [ ] **Playtested for feel** — Tested by a human or agent for game feel, not just correctness. "Does it feel good?" is a separate question from "does it work?"
+- [ ] **Runs without errors** — Code builds, game launches, feature works as specified. Browser console shows zero errors/404s.
+- [ ] **Cross-reviewed** — Reviewed by at least one other agent. Code review for code, design review for design.
+- [ ] **QA tested** — Team has tested for functionality using regression checklist + smoke test.
+- [ ] **Playtested for feel** — Tested by agent or human for game feel. "Does it feel good?" is separate from "does it work?"
 - [ ] **No known regressions** — All previously passing tests/checks still pass. No existing features broken.
-- [ ] **History.md updated** — Agent's history file updated with learnings, decisions, and outcomes from this work
-- [ ] **Decision documented** — If an architectural, design, or process choice was made, it's logged in `decisions/` with context and rationale
-- [ ] **Quality gate(s) passed** — All applicable gates from Section 1 above have been satisfied
+- [ ] **History.md updated** — Agent's history file updated with learnings, decisions, and outcomes.
+- [ ] **Decision documented** — If an architectural, design, or process choice was made, it's logged in `decisions/` with context.
+- [ ] **Quality gate(s) passed** — All applicable gates from Section 1 above have been satisfied.
 
 ### When is something NOT done?
 
 A deliverable is **not done** if any of these are true, regardless of code completeness:
-- It works in the editor but hasn't been tested in an exported build
+- It works in dev but hasn't been tested in production build
 - It was self-reviewed only (author reviewed their own work)
-- It introduces a state with no exit path
-- It creates infrastructure that isn't wired to any consumer
+- It creates memory leaks or listeners that aren't cleaned up
+- It creates code that isn't wired to any consumer (dead module, orphaned handler)
 - It changes difficulty but wasn't playtested for balance
-- It touches shared systems (autoloads, signals, scene tree) without Solo's review
+- It touches shared systems (event bus, global state, canvas) without Solo's review
+- It causes 404s or console errors in browser DevTools
 
 ---
 
@@ -157,22 +156,21 @@ A deliverable is **not done** if any of these are true, regardless of code compl
 
 | Step | Who | What |
 |------|-----|------|
-| 1 | Author | Creates branch, implements change, self-tests |
-| 2 | Cross-reviewer | Reads diff, traces affected state machines, checks gate C1-C8 |
-| 3 | Ackbar (QA) | Runs smoke test + regression checklist |
-| 4 | Solo (if shared systems) | Architecture review for autoloads, signals, scene tree changes |
+| 1 | Author | Creates branch, implements change, self-tests in browser |
+| 2 | Cross-reviewer | Reads diff, traces event flow, checks gate WC1-WC8 (or TS1-TS5 for TypeScript) |
+| 3 | QA | Runs smoke test + regression checklist, verifies no console errors/404s |
+| 4 | Solo (if shared systems) | Architecture review for event bus, global state, canvas changes |
 | 5 | Merge | Only after all required approvals |
 
 ### Cross-Review Assignments
 
 | Author | Reviewer | Scope |
 |--------|----------|-------|
-| Chewie (Engine) | Lando (Gameplay) | Engine code, physics, rendering |
-| Lando (Gameplay) | Chewie (Engine) | Combat, AI, player mechanics |
-| Wedge (UI/UX) | Chewie or Lando | HUD, menus, input handling |
-| Tarkin (Enemy/Content) | Lando (Gameplay) | Enemy behavior, encounter design |
-| Greedo (Audio) | Chewie (Engine) | AudioBus wiring, stream management |
-| Solo (Lead) | Chewie (Engine) | Architecture, autoloads, shared systems |
+| Flora (TypeScript) | Solo (Lead) | TypeScript code, module structure, build |
+| ComeRosquillas (Vanilla JS) | Solo (Lead) | Canvas rendering, event handling, input systems |
+| Frontend/UI | Solo (Lead) | DOM/responsive layout, event listeners, cleanup |
+| Game Logic | Solo (Lead) | Game loop, collision, difficulty, playtesting |
+| Solo (Lead) | Flora + ComeRosquillas leads | Architecture, event bus, cross-game patterns |
 
 **Principle:** No code merges without a second pair of eyes. The author's blind spot is the reviewer's opportunity.
 
@@ -182,30 +180,33 @@ A deliverable is **not done** if any of these are true, regardless of code compl
 
 ### Quick Smoke Test (2 min — every change)
 
-- [ ] Game loads without errors
-- [ ] Player can move in all directions
-- [ ] Player can attack
-- [ ] At least one enemy reacts correctly
-- [ ] Player takes damage and recovers
-- [ ] No audio glitches
+- [ ] Game loads in browser without errors
+- [ ] Canvas renders correctly
+- [ ] Player can move with keyboard/touch
+- [ ] Player can perform primary action (attack, interact, etc.)
+- [ ] At least one game mechanic responds correctly
+- [ ] Player takes damage/loses state and recovers
+- [ ] No console errors or 404s in DevTools
 
 ### Full Playtest (10 min — every milestone)
 
 - [ ] Complete all available content
-- [ ] Record clear time, final HP, deaths
-- [ ] Rate combat feel (1-10)
+- [ ] Record clear time, final score/state, deaths/failures
+- [ ] Rate game feel/responsiveness (1-10, keyboard + touch)
 - [ ] Rate difficulty (1-10)
-- [ ] Note visual/audio issues
+- [ ] Note visual/audio glitches
+- [ ] Test on at least 2 browsers (Chrome, Firefox, Safari)
 - [ ] Run full regression checklist
 
 ### Adversarial Playtest (15 min — before ship)
 
-- [ ] Spam every attack type rapidly
-- [ ] Walk into every boundary
-- [ ] Pause/unpause during every state
-- [ ] Let enemies hit player repeatedly
-- [ ] Stand still and observe AI for 30 seconds
-- [ ] Attempt to break every system
+- [ ] Spam every action type rapidly (keyboard + touch)
+- [ ] Click/tap every interactive element
+- [ ] Resize window during gameplay (test responsiveness)
+- [ ] Pause/unpause game repeatedly
+- [ ] Let game run for 5+ minutes (check for memory leaks)
+- [ ] Attempt to overflow score, break collision, trigger exploits
+- [ ] Test on real device (mobile, tablet) and emulator
 
 ---
 

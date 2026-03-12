@@ -6,25 +6,11 @@
 
 ---
 
-## 1. Company Name
+## 1. Company Name: First Frame Studios
 
-### Option A: Ironpunch Games
+"First Frame" captures our deepest belief — that the player's experience in the first moment of interaction defines everything. It references animation frames (our craft), the first frame of gameplay (our obsession), and the idea that quality is front-loaded, not back-loaded. It's clean, professional, genre-agnostic, and works in any language. A puzzle game has a first frame. A narrative game has a first frame. An action game has a first frame. Domain: `firstframestudios.com`.
 
-**Rationale:** "Iron" speaks to durability, craft, and the pressure-forged quality of a blacksmith's work. "Punch" speaks to impact — the visceral, immediate sensation of player feel. Together, it's strong, physical, and memorable. It evokes action but also emotional impact ("that scene packed a punch"). Domain-viable: `ironpunchgames.com`.
-
-**Concern:** Leans toward action-game branding. Could feel limiting if we ship a puzzle game or narrative experience. The word "punch" might anchor perception to combat-heavy titles.
-
-### Option B: First Frame Studios
-
-**Rationale:** "First Frame" captures our deepest belief — that the player's experience in the first moment of interaction defines everything. It references animation frames (our craft), the first frame of gameplay (our obsession), and the idea that quality is front-loaded, not back-loaded. It's clean, professional, genre-agnostic, and works in any language. A puzzle game has a first frame. A narrative game has a first frame. An action game has a first frame. Domain-viable: `firstframestudios.com`.
-
-**Strength:** Directly encodes Principle #1 (Player Hands First) into the company name. Tells our philosophy before anyone reads a single document. Works at every scale — from indie to AAA. Sounds professional without being corporate. Sounds creative without being precious.
-
-### Option C: Forgehands Interactive
-
-**Rationale:** A compound word that merges "forge" (craftsmanship under constraints, heat and pressure producing quality) with "hands" (player hands first, handcrafted). Distinctive, unusual, tells a story. Domain-viable: `forgehandsinteractive.com`.
-
-**Concern:** Harder to pronounce internationally. The compound construction feels slightly forced. Less immediately clear than the other two options.
+Directly encodes Principle #1 (Player Hands First) into the company name. Tells our philosophy before anyone reads a single document. Works at every scale — from indie to AAA. Sounds professional without being corporate. Sounds creative without being precious.
 
 ### ✅ Selection: First Frame Studios
 
