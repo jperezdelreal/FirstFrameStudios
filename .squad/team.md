@@ -54,7 +54,7 @@ Agents with no active work in the current web-game stack. Wake when their domain
 ## Project Context
 
 - **Project:** First Frame Studios (Studio Hub)
-- **User:** joperezd
+- **User:** Joaquin Perez del Real
 - **Created:** 2026-03-06
 - **Description:** AI-powered game development studio. Parent squad managing studio-wide knowledge, skills, and team coordination. Game-specific work happens in subsquad repos.
 - **Universe:** Star Wars
