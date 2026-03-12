@@ -58,15 +58,15 @@
 
 **Checklist:**
 1. Pull latest main
-2. Open the project in Godot — verify it loads without errors
-3. Check Output console for null references, missing autoloads, broken scene references
-4. Verify all autoloads initialize in correct dependency order
-5. Verify EventBus signals are connected (defined ≠ connected)
-6. Run through the primary game flow (menu → select → fight → KO → victory)
-7. Confirm cross-system wiring: VFX triggers on hit, audio plays on events, HUD updates on state changes
+2. Open the project in a browser — verify it loads without errors
+3. Check browser console for module import errors, broken references, missing dependencies
+4. Verify all modules initialize in correct dependency order
+5. Verify event listeners are connected (defined ≠ connected)
+6. Run through the primary game flow (page load → game init → core loop → state transitions)
+7. Confirm cross-system wiring: animations trigger on events, audio plays on state changes, UI updates on game state changes
 8. Document any integration failures as blocking issues before next wave starts
 
-**Root cause (M1+M2):** 5 blockers reached code review because nobody verified systems worked together after parallel waves. RoundManager was never instantiated, signals were never wired, and the game couldn't run — but no ceremony existed to catch this.
+**Root cause (M1+M2):** 5 blockers reached code review because nobody verified systems worked together after parallel waves. Key managers were never instantiated, events were never wired, and the game couldn't run — but no ceremony existed to catch this.
 
 ---
 
@@ -95,34 +95,7 @@
 
 ---
 
-## Godot Smoke Test
 
-| Field | Value |
-|-------|-------|
-| **Trigger** | auto |
-| **When** | after |
-| **Condition** | milestone declared complete (all milestone PRs merged) |
-| **Facilitator** | Solo (Lead) |
-| **Participants** | Solo |
-| **Time budget** | focused |
-| **Enabled** | ❌ no |
-
-**Purpose:** After merging a milestone, verify the project opens in Godot and the basic game flow works end-to-end. A milestone is NOT complete until this passes.
-
-**Checklist:**
-1. `git checkout main && git pull` — clean working tree
-2. Open project in Godot 4.x — no import errors, no missing autoloads
-3. Press Play — main scene loads without crash
-4. Navigate: Main Menu → Character Select → Fight Scene
-5. Verify: both fighters spawn, HUD displays, timer counts, input works
-6. Land a hit — verify VFX sparks, audio plays, health bar updates
-7. Complete a round — verify KO sequence, round transition, score update
-8. Complete a match — verify victory screen, rematch/menu navigation
-9. Document any failures as P0 blocking issues
-
-**Root cause (M1+M2):** Nobody opened Godot after merging 8 PRs across two milestones. The project was never verified to load or run. Integration failures were invisible until Jango's pre-M3 code review found 5 blockers that prevented the game from running at all.
-
----
 
 ## Sprint Planning
 
@@ -132,11 +105,11 @@
 | **When** | before |
 | **Condition** | start of new sprint |
 | **Facilitator** | Mace (Producer) |
-| **Participants** | Mace + Yoda + Solo |
+| **Participants** | Mace + Solo |
 | **Time budget** | focused |
 | **Enabled** | ✅ yes |
 
-**Purpose:** At the start of each sprint, the team aligns on scope, priorities, and assignments. Mace facilitates, Yoda provides game design perspective, Solo defines architecture constraints.
+**Purpose:** At the start of each sprint, the team aligns on scope, priorities, and assignments. Mace facilitates, Solo defines architecture constraints and provides technical guidance.
 
 **Agenda:**
 1. Review backlog — what issues are open, what's the priority order?
@@ -154,18 +127,20 @@
 | **Trigger** | manual |
 | **When** | after |
 | **Condition** | art/sprite PRs merged or new visual assets integrated |
-| **Facilitator** | Boba (Art Director) |
-| **Participants** | Boba + Nien |
+| **Facilitator** | — |
+| **Participants** | — |
 | **Time budget** | focused |
-| **Enabled** | ❌ no |
+| **Enabled** | ❌ no (agents hibernated) |
 
 **Purpose:** After visual asset integration, verify consistency across characters, animations, and environments. Catch style drift before it compounds.
 
+**Note:** This ceremony is currently disabled as the relevant art agents (Boba, Nien) are hibernated.
+
 **Checklist:**
-1. Compare new sprites against art style reference (cel-shade spec, proportions)
-2. Verify color palette consistency across characters
+1. Compare new visual assets against art style reference
+2. Verify color palette consistency
 3. Check animation frame counts and timing feel right
-4. Verify sprite positioning and scale relative to game viewport
+4. Verify asset positioning and scale relative to game viewport
 5. Document any visual inconsistencies as issues
 
 ---

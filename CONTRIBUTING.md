@@ -26,7 +26,7 @@ All work at First Frame Studios follows a GitHub-centered flow:
 
 1. Go to [Issues](https://github.com/jperezdelreal/FirstFrameStudios/issues)
 2. Click "New Issue"
-3. **Title:** Clear, specific description (e.g., "Fix camera jitter on dodge roll")
+3. **Title:** Clear, specific description (e.g., "Fix canvas rendering lag on resize")
 4. **Labels:** Apply appropriate labels (see [Label System](#label-system) below)
 5. **Body:** Include:
    - Problem statement or user story
@@ -44,7 +44,6 @@ squad/{issue-number}-{slug}
 
 **Examples:**
 - `squad/42-player-knockback-tuning`
-- `squad/88-ashfall-gdd-characters`
 - `squad/105-canvas-memory-leak`
 
 This naming convention:
@@ -68,76 +67,72 @@ Co-authored-by: [Agent Name] <agent+email@github>
 
 **Examples:**
 ```
-[ashfall] Fix Kael forward dash knockback distance
+[ComeRosquillas] Fix canvas resize handling
 
-- Reduced knockback multiplier from 1.8x to 1.4x
-- Verified balance against Rhena dash range
-- Updated move data resource with new parameters
+- Added debounce to resize event listener
+- Prevent rendering during resize operations
+- Verified canvas dimensions update correctly
 
 Fixes #42
-Co-authored-by: Lando <lando@firstframe.dev>
+Co-authored-by: Solo <solo@firstframe.dev>
 ```
 
 ```
-[first-punch] Add screen shake on heavy attacks
+[Flora] Add particle system for power-ups
 
-- Integrated ShakeEffect system into CombatSystem
-- Amplitude scales with damage dealt
-- Verified camera remains centered after shake
+- Implemented PixiJS particle emitter for collectibles
+- Particle color matches power-up type
+- Performance tested with 100+ simultaneous particles
 
 Fixes #88
-Co-authored-by: Lando <lando@firstframe.dev>
+Co-authored-by: Jango <jango@firstframe.dev>
 ```
 
 ## Label System
 
-Labels organize work by game, type, and priority. Apply these to every issue:
+Labels organize work by agent, priority, tier, and blockers. Apply these to every issue:
 
-### Game Tags (required, one per issue)
-- `game:ashfall` — Work on Ashfall fighting game
-- `game:first-punch` — Work on First Punch beat 'em up
-- `game:cinder` — Work on Cinder platformer (future)
-- `game:pulse` — Work on PULSE rhythm-action (future)
+### Squad Tags (required for agent pickup)
+Agent-based labels for work assignment:
+- `squad:solo` — Architecture, system design, integration
+- `squad:jango` — Tooling, CI/CD, build configuration
+- `squad:mace` — Production, sprint planning, blocker tracking
+- `squad:ralph` — Autonomous monitoring agent
+- `squad:copilot` — General development support
 
-### Squad Tags (required)
-- `squad:engine` — Engine/Infrastructure work (Chewie, Jango)
-- `squad:gameplay` — Gameplay mechanics & feel (Lando, Ackbar)
-- `squad:art` — Visual assets & direction (Boba, Nien, Leia, Bossk)
-- `squad:audio` — Sound design & music (Greedo)
-- `squad:content` — Enemy design & encounters (Tarkin)
-- `squad:ui` — User interface (Wedge)
-- `squad:architecture` — System design & structure (Solo)
-- `squad:tooling` — Build tools, CI/CD (Jango)
+### Priority Tags (required for scheduling)
+Priority determines execution order:
+- `priority:P0` — Blocker — Critical issue preventing progress
+- `priority:P1` — Sprint-critical — Must ship this sprint
+- `priority:P2` — Normal — Default priority for most work
+- `priority:P3` — Nice-to-have — Low priority, future work
 
-### Type Tags (optional)
-- `type:feature` — New functionality
-- `type:bug` — Issue to fix
-- `type:refactor` — Code quality improvement
-- `type:docs` — Documentation
-- `type:design` — Design/spec work
+### Tier Tags (approval authority)
+Tier determines who approves the work:
+- `tier:t0` — Founder approval required (new games, principles changes)
+- `tier:t1` — Lead approval (Solo decides, no founder escalation)
+- `tier:t2` — Agent autonomy (implement and merge)
+- `tier:t3` — Documentation/polish (no review needed)
 
-### Priority Tags (optional)
-- `priority:p0` — Critical / Blocking
-- `priority:p1` — High / Next
-- `priority:p2` — Medium / When ready
-- `priority:p3` — Low / Future
-
-### Status Tags (auto-applied by workflow)
-- `status:ready` — Issue is refined, can be started
-- `status:in-progress` — Work actively happening
-- `status:blocked` — Waiting on external dependency
-- `status:review` — PR opened, awaiting review
+### Blocked-By Tags (dependency tracking)
+Five types of blockers:
+- `blocked-by:issue` — Waiting on another issue to close
+- `blocked-by:pr` — Waiting on PR to merge
+- `blocked-by:decision` — Waiting on team decision
+- `blocked-by:upstream` — Waiting on external dependency/library
+- `blocked-by:external` — Waiting on 3rd party (vendor, API, etc.)
 
 ## How Squad Agents Pick Up Work
 
-Squad agents watch GitHub for issues with `squad:*` labels matching their expertise:
+Ralph monitors the repository and assigns issues to squad agents:
 
-1. **Squad polls Issues** — Daily check for issues with their label
-2. **Filters by game** — Focuses on current sprint game (e.g., `game:ashfall`)
-3. **Picks highest priority** — Orders by `priority:p0 > p1 > p2 > p3`
-4. **Creates branch** — Names it `squad/{issue-number}-{slug}`
-5. **Opens PR** — Links back to issue (`Fixes #XX` in body)
-6. **Merges when approved** — Closes issue automatically
+1. **Ralph monitors Issues** — Scans for ready work across hub and downstream repos
+2. **Checks dependencies** — Filters out issues with `blocked-by:*` labels where blockers are still open
+3. **Sorts by priority** — Orders by `priority:P0 > P1 > P2 > P3`
+4. **Assigns to agent** — Based on `squad:{member}` label
+5. **Agent creates branch** — Names it `squad/{issue-number}-{slug}`
+6. **Agent opens PR** — Links back to issue (`Fixes #XX` in body)
+7. **Reviews and merges** — Closes issue automatically on merge
 
 ## Pull Request Process
 
@@ -154,41 +149,28 @@ Squad agents watch GitHub for issues with `squad:*` labels matching their expert
 
 ## Code Review Standards
 
-Squad agents review PRs for:
+Jango (Tool Engineer) reviews PRs for:
 
 - **Correctness** — Does it solve the issue?
 - **No Regressions** — Did it break existing functionality?
-- **Load Compliance** — Does it respect the 20% load cap?
 - **Documentation** — Are changes documented?
 - **Test Coverage** — Are new features tested?
-
-See individual game style guides:
-- [Ashfall (Godot 4)](games/ashfall/STYLE.md)
-- [First Punch (Canvas 2D)](games/first-punch/STYLE.md)
+- **Standards Compliance** — Does it follow project conventions?
 
 ## Workflow Dependencies
 
 If your issue depends on another issue:
 
-1. Add comment: `Depends on #XX` (or whatever issue number)
-2. Milestone label: `milestone:phase-1`
-3. Mace (Producer) tracks critical path issues
-
-## Load Capacity
-
-Squad agents maintain **20% load cap** per phase. If your PR would push someone over:
-
-1. Comment on PR: ⚠️ Load concern
-2. Mace reviews & reallocates or defers
-3. No merges until load is balanced
-
-See `.squad/agents/{agent}/charter.md` for individual load tracking.
+1. Add a `blocked-by:*` label (issue, pr, decision, upstream, or external)
+2. Add `## Dependencies` section in issue body listing what it's waiting on
+3. Ralph automatically tracks blockers and prepares (but doesn't merge) blocked work
+4. When blocker resolves, Ralph auto-unblocks after 24h (Lead can re-block if needed)
 
 ## Studio Tools & Infrastructure
 
-- **Godot 4** — Engine for Ashfall
-- **Canvas 2D** — Engine for First Punch (no build step)
-- **GitHub Actions** — Automated builds & tests
+- **HTML/JS/Canvas** — ComeRosquillas (vanilla web game, no bundler)
+- **TypeScript/Vite/PixiJS** — Flora (modern web game with bundler)
+- **GitHub Actions** — Automated builds, tests, and deployments
 - **GitHub Issues** — Work tracking
 - **GitHub Projects** — Sprint planning
 - **.squad/ folder** — Team charters, decisions, skill library
@@ -198,4 +180,4 @@ See `.squad/agents/{agent}/charter.md` for individual load tracking.
 - **Process:** Check `.squad/team.md` for team structure
 - **Architecture:** See `.squad/decisions.md` for technology choices
 - **Design:** Review `.squad/identity/` for studio playbooks
-- **Specific game:** See `games/{game}/docs/` for design docs
+- **Game-specific docs:** Each game has its own repository with dedicated documentation

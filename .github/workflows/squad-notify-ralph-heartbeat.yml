@@ -12,8 +12,14 @@ permissions:
   contents: read
 
 jobs:
-  check-and-notify:
+  check-heartbeat:
     runs-on: ubuntu-latest
+    outputs:
+      should_notify: ${{ steps.heartbeat.outputs.should_notify }}
+      status: ${{ steps.heartbeat.outputs.status }}
+      round: ${{ steps.heartbeat.outputs.round }}
+      mode: ${{ steps.heartbeat.outputs.mode }}
+      failures: ${{ steps.heartbeat.outputs.failures }}
     steps:
       - uses: actions/checkout@v4
 
@@ -54,13 +60,14 @@ jobs:
             echo "should_notify=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Notify round completion
-        if: steps.heartbeat.outputs.should_notify == 'true'
-        uses: ./.github/workflows/squad-notify-discord.yml
-        with:
-          event_type: "Ralph Round Completed"
-          summary: "Ralph completed round ${{ steps.heartbeat.outputs.round }} in ${{ steps.heartbeat.outputs.mode }} mode (Status: ${{ steps.heartbeat.outputs.status }}, Failures: ${{ steps.heartbeat.outputs.failures }})"
-          link: "${{ github.server_url }}/${{ github.repository }}/actions/workflows/squad-notify-ralph-heartbeat.yml"
-          color: "3066993"
-        secrets:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+  notify:
+    needs: check-heartbeat
+    if: needs.check-heartbeat.outputs.should_notify == 'true'
+    uses: ./.github/workflows/squad-notify-discord.yml
+    with:
+      event_type: "Ralph Round Completed"
+      summary: "Ralph completed round ${{ needs.check-heartbeat.outputs.round }} in ${{ needs.check-heartbeat.outputs.mode }} mode (Status: ${{ needs.check-heartbeat.outputs.status }}, Failures: ${{ needs.check-heartbeat.outputs.failures }})"
+      link: "${{ github.server_url }}/${{ github.repository }}/actions/workflows/squad-notify-ralph-heartbeat.yml"
+      color: "3066993"
+    secrets:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
