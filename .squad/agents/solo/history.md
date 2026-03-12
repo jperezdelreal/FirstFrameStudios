@@ -200,3 +200,24 @@
 3. Rewrite team.md + routing.md for multi-repo web game stack
 
 **Status:** AWAITING FOUNDER APPROVAL
+
+---
+
+## Learnings
+
+### 2026-03-12: Standard Project Lifecycle Design
+
+**Architecture decision:** Designed a 4-ceremony lifecycle (Kickoff → Sprint Planning N → Mid-Project Evaluation → Closeout) that is standard across ALL FFS repos regardless of type. Key insight: ceremonies must produce GitHub issues as primary output — `.md`-only ceremonies are introspective but don't feed the work pipeline.
+
+**Pattern — "vida propia" loop:** design doc → ceremony → issues → Ralph → sessions → work → ceremony re-evaluates → more issues. The loop is self-sustaining because Ralph detects lifecycle transitions via `project-state.json`.
+
+**Bug discoveries:**
+- `squad-triage.yml` line 207 blindly applies `go:needs-research` to every issue — fix: content-aware triage (check for acceptance criteria, ceremony-origin labels)
+- `ralph-watch.ps1` line 686 hard-skips `go:needs-research` issues — fix: route to assigned agent for research, don't skip entirely
+
+**Key file paths:**
+- `.squad/decisions/inbox/solo-project-lifecycle-design.md` — full lifecycle design doc
+- `.squad/project-state.json` — per-repo lifecycle tracking file (new convention)
+- `tools/scheduler/schedule.json` — scheduler tasks (backlog-grooming to be replaced by Sprint Planning ceremony)
+
+**User preference:** Joaquin wants repos to be self-sustaining ("vida propia"). Generic terminology ("design doc" not "GDD") so lifecycle works for games, tools, and infra equally. Sprint completion is issue-based, not calendar-based.
