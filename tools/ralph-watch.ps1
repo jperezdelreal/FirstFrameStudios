@@ -509,10 +509,13 @@ function Get-ScheduledIssues {
                 }
 
                 # Governance filter: skip T0 entirely, skip T1 unless approved
-                $tier = ""
+                # Issues without tier label default to T2 (safe to work)
+                $tier = "t2"
                 foreach ($l in $labelNames) {
                     if ($l -match '^tier:t0$') { $tier = "t0"; break }
                     if ($l -match '^tier:t1$') { $tier = "t1" }
+                    if ($l -match '^tier:t2$') { $tier = "t2" }
+                    if ($l -match '^tier:t3$') { $tier = "t3" }
                 }
                 if ($tier -eq "t0") {
                     Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t0 needs founder approval" -ForegroundColor DarkYellow
@@ -520,6 +523,11 @@ function Get-ScheduledIssues {
                 }
                 if ($tier -eq "t1" -and ($labelNames -notcontains "approved")) {
                     Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t1 not approved" -ForegroundColor DarkYellow
+                    continue
+                }
+                # Skip issues marked as needing research (not ready for implementation)
+                if ($labelNames -contains "go:needs-research") {
+                    Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- needs-research, not ready" -ForegroundColor DarkYellow
                     continue
                 }
 
@@ -836,36 +844,32 @@ while ($true) {
                 Write-Host "   [info] No actionable issues found across repos. Skipping copilot session." -ForegroundColor DarkGray
                 $exitCode = 0
                 $copilotOutput = "No issues to work on"
-            } elseif ($sessionCount -gt 1 -and $assignments.Count -gt 1) {
-                # Night mode: parallel sessions
-                Write-Host "   [night] Running $($assignments.Count) parallel session(s)..." -ForegroundColor Magenta
+            } else {
+                # Run all assignments sequentially (night or day)
+                # Night mode = more issues + shorter interval, NOT parallel Start-Job
+                # (Start-Job causes prompt serialization failures with copilot CLI)
+                if ($assignments.Count -gt 1) {
+                    Write-Host "   [night] Running $($assignments.Count) session(s) sequentially..." -ForegroundColor Magenta
+                }
 
-                Update-Heartbeat -Status "running" -Round $round -Extra @{ phase = "parallel-sessions" }
-                $results = Invoke-ParallelSessions -Assignments $assignments -Round $round
-
-                # Merge results
                 $allOutput = @()
                 $worstExit = 0
-                foreach ($r in $results) {
-                    if ($r.Output) { $allOutput += $r.Output }
-                    if ($r.ExitCode -ne 0) { $worstExit = $r.ExitCode }
+                $sessionNum = 0
+                foreach ($a in $assignments) {
+                    $sessionNum++
+                    $monitor = Start-ActivityMonitor -Round $round
+                    Update-Heartbeat -Status "running" -Round $round -Extra @{ phase = "session-$sessionNum-of-$($assignments.Count)" }
+                    $result = Invoke-CopilotSession -RepoFullName $a.GhRepo -Issues $a.Issues -SessionId $sessionNum -Round $round
+                    if ($result.Output) { $allOutput += $result.Output }
+                    if ($result.ExitCode -ne 0) { $worstExit = $result.ExitCode }
+                    Stop-ActivityMonitor -Monitor $monitor
+                    $monitor = $null
                 }
                 $copilotOutput = $allOutput -join "`n---SESSION BOUNDARY---`n"
                 $exitCode = $worstExit
-            } else {
-                # Day mode (or single assignment): sequential single session
-                $a = $assignments[0]
-                $monitor = Start-ActivityMonitor -Round $round
-                Write-Host "   [monitor] Background activity monitor started" -ForegroundColor DarkCyan
-
-                Update-Heartbeat -Status "running" -Round $round -Extra @{ phase = "single-session" }
-                $result = Invoke-CopilotSession -RepoFullName $a.GhRepo -Issues $a.Issues -SessionId 1 -Round $round
-                $copilotOutput = $result.Output
-                $exitCode = $result.ExitCode
-
-                Stop-ActivityMonitor -Monitor $monitor
-                $monitor = $null
-                Write-Host "   [monitor] Activity monitor stopped" -ForegroundColor DarkCyan
+            }
+            if ($false) {
+                # DISABLED: old day-mode single-session path (now handled above for all modes)
             }
 
             # Parse metrics from copilot output
