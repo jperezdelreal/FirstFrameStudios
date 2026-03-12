@@ -5,51 +5,7 @@
 
 ---
 
-## Pre-Autonomy Diagnostic (2026-03-12)
 
-### Overview
-Solo completed pre-autonomy diagnostic before ralph-watch autonomous mode. Verdict: READY WITH CAVEATS. No blockers found. 10 recommended fixes documented in optimization-plan-check.md.
-
-### Issues Requiring Action
-
-#### decisions.md exceeds G1 limit (HIGH)
-**Date:** 2026-03-12 | **Author:** Solo | **Status:** Active
-- Current: 8,231 bytes (8.0KB), limit is 5KB per G1
-- Action: Scribe archive pass — move older decisions to decisions-archive.md
-- Owner: Scribe
-
-#### Hub issues #187, #188, #189 still open (HIGH)
-**Date:** 2026-03-12 | **Author:** Solo | **Status:** Active
-- All three correspond to completed optimization phases (5, 6, 7)
-- All marked `needs-research` but work is done per optimization-plan.md
-- Action: Close all three with completion notes
-- Owner: Mace or Lead
-
-#### Stale Godot references in active config files (MEDIUM)
-**Date:** 2026-03-12 | **Author:** Solo | **Status:** Active
-- `.squad/ceremonies.md` — "Godot Smoke Test" ceremony still has Godot content
-- `.github/pull_request_template.md` — "Tested in Godot editor" checkbox
-- `CONTRIBUTING.md` — Ashfall game label, Godot engine reference, style guide link
-- Action: Rewrite/remove Godot-specific content
-- Owner: Jango (tooling/config) or Lead
-
-#### Missing labels in downstream repos (MEDIUM)
-**Date:** 2026-03-12 | **Author:** Solo | **Status:** Active
-- All downstream: Missing `blocked-by:*`, `tier:t0-t3`
-- Flora + ffs-squad-monitor: Missing `priority:p3`
-- ffs-squad-monitor: Missing `priority:p0`, agent-specific squad labels
-- Flora: Has hub-agent labels (squad:chewie etc.) instead of Flora agents
-- Action: Create labels via `sync-squad-labels.yml` or manual creation
-- Owner: Jango
-
-#### Flora issue #9 agent mismatch (LOW)
-**Date:** 2026-03-12 | **Author:** Solo | **Status:** Active
-- Assigned to `squad:wedge` — Wedge is a hub agent, hibernated
-- Flora has its own agents (oak, brock, erika, misty, sabrina)
-- Action: Re-label to appropriate Flora agent
-- Owner: Lead triage
-
----
 
 ## Studio Directives
 
@@ -114,9 +70,7 @@ GitHub Actions CI for linting, build verification, and Pages deployment on push 
 **By:** Solo | **Date:** 2026-03-11 | **Status:** Active
 FFS is hub-and-spoke. Hub = no game code, only infrastructure. Each game/tool has its own repo with `squad upstream` to hub. Skills, quality gates, and governance cascade down.
 
-### Ashfall: Shelved
-**By:** Team | **Date:** 2026-03-10 | **Status:** Closed
-Fighting game too complex for AI-only tuning. Studio pivoting to simpler genres.
+
 
 ### Skill Template Update — SKILL.md + REFERENCE.md Split
 **By:** Jango | **Date:** 2026-01-30 | **Status:** Implemented
@@ -160,27 +114,11 @@ Scan code for TODOs, auto-create issues. Lead adjusts workload independently.
 
 ---
 
-### GitHub Actions Cron Reduction
-**By:** Jango (Tool Engineer) | **Date:** 2025-07-16 | **Status:** Implemented
-Reduced scheduled workflow frequency to lower monthly GitHub Actions run volume from ~4,320 to ~900.
-- `squad-heartbeat.yml`: `*/15 * * * *` → `0 * * * *` (720 runs/month)
-- `squad-notify-ralph-heartbeat.yml`: `*/30 * * * *` → `0 */4 * * *` (180 runs/month)
-- Event triggers unchanged; only scheduled polling reduced
 
-### Ralph-Watch Guardrails (G10 + G11)
-**By:** Jango (Tool Engineer) | **Date:** 2026-03-12 | **Status:** Implemented
-Two safeguards in ralph-watch.ps1 to prevent wasted cycles and ensure downstream repo currency.
-- **G10 — Roster Check:** Ralph skips repos without `.squad/team.md` containing `## Members` section
-- **G11 — Upstream Sync:** After git pull, hub syncs `.squad/skills/`, quality-gates.md, governance.md, decisions.md to downstream repos with `.squad/` directory; auto-commits as "chore: upstream sync from hub"
-- Both features support DryRun mode; ASCII-safe logging for Windows PowerShell 5.1
 
-### Guardrails G1-G14 Implementation
-**By:** Solo (Lead / Chief Architect) | **Date:** 2026-07-25 | **Status:** Implemented
-Distributed guardrails across governance files per their operational domain:
-- **Scribe charter:** G1 (decisions.md max 5KB auto-archive), G2 (SKILL.md max 5KB overflow), G3 (log cleanup >30 days)
-- **Governance.md:** G5 (hub roster infra-only), G7 (now.md single source), G8 (squad.agent.md hash consistency), G9 (cron ≥1h), G12 (identity docs no rejected options)
-- **Ceremonies.md:** G4 (quality-gates review at kickoff), G6 (cleanup at closeout), G14 (squad.config.ts project name)
-- Changes <50 lines total; no content removed, only surgical additions
+
+
+
 
 ### Priority & Dependency System (P0-P3)
 **By:** Solo (Lead / Chief Architect) | **Date:** 2026-07-26 | **Status:** Implemented (T1 Authority)
@@ -196,3 +134,4 @@ Implemented priority and dependency tracking system per T1 governance. Independe
 ---
 
 *Last cleaned: 2026-03-12. Previous content archived to `decisions-archive.md`.*
+

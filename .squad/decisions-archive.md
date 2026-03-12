@@ -12695,3 +12695,33 @@ All design questions have been resolved by Founder review:
 **Next Action:** Solo approves (T1) and moves to active decisions  
 **Approval Authority:** T1 (Solo decides — Founder input received and incorporated)
 
+
+## Pre-Autonomy Diagnostic (2026-03-12) — ARCHIVED
+
+Solo completed pre-autonomy diagnostic before ralph-watch autonomous mode. Verdict: READY WITH CAVEATS. 10 recommended fixes documented in optimization-plan-check.md. Status: BEING EXECUTED — decisions.md archival in progress.
+
+### Ashfall: Shelved (2026-03-10)
+
+Fighting game too complex for AI-only tuning. Studio pivoted to simpler genres. All Ashfall infrastructure (6,071 files, 1.6 GB Godot content) slated for cleanup after lesson extraction.
+
+### GitHub Actions Cron Reduction (2025-07-16) — ARCHIVED
+
+Reduced scheduled workflow frequency to lower monthly GitHub Actions run volume from ~4,320 to ~900.
+- squad-heartbeat.yml: */15 * * * * → 0 * * * * (720 runs/month)
+- squad-notify-ralph-heartbeat.yml: */30 * * * * → 0 */4 * * * (180 runs/month)
+- Event triggers unchanged; only scheduled polling reduced.
+
+### Ralph-Watch Guardrails (G10 + G11) — ARCHIVED
+
+Two safeguards in ralph-watch.ps1 to prevent wasted cycles and ensure downstream repo currency.
+- G10 — Roster Check: Ralph skips repos without .squad/team.md containing ## Members section
+- G11 — Upstream Sync: After git pull, hub syncs .squad/skills/, quality-gates.md, governance.md, decisions.md to downstream repos with .squad/ directory; auto-commits as "chore: upstream sync from hub"
+- Both features support DryRun mode; ASCII-safe logging for Windows PowerShell 5.1
+
+### Guardrails G1-G14 Implementation (2026-07-25) — ARCHIVED
+
+Distributed guardrails across governance files per their operational domain:
+- Scribe charter: G1 (decisions.md max 5KB auto-archive), G2 (SKILL.md max 5KB overflow), G3 (log cleanup >30 days)
+- Governance.md: G5 (hub roster infra-only), G7 (now.md single source), G8 (squad.agent.md hash consistency), G9 (cron ≥1h), G12 (identity docs no rejected options)
+- Ceremonies.md: G4 (quality-gates review at kickoff), G6 (cleanup at closeout), G14 (squad.config.ts project name)
+- Changes <50 lines total; no content removed, only surgical additions.
