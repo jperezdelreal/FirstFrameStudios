@@ -278,8 +278,22 @@ R2 (antes de dejar solo):
 [x] Flora: GDD.md sign-off
 [x] Todos: tier labels
 
+R3 (limpieza):
+[x] Monitor: squad/13-real-data branch deleted (PR #16 already merged)
+[x] Hub: 27 stashes cleared
+[x] Todos: branches cleaned (Hub 3, Flora 3, ComeRosq 4, Monitor 8 deleted)
+[x] ComeRosq+Monitor: Issue Source added to team.md
+[x] Hub: squad.labels.json generated
+[x] Flora+ComeRosq: obsolete Star Wars labels cleaned (8 each)
+[x] Hub: games/ComeRosquillas/ removed (founder approved, .gitignored + empty)
+[x] Hub: games/** removed from squad.config.ts + routing updated
+[x] Hub: games/ComeRosquillas/docs/ removed (part of R3.7)
+[x] Monitor: master → main renamed (default branch updated)
+[x] Hub: games/ashfall removed from CODEOWNERS
+[x] Hub: stale branch squad/172-governance-safeguards deleted (already merged)
+
 Post-launch:
-[ ] checkout main/master en repos divergidos
+[x] checkout main/master en repos divergidos (all repos on main now)
 [ ] ralph-watch -DryRun -MaxRounds 1
 [ ] ralph-watch -MaxRounds 3 (supervisado)
 [ ] verificar heartbeat + upstream sync
