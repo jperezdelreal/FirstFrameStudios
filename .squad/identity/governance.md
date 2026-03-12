@@ -83,8 +83,8 @@ T0 changes are irreversible or foundational decisions that shape the studio's id
 **Examples (exhaustive — T0 is deliberately minimal):**
 - Creating a new game repository (deciding what NEW GAMES to build — the founder's only "capricho")
 - Modifying studio principles (`principles.md`) — these are foundational and shape all decisions downstream
-- Major refactors to `.squad/` directory structure — foundational infrastructure, too risky for autonomous changes
-- Adding or removing agents from the **FFS Hub roster** — hub agents influence studio-wide decisions
+
+That's it. Nothing else belongs at T0. If it's not "what new game to build" or "what the studio believes," it's not T0.
 
 **Process:**
 1. Proposer (any agent) writes a decision proposal to `.squad/decisions/inbox/`
@@ -97,14 +97,14 @@ T0 changes are irreversible or foundational decisions that shape the studio's id
 
 ---
 
-#### T1 — Lead + Founder
+#### T1 — Lead Authority
 
-**Authority:** Solo (Lead) proposes, Joaquin (Founder) approves. Both must agree.
+**Authority:** Solo (Lead) decides. T1 is fully delegated to the Lead — no founder approval required.
 
-T1 changes are significant decisions that affect multiple repos, multiple agents, or the studio's technical direction. They are reversible but expensive to undo. They require architectural judgment and founder alignment.
+T1 changes are significant decisions that affect multiple repos, multiple agents, or the studio's technical direction. They are reversible but expensive to undo. They require architectural judgment. The hub is the Bible — Solo has full authority over it.
 
 **Examples:**
-- Creating a new tool/utility repository (e.g., ffs-metrics-dashboard, ffs-release-bot) — Lead proposes, Founder approves via hub PR
+- Creating a new tool/utility repository (e.g., ffs-metrics-dashboard, ffs-release-bot) — Lead decides
 - Cross-repo architectural decisions (e.g., standardizing on a shared event bus pattern across all games)
 - Changing quality gates or the Definition of Done (`quality-gates.md`)
 - Major features that span multiple repositories (e.g., a shared component library used by Flora and ComeRosquillas)
@@ -118,17 +118,19 @@ T1 changes are significant decisions that affect multiple repos, multiple agents
 - Deciding which configuration cascades vs. stays local (Domain 7)
 - Changing the upstream relationship model for any downstream repo
 - Major refactors to hub infrastructure (`.squad/` directory structure)
+- Adding or removing agents from the **FFS Hub roster** — hub team composition
 - Sprint scope changes that affect multiple agents or repos
+- Structural changes to governance (this document) — unless they modify T0 scope (which remains T0)
 
 **Process:**
 1. Solo drafts the proposal with impact assessment across all affected repos
 2. Affected agents are consulted (async review, comments on the proposal)
-3. Joaquin reviews and approves or requests changes
+3. Solo reviews, decides, and documents rationale
 4. Solo implements or delegates implementation
 5. Changes are committed to the hub first, then cascade to downstream repos as needed
 6. Scribe logs the decision
 
-**Escalation:** If Solo and Joaquin disagree, Joaquin's decision is final (Founder authority). Solo documents his concerns in the decision record for future reference.
+**Escalation:** If any agent disagrees with a T1 decision, they may appeal to the Founder. Joaquin (Founder) retains override authority but does not participate in routine T1 approvals.
 
 ---
 
@@ -214,13 +216,14 @@ Use this matrix when you're unsure which tier applies:
 |----------|----------|---------|
 | Does this create a new **game** repository? | T0 | Continue ↓ |
 | Does this modify studio principles (`principles.md`)? | T0 | Continue ↓ |
-| Does this refactor `.squad/` directory structure? | T0 | Continue ↓ |
-| Does this add or remove an agent from the **FFS Hub** roster? | T0 | Continue ↓ |
 | Does this create a new **tool/utility** repository? | T1 | Continue ↓ |
 | Does this affect multiple repositories? | T1 | Continue ↓ |
 | Does this change studio-wide standards (quality gates, skills)? | T1 | Continue ↓ |
 | Does this change cross-repo contracts or interfaces? | T1 | Continue ↓ |
 | Does this change the routing table or ceremonies? | T1 | Continue ↓ |
+| Does this refactor `.squad/` directory structure? | T1 | Continue ↓ |
+| Does this add or remove an agent from the **FFS Hub** roster? | T1 | Continue ↓ |
+| Does this change governance (without modifying T0 scope)? | T1 | Continue ↓ |
 | Does this add or remove an agent from a **game repo** roster? | T2 | Continue ↓ |
 | Does this create project-specific tools, plugins, or MCP connections? | T2 | Continue ↓ |
 | Does this involve implementing a feature, fixing a bug, or creating content? | T2 | Continue ↓ |
@@ -238,7 +241,7 @@ Not all repository creation carries the same weight. The tier depends on what th
 | Repo Type | Tier | Who Decides | Rationale |
 |-----------|------|-------------|-----------|
 | **Game repo** | T0 | Founder only | New games change studio direction — this is the founder's only "capricho" |
-| **Tool/utility repo** (e.g., ffs-squad-monitor, ffs-release-bot) | T1 | Lead proposes, Founder approves via hub PR | Tools are infrastructure, not strategic direction changes |
+| **Tool/utility repo** (e.g., ffs-squad-monitor, ffs-release-bot) | T1 | Lead (Solo) decides | Tools are infrastructure, not strategic direction changes |
 | **Fork/experimental repo** (clone of existing tool, proof-of-concept) | T2 | Assigned agent, if issue justifies | Low-risk exploration that doesn't commit studio resources |
 
 ---
@@ -407,13 +410,13 @@ Skills don't need to be copied into downstream repos. The upstream relationship 
 
 | Phase | Action | Authority |
 |-------|--------|-----------|
-| **Creation** | Agent identifies a pattern worth documenting | T1 (Lead + Founder) for new hub skills |
+| **Creation** | Agent identifies a pattern worth documenting | T1 (Lead decides) for new hub skills |
 | **Authoring** | Domain expert writes the skill document | T2 (assigned agent) |
 | **Review** | Solo reviews for accuracy, scope, and hub-worthiness | T1 (Lead) |
-| **Publication** | Skill committed to hub `.squad/skills/` | T1 (Lead + Founder) |
+| **Publication** | Skill committed to hub `.squad/skills/` | T1 (Lead decides) |
 | **Consumption** | Downstream repos access via upstream | Automatic |
 | **Update** | Domain expert updates based on new learnings | T2 for minor updates, T1 for structural changes |
-| **Deprecation** | Skill marked as superseded or archived | T1 (Lead + Founder) |
+| **Deprecation** | Skill marked as superseded or archived | T1 (Lead decides) |
 
 ---
 
@@ -545,7 +548,7 @@ Each project (game or tool) has **total freedom** to create its own tools, plugi
 **The Escalation Rule:** If a project-specific tool has **cross-repo application** (i.e., another project could benefit from it), the owning team must escalate to FFS hub level:
 
 1. **Inherit from hub** — if the hub already has an equivalent, use it instead of building locally
-2. **Create a new tool repo** — if no equivalent exists, propose a new tool repository (T1: Lead proposes, Founder approves)
+2. **Create a new tool repo** — if no equivalent exists, propose a new tool repository (T1: Lead decides)
 
 **Examples:**
 - Flora creates a PixiJS debug overlay → stays local (T2, project-specific)
@@ -595,7 +598,7 @@ A new project begins with a proposal. Only the Founder can approve creating a ne
 4. Joaquin (Founder) approves or rejects
 5. If approved, Jango (Tool Engineer) scaffolds the repo with `squad upstream` to hub
 
-#### Phase 2: Sprint 0 (T1 — Lead + Founder)
+#### Phase 2: Sprint 0 (T1 — Lead Authority)
 
 Sprint 0 is the foundation-laying phase. All architectural and structural decisions are made here.
 
@@ -609,7 +612,7 @@ Sprint 0 is the foundation-laying phase. All architectural and structural decisi
 - GitHub Issues + Labels + Milestone created
 - At least one playable build
 
-**Authority:** T1 for all Sprint 0 decisions. Solo proposes, Joaquin approves. This is the most governance-heavy phase because mistakes here compound.
+**Authority:** T1 for all Sprint 0 decisions. Solo (Lead) decides. This is the most governance-heavy phase because mistakes here compound.
 
 #### Phase 3: Active Development (T2 with T1 escalation)
 
@@ -618,7 +621,7 @@ The normal development phase. Agents work on features, fix bugs, and ship builds
 **Governance:**
 - Day-to-day work is T2 (assigned agent authority)
 - Cross-repo changes escalate to T1
-- Sprint scope changes require Mace + Solo + Joaquin alignment
+- Sprint scope changes require Mace + Solo alignment
 - Quality gates enforced on every merge
 
 **Cadence:**
@@ -642,7 +645,7 @@ A shipped game enters maintenance. Active feature development stops. Only bug fi
 A project that isn't actively maintained but might resume later. The repo stays intact but development pauses.
 
 **Governance:**
-- T1 to enter hibernation (Solo + Joaquin)
+- T1 to enter hibernation (Solo decides)
 - Hub skills captured from the project before hibernation (Skill Harvest ceremony)
 - Upstream relationship maintained (hub changes still cascade, but no one is working downstream)
 - No active sprints, no active issues
@@ -868,8 +871,9 @@ Issue created in hub → Classified by domain → Tier assigned → Process foll
 |---------------|------|---------|
 | New skill proposal | T1 | "Create `fighting-game-frame-data` skill from Ashfall learnings" |
 | Quality gate update | T1 | "Add accessibility requirement to Integration gate" |
-| Governance update | T0 | "Add new approval tier for automated changes" |
-| Team roster change | T0 | "Add new agent: Padme (Narrative Designer)" |
+| Governance update (not modifying T0 scope) | T1 | "Add new approval tier for automated changes" |
+| Governance update (modifying T0 scope) | T0 | "Change what decisions require Founder approval" |
+| Team roster change (hub) | T1 | "Add new agent: Padme (Narrative Designer)" |
 | Documentation fix | T3 | "Fix broken link in principles.md" |
 | Skill update | T2 | "Update `state-machine-patterns` with Godot 4 examples" |
 | Ceremony change | T1 | "Add monthly cross-repo sync ceremony" |
@@ -912,20 +916,23 @@ Clear decision authority prevents two failure modes: **paralysis** (nobody knows
 
 | Decision Category | Primary Authority | Approval Required | Tier |
 |-------------------|------------------|-------------------|------|
-| **Studio identity** (name, tagline, DNA) | Joaquin (Founder) | — | T0 |
-| **New repository creation** | Joaquin (Founder) | — | T0 |
+| **New game repository** | Joaquin (Founder) | — | T0 |
+| **Principle changes** (`principles.md`) | Joaquin (Founder) | Solo recommends | T0 |
 | **Repository archival** | Joaquin (Founder) | — | T0 |
-| **Team roster changes** | Joaquin (Founder) | — | T0 |
-| **Technology pivot** (new engine) | Joaquin (Founder) | Solo recommends | T0 |
-| **Governance changes** | Joaquin (Founder) | Solo recommends | T0 |
+| **Changes to T0 scope itself** | Joaquin (Founder) | Solo recommends | T0 |
+| **Cross-repo architecture** | Solo (Lead) | — (Lead authority) | T1 |
+| **Quality gate changes** | Solo (Lead) | — (Lead authority) | T1 |
+| **New studio skill** | Solo (Lead) | — (Lead authority) | T1 |
+| **Ceremony changes** | Solo (Lead) | — (Lead authority) | T1 |
+| **Playbook changes** | Solo (Lead) | — (Lead authority) | T1 |
+| **Hub roster changes** | Solo (Lead) | — (Lead authority) | T1 |
+| **Governance changes** (not T0 scope) | Solo (Lead) | — (Lead authority) | T1 |
+| **Technology stack** (new projects) | Solo (Lead) | — (Lead authority) | T1 |
+| **Tool repo creation** | Solo (Lead) | — (Lead authority) | T1 |
+| **`.squad/` infrastructure refactors** | Solo (Lead) | — (Lead authority) | T1 |
+| **Sprint scope** (per-project) | Mace (Producer) | Solo aligns | T1 |
 | **Mission/vision changes** | Joaquin (Founder) | Yoda advises | T0 |
-| **Cross-repo architecture** | Solo (Lead) | Joaquin approves | T1 |
-| **Quality gate changes** | Solo (Lead) | Joaquin approves | T1 |
-| **New studio skill** | Solo (Lead) | Joaquin approves | T1 |
-| **Principle changes** | Yoda (Game Designer) | Solo + Joaquin approve | T1 |
-| **Ceremony changes** | Solo (Lead) | Joaquin approves | T1 |
-| **Sprint scope** (per-project) | Mace (Producer) | Solo + Joaquin align | T1 |
-| **Playbook changes** | Solo (Lead) | Joaquin approves | T1 |
+| **Studio identity** (name, tagline, DNA) | Joaquin (Founder) | — | T0 |
 | **Game creative vision** | Yoda (Game Designer) | — (Zone C) | T2 |
 | **Game architecture** (post-Sprint 0) | Solo (Lead) | — (Zone C) | T2 |
 | **Art direction** (per-project) | Boba (Art Director) | Yoda aligns | T2 |
@@ -975,7 +982,8 @@ T2 decisions are recorded in the agent's `history.md` and in commit messages. T3
 | Rule | Description |
 |------|-------------|
 | **Founder can delegate T0** | Joaquin may grant Solo temporary T0 authority for specific decisions (documented in writing) |
-| **Lead can delegate T1** | Solo may designate a domain expert as T1 authority for their domain (e.g., Yoda for principle changes) |
+| **T1 is fully delegated to Lead** | T1 authority is permanently delegated to Solo (Lead) — no founder approval required for any T1 decision |
+| **Lead can delegate T1** | Solo may designate a domain expert as T1 authority for their domain (e.g., Yoda for principle-adjacent changes) |
 | **T2 cannot be delegated** | The assigned agent must do the work; they can seek help but not hand off ownership |
 | **T3 is inherently distributed** | Anyone can do T3 work; no delegation needed |
 
@@ -998,8 +1006,8 @@ In time-critical situations (production outage, critical bug in a shipped game, 
 
 | Tier | Who Decides | Examples (3-word summary) |
 |------|-------------|--------------------------|
-| **T0** | Founder only | New game, principles, .squad refactors, hub roster |
-| **T1** | Lead + Founder | Tool repos, cross-repo decisions, quality gates |
+| **T0** | Founder only | New game, principles |
+| **T1** | Lead (Solo) | Tool repos, cross-repo, quality gates, hub roster, .squad refactors, governance |
 | **T2** | Assigned agent | Feature work, bug fix, game roster, project tools |
 | **T3** | Any agent | Typo fix, formatting, comment addition |
 
@@ -1029,8 +1037,9 @@ In time-critical situations (production outage, critical bug in a shipped game, 
 
 This document is itself governed by the tier system:
 
-- **Structural changes** (new domains, new tiers, new authority levels): **T0** — Founder-only
-- **Content updates** (clarifying existing rules, adding examples, updating repo list): **T1** — Lead + Founder
+- **Changes that modify T0 scope** (what requires Founder approval): **T0** — Founder-only
+- **Structural changes** (new domains, new tiers, new authority levels that don't modify T0 scope): **T1** — Lead (Solo) authority
+- **Content updates** (clarifying existing rules, adding examples, updating repo list): **T1** — Lead (Solo) authority
 - **Formatting and typo fixes**: **T3** — Any agent
 
 The governance document is reviewed during every Hub Health Check ceremony (quarterly minimum). Changes are proposed via the standard decision process.
@@ -1041,6 +1050,7 @@ The governance document is reviewed during every Hub Health Check ceremony (quar
 |------|--------|------|--------|
 | 2025 | Initial creation — 9 domains of multi-repo governance | T0 | Solo (Lead / Chief Architect) |
 | 2026-03-11 | Founder vision applied — T0 minimized, repo creation tiers, mandatory ceremonies, project autonomy model, hub philosophy | T0 | Solo (Lead / Chief Architect), per Founder directives |
+| 2026-07-25 | T0 ultra-minimized (only new games + principles.md). T1 becomes Lead-only authority — founder removed from T1 approvals. Hub roster changes, .squad/ refactors, governance changes moved to T1. Delegation rules updated. | T0 | Solo (Lead / Chief Architect), per Founder directives |
 
 ---
 

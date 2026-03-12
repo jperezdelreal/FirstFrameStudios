@@ -305,3 +305,31 @@ Ralph (Work Monitor) can now auto-route all 8 issues to the correct squad member
 - Config and utils are pure modules — no side effects, importable by anything
 
 **Status:** ✅ COMPLETE — PR #2 open, build passing
+
+---
+
+### 2026-07-25: Governance Restructure — T0 Ultra-Minimal, T1 Lead Authority
+
+**Requested by:** Joaquín (Founder)  
+**Scope:** `.squad/identity/governance.md` — full rewrite of approval tiers per Founder directives
+
+**What changed:**
+
+1. **T0 ultra-minimized.** Only two items remain at T0: creating new game repos and modifying `principles.md`. Hub roster changes, `.squad/` refactors, governance changes, and technology pivots all moved out.
+
+2. **T1 becomes Lead-only authority.** Every instance of "Lead + Founder" or "Joaquin approves" at T1 level removed. Solo (Lead) now has full, permanent T1 authority. Founder does not participate in routine T1 approvals.
+
+3. **Items moved from T0 → T1:** Hub roster changes, `.squad/` directory refactors, governance changes (unless modifying T0 scope itself), technology decisions for new projects, tool repo creation.
+
+4. **Decision Authority Matrix rewritten.** T0 rows reduced to ~6 (new games, principles, archival, T0 scope changes, mission/vision, studio identity). All former T1 "Joaquin approves" rows now show "Lead authority."
+
+5. **Delegation Rules updated.** New rule: "T1 is fully delegated to Lead — no founder approval required for any T1 decision."
+
+6. **Governance Evolution updated.** Structural changes to this document are now T1 (Lead authority) unless they modify T0 scope. Changes that modify what requires Founder approval remain T0.
+
+7. **Sprint 0, Hibernation, Sprint scope, Skill lifecycle, Project autonomy** — all updated to remove Founder from T1 approval flows.
+
+**Why this matters:**
+The founder's directive is clear: FFS must be 99% autonomous. The founder decides WHAT games to make, not HOW. By removing the founder from all T1 approvals, the studio can operate at full speed without bottlenecking on a single human. The hub is the Bible, and Solo (Lead) is its steward.
+
+**Status:** ✅ COMPLETE
