@@ -5,6 +5,52 @@
 
 ---
 
+## Pre-Autonomy Diagnostic (2026-03-12)
+
+### Overview
+Solo completed pre-autonomy diagnostic before ralph-watch autonomous mode. Verdict: READY WITH CAVEATS. No blockers found. 10 recommended fixes documented in optimization-plan-check.md.
+
+### Issues Requiring Action
+
+#### decisions.md exceeds G1 limit (HIGH)
+**Date:** 2026-03-12 | **Author:** Solo | **Status:** Active
+- Current: 8,231 bytes (8.0KB), limit is 5KB per G1
+- Action: Scribe archive pass — move older decisions to decisions-archive.md
+- Owner: Scribe
+
+#### Hub issues #187, #188, #189 still open (HIGH)
+**Date:** 2026-03-12 | **Author:** Solo | **Status:** Active
+- All three correspond to completed optimization phases (5, 6, 7)
+- All marked `needs-research` but work is done per optimization-plan.md
+- Action: Close all three with completion notes
+- Owner: Mace or Lead
+
+#### Stale Godot references in active config files (MEDIUM)
+**Date:** 2026-03-12 | **Author:** Solo | **Status:** Active
+- `.squad/ceremonies.md` — "Godot Smoke Test" ceremony still has Godot content
+- `.github/pull_request_template.md` — "Tested in Godot editor" checkbox
+- `CONTRIBUTING.md` — Ashfall game label, Godot engine reference, style guide link
+- Action: Rewrite/remove Godot-specific content
+- Owner: Jango (tooling/config) or Lead
+
+#### Missing labels in downstream repos (MEDIUM)
+**Date:** 2026-03-12 | **Author:** Solo | **Status:** Active
+- All downstream: Missing `blocked-by:*`, `tier:t0-t3`
+- Flora + ffs-squad-monitor: Missing `priority:p3`
+- ffs-squad-monitor: Missing `priority:p0`, agent-specific squad labels
+- Flora: Has hub-agent labels (squad:chewie etc.) instead of Flora agents
+- Action: Create labels via `sync-squad-labels.yml` or manual creation
+- Owner: Jango
+
+#### Flora issue #9 agent mismatch (LOW)
+**Date:** 2026-03-12 | **Author:** Solo | **Status:** Active
+- Assigned to `squad:wedge` — Wedge is a hub agent, hibernated
+- Flora has its own agents (oak, brock, erika, misty, sabrina)
+- Action: Re-label to appropriate Flora agent
+- Owner: Lead triage
+
+---
+
 ## Studio Directives
 
 ### Joaquin never reviews code
