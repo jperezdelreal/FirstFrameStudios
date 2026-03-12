@@ -264,19 +264,19 @@ R1 (no lanzar sin completar):
 [x] Todos downstream: blocked-by labels (ComeRosq+Flora+Monitor)
 
 R2 (antes de dejar solo):
-[ ] Hub: decisions.md <5KB
-[ ] Hub: historiales <12KB
-[ ] Hub: ceremonies.md limpio
-[ ] Hub: CONTRIBUTING.md limpio
-[ ] Hub: debug workflows
-[ ] Hub: skills stale archived
-[ ] Hub: registry.json fixed
-[ ] Hub: .gitignore + .editorconfig
-[ ] ComeRosq: heartbeat cron
-[ ] ComeRosq: sync labels workflow
-[ ] ComeRosq+Monitor: copilot-instructions
-[ ] Flora: GDD.md sign-off
-[ ] Todos: tier labels
+[x] Hub: decisions.md <5KB
+[x] Hub: historiales <12KB
+[x] Hub: ceremonies.md limpio
+[x] Hub: CONTRIBUTING.md limpio
+[x] Hub: debug workflows
+[x] Hub: skills stale archived
+[x] Hub: registry.json fixed
+[x] Hub: .gitignore + .editorconfig
+[x] ComeRosq: heartbeat cron
+[x] ComeRosq: sync labels workflow
+[x] ComeRosq+Monitor: copilot-instructions
+[x] Flora: GDD.md sign-off
+[x] Todos: tier labels
 
 Post-launch:
 [ ] checkout main/master en repos divergidos
