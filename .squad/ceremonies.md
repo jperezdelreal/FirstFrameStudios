@@ -97,64 +97,115 @@
 
 
 
-## Sprint Planning
+## Project Lifecycle Ceremonies
+
+> **Decision:** Solo (Lead), 2026-03-12 — T1 authority. Supersedes issue #190.
+>
+> **Problem solved:** Ceremonies were introspective but not productive — they generated `.md` files but never created GitHub issues. Ralph starved because no ceremony fed the work pipeline.
+>
+> **Core rule:** Every lifecycle ceremony MUST produce GitHub issues as its primary output.
+
+### Lifecycle State Machine
+
+```
+┌─────────────────┐     ┌────────────┐     ┌────────────┐
+│ SPRINT PLANNING │────▶│  SPRINTING  │────▶│  CLOSEOUT   │
+└────────┬────────┘     └─────┬──────┘     └─────┬──────┘
+         ▲                    │                   │
+         └────────────────────┘                   │
+          all sprint issues closed                │
+          (loops until project ships)       improvement issues
+                                            (loops until archived)
+```
+
+**States:** `sprint-planning` → `sprinting` → `sprint-planning` (loop) → `closeout` (loop until archived)
+
+**Tracked in:** `.squad/project-state.json` per repo (see template).
+
+### Terminology
+
+- **Design doc** — The project's source of truth. GDD for games, PRD for tools, SPEC for infrastructure. The lifecycle doesn't care which.
+- **Sprint** — A batch of issues representing one increment of progress. **Sprints end when their issues are closed, not on a calendar date.**
+
+---
+
+### Sprint Planning
 
 | Field | Value |
 |-------|-------|
-| **Trigger** | manual |
-| **When** | before |
-| **Condition** | start of new sprint |
-| **Facilitator** | Mace (Producer) |
-| **Participants** | Mace + Solo |
+| **Trigger** | Auto: all `sprint:N` issues closed, OR first run (kickoff) |
+| **Condition** | `project-state.json` has `phase: "sprint-planning"` or doesn't exist yet |
+| **Facilitator** | Solo (Lead) |
+| **Participants** | Solo |
 | **Time budget** | focused |
 | **Enabled** | ✅ yes |
 
-**Purpose:** At the start of each sprint, the team aligns on scope, priorities, and assignments. Mace facilitates, Solo defines architecture constraints and provides technical guidance.
+**This ceremony replaces Kickoff, Sprint Planning N, and Mid-Project Evaluation.** One ceremony, context-sensitive:
 
-**Agenda:**
-1. Review backlog — what issues are open, what's the priority order?
-2. Define sprint scope — what ships this sprint?
-3. Assign work to agents via `squad:{member}` labels
-4. Identify dependencies and blockers
-5. Set sprint milestone and deadline
+**If first sprint (kickoff):**
+1. Read the design doc end-to-end
+2. Decompose project into rough sprint count (3–6)
+3. Create a `[ROADMAP]` issue with sprint overview
+4. Create Sprint 1 implementation issues
+5. Create `project-state.json` with `phase: "sprinting"`, `sprint: 1`
+
+**If subsequent sprint:**
+1. Review what shipped in the last sprint
+2. Evaluate project health: are we on track? scope creep? tech debt?
+3. Read design doc sections relevant to next sprint
+4. Check existing open issues — avoid duplicates
+5. Create implementation issues for Sprint N+1
+6. If project is mature or founder says ship → transition to Closeout instead
+
+**Every issue created must have:**
+- Clear title and acceptance criteria
+- Labels: `squad:{member}`, `priority:p{0-3}`, `sprint:N`
+- `go:ready` label (not `go:needs-research` — these are design-doc-derived, fully specified)
+
+**State transition:** `sprint-planning → sprinting`
 
 ---
 
-## Art Review
+### Closeout
 
 | Field | Value |
 |-------|-------|
-| **Trigger** | manual |
-| **When** | after |
-| **Condition** | art/sprite PRs merged or new visual assets integrated |
-| **Facilitator** | — |
-| **Participants** | — |
+| **Trigger** | Manual: founder directive, OR Sprint Planning decides project is mature |
+| **Condition** | `project-state.json` has `phase: "closeout"` |
+| **Facilitator** | Solo (Lead) |
+| **Participants** | Solo |
 | **Time budget** | focused |
-| **Enabled** | ❌ no (agents hibernated) |
+| **Enabled** | ✅ yes |
 
-**Purpose:** After visual asset integration, verify consistency across characters, animations, and environments. Catch style drift before it compounds.
+**Purpose:** For shipped or mature projects. Evaluate the live project against its design doc and create improvement issues.
 
-**Note:** This ceremony is currently disabled as the relevant art agents (Boba, Nien) are hibernated.
+**Process:**
+1. Evaluate project against design doc — what's missing, what could be better?
+2. Check for polish, performance, accessibility, user feedback
+3. Create improvement issues (labeled, assigned, `go:ready`)
+4. Skill harvest: identify reusable patterns worth promoting to hub skills
 
-**Checklist:**
-1. Compare new visual assets against art style reference
-2. Verify color palette consistency
-3. Check animation frame counts and timing feel right
-4. Verify asset positioning and scale relative to game viewport
-5. Document any visual inconsistencies as issues
+**Re-trigger:** On meaningful events — founder directive, user feedback, agent observation during routine work. **Not on a fixed timer.** A 7-day loop creates noise when there's nothing to improve.
+
+**Archive signal:** Founder closes the `[ROADMAP]` issue. That stops the closeout loop. No new labels needed — it's a native GitHub action.
+
+**State transition:** `closeout → closeout` (loops) or → archived (roadmap issue closed)
 
 ---
 
-## Mandatory Project Ceremonies
+### Hub Exception
 
-Certain ceremonies are **required** at specific project milestones, regardless of repo type or team composition.
+The Hub repo (FirstFrameStudios) does **not** use this lifecycle. It's infrastructure, not a project. Hub improvements flow from downstream needs — when a game repo needs something the hub doesn't have. The hub stays in permanent maintenance mode.
 
-| Milestone | Ceremony | Content |
-|-----------|----------|---------|
-| **Project START** | Kickoff Review | Team assignment, skills assessment, architecture plan, upstream relationship verification. **G4:** Review quality-gates.md for current stack relevance. Update if the project uses a different stack than the gates were written for. |
-| **Project MIDPOINT** | Mid-Project Health Check | Skills assessment, team member evaluation, course correction, hub alignment check |
-| **Project END** | Closeout & Harvest | Final team member evaluation, skill harvest, lessons learned, hub skill promotion. **G6:** Clean up ceremonies.md — disable project-specific ceremonies that no longer apply. **G14:** Verify squad.config.ts has the correct project name (not a leftover from a previous project). |
+---
 
-**Skills Assessment:** At each mandatory ceremony, every active agent's skills are evaluated against the project's needs. Gaps are identified and addressed (training, reassignment, or skill creation).
+### Lifecycle Decisions (Solo, T1 Authority)
 
-**Team Member Evaluation:** Performance, collaboration quality, and growth trajectory are reviewed. Results inform future team composition decisions.
+| Question | Decision | Rationale |
+|----------|----------|-----------|
+| Sprints end by issues closed or calendar? | **Issues closed.** | Calendar sprints are bureaucracy for a studio this size. Issue completion is the natural unit. |
+| Closeout re-eval every 7 days? | **No. Event-driven.** | Fixed timers create noise. Re-evaluate when something meaningful happens. |
+| Hub lifecycle? | **No. Maintenance mode.** | Hub is infrastructure, not a project. It doesn't sprint. |
+| Archive signal? | **Close the roadmap issue.** | Simplest possible. Native GitHub action, no new labels. |
+| Separate Kickoff ceremony? | **No. Merged into Sprint Planning.** | A kickoff is just Sprint Planning with `sprint: 0`. One ceremony, context-sensitive. |
+| Separate Mid-Project Evaluation? | **No. Merged into Sprint Planning.** | Health check happens naturally at every sprint boundary. No dedicated ceremony needed. |
