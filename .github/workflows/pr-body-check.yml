@@ -16,6 +16,12 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            // Guard: only run on pull_request events
+            if (context.eventName !== 'pull_request') {
+              core.info('Skipping: not a pull_request event');
+              return;
+            }
+            
             const prBody = context.payload.pull_request.body || '';
             const prNumber = context.payload.pull_request.number;
             
