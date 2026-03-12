@@ -1,0 +1,26 @@
+name: Squad Notify - Priority Issue
+
+# Triggers when an issue is labeled priority:p0 or priority:critical
+# Sends Discord notification for immediate attention
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  notify-priority-issue:
+    if: >
+      github.event.label.name == 'priority:p0' ||
+      github.event.label.name == 'priority:critical'
+    uses: ./.github/workflows/squad-notify-discord.yml
+    with:
+      event_type: "Priority Issue Labeled"
+      summary: "Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }} [Label: ${{ github.event.label.name }}]"
+      link: "${{ github.event.issue.html_url }}"
+      color: "16711680"
+    secrets:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
