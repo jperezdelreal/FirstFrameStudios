@@ -37,6 +37,15 @@ scope: Studio hub managing active projects via upstream. No game code lives here
 - **2 system roles:** Ralph (Work Monitor), @copilot (Coding Agent)
 - **4 hibernated:** Boba, Leia, Bossk, Nien (art pipeline roles — wake when needed)
 
+## Project Lifecycle
+
+FFS uses a **standard lifecycle** across all project repos (not the hub):
+- **Sprint Planning** → **Sprinting** → **Sprint Planning** (loop) → **Closeout** (when mature)
+- Sprints end when issues close, not on a calendar. Every ceremony produces GitHub issues.
+- State tracked in `.squad/project-state.json` per repo (`phase`, `sprint`, `design_doc`)
+- Hub is excluded — infrastructure stays in permanent maintenance mode.
+- See `.squad/ceremonies.md` § "Project Lifecycle Ceremonies" for full spec.
+
 ## Infrastructure
 
 - **ralph-watch.ps1 v2:** Multi-repo autonomous loop (401 lines, failure alerts, activity monitor)

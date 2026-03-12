@@ -199,12 +199,24 @@ jobs:
               labels: [assignLabel]
             });
 
-            // Apply default triage verdict
+            // Apply triage verdict based on issue quality
+            // If the issue has acceptance criteria or clear structure, mark as ready
+            // Otherwise, mark as needs-research
+            const body = issue.body || '';
+            const bodyLength = body.trim().length;
+            const hasAcceptanceCriteria = /acceptance\s+criteria/i.test(body);
+            const hasChecklist = /- \[ \]/.test(body);
+            const hasStructuredSections = /^##\s+.+/m.test(body);
+            const hasRequirements = /requirements/i.test(body);
+
+            const isWellDefined = bodyLength >= 100 && (hasAcceptanceCriteria || hasChecklist || hasStructuredSections || hasRequirements);
+            const triageLabel = isWellDefined ? 'go:ready' : 'go:needs-research';
+
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
-              labels: ['go:needs-research']
+              labels: [triageLabel]
             });
 
             // Auto-assign @copilot if enabled
