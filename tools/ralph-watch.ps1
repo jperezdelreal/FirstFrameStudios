@@ -10,6 +10,8 @@
 #   - Night/day mode auto-detection via system clock
 #   - Parallel copilot sessions in night mode (1 repo per session)
 #   - Governance filter: skips T0 issues, T1 unless approved
+#   - Governance: no self-merge -- PRs require Lead review
+#   - Governance: issue labels inherited by PRs (no zero-label PRs)
 #   - Priority-based scheduling: P0 > P1 > P2 > P3, then repo issue count
 #   - Remote URL validation before each round
 #   - Mid-round heartbeat updates
@@ -156,12 +158,17 @@ ISSUE LIFECYCLE: For each issue you pick up:
 2. Do the work (read the issue body for acceptance criteria)
 3. Commit referencing the issue (Closes #{number})
 4. Push and open PR via gh pr create
-5. Work in the repo directory for that issue
+5. LABEL INHERITANCE: Copy ALL labels from the source issue to the PR.
+   Use: gh pr edit <number> --add-label "label1" --add-label "label2"
+   This ensures PRs are never created with 0 labels.
+6. Work in the repo directory for that issue
 
 PR MANAGEMENT: Check for PRs needing attention:
 - CHANGES_REQUESTED: address review feedback
 - CI failing: fix the build
-- Approved + CI green: merge via gh pr merge
+- DO NOT auto-merge PRs. Ralph must NEVER run "gh pr merge".
+  All PRs require Lead/Founder review before merge.
+  After opening a PR, move the issue to "In Review" and move on.
 
 PROJECT BOARD: Read .squad/skills/github-project-board/SKILL.md BEFORE starting.
 Update the GitHub Project board status for every issue you touch.
@@ -613,10 +620,14 @@ function Invoke-CopilotSession {
         [int]$SessionId,
         [int]$Round
     )
-    # Build issue lines for prompt
+    # Build issue lines for prompt (include labels for PR label inheritance)
     $issueLines = @()
     foreach ($iss in $Issues) {
-        $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]"
+        $labelStr = ""
+        if ($iss.Labels -and $iss.Labels.Count -gt 0) {
+            $labelStr = " labels:($($iss.Labels -join ', '))"
+        }
+        $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]$labelStr"
     }
     $prompt = Build-SessionPrompt -RepoFullName $RepoFullName -IssueLines $issueLines
 
@@ -649,10 +660,14 @@ function Invoke-ParallelSessions {
         $issues = $assignment.Issues
         $sid = $sessionId
 
-        # Build issue lines
+        # Build issue lines (include labels for PR label inheritance)
         $issueLines = @()
         foreach ($iss in $issues) {
-            $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]"
+            $labelStr = ""
+            if ($iss.Labels -and $iss.Labels.Count -gt 0) {
+                $labelStr = " labels:($($iss.Labels -join ', '))"
+            }
+            $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]$labelStr"
         }
         $prompt = Build-SessionPrompt -RepoFullName $ghRepo -IssueLines $issueLines
 
@@ -835,7 +850,8 @@ while ($true) {
             foreach ($a in $assignments) {
                 Write-Host "   [DRY RUN]   Session: $($a.GhRepo) -- $($a.Issues.Count) issues" -ForegroundColor Yellow
                 foreach ($iss in $a.Issues) {
-                    Write-Host "   [DRY RUN]     #$($iss.Number): $($iss.Title) [P$($iss.Priority)]" -ForegroundColor Yellow
+                    $lbls = if ($iss.Labels) { $iss.Labels -join ', ' } else { '(none)' }
+                    Write-Host "   [DRY RUN]     #$($iss.Number): $($iss.Title) [P$($iss.Priority)] labels:[$lbls]" -ForegroundColor Yellow
                 }
             }
             $exitCode = 0
