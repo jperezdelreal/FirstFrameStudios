@@ -129,3 +129,26 @@
 - Monitor: No additional commits (already on main, branch deletions complete)
 - Flora: No commits (label deletions only)
 - ComeRosquillas: No commits (label deletions only)
+
+---
+
+## 2026-07-25: Fix 5 Bugs in ralph-watch and squad-triage (PR #191)
+
+**Task:** Fix 5 discovered bugs across ralph-watch.ps1 and squad-triage.yml.
+
+**What Changed:**
+1. **squad-triage.yml** -- Replaced blind `go:needs-research` default with body quality heuristic (checks for acceptance criteria, checklists, structured sections, body length >= 100 chars)
+2. **ralph-watch needs-research handling** -- No longer hard-skips `go:needs-research` issues. If the issue has a `squad:{member}` label, includes it with `[NEEDS-RESEARCH]` marker for agent investigation
+3. **PR review prompt rules** -- Added explicit PR REVIEW RULES section: `--request-changes` for rejections, `--approve` for approvals, `--comment` only for non-blocking suggestions
+4. **Re-review detection** -- Added RE-REVIEW DETECTION prompt section: detects COMMENTED reviews with rejection verdicts and new commits, asks reviewer to re-review properly
+5. **PR dedup tracking** -- Added `$script:processedPRs` hashtable + `Update-ProcessedPRs` / `Test-PRAlreadyProcessed` helpers + prompt-side PR DEDUP instructions to prevent re-commenting loops
+6. **ASCII fix** -- Replaced pre-existing em-dash (U+2014) with `--` to maintain Windows PowerShell 5.1 compatibility
+
+**Key Patterns:**
+- Defense in depth: dedup enforced at BOTH scheduler level (PowerShell hashtable) AND prompt level (instructions)
+- Issue object extended with `NeedsResearch` property for downstream markers
+- Triage heuristic is intentionally simple (regex-based, no NLP) for reliability in GitHub Actions
+
+**Files Modified:** `.github/workflows/squad-triage.yml`, `tools/ralph-watch.ps1`
+
+**Status:** PR #191 opened
