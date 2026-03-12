@@ -50,7 +50,7 @@
 | **When** | after |
 | **Condition** | parallel agent wave completes (2+ PRs merged from same wave) |
 | **Facilitator** | Solo (Architect) |
-| **Participants** | Solo + Ackbar |
+| **Participants** | Solo |
 | **Time budget** | focused |
 | **Enabled** | ❌ no |
 
@@ -102,8 +102,8 @@
 | **Trigger** | auto |
 | **When** | after |
 | **Condition** | milestone declared complete (all milestone PRs merged) |
-| **Facilitator** | Ackbar (QA/Playtester) |
-| **Participants** | Ackbar |
+| **Facilitator** | Solo (Lead) |
+| **Participants** | Solo |
 | **Time budget** | focused |
 | **Enabled** | ❌ no |
 

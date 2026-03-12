@@ -82,7 +82,7 @@ Default priority: **P2** if no label assigned after triage.
 |-----------|----------|---------|
 | Integration verification (post-wave) | Solo (Architect) | After every parallel agent wave — verify systems connect, modules import correctly, app loads |
 | Spec compliance in PR reviews | Jango (Tool Engineer) | Every PR that implements a spec-defined system — compare code against design doc before approving |
-| Post-merge smoke test | Ackbar (QA/Playtester) | After milestone PRs merge — open browser, run full game flow, verify end-to-end |
+| Post-merge smoke test | Solo (Lead) | After milestone PRs merge — verify app loads, key flows work end-to-end |
 | Branch management & base validation | Mace (Producer) | Before spawning parallel agents — verify all branches target main, base branch is current |
 
 ### Why These Exist

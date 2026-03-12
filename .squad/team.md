@@ -37,6 +37,7 @@ Agents with no active work in the current web-game stack. Wake when their domain
 | Leia | Environment Artist | `.squad/agents/_alumni/leia/charter.md` | ❄️ Hibernated | Dedicated environment art needed beyond CSS/Canvas |
 | Bossk | VFX Artist | `.squad/agents/_alumni/bossk/charter.md` | ❄️ Hibernated | Dedicated VFX pipeline needed beyond Canvas/CSS animations |
 | Nien | Character Artist | `.squad/agents/_alumni/nien/charter.md` | ❄️ Hibernated | Character art pipeline needed (FLUX, sprite generation) |
+| Ackbar | QA/Playtester | `.squad/agents/_alumni/ackbar/charter.md` | ❄️ Hibernated | Dedicated QA/playtesting needed beyond Lead smoke tests |
 
 ### @copilot Capability Profile
 
