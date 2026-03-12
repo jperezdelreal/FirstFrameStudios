@@ -61,6 +61,9 @@ $maxLogBytes = 1048576  # 1MB
 $consecutiveFailures = 0
 $alertThreshold = 3
 $circuitBreakerThreshold = 10
+$circuitBreakerTrips = 0
+$maxCircuitBreakerTrips = 3
+$sessionTimeoutSeconds = 1800  # 30 minutes max per copilot session
 
 # Repo name-to-GitHub mapping for issue queries
 $repoGitHubMap = @{
@@ -149,17 +152,17 @@ trap { Remove-Item $lockFile -Force -ErrorAction SilentlyContinue; break }
 $ralphPromptBase = @'
 Ralph, Go!
 
-MAXIMIZE PARALLELISM: For every round, identify ALL actionable issues and spawn agents for ALL of them simultaneously. Do NOT work issues one at a time.
-
 SCOPE: You are working ONLY on the following repository:
 {REPO_SCOPE}
 
-ISSUE ALLOWLIST (work ONLY these issues in priority order):
+ISSUE ALLOWLIST (work ONLY these issues, in priority order):
 {ISSUE_LIST}
+
+Do NOT scan for other issues beyond this list. The scheduler has already selected and prioritized these for you.
 
 GOVERNANCE: Do NOT touch issues labeled "tier:t0" or "tier:t1". T0 and T1 require formal approval (Solo proposes, Founder approves). Only work tier:t2 and tier:t3 (or unlabeled) issues.
 
-For each repo, check: issues labeled 'squad' or with 'squad:{member}' labels, open PRs, draft PRs, CI failures.
+PARALLELISM: If multiple issues are listed, spawn agents for ALL of them simultaneously. Do NOT work issues one at a time.
 
 ISSUE LIFECYCLE: For each issue you pick up:
 1. Create branch squad/{issue-number}-{slug}
@@ -541,11 +544,12 @@ function Invoke-UpstreamSync {
     Write-Host "   [sync] Syncing hub -> $downstreamName..." -ForegroundColor Cyan
 
     # Files and directories to sync from hub to downstream
+    # NOTE: decisions.md is NOT synced -- each repo has its own local decisions.
+    # Hub decisions flow via governance.md and quality-gates.md instead.
     $syncItems = @(
         @{ Type = "Directory"; Path = ".squad\skills" },
         @{ Type = "File"; Path = ".squad\identity\quality-gates.md" },
         @{ Type = "File"; Path = ".squad\identity\governance.md" },
-        @{ Type = "File"; Path = ".squad\decisions.md" },
         @{ Type = "File"; Path = ".github\agents\squad.agent.md" }
     )
 
@@ -605,8 +609,12 @@ function Invoke-UpstreamSync {
             } else {
                 git add .squad/ .github/agents/ 2>&1 | Out-Null
                 git commit -m "chore: upstream sync from hub`n`nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>" 2>&1 | Out-Null
-                git push origin 2>&1 | Out-Null
-                Write-Host "   [sync] $downstreamName : synced $syncedCount files, committed and pushed" -ForegroundColor Green
+                $pushOutput = git push origin 2>&1
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Host "   [!] Git push failed in ${downstreamName}: $pushOutput" -ForegroundColor Yellow
+                } else {
+                    Write-Host "   [sync] $downstreamName : synced $syncedCount files, committed and pushed" -ForegroundColor Green
+                }
             }
         }
     } finally {
@@ -780,14 +788,17 @@ function Invoke-CopilotSession {
         [int]$Round
     )
     # Build issue lines for prompt (include labels for PR label inheritance)
+    # Sanitize titles to prevent prompt injection (truncate, strip newlines)
     $issueLines = @()
     foreach ($iss in $Issues) {
+        $safeTitle = ($iss.Title -replace '[\r\n]+', ' ').Trim()
+        if ($safeTitle.Length -gt 200) { $safeTitle = $safeTitle.Substring(0, 200) + "..." }
         $labelStr = ""
         if ($iss.Labels -and $iss.Labels.Count -gt 0) {
             $labelStr = " labels:($($iss.Labels -join ', '))"
         }
         $blockStr = if ($iss.IsBlocked) { " [PREPARE-ONLY]" } else { "" }
-        $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]$blockStr$labelStr"
+        $issueLines += "- #$($iss.Number): $safeTitle [P$($iss.Priority)]$blockStr$labelStr"
     }
     $prompt = Build-SessionPrompt -RepoFullName $RepoFullName -IssueLines $issueLines
 
@@ -796,8 +807,26 @@ function Invoke-CopilotSession {
         Write-Host "      $line" -ForegroundColor DarkGray
     }
 
-    $output = copilot --agent squad --yolo -p $prompt 2>&1 | Out-String
-    $exitCode = $LASTEXITCODE
+    # Run copilot with timeout (Start-Job for single session is safe)
+    $job = Start-Job -ScriptBlock {
+        param($sessionPrompt)
+        $out = copilot --agent squad --yolo -p $sessionPrompt 2>&1 | Out-String
+        return @{ Output = $out; ExitCode = $LASTEXITCODE }
+    } -ArgumentList $prompt
+
+    $completed = $job | Wait-Job -Timeout $script:sessionTimeoutSeconds
+    if ($completed) {
+        $jobResult = Receive-Job $job -ErrorAction SilentlyContinue
+        Remove-Job $job -Force -ErrorAction SilentlyContinue
+        $output = if ($jobResult.Output) { $jobResult.Output } else { "" }
+        $exitCode = if ($jobResult.ExitCode) { $jobResult.ExitCode } else { 0 }
+    } else {
+        Write-Host "   [TIMEOUT] Session $SessionId exceeded $($script:sessionTimeoutSeconds)s. Killing." -ForegroundColor Red
+        Stop-Job $job -ErrorAction SilentlyContinue
+        Remove-Job $job -Force -ErrorAction SilentlyContinue
+        $output = ""
+        $exitCode = -2
+    }
     return @{
         Output   = $output
         ExitCode = $exitCode
@@ -983,9 +1012,6 @@ while ($true) {
                 $copilotOutput = $allOutput -join "`n---SESSION BOUNDARY---`n"
                 $exitCode = $worstExit
             }
-            if ($false) {
-                # REMOVED: old day-mode path and parallel sessions path
-            }
 
             # Parse metrics from copilot output
             $metrics = Get-SessionMetrics -Output $copilotOutput
@@ -1029,7 +1055,13 @@ while ($true) {
             }
             # Circuit breaker: pause 1 hour after too many consecutive failures
             if ($consecutiveFailures -ge $circuitBreakerThreshold) {
-                Write-Host "   [CIRCUIT BREAKER] $consecutiveFailures consecutive failures. Pausing 1 hour." -ForegroundColor Red
+                $circuitBreakerTrips++
+                if ($circuitBreakerTrips -ge $maxCircuitBreakerTrips) {
+                    Write-Host "   [CIRCUIT BREAKER] Trip $circuitBreakerTrips of $maxCircuitBreakerTrips. Shutting down permanently." -ForegroundColor Red
+                    Write-RalphLog -Round $round -Status "CIRCUIT_BREAKER_SHUTDOWN" -ExitCode $exitCode -DurationSeconds 0 -Phase "shutdown"
+                    break
+                }
+                Write-Host "   [CIRCUIT BREAKER] Trip $circuitBreakerTrips of $maxCircuitBreakerTrips. Pausing 1 hour." -ForegroundColor Red
                 Write-RalphLog -Round $round -Status "CIRCUIT_BREAKER" -ExitCode $exitCode -DurationSeconds 0 -Phase "cooldown"
                 Start-Sleep -Seconds 3600
                 $consecutiveFailures = 0
@@ -1053,6 +1085,19 @@ while ($true) {
         if ($consecutiveFailures -ge $alertThreshold) {
             Write-Host "   [ALERT] $consecutiveFailures consecutive failures -- writing alert" -ForegroundColor Red
             Write-FailureAlert -Round $round -Failures $consecutiveFailures -ExitCode -1 -ErrorMessage "$_"
+        }
+        # Circuit breaker: pause 1 hour after too many consecutive failures
+        if ($consecutiveFailures -ge $circuitBreakerThreshold) {
+            $circuitBreakerTrips++
+            if ($circuitBreakerTrips -ge $maxCircuitBreakerTrips) {
+                Write-Host "   [CIRCUIT BREAKER] Trip $circuitBreakerTrips of $maxCircuitBreakerTrips. Shutting down permanently." -ForegroundColor Red
+                Write-RalphLog -Round $round -Status "CIRCUIT_BREAKER_SHUTDOWN" -ExitCode -1 -DurationSeconds 0 -Phase "shutdown"
+                break
+            }
+            Write-Host "   [CIRCUIT BREAKER] Trip $circuitBreakerTrips of $maxCircuitBreakerTrips. Pausing 1 hour." -ForegroundColor Red
+            Write-RalphLog -Round $round -Status "CIRCUIT_BREAKER" -ExitCode -1 -DurationSeconds 0 -Phase "cooldown"
+            Start-Sleep -Seconds 3600
+            $consecutiveFailures = 0
         }
     }
 
