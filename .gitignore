@@ -1,11 +1,6 @@
 # Archived games stay local, not on GitHub
 games/
 
-# Godot
-.godot/
-*.import
-*.uid
-
 # OS
 .DS_Store
 Thumbs.db

@@ -42,7 +42,31 @@
       "role": "VFX/Art Specialist",
       "created_at": "2026-03-06T14:21:00Z",
       "legacy_named": false,
-      "status": "active"
+      "status": "retired"
+    },
+    "nien": {
+      "persistent_name": "Nien",
+      "universe": "Star Wars",
+      "role": "Character Artist",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "retired"
+    },
+    "leia": {
+      "persistent_name": "Leia",
+      "universe": "Star Wars",
+      "role": "Environment Artist",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "retired"
+    },
+    "bossk": {
+      "persistent_name": "Bossk",
+      "universe": "Star Wars",
+      "role": "VFX Artist",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "retired"
     },
     "greedo": {
       "persistent_name": "Greedo",
