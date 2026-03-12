@@ -1,0 +1,105 @@
+name: Squad Discord Notification
+
+# Reusable workflow for sending Discord webhook notifications
+# Rate-limited to 10 notifications per hour to prevent spam
+
+on:
+  workflow_call:
+    inputs:
+      event_type:
+        description: 'Event type (e.g., "CI Failure", "PR Merged")'
+        required: true
+        type: string
+      summary:
+        description: 'One-line summary of the event'
+        required: true
+        type: string
+      link:
+        description: 'URL to the relevant resource'
+        required: true
+        type: string
+      color:
+        description: 'Discord embed color (decimal, e.g., 15158332 for red)'
+        required: false
+        type: string
+        default: '5814783'
+    secrets:
+      DISCORD_WEBHOOK_URL:
+        required: true
+
+jobs:
+  send-notification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check rate limit
+        id: rate_check
+        run: |
+          RATE_FILE=".github/.discord-rate-limit"
+          MAX_PER_HOUR=10
+          CURRENT_TIME=$(date +%s)
+          HOUR_AGO=$((CURRENT_TIME - 3600))
+          
+          # Create rate file if it doesn't exist
+          if [ ! -f "$RATE_FILE" ]; then
+            echo "$CURRENT_TIME" > "$RATE_FILE"
+            echo "allowed=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Count notifications in the last hour
+          COUNT=$(awk -v hour_ago="$HOUR_AGO" '$1 > hour_ago' "$RATE_FILE" | wc -l)
+          
+          if [ "$COUNT" -ge "$MAX_PER_HOUR" ]; then
+            echo "Rate limit exceeded: $COUNT notifications in the last hour"
+            echo "allowed=false" >> $GITHUB_OUTPUT
+          else
+            echo "$CURRENT_TIME" >> "$RATE_FILE"
+            echo "allowed=true" >> $GITHUB_OUTPUT
+            
+            # Clean old entries (keep last 20 for efficiency)
+            tail -n 20 "$RATE_FILE" > "${RATE_FILE}.tmp"
+            mv "${RATE_FILE}.tmp" "$RATE_FILE"
+          fi
+
+      - name: Send Discord notification
+        if: steps.rate_check.outputs.allowed == 'true'
+        run: |
+          EVENT_TYPE="${{ inputs.event_type }}"
+          SUMMARY="${{ inputs.summary }}"
+          LINK="${{ inputs.link }}"
+          COLOR="${{ inputs.color }}"
+          
+          # Map event types to emojis (text-based for ASCII safety)
+          case "$EVENT_TYPE" in
+            *"CI Failure"*) EMOJI="[FAIL]" ;;
+            *"PR Merged"*) EMOJI="[MERGE]" ;;
+            *"Priority"*) EMOJI="[ALERT]" ;;
+            *"Ralph"*) EMOJI="[RALPH]" ;;
+            *) EMOJI="[INFO]" ;;
+          esac
+          
+          # Build Discord embed JSON
+          JSON_PAYLOAD=$(cat <<EOF
+          {
+            "embeds": [{
+              "title": "$EMOJI $EVENT_TYPE",
+              "description": "$SUMMARY",
+              "url": "$LINK",
+              "color": $COLOR,
+              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            }]
+          }
+          EOF
+          )
+          
+          # Send to Discord webhook
+          curl -H "Content-Type: application/json" \
+               -d "$JSON_PAYLOAD" \
+               "${{ secrets.DISCORD_WEBHOOK_URL }}"
+
+      - name: Log rate limit skip
+        if: steps.rate_check.outputs.allowed == 'false'
+        run: |
+          echo "::warning::Discord notification skipped due to rate limit (max 10/hour)"

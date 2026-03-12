@@ -1,0 +1,66 @@
+name: Squad Notify - Ralph Heartbeat
+
+# Scheduled check of Ralph's heartbeat status
+# Sends notification when Ralph completes a round (every 30 minutes during active hours)
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Every 30 minutes
+  workflow_dispatch:  # Manual trigger
+
+permissions:
+  contents: read
+
+jobs:
+  check-and-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Ralph heartbeat
+        id: heartbeat
+        run: |
+          HEARTBEAT_FILE="tools/.ralph-heartbeat.json"
+          
+          if [ ! -f "$HEARTBEAT_FILE" ]; then
+            echo "No heartbeat file found"
+            echo "should_notify=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Parse heartbeat data
+          STATUS=$(jq -r '.status' "$HEARTBEAT_FILE")
+          ROUND=$(jq -r '.round' "$HEARTBEAT_FILE")
+          MODE=$(jq -r '.mode' "$HEARTBEAT_FILE")
+          FAILURES=$(jq -r '.consecutiveFailures' "$HEARTBEAT_FILE")
+          
+          # Check if round number changed since last notification
+          LAST_ROUND_FILE=".github/.ralph-last-notified-round"
+          LAST_ROUND=0
+          
+          if [ -f "$LAST_ROUND_FILE" ]; then
+            LAST_ROUND=$(cat "$LAST_ROUND_FILE")
+          fi
+          
+          # Only notify if round number increased
+          if [ "$ROUND" -gt "$LAST_ROUND" ]; then
+            echo "should_notify=true" >> $GITHUB_OUTPUT
+            echo "status=$STATUS" >> $GITHUB_OUTPUT
+            echo "round=$ROUND" >> $GITHUB_OUTPUT
+            echo "mode=$MODE" >> $GITHUB_OUTPUT
+            echo "failures=$FAILURES" >> $GITHUB_OUTPUT
+            echo "$ROUND" > "$LAST_ROUND_FILE"
+          else
+            echo "should_notify=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Notify round completion
+        if: steps.heartbeat.outputs.should_notify == 'true'
+        uses: ./.github/workflows/squad-notify-discord.yml
+        with:
+          event_type: "Ralph Round Completed"
+          summary: "Ralph completed round ${{ steps.heartbeat.outputs.round }} in ${{ steps.heartbeat.outputs.mode }} mode (Status: ${{ steps.heartbeat.outputs.status }}, Failures: ${{ steps.heartbeat.outputs.failures }})"
+          link: "${{ github.server_url }}/${{ github.repository }}/actions/workflows/squad-notify-ralph-heartbeat.yml"
+          color: "3066993"
+        secrets:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
