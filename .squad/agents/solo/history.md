@@ -240,3 +240,44 @@
 2. Closeout is event-driven, not timer-driven — 7-day loops create noise
 3. Hub has no lifecycle — infrastructure doesn't sprint
 4. Archive signal = close the roadmap issue — simplest native GitHub action
+
+### 2025-01-19: ffs-squad-monitor Sprint 1 Planning Ceremony
+
+**Ceremony:** Sprint Planning (kickoff — first sprint)  
+**Repo:** jperezdelreal/ffs-squad-monitor  
+**Requested by:** Ralph (automated scheduler)
+
+**Context:** Project completed Sprint 0 (scaffolding) with 8 closed issues delivering core monitoring features. All Sprint 0 work functional — heartbeat monitor, SSE log streaming, agent timeline, cross-repo board, studio pulse, GitHub Actions badges, dashboard UI with dark sci-fi theme.
+
+**What was delivered:**
+1. **docs/PRD.md** — Formalized product requirements (7.5 KB): project overview, implemented features, technical architecture, sprint roadmap (4 sprints), team roster, future considerations
+2. **Roadmap issue #20** — Sprint overview documenting 4 planned sprints with goals and key deliverables
+3. **Sprint 1 issues (5 total):**
+   - #21 — Extract backend from vite.config.js to server/ directory (Lambert, P0)
+   - #22 — Add unit tests for lib modules with Vitest (Kane, P1)
+   - #23 — Improve error handling and offline resilience (Dallas, P1)
+   - #24 — Document deployment process and add health check (Lambert, P2)
+   - #25 — UX polish: loading states, keyboard shortcuts, export logs (Dallas, P2)
+4. **Updated .squad/project-state.json** — Changed phase to "sprinting", sprint to 1, confirmed design_doc path
+5. **PR #26** — Sprint planning artifacts committed to squad/18-sprint-planning branch
+6. **Label created:** sprint:1 (for Sprint 1 work items)
+
+**Sprint 1 Focus:** Backend extraction & testing foundation. The 26KB vite.config.js contains ALL API middleware — this is technical debt that blocks testing and independent deployment.
+
+**Key architectural decisions:**
+- Extract backend to modular server/ structure (Express-based)
+- Establish testing foundation with Vitest (80%+ coverage on lib/)
+- Improve error handling before production deployment
+- Document deployment to prepare for Sprint 2 (actual deployment)
+
+**Team routing:**
+- Lambert (Backend Dev) — backend extraction, deployment docs
+- Dallas (Frontend Dev) — error handling, UX polish
+- Kane (Tester) — testing infrastructure
+- Ripley (Lead) — coordination, unblocking
+
+**File paths:**
+- `C:\Users\joperezd\GitHub Repos\ffs-squad-monitor\docs\PRD.md` — product requirements
+- `C:\Users\joperezd\GitHub Repos\ffs-squad-monitor\.squad\project-state.json` — lifecycle tracking
+- Issue #20 — [ROADMAP] Sprint overview
+- Issues #21-25 — Sprint 1 implementation work

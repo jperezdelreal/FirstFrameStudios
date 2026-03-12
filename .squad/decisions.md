@@ -140,4 +140,46 @@ Implementation updates: `.squad/ceremonies.md`, `.squad/templates/project-state.
 
 
 
+---
+
+## 2026-03-12 Decisions (Evening Ceremony Block)
+
+### Lifecycle Integration in ralph-watch
+**By:** Jango (Tool Engineer)  
+**Date:** 2026-03-12  
+**Status:** Active (PR #193)  
+**Tier:** T1
+
+ralph-watch now has awareness of project-state.json. Added `Check-ProjectLifecycle` as Step 3.5 in ralph-watch's main loop. It runs every round, between the scheduler and the issue scan, checking each repo's lifecycle state and creating ceremony issues when transitions are needed.
+
+**Key choices:**
+- Hub exception hardcoded (skip `FirstFrameStudios` by name check)
+- Dedup by title search (checks for existing open issues with `[CEREMONY]` or `[ROADMAP]` in title)
+- Lead parsed from team.md via regex
+- PowerShell pipe for stdin (cross-platform compatible)
+
+**Consequences:** Repos with project-state.json now get automatic Sprint Planning ceremony triggers. Ralph's pipeline stays fed without manual intervention.
+
+---
+
+### ffs-squad-monitor Sprint 1 Planning
+**By:** Solo (Lead)  
+**Date:** 2026-03-12  
+**Status:** Executed  
+**Type:** T1 (Lead Authority)  
+**Ceremony:** Sprint Planning (kickoff)
+
+Completed Sprint Planning for ffs-squad-monitor. Project decomposed into 4 sprints (backend extraction → deployment → UX polish → performance). Sprint 1 focuses on backend extraction from 26KB vite.config.js (monolithic blocker) and testing foundation.
+
+**Artifacts created:**
+- docs/PRD.md (7.5 KB)
+- Issue #20: [ROADMAP] Sprint overview
+- Issues #21-25: 5 Sprint 1 implementation issues (all `sprint:1` and `go:ready`)
+- PR #26: Sprint planning artifacts
+- Label: sprint:1
+
+**Team routing:** Lambert (backend extraction), Dallas (error handling + UX), Kane (testing), Ripley (coordination). Balanced workload across roles.
+
+---
+
 *Last cleaned: 2026-03-12. Previous content archived to `decisions-archive.md`.*
