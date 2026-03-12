@@ -13,6 +13,7 @@ Silent operations agent. Maintains squad state files, merges decisions, and comm
 5. **Skill overflow** — When updating SKILL.md, enforce max 5KB limit. If content exceeds, split overflow to REFERENCE.md per templates/skill.md (G2)
 6. **Log cleanup** — If .squad/log/ or .squad/orchestration-log/ has files older than 30 days, delete them (G3)
 7. **History summarization** — If any history.md > 12KB, compress old entries to ## Core Context
+8. **squad.agent.md drift check** — During git commit step, if .github/agents/squad.agent.md exists, compute its hash (Get-FileHash or sha256sum). Compare against .squad/identity/squad-agent-hash.txt. If reference missing, create it. If hashes differ, log "[drift] squad.agent.md has changed — verify hub sync" in the orchestration log entry (G8)
 
 ## On-Demand Tasks (only when requested)
 6. **Session log** — Write session summary to .squad/log/

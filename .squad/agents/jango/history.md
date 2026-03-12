@@ -447,3 +447,8 @@ Completed. PR #12 open on jperezdelreal/flora. CI green (23s). deploy-pages@v4 p
 - Downstream = all other repos (skip hub when syncing)
 
 **File Modified:** `tools/ralph-watch.ps1` (verified parse OK, no non-ASCII characters)
+
+### G8: squad.agent.md Drift Check Implementation
+**Date:** 2026-03-12
+**Task:** Implemented G8 guardrail — added squad.agent.md to upstream sync items in ralph-watch.ps1 and added drift detection task to Scribe charter.
+**Changes:** ralph-watch.ps1 (1 line to syncItems), scribe/charter.md (1 conditional task)

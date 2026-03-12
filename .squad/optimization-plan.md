@@ -141,7 +141,7 @@ FFS creció orgánicamente desde Ashfall (Godot) hasta un estudio multi-repo de 
 | 6b | Implementar G5 + G12 en governance.md | Solo | ✅ Done |
 | 6c | Implementar G4 + G6 + G14 en ceremonies.md | Solo | ✅ Done |
 | 6d | Implementar G7 en coordinator session start (squad.agent.md) | Solo | ✅ Done |
-| 6e | Implementar G8 en Scribe commit hook | Jango | ❌ Pendiente — requires squad.agent.md drift check implementation |
+| 6e | Implementar G8 en Scribe commit hook | Jango | ✅ Done |
 
 ### Fase 7 — Priority & Dependency System (governance evolution)
 

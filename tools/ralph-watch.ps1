@@ -521,7 +521,8 @@ function Invoke-UpstreamSync {
         @{ Type = "Directory"; Path = ".squad\skills" },
         @{ Type = "File"; Path = ".squad\identity\quality-gates.md" },
         @{ Type = "File"; Path = ".squad\identity\governance.md" },
-        @{ Type = "File"; Path = ".squad\decisions.md" }
+        @{ Type = "File"; Path = ".squad\decisions.md" },
+        @{ Type = "File"; Path = ".github\agents\squad.agent.md" }
     )
 
     $syncedCount = 0
