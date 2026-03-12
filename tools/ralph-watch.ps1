@@ -755,9 +755,14 @@ Write-Host "   Alerts:    $alertsFile" -ForegroundColor Gray
 Write-Host "   Lock:      $lockFile" -ForegroundColor Gray
 if ($DryRun)    { Write-Host "   DryRun:    YES" -ForegroundColor Yellow }
 if ($MaxRounds) { Write-Host "   MaxRounds: $MaxRounds" -ForegroundColor Yellow }
-Write-Host "   Press Ctrl+C to stop" -ForegroundColor Gray
+Write-Host "   Press Ctrl+C to stop (waits for current round to finish)" -ForegroundColor Gray
+Write-Host "   To stop after current round: create file tools\.ralph-stop" -ForegroundColor Gray
 Write-Host ""
 
+$stopFile = Join-Path $PSScriptRoot ".ralph-stop"
+if (Test-Path $stopFile) { Remove-Item $stopFile -Force }
+
+try {
 while ($true) {
     $round++
     $roundStart = Get-Date
@@ -938,11 +943,42 @@ while ($true) {
     if ($MaxRounds -gt 0 -and $round -ge $MaxRounds) {
         Write-Host ""
         Write-Host "[end] Reached MaxRounds ($MaxRounds). Stopping." -ForegroundColor Cyan
-        Remove-Item $lockFile -Force -ErrorAction SilentlyContinue
+        break
+    }
+
+    # Check stop file (graceful stop after round)
+    if (Test-Path $stopFile) {
+        Write-Host ""
+        Write-Host "[end] Stop file detected (tools/.ralph-stop). Stopping gracefully." -ForegroundColor Cyan
+        Remove-Item $stopFile -Force -ErrorAction SilentlyContinue
         break
     }
 
     Write-Host "   Next round in $intervalMinutes minutes..." -ForegroundColor Gray
     Write-Host ""
-    Start-Sleep -Seconds ($intervalMinutes * 60)
+
+    # Sleep in 10s chunks so Ctrl+C is responsive
+    $sleepTotal = $intervalMinutes * 60
+    $slept = 0
+    while ($slept -lt $sleepTotal) {
+        $chunk = [Math]::Min(10, $sleepTotal - $slept)
+        Start-Sleep -Seconds $chunk
+        $slept += $chunk
+        # Check stop file during sleep too
+        if (Test-Path $stopFile) {
+            Write-Host ""
+            Write-Host "[end] Stop file detected during sleep. Stopping gracefully." -ForegroundColor Cyan
+            Remove-Item $stopFile -Force -ErrorAction SilentlyContinue
+            $slept = $sleepTotal + 1  # break out
+        }
+    }
+    if ($slept -gt $sleepTotal) { break }
+}
+} finally {
+    # Cleanup on exit (Ctrl+C or normal stop)
+    Write-Host ""
+    Write-Host "[ralph] Shutting down..." -ForegroundColor Yellow
+    Remove-Item $lockFile -Force -ErrorAction SilentlyContinue
+    Update-Heartbeat -Status "stopped" -Round $round
+    Write-Host "[ralph] Ralph Watch stopped. Round $round was the last." -ForegroundColor Cyan
 }
