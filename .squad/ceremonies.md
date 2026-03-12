@@ -176,9 +176,9 @@ Certain ceremonies are **required** at specific project milestones, regardless o
 
 | Milestone | Ceremony | Content |
 |-----------|----------|---------|
-| **Project START** | Kickoff Review | Team assignment, skills assessment, architecture plan, upstream relationship verification |
+| **Project START** | Kickoff Review | Team assignment, skills assessment, architecture plan, upstream relationship verification. **G4:** Review quality-gates.md for current stack relevance. Update if the project uses a different stack than the gates were written for. |
 | **Project MIDPOINT** | Mid-Project Health Check | Skills assessment, team member evaluation, course correction, hub alignment check |
-| **Project END** | Closeout & Harvest | Final team member evaluation, skill harvest, lessons learned, hub skill promotion |
+| **Project END** | Closeout & Harvest | Final team member evaluation, skill harvest, lessons learned, hub skill promotion. **G6:** Clean up ceremonies.md — disable project-specific ceremonies that no longer apply. **G14:** Verify squad.config.ts has the correct project name (not a leftover from a previous project). |
 
 **Skills Assessment:** At each mandatory ceremony, every active agent's skills are evaluated against the project's needs. Gaps are identified and addressed (training, reassignment, or skill creation).
 

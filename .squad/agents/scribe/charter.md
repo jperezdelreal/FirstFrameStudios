@@ -9,8 +9,10 @@ Silent operations agent. Maintains squad state files, merges decisions, and comm
 3. **Git commit** — Stage .squad/ changes and commit
 
 ## Conditional Tasks (auto-triggered)
-4. **Decisions archive** — If decisions.md > 5KB, archive entries older than 14 days
-5. **History summarization** — If any history.md > 12KB, compress old entries to ## Core Context
+4. **Decisions archive** — If decisions.md > 5KB, archive entries older than 14 days (G1)
+5. **Skill overflow** — When updating SKILL.md, enforce max 5KB limit. If content exceeds, split overflow to REFERENCE.md per templates/skill.md (G2)
+6. **Log cleanup** — If .squad/log/ or .squad/orchestration-log/ has files older than 30 days, delete them (G3)
+7. **History summarization** — If any history.md > 12KB, compress old entries to ## Core Context
 
 ## On-Demand Tasks (only when requested)
 6. **Session log** — Write session summary to .squad/log/

@@ -293,6 +293,20 @@ See `ceremonies.md` for full ceremony definitions, triggers, and agendas.
 
 ---
 
+## 7. Guardrails
+
+These rules prevent common infrastructure problems and keep governance enforceable.
+
+| Guardrail | Rule |
+|-----------|------|
+| **G5** | Hub roster is infrastructure/tooling only. No game-specific agents on hub. Game agents live in their project repos. |
+| **G7** | now.md is the single source of current focus. Only .squad/identity/now.md is authoritative. Remove any duplicate now.md files. Coordinator checks freshness at session start. |
+| **G8** | squad.agent.md must be consistent across hub and downstream repos. Scribe checks for drift during commits (hash comparison). |
+| **G9** | Cron-triggered workflows must use intervals of 1 hour or longer. No sub-hour polling. |
+| **G12** | Identity documents must not contain rejected options or historical alternatives. Keep only the active decision. Archive rejected options to decisions-archive.md. |
+
+---
+
 ## Appendix: Governance Evolution
 
 ### How to Change This Document

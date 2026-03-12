@@ -384,3 +384,43 @@ Created `.squad/identity/autonomy-model.md` (147 lines) — rescued operational 
 - Autonomy by Repository table (4 repos with profiles)
 
 **Design decision:** This is a reference doc, not governance. `governance.md` remains the authority on tiers and zones. `autonomy-model.md` explains HOW the model works operationally — tables over prose, zero philosophy paragraphs.
+
+---
+
+## Learnings
+
+### 2026-07-25: Guardrails Implementation (Phase 6, Issue #188)
+
+**Requested by:** Joaquín (Founder)  
+**Scope:** Implement guardrails G1-G14 from the optimization plan into governance files
+
+**What was done:**
+
+1. **Scribe Charter (.squad/agents/scribe/charter.md)** — Added guardrails to Conditional Tasks section:
+   - **G1:** decisions.md max 5KB auto-archive (verified present in task #4)
+   - **G2:** SKILL.md max 5KB with overflow to REFERENCE.md per template
+   - **G3:** Log cleanup — auto-purge files >30 days from .squad/log/ and .squad/orchestration-log/
+
+2. **Governance (.squad/identity/governance.md)** — Added new "## 7. Guardrails" section before Appendix with lean rule table:
+   - **G5:** Hub roster = infrastructure/tooling only. Game agents live in project repos.
+   - **G7:** now.md single source of truth. Only .squad/identity/now.md authoritative. Coordinator checks freshness.
+   - **G8:** squad.agent.md consistency check (hash comparison on commits).
+   - **G9:** Cron workflows ≥1 hour intervals only.
+   - **G12:** Identity docs = active decisions only. Archive rejected options to decisions-archive.md.
+
+3. **Ceremonies (.squad/ceremonies.md)** — Updated Mandatory Project Ceremonies table with guardrail callouts:
+   - **Kickoff Review → G4:** Review quality-gates.md for current stack relevance.
+   - **Closeout & Harvest → G6:** Clean up ceremonies.md, disable obsolete project-specific ceremonies.
+   - **Closeout & Harvest → G14:** Verify squad.config.ts has correct project name.
+
+**Design principles:**
+- Scribe changes: minimal additions to existing conditional task structure
+- Governance: guardrails placed in lean rule table (not prose essays) to keep file <300 lines
+- Ceremonies: guardrail notes embedded in table content, not new ceremony definitions
+- No rewrites of existing content — surgical additions only
+
+**Note on omitted guardrails:**
+- **G4, G6, G14:** Embedded in ceremonies.md
+- **G10, G11, G13:** Not implemented (ralph-watch and .squad/ periodic cleanup are operational, not governance document concerns)
+
+**Status:** ✅ COMPLETE
