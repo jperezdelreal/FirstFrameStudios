@@ -126,22 +126,22 @@ FFS creció orgánicamente desde Ashfall (Godot) hasta un estudio multi-repo de 
 
 ### Fase 5 — Workflows & ralph-watch (infra)
 
-| Task | Qué | Quién |
-|------|-----|-------|
-| 5a | Reducir squad-heartbeat a 1h (#32) | Jango |
-| 5b | Reducir ralph-notify a 4h (#32) | Jango |
-| 5c | Añadir roster check a ralph-watch (G10) | Jango |
-| 5d | Añadir upstream sync a ralph-watch (G11) | Jango |
+| Task | Qué | Quién | Estado |
+|------|-----|-------|--------|
+| 5a | Reducir squad-heartbeat a 1h (#32) | Jango | ✅ Done |
+| 5b | Reducir ralph-notify a 4h (#32) | Jango | ✅ Done |
+| 5c | Añadir roster check a ralph-watch (G10) | Jango | ❌ Pendiente — requires ralph-watch.ps1 code change |
+| 5d | Añadir upstream sync a ralph-watch (G11) | Jango | ❌ Pendiente — requires ralph-watch.ps1 code change |
 
 ### Fase 6 — Guardrails (post-cleanup)
 
-| Task | Qué | Quién |
-|------|-----|-------|
-| 6a | Implementar G1-G3 en Scribe spawn template | Solo |
-| 6b | Implementar G5 + G12 en governance.md | Solo |
-| 6c | Implementar G4 + G6 + G14 en ceremonies.md | Solo |
-| 6d | Implementar G7 en coordinator session start (squad.agent.md) | Solo |
-| 6e | Implementar G8 en Scribe commit hook | Jango |
+| Task | Qué | Quién | Estado |
+|------|-----|-------|--------|
+| 6a | Implementar G1-G3 en Scribe spawn template | Solo | ✅ Done |
+| 6b | Implementar G5 + G12 en governance.md | Solo | ✅ Done |
+| 6c | Implementar G4 + G6 + G14 en ceremonies.md | Solo | ✅ Done |
+| 6d | Implementar G7 en coordinator session start (squad.agent.md) | Solo | ✅ Done |
+| 6e | Implementar G8 en Scribe commit hook | Jango | ❌ Pendiente — documented in governance but not in Scribe charter |
 
 ---
 
