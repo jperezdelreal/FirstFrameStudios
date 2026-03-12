@@ -89,40 +89,40 @@ FFS creció orgánicamente desde Ashfall (Godot) hasta un estudio multi-repo de 
 
 ### Fase 1 — Hub cleanup (sin dependencias, paralelizable)
 
-| Task | Qué | Quién |
-|------|-----|-------|
-| 1a | Hibernar 6 game agents del hub roster (#5) | Solo/Jango |
-| 1b | Deshabilitar 4 ceremonies obsoletas (#7) | Solo |
-| 1c | Limpieza .squad/ root: duplicados, huérfanos (#10/18/19/20/22) | Jango |
-| 1d | Unificar now.md (#17) | Jango |
-| 1e | Fix squad.config.ts "First Punch" (#31) | Jango |
-| 1f | Quitar wisdom.md del spawn template (#3) | Solo |
+| Task | Qué | Quién | Estado |
+|------|-----|-------|--------|
+| 1a | Hibernar 6 game agents del hub roster (#5) | Solo/Jango | ✅ Done |
+| 1b | Deshabilitar 4 ceremonies obsoletas (#7) | Solo | ✅ Done |
+| 1c | Limpieza .squad/ root: duplicados, huérfanos (#10/18/19/20/22) | Jango | ✅ Done |
+| 1d | Unificar now.md (#17) | Jango | ✅ Done |
+| 1e | Fix squad.config.ts "First Punch" (#31) | Jango | ✅ Done |
+| 1f | Quitar wisdom.md del spawn template (#3) | Solo | ✅ Done |
 
 ### Fase 2 — Content rewrite (requiere revisión)
 
-| Task | Qué | Quién |
-|------|-----|-------|
-| 2a | Reescribir quality-gates.md para web (#14/24) | Solo |
-| 2b | Limpiar company.md opciones rechazadas (#16/25) | Yoda/Solo |
-| 2c | Reescribir Scribe charter (#6) | Solo |
-| 2d | Actualizar Scribe spawn template a 3 core tasks (#9) | Solo |
+| Task | Qué | Quién | Estado |
+|------|-----|-------|--------|
+| 2a | Reescribir quality-gates.md para web (#14/24) | Solo | ✅ Done |
+| 2b | Limpiar company.md opciones rechazadas (#16/25) | Yoda/Solo | ✅ Done |
+| 2c | Reescribir Scribe charter (#6) | Solo | ✅ Done |
+| 2d | Actualizar Scribe spawn template a 3 core tasks (#9) | Solo | ✅ Done |
 
 ### Fase 3 — Skills reestructuración (más trabajo)
 
-| Task | Qué | Quién |
-|------|-----|-------|
-| 3a | Actualizar skill template (SKILL.md + REFERENCE.md structure) | Jango |
-| 3b | Reestructurar skills existentes (42 dirs → SKILL.md max 5KB cada uno) | Jango + agente por dominio |
+| Task | Qué | Quién | Estado |
+|------|-----|-------|--------|
+| 3a | Actualizar skill template (SKILL.md + REFERENCE.md structure) | Jango | ✅ Done |
+| 3b | Reestructurar skills existentes (42 dirs → SKILL.md max 5KB cada uno) | Jango + agente por dominio | ✅ Done |
 
 ### Fase 4 — Ecosystem (cross-repo)
 
-| Task | Qué | Quién |
-|------|-----|-------|
-| 4a | squad init en ComeRosquillas (#23) | Nueva sesión en ComeRosquillas |
-| 4b | squad init en ffs-squad-monitor (#23) | Nueva sesión en ffs-squad-monitor |
-| 4c | Verificar Flora charters son TS/PixiJS-specific (#23) | Nueva sesión en Flora |
-| 4d | Sync squad.agent.md hub → template → downstream (#30) | Jango |
-| 4e | Upstream sync en downstream repos (#24) | ralph-watch o manual |
+| Task | Qué | Quién | Estado |
+|------|-----|-------|--------|
+| 4a | squad init en ComeRosquillas (#23) | Nueva sesión en ComeRosquillas | ✅ Done |
+| 4b | squad init en ffs-squad-monitor (#23) | Nueva sesión en ffs-squad-monitor | ✅ Done |
+| 4c | Verificar Flora charters son TS/PixiJS-specific (#23) | Nueva sesión en Flora | ✅ Done |
+| 4d | Sync squad.agent.md hub → template → downstream (#30) | Jango | ✅ Done |
+| 4e | Upstream sync en downstream repos (#24) | ralph-watch o manual | ✅ Done |
 
 ### Fase 5 — Workflows & ralph-watch (infra)
 
@@ -141,18 +141,18 @@ FFS creció orgánicamente desde Ashfall (Godot) hasta un estudio multi-repo de 
 | 6b | Implementar G5 + G12 en governance.md | Solo | ✅ Done |
 | 6c | Implementar G4 + G6 + G14 en ceremonies.md | Solo | ✅ Done |
 | 6d | Implementar G7 en coordinator session start (squad.agent.md) | Solo | ✅ Done |
-| 6e | Implementar G8 en Scribe commit hook | Jango | ❌ Pendiente — documented in governance but not in Scribe charter |
+| 6e | Implementar G8 en Scribe commit hook | Jango | ❌ Pendiente — requires squad.agent.md drift check implementation |
 
 ### Fase 7 — Priority & Dependency System (governance evolution)
 
 | Task | Qué | Quién | Estado |
 |------|-----|-------|--------|
-| 7a | Definir prioridades P0-P3 en governance.md | Solo | ❌ Pendiente — issue #189 |
-| 7b | Implementar dependency tracking (labels `blocked-by`, `needs-decision`) | Solo + Jango | ❌ Pendiente |
-| 7c | Actualizar Ralph para chequear dependencias antes de asignar | Jango | ❌ Pendiente |
-| 7d | Actualizar Lead triage con evaluación de dependencias | Solo | ❌ Pendiente |
-| 7e | Implementar "prepare but don't merge" mode en spawn template | Solo | ❌ Pendiente |
-| 7f | Crear labels P0-P3 + blocked-by en GitHub (hub + downstream) | Jango | ❌ Pendiente |
+| 7a | Definir prioridades P0-P3 en governance.md | Solo | ✅ Done |
+| 7b | Implementar dependency tracking (labels `blocked-by`, `needs-decision`) | Solo + Jango | ✅ Done |
+| 7c | Actualizar Ralph para chequear dependencias antes de asignar | Jango | ✅ Done |
+| 7d | Actualizar Lead triage con evaluación de dependencias | Solo | ✅ Done |
+| 7e | Implementar "prepare but don't merge" mode en spawn template | Solo | ⚠️ Partial |
+| 7f | Crear labels P0-P3 + blocked-by en GitHub (hub + downstream) | Jango | ✅ Done |
 
 > **Prerequisito:** Solo diseña la propuesta completa en issue #189 antes de implementar.
 
