@@ -250,18 +250,18 @@ Refs en archivos pasivos (analysis/, _alumni/, skills/_archived/, decisions-arch
 
 ```
 R1 (no lanzar sin completar):
-[ ] Hub: merge branch a main
-[ ] Hub: Ackbar decision
-[ ] Hub: PR template rewrite
-[ ] Hub: cerrar #187-189
-[ ] Flora: merge conflict
-[ ] Flora: workflows
-[ ] Flora: labels locales + P3
-[ ] Flora: re-etiquetar #9
-[ ] Monitor: workflows
-[ ] Monitor: labels locales + P0,P3
-[ ] Monitor: SQUAD_AGENTS vite.config.js
-[ ] Todos downstream: blocked-by labels
+[x] Hub: merge branch a main
+[x] Hub: Ackbar decision (hibernated → _alumni, registry→retired)
+[x] Hub: PR template rewrite (GDScript → web)
+[x] Hub: cerrar #187-189
+[x] Flora: merge conflict (PR #18 closed as stale, issue #9 re-labeled to Erika)
+[x] Flora: workflows (5 deployed)
+[x] Flora: labels locales + P3
+[x] Flora: re-etiquetar #9 → squad:erika
+[x] Monitor: workflows (5 deployed + merged to master)
+[x] Monitor: labels locales + P0,P3
+[x] Monitor: SQUAD_AGENTS vite.config.js (19 agents across 4 repos)
+[x] Todos downstream: blocked-by labels (ComeRosq+Flora+Monitor)
 
 R2 (antes de dejar solo):
 [ ] Hub: decisions.md <5KB
