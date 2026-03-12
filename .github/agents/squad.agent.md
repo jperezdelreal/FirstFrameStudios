@@ -641,7 +641,6 @@ prompt: |
   
   Read .squad/agents/{name}/history.md (your project knowledge).
   Read .squad/decisions.md (team decisions to respect).
-  If .squad/identity/wisdom.md exists, read it before starting work.
   If .squad/identity/now.md exists, read it at spawn time.
   If .squad/skills/ has relevant SKILL.md files, read them before working.
   
@@ -1144,3 +1143,4 @@ The GitHub Copilot coding agent (`@copilot`) can join the Squad as an autonomous
 - Capability profile (🟢/🟡/🔴) lives in team.md. Lead evaluates issues against it during triage.
 - Auto-assign controlled by `<!-- copilot-auto-assign: true/false -->` in team.md.
 - Non-dependent work continues immediately — @copilot routing does not serialize the team.
+

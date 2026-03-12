@@ -1,0 +1,502 @@
+﻿[
+    {
+        "timestamp":  "2026-03-12T04:46:51Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  120,
+        "failures":  120,
+        "exitCode":  1,
+        "message":  "120 consecutive failures at round 120 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T04:49:32Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  121,
+        "failures":  121,
+        "exitCode":  1,
+        "message":  "121 consecutive failures at round 121 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T04:52:13Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  122,
+        "failures":  122,
+        "exitCode":  1,
+        "message":  "122 consecutive failures at round 122 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T04:54:56Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  123,
+        "failures":  123,
+        "exitCode":  1,
+        "message":  "123 consecutive failures at round 123 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T04:57:36Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  124,
+        "failures":  124,
+        "exitCode":  1,
+        "message":  "124 consecutive failures at round 124 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:00:18Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  125,
+        "failures":  125,
+        "exitCode":  1,
+        "message":  "125 consecutive failures at round 125 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:03:00Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  126,
+        "failures":  126,
+        "exitCode":  1,
+        "message":  "126 consecutive failures at round 126 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:05:41Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  127,
+        "failures":  127,
+        "exitCode":  1,
+        "message":  "127 consecutive failures at round 127 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:08:23Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  128,
+        "failures":  128,
+        "exitCode":  1,
+        "message":  "128 consecutive failures at round 128 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:11:05Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  129,
+        "failures":  129,
+        "exitCode":  1,
+        "message":  "129 consecutive failures at round 129 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:13:46Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  130,
+        "failures":  130,
+        "exitCode":  1,
+        "message":  "130 consecutive failures at round 130 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:16:27Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  131,
+        "failures":  131,
+        "exitCode":  1,
+        "message":  "131 consecutive failures at round 131 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:19:08Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  132,
+        "failures":  132,
+        "exitCode":  1,
+        "message":  "132 consecutive failures at round 132 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:21:50Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  133,
+        "failures":  133,
+        "exitCode":  1,
+        "message":  "133 consecutive failures at round 133 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:24:31Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  134,
+        "failures":  134,
+        "exitCode":  1,
+        "message":  "134 consecutive failures at round 134 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:27:13Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  135,
+        "failures":  135,
+        "exitCode":  1,
+        "message":  "135 consecutive failures at round 135 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:29:54Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  136,
+        "failures":  136,
+        "exitCode":  1,
+        "message":  "136 consecutive failures at round 136 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:32:35Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  137,
+        "failures":  137,
+        "exitCode":  1,
+        "message":  "137 consecutive failures at round 137 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:35:15Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  138,
+        "failures":  138,
+        "exitCode":  1,
+        "message":  "138 consecutive failures at round 138 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:37:56Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  139,
+        "failures":  139,
+        "exitCode":  1,
+        "message":  "139 consecutive failures at round 139 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:40:38Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  140,
+        "failures":  140,
+        "exitCode":  1,
+        "message":  "140 consecutive failures at round 140 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:43:19Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  141,
+        "failures":  141,
+        "exitCode":  1,
+        "message":  "141 consecutive failures at round 141 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:46:01Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  142,
+        "failures":  142,
+        "exitCode":  1,
+        "message":  "142 consecutive failures at round 142 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:48:42Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  143,
+        "failures":  143,
+        "exitCode":  1,
+        "message":  "143 consecutive failures at round 143 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:51:23Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  144,
+        "failures":  144,
+        "exitCode":  1,
+        "message":  "144 consecutive failures at round 144 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:54:04Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  145,
+        "failures":  145,
+        "exitCode":  1,
+        "message":  "145 consecutive failures at round 145 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:56:45Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  146,
+        "failures":  146,
+        "exitCode":  1,
+        "message":  "146 consecutive failures at round 146 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T05:59:26Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  147,
+        "failures":  147,
+        "exitCode":  1,
+        "message":  "147 consecutive failures at round 147 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:02:07Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  148,
+        "failures":  148,
+        "exitCode":  1,
+        "message":  "148 consecutive failures at round 148 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:04:48Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  149,
+        "failures":  149,
+        "exitCode":  1,
+        "message":  "149 consecutive failures at round 149 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:07:29Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  150,
+        "failures":  150,
+        "exitCode":  1,
+        "message":  "150 consecutive failures at round 150 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:10:11Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  151,
+        "failures":  151,
+        "exitCode":  1,
+        "message":  "151 consecutive failures at round 151 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:12:52Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  152,
+        "failures":  152,
+        "exitCode":  1,
+        "message":  "152 consecutive failures at round 152 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:15:33Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  153,
+        "failures":  153,
+        "exitCode":  1,
+        "message":  "153 consecutive failures at round 153 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:18:15Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  154,
+        "failures":  154,
+        "exitCode":  1,
+        "message":  "154 consecutive failures at round 154 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:20:56Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  155,
+        "failures":  155,
+        "exitCode":  1,
+        "message":  "155 consecutive failures at round 155 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:23:37Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  156,
+        "failures":  156,
+        "exitCode":  1,
+        "message":  "156 consecutive failures at round 156 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:26:18Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  157,
+        "failures":  157,
+        "exitCode":  1,
+        "message":  "157 consecutive failures at round 157 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:28:59Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  158,
+        "failures":  158,
+        "exitCode":  1,
+        "message":  "158 consecutive failures at round 158 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:31:41Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  159,
+        "failures":  159,
+        "exitCode":  1,
+        "message":  "159 consecutive failures at round 159 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:34:22Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  160,
+        "failures":  160,
+        "exitCode":  1,
+        "message":  "160 consecutive failures at round 160 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:37:03Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  161,
+        "failures":  161,
+        "exitCode":  1,
+        "message":  "161 consecutive failures at round 161 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:39:45Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  162,
+        "failures":  162,
+        "exitCode":  1,
+        "message":  "162 consecutive failures at round 162 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:42:26Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  163,
+        "failures":  163,
+        "exitCode":  1,
+        "message":  "163 consecutive failures at round 163 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:45:07Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  164,
+        "failures":  164,
+        "exitCode":  1,
+        "message":  "164 consecutive failures at round 164 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:47:48Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  165,
+        "failures":  165,
+        "exitCode":  1,
+        "message":  "165 consecutive failures at round 165 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:50:29Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  166,
+        "failures":  166,
+        "exitCode":  1,
+        "message":  "166 consecutive failures at round 166 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:53:10Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  167,
+        "failures":  167,
+        "exitCode":  1,
+        "message":  "167 consecutive failures at round 167 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:55:52Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  168,
+        "failures":  168,
+        "exitCode":  1,
+        "message":  "168 consecutive failures at round 168 (exit 1)",
+        "errorDetail":  ""
+    },
+    {
+        "timestamp":  "2026-03-12T06:58:33Z",
+        "level":  "CRITICAL",
+        "type":  "consecutive_failures",
+        "round":  169,
+        "failures":  169,
+        "exitCode":  1,
+        "message":  "169 consecutive failures at round 169 (exit 1)",
+        "errorDetail":  ""
+    }
+]

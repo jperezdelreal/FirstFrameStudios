@@ -52,7 +52,7 @@
 | **Facilitator** | Solo (Architect) |
 | **Participants** | Solo + Ackbar |
 | **Time budget** | focused |
-| **Enabled** | ✅ yes |
+| **Enabled** | ❌ no |
 
 **Purpose:** After every parallel work wave, verify that systems connect before the next wave starts. This is a hard gate — no new feature work begins until integration is verified.
 
@@ -80,7 +80,7 @@
 | **Facilitator** | Jango (Tool Engineer / PR Reviewer) |
 | **Participants** | PR author + Jango |
 | **Time budget** | focused |
-| **Enabled** | ✅ yes |
+| **Enabled** | ❌ no |
 
 **Purpose:** Before merging any implementation PR, verify that the code matches the GDD specification. Catch spec drift at review time, not after milestone completion.
 
@@ -105,7 +105,7 @@
 | **Facilitator** | Ackbar (QA/Playtester) |
 | **Participants** | Ackbar |
 | **Time budget** | focused |
-| **Enabled** | ✅ yes |
+| **Enabled** | ❌ no |
 
 **Purpose:** After merging a milestone, verify the project opens in Godot and the basic game flow works end-to-end. A milestone is NOT complete until this passes.
 
@@ -157,7 +157,7 @@
 | **Facilitator** | Boba (Art Director) |
 | **Participants** | Boba + Nien |
 | **Time budget** | focused |
-| **Enabled** | ✅ yes |
+| **Enabled** | ❌ no |
 
 **Purpose:** After visual asset integration, verify consistency across characters, animations, and environments. Catch style drift before it compounds.
 

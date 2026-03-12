@@ -6,17 +6,11 @@ How to decide who handles what.
 
 | Work Type | Route To | Examples |
 |-----------|----------|----------|
-| Game engine, loop, timing, systems | Chewie | Game loop, renderer, input, animation system, physics, collision |
-| Player mechanics, combat, abilities | Lando | Player entity, combat system, special moves, player state machine |
-| Enemy AI, content, levels, pickups | Tarkin | Enemy types, boss patterns, wave/level design, pickups, difficulty |
-| UI, HUD, menus, screens, web layout | Wedge | HUD, title screen, game over, pause, score displays, CSS/HTML |
-| Audio, SFX, music, sound design | Greedo | Sound effects, procedural music, Web Audio API, audio events |
-| QA, playtesting, balance, browser testing | Ackbar | Playtesting, combat feel, cross-browser, regression, edge cases |
-| Tooling, CI/CD, workflows, build pipelines | Jango | GitHub workflows, ralph-watch, scheduler, Vite config, build automation |
 | Architecture, integration review | Solo | Project structure, integration verification, decisions, architecture reviews |
+| Tooling, CI/CD, workflows, build pipelines | Jango | GitHub workflows, ralph-watch, scheduler, Vite config, build automation |
 | Ops, blockers, branch management | Mace | Blocker tracking, branch rebasing, stale issue cleanup |
 | Sprint planning, timelines, workload | Mace | Sprint planning, milestone tracking, scope management |
-| Feature triage, scope decisions | Yoda + Mace | Vision Keeper evaluates features against four-test framework |
+| Feature triage, scope decisions | Mace | Scope decisions, feature evaluation |
 | Async issue work (bugs, tests, features) | @copilot 🤖 | Well-defined tasks: HTML/JS/Canvas, TypeScript/Vite, PixiJS |
 | Session logging | Scribe | Automatic — never needs routing |
 

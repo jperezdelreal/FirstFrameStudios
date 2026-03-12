@@ -15,7 +15,7 @@
       "role": "Engine Dev",
       "created_at": "2026-03-06T14:21:00Z",
       "legacy_named": false,
-      "status": "active",
+      "status": "retired",
       "previous_name": "Fenster"
     },
     "lando": {
@@ -24,7 +24,7 @@
       "role": "Gameplay Dev",
       "created_at": "2026-03-06T14:21:00Z",
       "legacy_named": false,
-      "status": "active",
+      "status": "retired",
       "previous_name": "McManus"
     },
     "wedge": {
@@ -33,7 +33,7 @@
       "role": "UI Dev",
       "created_at": "2026-03-06T14:21:00Z",
       "legacy_named": false,
-      "status": "active",
+      "status": "retired",
       "previous_name": "Hockney"
     },
     "boba": {
@@ -50,7 +50,7 @@
       "role": "Sound Designer",
       "created_at": "2026-03-06T14:21:00Z",
       "legacy_named": false,
-      "status": "active"
+      "status": "retired"
     },
     "tarkin": {
       "persistent_name": "Tarkin",
@@ -58,7 +58,7 @@
       "role": "Enemy/Content Dev",
       "created_at": "2026-03-06T14:21:00Z",
       "legacy_named": false,
-      "status": "active"
+      "status": "retired"
     },
     "ackbar": {
       "persistent_name": "Ackbar",
@@ -84,6 +84,14 @@
       "created_at": "2026-03-08T10:25:00Z",
       "legacy_named": false,
       "status": "active"
+    },
+    "yoda": {
+      "persistent_name": "Yoda",
+      "universe": "Star Wars",
+      "role": "Game Designer / Vision Keeper",
+      "created_at": "2026-03-06T14:21:00Z",
+      "legacy_named": false,
+      "status": "retired"
     }
   }
 }

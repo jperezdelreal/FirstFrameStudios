@@ -13,13 +13,6 @@
 | Name | Role | Charter | Status |
 |------|------|---------|--------|
 | Solo | Lead / Chief Architect | `.squad/agents/solo/charter.md` | 🏗️ Active |
-| Chewie | Engine Dev | `.squad/agents/chewie/charter.md` | 🔧 Active |
-| Lando | Gameplay Dev | `.squad/agents/lando/charter.md` | ⚔️ Active |
-| Wedge | UI Dev | `.squad/agents/wedge/charter.md` | ⚛️ Active |
-| Greedo | Sound Designer | `.squad/agents/greedo/charter.md` | 🔊 Active |
-| Tarkin | Enemy/Content Dev | `.squad/agents/tarkin/charter.md` | 👾 Active |
-| Ackbar | QA/Playtester | `.squad/agents/ackbar/charter.md` | 🧪 Active |
-| Yoda | Game Designer / Vision Keeper | `.squad/agents/yoda/charter.md` | 🎯 Active |
 | Jango | Tool Engineer | `.squad/agents/jango/charter.md` | ⚙️ Active |
 | Mace | Producer | `.squad/agents/mace/charter.md` | 📊 Active |
 | Scribe | Session Logger | `.squad/agents/scribe/charter.md` | 📋 Active |
@@ -34,6 +27,12 @@ Agents with no active work in the current web-game stack. Wake when their domain
 
 | Name | Role | Charter | Status | Wake Condition |
 |------|------|---------|--------|----------------|
+| Chewie | Engine Dev | `.squad/agents/_alumni/chewie/charter.md` | ❄️ Hibernated | Engine work needed (game loop, physics, renderer) |
+| Lando | Gameplay Dev | `.squad/agents/_alumni/lando/charter.md` | ❄️ Hibernated | Combat/mechanics design needed |
+| Wedge | UI Dev | `.squad/agents/_alumni/wedge/charter.md` | ❄️ Hibernated | UI/layout work needed beyond CSS |
+| Greedo | Sound Designer | `.squad/agents/_alumni/greedo/charter.md` | ❄️ Hibernated | Audio design needed beyond Web Audio API |
+| Tarkin | Enemy/Content Dev | `.squad/agents/_alumni/tarkin/charter.md` | ❄️ Hibernated | Enemy AI / content pipeline needed |
+| Yoda | Game Designer / Vision Keeper | `.squad/agents/_alumni/yoda/charter.md` | ❄️ Hibernated | Strategic game design decisions needed |
 | Boba | Art Director | `.squad/agents/_alumni/boba/charter.md` | ❄️ Hibernated | Art pipeline needed (FLUX, Blender, dedicated art direction) |
 | Leia | Environment Artist | `.squad/agents/_alumni/leia/charter.md` | ❄️ Hibernated | Dedicated environment art needed beyond CSS/Canvas |
 | Bossk | VFX Artist | `.squad/agents/_alumni/bossk/charter.md` | ❄️ Hibernated | Dedicated VFX pipeline needed beyond Canvas/CSS animations |
