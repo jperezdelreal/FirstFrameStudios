@@ -679,7 +679,7 @@ function Get-ScheduledIssues {
                     continue
                 }
                 if ($tier -eq "t1") {
-                    Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t1 needs Solo+Founder approval" -ForegroundColor DarkYellow
+                    Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t1 needs Lead (Solo) authority" -ForegroundColor DarkYellow
                     continue
                 }
                 # Skip issues marked as needing research (not ready for implementation)
@@ -688,8 +688,8 @@ function Get-ScheduledIssues {
                     continue
                 }
 
-                # Extract priority (default P3 if not labeled)
-                $priority = 3
+                # Extract priority (default P2 per governance — normal backlog)
+                $priority = 2
                 foreach ($l in $labelNames) {
                     if ($l -match '^priority:p(\d)$') {
                         $priority = [int]$Matches[1]
