@@ -72,6 +72,10 @@ FFS is hub-and-spoke. Hub = no game code, only infrastructure. Each game/tool ha
 **By:** Team | **Date:** 2026-03-10 | **Status:** Closed
 Fighting game too complex for AI-only tuning. Studio pivoting to simpler genres.
 
+### Skill Template Update — SKILL.md + REFERENCE.md Split
+**By:** Jango | **Date:** 2026-01-30 | **Status:** Implemented
+Two-file structure for skills: SKILL.md (max 5KB) with frontmatter, core patterns, and key examples; REFERENCE.md (on-demand) with deep dive, full examples, and implementation guides.
+
 ---
 
 ## Active Process Decisions
