@@ -9,8 +9,8 @@
 # v3 features:
 #   - Night/day mode auto-detection via system clock
 #   - Parallel copilot sessions in night mode (1 repo per session)
-#   - Governance filter: skips T0 issues, T1 unless approved
-#   - Governance: no self-merge -- PRs require Lead review
+#   - Governance filter: skips T0 and T1 issues (require formal approval process)
+#   - Governance: ralph can auto-merge T2/T3 PRs (no human review needed)
 #   - Governance: issue labels inherited by PRs (no zero-label PRs)
 #   - Priority-based scheduling: P0 > P1 > P2 > P3, then repo issue count
 #   - Remote URL validation before each round
@@ -149,7 +149,7 @@ SCOPE: You are working ONLY on the following repository:
 ISSUE ALLOWLIST (work ONLY these issues in priority order):
 {ISSUE_LIST}
 
-GOVERNANCE: Do NOT touch issues labeled "tier:t0" or "tier:t1" (unless also labeled "approved"). Only work tier:t2 and tier:t3 (or unlabeled) issues.
+GOVERNANCE: Do NOT touch issues labeled "tier:t0" or "tier:t1". T0 and T1 require formal approval (Solo proposes, Founder approves). Only work tier:t2 and tier:t3 (or unlabeled) issues.
 
 For each repo, check: issues labeled 'squad' or with 'squad:{member}' labels, open PRs, draft PRs, CI failures.
 
@@ -528,8 +528,8 @@ function Get-ScheduledIssues {
                     Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t0 needs founder approval" -ForegroundColor DarkYellow
                     continue
                 }
-                if ($tier -eq "t1" -and ($labelNames -notcontains "approved")) {
-                    Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t1 not approved" -ForegroundColor DarkYellow
+                if ($tier -eq "t1") {
+                    Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t1 needs Solo+Founder approval" -ForegroundColor DarkYellow
                     continue
                 }
                 # Skip issues marked as needing research (not ready for implementation)
