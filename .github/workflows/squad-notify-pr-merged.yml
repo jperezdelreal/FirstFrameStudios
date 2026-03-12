@@ -1,0 +1,25 @@
+name: Squad Notify - PR Merged
+
+# Triggers when a PR is merged to main branch
+# Sends Discord notification for team awareness
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  notify-on-merge:
+    if: ${{ github.event.pull_request.merged == true }}
+    uses: ./.github/workflows/squad-notify-discord.yml
+    with:
+      event_type: "PR Merged to main"
+      summary: "PR #${{ github.event.pull_request.number }}: ${{ github.event.pull_request.title }}"
+      link: "${{ github.event.pull_request.html_url }}"
+      color: "5763719"
+    secrets:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

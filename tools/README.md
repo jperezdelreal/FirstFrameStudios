@@ -159,5 +159,77 @@ The following tools were built for previous projects (Ashfall/Godot) and are arc
 
 ---
 
+## Discord Webhook Notifications
+
+The squad can now send Discord notifications for critical events. Notifications are rate-limited to 10 per hour to prevent spam.
+
+### Setup
+
+1. **Create a Discord webhook:**
+   - In Discord: Server Settings → Integrations → Webhooks → New Webhook
+   - Copy the webhook URL
+
+2. **Configure GitHub secret:**
+   ```bash
+   # Add the webhook URL as a repository secret
+   gh secret set DISCORD_WEBHOOK_URL
+   # Paste webhook URL when prompted
+   ```
+
+3. **Verify workflows:**
+   - Go to Actions tab in GitHub
+   - Workflows should be enabled automatically
+
+### What Gets Notified
+
+| Event | Trigger | Workflow |
+|-------|---------|----------|
+| CI Failure on main | Any workflow fails on main branch | `squad-notify-ci-failure.yml` |
+| PR Merged | Pull request merged to main | `squad-notify-pr-merged.yml` |
+| Priority Issue | Issue labeled `priority:p0` or `priority:critical` | `squad-notify-priority-issue.yml` |
+| Ralph Round | Ralph completes a round (checked every 30 min) | `squad-notify-ralph-heartbeat.yml` |
+
+### Manual Notifications from Scripts
+
+Use the helper script from PowerShell:
+
+```powershell
+# Send a notification from ralph-watch or other automation
+.\tools\send-discord-notification.ps1 `
+  -EventType "Ralph Round" `
+  -Summary "Round 42 completed in night mode (3 issues closed)" `
+  -Link "https://github.com/jperezdelreal/FirstFrameStudios/actions" `
+  -Color 3066993
+
+# Set webhook URL via environment variable
+$env:DISCORD_WEBHOOK_URL = "your-webhook-url"
+.\tools\send-discord-notification.ps1 -EventType "Test" -Summary "Hello!" -Link "https://example.com"
+```
+
+Color codes (decimal):
+- Red (failures/alerts): `15158332`
+- Green (success): `5763719`
+- Blue (info): `3066993`
+- Gray (neutral): `5814783`
+
+### Rate Limiting
+
+- Max 10 notifications per hour (enforced in workflows and script)
+- Older notifications are tracked in `.github/.discord-rate-limit` (workflows) or `tools/.discord-rate-limit` (scripts)
+- Rate limit exceeded = notification silently skipped with warning log
+
+### Troubleshooting
+
+**No notifications arriving:**
+1. Check webhook URL is configured: `gh secret list` (should show `DISCORD_WEBHOOK_URL`)
+2. Check workflow runs in Actions tab for errors
+3. Verify Discord webhook is active in server settings
+
+**Too many notifications:**
+- Rate limit prevents spam (max 10/hour)
+- Adjust triggers in workflow files if needed
+
+---
+
 **Maintained by:** Jango (Tool Engineer)
-**Last updated:** 2026-03-11
+**Last updated:** 2026-03-12
