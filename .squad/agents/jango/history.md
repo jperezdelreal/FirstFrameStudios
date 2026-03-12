@@ -372,3 +372,37 @@ Completed. PR #12 open on jperezdelreal/flora. CI green (23s). deploy-pages@v4 p
 - Script supports `-DryRun`, `-Date`, and `-RepoNames` params for flexibility
 
 **Status:** PR #168 opened, dry-run tested successfully across all 4 repos
+
+### 2026-03-12: Discord Webhook Notifications (#163)
+**Task:** Build webhook notification system for critical squad events (CI failures, PR merges, priority issues, Ralph rounds).
+
+**Deliverables:**
+1. **squad-notify-discord.yml** -- Reusable workflow for Discord notifications with rate limiting (max 10/hour)
+2. **squad-notify-ci-failure.yml** -- Triggers on any workflow failure on main branch
+3. **squad-notify-pr-merged.yml** -- Triggers when PR is merged to main branch
+4. **squad-notify-priority-issue.yml** -- Triggers on priority:p0 or priority:critical labels
+5. **squad-notify-ralph-heartbeat.yml** -- Scheduled check (every 30 min) for Ralph round completion
+6. **tools/send-discord-notification.ps1** -- PowerShell helper for ralph-watch and other automation
+7. **Updated tools/README.md** -- Webhook setup docs, event table, usage examples, troubleshooting
+
+**Key Decisions:**
+- Discord webhook via GitHub secret DISCORD_WEBHOOK_URL (never hardcoded)
+- Rate limiting enforced at workflow level (.github/.discord-rate-limit) and script level (tools/.discord-rate-limit)
+- ASCII-safe text prefixes instead of emojis: [FAIL], [MERGE], [ALERT], [RALPH], [INFO]
+- Color-coded embeds: red (15158332) for failures, green (5763719) for merges, blue (3066993) for info, gray (5814783) for neutral
+- Ralph heartbeat notifications track last notified round to avoid duplicate notifications
+- Workflow_run event for CI failures (catches all workflow failures on main)
+- Pull_request closed+merged event for PR merges (only merged, not just closed)
+- Issues labeled event for priority alerts
+- Schedule cron (*/30 * * * *) for Ralph heartbeat checks
+
+**Implementation Notes:**
+- Rate limit file cleanup: keeps last 20 timestamps for efficiency
+- Heartbeat notification compares current round to last notified round (stored in .github/.ralph-last-notified-round)
+- All workflows use workflow_call to reusable squad-notify-discord.yml
+- PowerShell script accepts -WebhookUrl param or reads from $env:DISCORD_WEBHOOK_URL
+- JSON payload uses Discord embed format with title, description, URL, color, timestamp
+
+**Status:** ✅ COMPLETE -- Branch `squad/163-webhook-notifications` pushed, PR #171 created, closes #163
+
+## Learnings

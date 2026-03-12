@@ -222,3 +222,18 @@ Created `.squad/skills/ui-ux-patterns/SKILL.md` — a universal, genre-agnostic 
   - **Visual Feedback:** D-pad buttons change fill opacity on touch (0.3 → 0.7), buttons scale down (0.9) on press
   - **Lesson:** For canvas games needing mobile support, layer touch UI as fixed-position overlays rather than inline DOM, use media queries to conditionally display, and simulate keyboard input rather than refactoring core game logic — preserves desktop experience while adding mobile support with zero conflicts.
 
+
+- Ralph metrics display on Status page (#165):
+  - Added Ralph Metrics section to Status page between Team and Timeline sections
+  - Implemented build-time metrics loading using Node.js fs module in Astro frontmatter
+  - Calculated day counter from epoch (2026-03-11T16:31:48Z) at build time
+  - Created responsive grid layout with 4 key metrics cards (issues opened/closed, PRs opened/merged)
+  - Added Ralph Activity card showing monitoring rounds, duration, and processing stats
+  - Implemented per-repo breakdown in 2-column responsive grid
+  - Designed graceful empty state for missing data with contextual messaging
+  - Applied sci-fi dark theme consistently (purple/cyan gradients, card-based layout)
+  - Reused counter animation pattern from hero stats for key numbers
+  - Created sample metrics file (2026-03-12.json) for demonstration
+  - Metrics path resolution: Use 'process.cwd()' in Astro frontmatter, not '__dirname' or relative imports
+  - Astro frontmatter runs at build time in Node.js context — can use fs/path/etc directly
+  - Read latest metrics by sorting JSON files in metrics directory by filename (date-based)
