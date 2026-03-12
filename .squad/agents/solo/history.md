@@ -424,3 +424,106 @@ Created `.squad/identity/autonomy-model.md` (147 lines) — rescued operational 
 - **G10, G11, G13:** Not implemented (ralph-watch and .squad/ periodic cleanup are operational, not governance document concerns)
 
 **Status:** ✅ COMPLETE
+
+### 2026-03-12: Priority & Dependency System Design (Issue #189)
+
+**Type:** T1 Decision (Lead authority)  
+**Scope:** Governance extension — add priority (P0-P3) and dependency tracking to FFS
+
+**Context:** 
+Founder directive identified 6 gaps in current governance:
+1. No priority labels (P0-P3) — Ralph processes work FIFO, no urgency awareness
+2. No dependency tracking — agents merge work before blockers resolve
+3. No "prepare but don't merge" mode for blocked work
+4. Lead triage doesn't evaluate dependencies
+5. Ralph doesn't check dependencies before spawning agents
+6. No emergency vs sprint distinction in work queue
+
+**What was designed:**
+
+1. **Priority Definitions (P0-P3):**
+   - P0 = Blocker (nothing advances, Ralph holds all other work)
+   - P1 = Sprint-critical (must complete this sprint)
+   - P2 = Normal backlog (default if no label)
+   - P3 = Nice-to-have (process last, may defer indefinitely)
+   - **Key principle:** Tier ≠ Priority. T0 decision can be P2 (low urgency), T2 bug can be P0 (production blocker)
+
+2. **Dependency Model:**
+   - Expressed via locked-by:* labels (issue, pr, decision, upstream, external) + structured issue body section
+   - "Prepare but don't merge" rule: blocked agents may write tests, scaffold, open Draft PRs, but NOT merge until blocker resolves
+   - Blocker status checking logic for Ralph to detect stale blocks
+
+3. **Ralph Changes:**
+   - Priority-aware scan logic (P0 > P1 > Untriaged > P2 > P3)
+   - Dependency checking before spawning (canSpawnAgent checks locked-by:* labels)
+   - P0 blocked → alert Lead immediately (critical bottleneck)
+   - P1/P2 blocked → spawn in prepare mode (tests/scaffolding allowed, no merge)
+   - P3 blocked → skip (don't spawn)
+   - New board format with priority breakdown
+
+4. **Lead Triage Changes:**
+   - Extended checklist from 5 points to 7 (add priority + dependency evaluation)
+   - Decision trees for priority assignment and dependency identification
+   - Issue body template with ## Dependencies section documenting what prepare mode allows
+
+5. **Label System:**
+   - 4 priority labels (P0-P3, colors: red/orange/blue/gray)
+   - 5 dependency labels (blocked-by:{issue,pr,decision,upstream,external}, dark red)
+   - Hub-level labels (Zone B: projects inherit, may extend but not weaken)
+   - Label sync workflow validation
+
+6. **Governance Updates:**
+   - New §2.5 "Execution Priority" added after Approval Tiers
+   - 3 new guardrails: G13 (priority inflation check), G14 (blocked issues require Dependencies section), G15 (P0 blocked >3 days = escalation)
+   - Priority-Emergency Authority interaction defined (Emergency = active crisis, P0 = blocking work)
+
+7. **Edge Cases Addressed:**
+   - Circular dependencies (break cycle, designate entry point, escalate if P0 involved)
+   - Cross-repo dependencies (blocked-by:upstream + hub issue link, Ralph checks upstream status)
+   - P0 authority (only Lead/Founder can set P0)
+   - Priority inflation (G13 guardrail: >20% P0/P1 triggers re-triage)
+   - Stale blockers (Ralph detects blocker closed >7 days ago, flags for removal)
+
+**5 Open Questions for Founder:**
+1. Should projects extend priority labels (P1-hotfix) or enforce strict P0-P3?
+2. Should Emergency Authority auto-label follow-up as P0, or manual triage?
+3. Should G13 (priority inflation) have CI enforcement or advisory only?
+4. Should Ralph auto-remove stale blocked-by labels or keep manual grooming?
+5. Should P0 interrupt running agents or complete current cycle first?
+
+**Design recommendations:**
+- Strict P0-P3 only (avoid priority inflation via custom labels)
+- Manual triage post-emergency (emergency = immediate action, follow-up = normal governance)
+- Advisory G13 (Lead judgment > automated rejection)
+- Manual grooming initially, auto-removal in Phase 2 after observation
+- Complete current cycle (don't waste work, P0 waits <1 hour)
+
+**Deliverable:** 
+.squad/decisions/inbox/solo-priority-dependency-design.md (13.5K words, 47KB)
+
+**Key architectural insight:**
+Tier and Priority are **independent axes**. Tier = who approves (authority delegation). Priority = when it runs (execution order). Conflating them creates governance confusion. P0 doesn't grant T0 authority; T0 doesn't imply P0 urgency.
+
+**Pattern confirmed:**
+The "prepare but don't merge" rule is the critical innovation. Agents can make useful progress on blocked work (tests = document expected behavior, scaffolding = define structure) without wasting effort if blocker decision changes direction. This keeps velocity high while respecting dependencies.
+
+**Status:** Final — Founder decisions incorporated, ready for T1 approval
+
+**File locations:**
+- Design document: .squad/decisions/inbox/solo-priority-dependency-design.md
+- Related files: governance.md §2, routing.md, .github/agents/squad.agent.md (Ralph)
+
+### Founder Decisions on Priority & Dependency Design (5 Resolved Questions)
+
+**Established preferences from Founder review:**
+
+1. **Strict P0-P3 priority labels** — No extensions allowed (no `priority:P1-content` or similar). Zone B projects inherit P0-P3 exactly as defined by hub. Prevents priority inflation and ensures cross-repo consistency.
+
+2. **Emergency follow-up inherits P1** — After an emergency fix (governance §4), all follow-up work (tests, refactor, postmortem) is auto-labeled P1 (sprint-critical). Lead may escalate to P0 or downgrade to P2. Follow-up is urgent but should not halt all other work by default.
+
+3. **G13 guardrail is advisory only** — Ralph warns when >20% of open issues are P0/P1. Lead decides whether to re-triage. No CI enforcement. Founder trusts Lead judgment over automated rejection.
+
+4. **Ralph auto-unblocks after 24h** — When a blocker closes, Ralph auto-removes `blocked-by:*` labels after 24 hours and comments. Lead is notified and can re-block. Replaces original 7-day manual grooming design. Founder prefers fast unblocking.
+
+5. **No preemption for P0 interrupts** — Running agents finish their current task. After in-flight work completes, Ralph switches exclusively to P0. No agent killing mid-task. Founder values avoiding wasted work over immediate P0 response.
+

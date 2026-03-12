@@ -11746,3 +11746,952 @@ Update `.github/workflows/ci.yml`:
 
 **ACTIVE** — Policy applies to all future PRs across all FFS repos (FirstFrameStudios, ComeRosquillas, Flora, ffs-squad-monitor)
 
+
+---
+
+## Priority & Dependency System Design (2026-03-12)
+
+**Archived from:** .squad/decisions/inbox/solo-priority-dependency-design.md  
+**Status:** Approved T1 Decision — Moved to active decisions.md  
+**Author:** Solo (Lead / Chief Architect)
+# Priority & Dependency System Design
+
+**Type:** T1 Decision (Lead authority)  
+**Author:** Solo (Lead / Chief Architect)  
+**Date:** 2026-03-12  
+**Status:** Final — Founder decisions incorporated, ready for T1 approval  
+**Supersedes:** copilot-directive-2026-03-12T1128-priority-dependency-system.md  
+**Related:** governance.md §2, routing.md, .github/agents/squad.agent.md (Ralph reference)
+
+---
+
+## Executive Summary
+
+This design adds **Priority (P0-P3)** and **Dependency tracking** to FFS governance. These are orthogonal to Tiers (who approves): Priority determines execution order, Tiers determine approval authority. The system prevents wasted work when T2 tasks run ahead of unresolved T1 decisions by introducing a "prepare but don't merge" state for blocked work.
+
+**Key principle:** Tier ≠ Priority. A T0 decision to launch a new game may be P2 (normal backlog). A T2 bug fix may be P0 (production outage).
+
+---
+
+## 1. Priority Definitions (P0-P3)
+
+### Formal Definitions
+
+| Priority | Name | Definition | Execution Rule |
+|----------|------|------------|----------------|
+| **P0** | Blocker | Nothing else advances until this is resolved. System-wide halt. | Process FIRST. Ralph holds all other assignments until P0 is resolved or transitioned. |
+| **P1** | Sprint-Critical | Must complete in current sprint. Directly blocks sprint goals. | Parallel execution allowed. No merge until P0 items resolved. |
+| **P2** | Normal Backlog | Standard work queue. Important but not time-sensitive. | Standard FIFO queue processing. Default priority if none assigned. |
+| **P3** | Nice-to-Have | Low-impact improvements. Process when capacity available. | Last in queue. May be deferred indefinitely. |
+
+### Priority Application Examples (FFS Context)
+
+| Example | Priority | Rationale |
+|---------|----------|-----------|
+| Production outage in ComeRosquillas (game won't load) | P0 | Blocks all players. Everything stops until fixed. |
+| Governance v2.0 design (Solo T1 decision) blocking 3 Sprint 1 features | P0 | 3 agents can't merge work. Architecture bottleneck. |
+| CI pipeline broken — all PRs blocked | P0 | No code can merge. Team paralyzed. |
+| Sprint 1 feature defined in GDD (M1 milestone) | P1 | Sprint commitment. Not a blocker but must complete this sprint. |
+| Security vulnerability in auth flow (no active exploit) | P1 | Urgent but not production-halting. Must fix before next release. |
+| Refactor game.js monolith (ComeRosquillas #154) | P2 | Important for maintainability but no immediate impact. |
+| Add intermission cutscenes (ComeRosquillas #158) | P2 | Nice feature, no urgency. |
+| Add dark mode to Squad Monitor dashboard | P3 | Polish. Not blocking anything. |
+| Typo in README | P3 | Cosmetic. Fix when convenient. |
+
+### Relationship Between Tier and Priority
+
+**Core Principle:** Tier and Priority are **independent axes**.
+
+| Axis | Question | Controls |
+|------|----------|----------|
+| **Tier** | Who must approve this? | Authority delegation, approval gates |
+| **Priority** | When should this run? | Execution order, Ralph's work queue |
+
+**Independence examples:**
+
+- **T0 + P2:** Founder decides to create a new game repo (T0), but it's scheduled for Q2 (P2). High authority, low urgency.
+- **T2 + P0:** Production bug in ComeRosquillas ghost AI (T2). Chewie has authority, but it's a blocker (P0).
+- **T1 + P0:** Solo designs governance v2 (T1). No Founder approval needed, but 3 agents are blocked waiting for the design (P0).
+
+**Interaction Rules:**
+
+1. **Authority first, execution second.** Tier determines who can approve. Priority determines when to process.
+2. **Emergency Authority overrides Priority.** Per governance.md §4, emergency fixes bypass normal approval tiers AND priority queue. They execute immediately.
+3. **T0 decisions don't auto-escalate to P0.** Founder approval doesn't mean urgent execution. Solo triages and assigns priority.
+4. **P0 doesn't grant T0 authority.** A P0 bug fix still requires appropriate tier approval. Urgency doesn't bypass governance.
+
+### Priority and Emergency Authority Interaction
+
+**Governance §4 already defines Emergency Authority:** Any agent may make emergency fixes (production outage, critical bug, security vulnerability) without normal approval. Constraints: minimum viable change, retroactive review within 24 hours, logged in retrospective.
+
+**How P0 and Emergency Authority interact:**
+
+| Situation | Use Emergency Authority | Use P0 Priority |
+|-----------|-------------------------|-----------------|
+| Production is down RIGHT NOW, game unplayable | ✅ Emergency fix immediately, retroactive review | Assign P0 after emergency fix merged (for related follow-up work) |
+| Critical bug discovered in sprint, not yet in production | ❌ Not an emergency (no active outage) | ✅ P0 — block all other work, fix before next deploy |
+| Governance design blocking 3 agents | ❌ Not an emergency (no production impact) | ✅ P0 — resolve design bottleneck ASAP |
+| Security vulnerability, no active exploit | ❌ Not an emergency (no immediate harm) | ✅ P1 — urgent but not a full stop |
+
+**Rule:** Emergency Authority is for active production crises requiring immediate action. P0 is for blocking work that prevents the team from making progress. They overlap rarely (a P0 production outage would trigger Emergency Authority, then post-fix work becomes P0).
+
+### Emergency Follow-Up Priority Rule
+
+After an emergency fix (governance §4), all follow-up work (tests, refactoring, postmortem) is automatically labeled **P1** (sprint-critical). The Lead may escalate to P0 if truly blocking, or downgrade to P2 if minor. This ensures emergency follow-up is treated with urgency but does not halt all other work by default.
+
+---
+
+## 2. Dependency Model
+
+### Dependency Expression
+
+Dependencies are expressed via **GitHub labels** plus structured **issue body section**.
+
+**Labels** (generic — specifics go in the issue body):
+
+| Label | Meaning |
+|-------|---------|
+| `blocked-by:issue` | Blocked by another issue (see body for details) |
+| `blocked-by:pr` | Blocked by a PR merge (see body for details) |
+| `blocked-by:decision` | Blocked by a pending decision (see body for tier) |
+| `blocked-by:upstream` | Blocked by hub/parent repo work (see body for link) |
+| `blocked-by:external` | Blocked by third-party (see body for details) |
+
+**Issue body section** (added by Lead during triage):
+
+```markdown
+## Dependencies
+
+**Blocked by:**
+- #189 (Priority system design — T1 decision by Solo)
+- Decision: governance.md §2 update must be approved before implementation
+
+**Blocks:**
+- #190 (Ralph implementation)
+- #191 (Label automation)
+
+**Prepare mode allowed:** Yes — agent may scaffold tests, update docs, write spike code in draft PR. NO MERGE until #189 approved.
+```
+
+**Why both labels and body text?**
+- **Labels:** Machine-readable. Ralph scans for `blocked-by:*` labels.
+- **Body section:** Human-readable context. Explains WHY the dependency exists and WHAT the agent can do while blocked.
+
+### Types of Dependencies
+
+| Type | Example | Label | Notes |
+|------|---------|-------|-------|
+| **Issue → Issue** | #190 depends on #189 | `blocked-by:issue` | Most common. Standard work dependency. |
+| **Issue → PR** | #192 depends on PR #145 merging | `blocked-by:pr` | Rare. Usually just wait for the PR to merge. |
+| **Issue → Decision** | #190 depends on Solo deciding governance v2 design | `blocked-by:decision` | Common for architecture/design work. |
+| **Issue → Upstream** | ComeRosquillas #25 depends on FFS hub #189 | `blocked-by:upstream` | Cross-repo. Downstream project waits for hub decision. |
+| **Issue → External** | #200 depends on Squad CLI v0.9 release | `blocked-by:external` | Third-party dependency. Rare. Track in comments. |
+
+Generic labels avoid GitHub's 100-label limit. Specifics (which issue, which PR) go in the `## Dependencies` section of the issue body.
+
+### The "Prepare But Don't Merge" Rule
+
+**Exact semantics:**
+
+When an issue is labeled with `blocked-by:*`, the assigned agent may:
+
+**✅ ALLOWED ("Prepare"):**
+- Create a branch (`squad/{issue-number}-{slug}`)
+- Write tests (TDD approach — write failing tests for blocked feature)
+- Scaffold code structure (empty functions, interfaces, type definitions)
+- Write spike code to explore the problem space
+- Update documentation (README, CHANGELOG, ADRs)
+- Open a **Draft PR** with `[WIP]` prefix in title
+- Commit and push to branch (work is saved, not lost)
+
+**❌ FORBIDDEN (until blocker resolved):**
+- Mark PR as "Ready for review"
+- Merge to main (even if CI passes and reviews approve)
+- Deploy to production
+- Close the issue
+- Remove `blocked-by:*` label without confirming blocker is resolved
+
+**What "prepare" means in practice:**
+
+The goal is to do useful work that won't be wasted if the blocker decision changes direction. Tests are safest (they document expected behavior). Scaffolding is next safest (structure can be refactored). Full implementation is risky (may need to be rewritten).
+
+**Example: Issue #190 (Ralph implementation) blocked by #189 (priority system design)**
+
+While blocked, the agent may:
+1. Write test cases: "Ralph should process P0 issues first", "Ralph should skip blocked issues"
+2. Scaffold `ralph-priority-queue.ts` with function stubs
+3. Update `.github/agents/squad.agent.md` with placeholder sections
+4. Open Draft PR titled "[WIP] feat: priority-aware Ralph (blocked by #189)"
+
+The agent may NOT:
+1. Implement the full priority queue logic (design may change)
+2. Merge the PR (even if Solo reviews and approves it)
+3. Close #190 (work is not complete until blocker resolved)
+
+**How blocked state is tracked:**
+
+| State | Label | PR State | Actions |
+|-------|-------|----------|---------|
+| **Blocked** | `blocked-by:*` present | Draft PR or no PR | Agent prepares, does NOT merge |
+| **Unblocked** | `blocked-by:*` removed | Draft → Ready | Agent completes work, opens for review, merges after approval |
+| **Stale block** | `blocked-by:*` present, blocker closed >24 hours ago | Draft PR | Ralph detects and flags (see §7 Edge Cases) |
+
+**How to unblock:**
+
+1. **Manual:** Lead or assigned agent checks blocker status, confirms resolved, removes `blocked-by:*` label
+2. **Automated (future enhancement):** GitHub Action monitors `blocked-by:issue-N` labels, auto-removes when issue N closes
+3. **Ralph check:** Ralph's scan cycle (Step 2) checks `blocked-by:*` labels, reports stale blocks
+
+---
+
+## 3. Ralph Changes
+
+Ralph's current behavior (from squad.agent.md §Ralph — Work Monitor):
+
+**Current Step 1 (Scan for work):**
+- Untriaged issues (`squad` label, no `squad:{member}`)
+- Member-assigned issues (`squad:{member}`, still open)
+- Open PRs, Draft PRs
+- Review feedback, CI failures, Approved PRs
+
+**Current Step 2 (Categorize):**
+- Untriaged → Lead triages
+- Assigned → Spawn agent
+- Draft PRs → Check progress
+- Review feedback → Route to author
+- CI failures → Notify agent
+- Approved PRs → Merge
+
+**Current Step 3 (Act):**
+- Process one category at a time: Untriaged > Assigned > CI failures > Review feedback > Approved PRs
+- NO priority awareness
+- NO dependency checking
+
+### New Scan Logic (Priority-Aware)
+
+**Updated Step 1 (Scan for work):** Add priority and dependency filters to GitHub API calls.
+
+```bash
+# Untriaged issues (labeled squad but no squad:{member} sub-label)
+gh issue list --label "squad" --state open --json number,title,labels,assignees --limit 50
+
+# Member-assigned issues (labeled squad:{member}, still open)
+gh issue list --state open --json number,title,labels,assignees --limit 50 | # filter for squad:* labels
+
+# Blocked issues (has blocked-by:* label)
+gh issue list --state open --json number,title,labels --limit 50 | # filter for blocked-by:* labels
+
+# Open PRs from squad members
+gh pr list --state open --json number,title,author,labels,isDraft,reviewDecision --limit 50
+
+# Draft PRs (agent work in progress)
+gh pr list --state open --draft --json number,title,author,labels,checks --limit 50
+```
+
+**Key addition:** Ralph now fetches up to 50 items (was 20) to ensure P0 items aren't missed due to pagination.
+
+### New Step 2 (Categorize with Priority)
+
+Ralph categorizes work into **priority buckets** before processing:
+
+| Bucket | Filter | Processing Rule |
+|--------|--------|-----------------|
+| **P0 Active** | `priority:P0` + NOT `blocked-by:*` | Process FIRST. Hold all other work. |
+| **P0 Blocked** | `priority:P0` + `blocked-by:*` | Flag as critical blocker. Report to Lead immediately. |
+| **P1 Active** | `priority:P1` + NOT `blocked-by:*` | Process after P0, before P2. Parallel execution allowed. |
+| **P1 Blocked** | `priority:P1` + `blocked-by:*` | Prepare mode. Spawn agent with BLOCKED flag in prompt. |
+| **P2 Active** | `priority:P2` or NO priority label + NOT `blocked-by:*` | Standard queue. Process after P1. |
+| **P2 Blocked** | `priority:P2` + `blocked-by:*` | Prepare mode. Low priority for spawning. |
+| **P3 Active** | `priority:P3` + NOT `blocked-by:*` | Last in queue. Process only if no P0/P1/P2 work. |
+| **P3 Blocked** | `priority:P3` + `blocked-by:*` | Skip. Don't spawn until unblocked. |
+
+**New categories (added to existing):**
+
+| Category | Signal | Action | Priority |
+|----------|--------|--------|----------|
+| **P0 Blocker** | `priority:P0`, NOT blocked | 🚨 Process IMMEDIATELY. Hold all other assignments. Report to Lead. | Highest |
+| **P0 Blocked** | `priority:P0` + `blocked-by:*` | 🚨 CRITICAL: P0 is blocked. Report to Lead immediately. Investigate blocker. | Highest (alert only) |
+| **P1 Sprint Work** | `priority:P1`, NOT blocked | ⚡ Process after P0. Parallel spawns allowed. | High |
+| **Untriaged issues** | `squad` label, no `squad:{member}` label | Lead triages: reads issue, assigns `squad:{member}` label + priority | Medium |
+| **Assigned but unstarted** | `squad:{member}` label, no assignee or no PR, NOT blocked | Spawn the assigned agent to pick it up | Medium (sorted by priority) |
+| **Blocked work** | `blocked-by:*` label | Check blocker status. If resolved, remove label. If not, prepare mode (see §3.3). | Low (prepare only) |
+| **Draft PRs** | PR in draft from squad member | Check if agent needs to continue; if stalled, nudge | Low |
+| **Review feedback** | PR has `CHANGES_REQUESTED` review | Route feedback to PR author agent to address | Medium |
+| **CI failures** | PR checks failing | Notify assigned agent to fix, or create a fix issue | High (blocks merge) |
+| **Approved PRs** | PR approved, CI green, ready to merge | Merge and close related issue | Medium |
+| **No work found** | All clear | Report: "📋 Board is clear. Ralph is idling." Suggest `npx @bradygaster/squad-cli watch` for persistent polling. | N/A |
+
+**Processing order:** P0 Active > P0 Blocked (alert) > P1 Active > Untriaged > Assigned (by priority) > CI failures > Review feedback > Approved PRs > Blocked work (prepare) > Draft PRs > P3 Active
+
+### Dependency Checking Before Spawning
+
+**New Step 2.5 (Dependency Check):** Before spawning an agent for "Assigned but unstarted" work, Ralph checks for `blocked-by:*` labels.
+
+```javascript
+// Pseudocode for Ralph's dependency check
+function canSpawnAgent(issue) {
+  const blockedLabels = issue.labels.filter(l => l.startsWith('blocked-by:'));
+  
+  if (blockedLabels.length === 0) {
+    return { canSpawn: true, mode: 'normal' };
+  }
+  
+  // Issue is blocked — check if blocker is resolved
+  for (const label of blockedLabels) {
+    const blockerStatus = checkBlockerStatus(label, issue.body);
+    if (blockerStatus.isBlocking) {
+      return { 
+        canSpawn: true, 
+        mode: 'prepare', 
+        blocker: blockerStatus.blocker,
+        reason: blockerStatus.reason 
+      };
+    }
+  }
+  
+  // All blockers resolved — remove labels and spawn normally
+  removeBlockedByLabels(issue.number);
+  return { canSpawn: true, mode: 'normal' };
+}
+```
+
+**Blocker status check logic:**
+
+| Blocked By | Check | Resolved If |
+|------------|-------|-------------|
+| `blocked-by:issue` | Read issue body, extract issue number, fetch issue status | Linked issue is closed |
+| `blocked-by:pr` | Read issue body, extract PR number, fetch PR status | Linked PR is merged |
+| `blocked-by:decision` | Read issue body, check for decision file in `.squad/decisions/` | Decision file moved from `inbox/` to `decisions.md` (approved) |
+| `blocked-by:upstream` | Read issue body, extract upstream issue link, fetch status | Upstream issue is closed OR upstream PR is merged |
+| `blocked-by:external` | Read issue body, manual check only | Lead manually removes label when condition met |
+
+### What Ralph Does With Blocked Items
+
+| Priority | Blocked Status | Ralph Action |
+|----------|----------------|--------------|
+| **P0** | Blocked | 🚨 ALERT: Report to Lead immediately. "P0 item #N is blocked by {blocker}. This is a critical bottleneck." Do NOT spawn agent. |
+| **P1** | Blocked | Spawn agent in **prepare mode**. Add BLOCKED flag to spawn prompt (see §3.5). |
+| **P2** | Blocked | Spawn agent in **prepare mode** only if no active P0/P1 work. Otherwise skip. |
+| **P3** | Blocked | Skip. Do NOT spawn. Wait for blocker to resolve. |
+
+**Rationale:**
+- **P0 blocked** is a red flag — the highest priority item can't make progress. Lead must intervene.
+- **P1 blocked** should still prepare (tests, scaffolding) to stay ready for sprint completion.
+- **P2 blocked** can prepare if capacity allows, but it's not urgent.
+- **P3 blocked** is low priority — no point preparing until unblocked.
+
+### How Ralph Handles P0 Interrupts
+
+**Scenario:** Ralph is processing P2 work (3 agents spawned). A new P0 issue is created or an existing issue is re-labeled to P0.
+
+**Current behavior:** Ralph doesn't scan GitHub during a work-check cycle. It only scans at the start of each cycle (Step 1).
+
+**New behavior (P0 interrupt handling):**
+
+1. **Ralph checks GitHub at start of each cycle** (no change).
+2. **If P0 work is found:**
+   - **Complete in-flight work first** (don't kill running agents mid-task).
+   - **After in-flight work completes,** report: "🚨 P0 detected: {issue title}. Pausing all other work."
+   - **Process P0 work exclusively** until resolved.
+   - **Resume normal queue** after P0 is closed or transitioned to P1/P2.
+
+3. **If P0 blocked is found:**
+   - **Alert immediately** (don't wait for cycle to complete): "🚨 CRITICAL: P0 item #N is blocked by {blocker}. Lead intervention required."
+   - **Continue normal work** (no point stopping everything if the blocker can't be resolved immediately).
+   - **Lead must triage:** Either resolve the blocker (spawn agent to fix blocker), downgrade P0 to P1 (if not truly a blocker), or escalate to Founder (if T0 blocker).
+
+**No preemption:** Ralph does NOT kill running agents when P0 appears. Agents complete their current task, then Ralph switches to P0. This avoids wasted work and half-finished PRs.
+
+**Exception:** If user explicitly says "stop everything, P0 only", Ralph may mark in-flight work as Draft PRs and switch immediately.
+
+### Changes to Ralph's Board Format
+
+**Current board format (from squad.agent.md):**
+
+```
+🔄 Ralph — Work Monitor
+━━━━━━━━━━━━━━━━━━━━━━
+📊 Board Status:
+  🔴 Untriaged:    2 issues need triage
+  🟡 In Progress:  3 issues assigned, 1 draft PR
+  🟢 Ready:        1 PR approved, awaiting merge
+  ✅ Done:         5 issues closed this session
+
+Next action: Triaging #42 — "Fix auth endpoint timeout"
+```
+
+**New board format (priority-aware):**
+
+```
+🔄 Ralph — Work Monitor
+━━━━━━━━━━━━━━━━━━━━━━
+📊 Board Status (Priority Breakdown):
+
+  🚨 P0 BLOCKERS:     1 active, 0 blocked
+     #189 — Priority system design (T1, Solo) — IN PROGRESS
+
+  ⚡ P1 SPRINT:       3 active, 1 blocked
+     #190 — Ralph implementation (blocked by #189) — PREPARING
+     #191 — Label automation — READY TO START
+     #192 — Governance update — READY TO START
+
+  📋 P2 BACKLOG:      5 active, 2 blocked
+     #154 — Modularize game.js — IN PROGRESS
+     #155 — Mobile controls — ASSIGNED
+     #156 — High score leaderboard — BLOCKED by #189
+
+  💡 P3 NICE-TO-HAVE: 2 active, 1 blocked
+
+  🔴 Untriaged:      2 issues need triage
+  🟢 Ready to Merge: 1 PR approved (CI green)
+  ✅ Done:           5 issues closed this session
+
+Next action: Processing P0 #189 — Solo spawned
+```
+
+**Key additions:**
+1. **Priority breakdown section** (P0 > P1 > P2 > P3)
+2. **Blocked count per priority** (quick visibility into bottlenecks)
+3. **Status indicators** (IN PROGRESS, PREPARING, READY TO START, BLOCKED by #N)
+4. **Next action clarifies priority** ("Processing P0..." vs "Triaging...")
+
+**Condensed format (when board is large):**
+
+```
+🔄 Ralph — Work Monitor
+━━━━━━━━━━━━━━━━━━━━━━
+📊 Board: 1 P0 | 4 P1 (1 blocked) | 7 P2 (2 blocked) | 3 P3 | 2 untriaged | 1 ready to merge
+
+Next: 🚨 P0 #189 — Priority system design (Solo)
+```
+
+---
+
+## 4. Lead Triage Changes
+
+Lead triage currently evaluates (from routing.md):
+
+1. Is this well-defined?
+2. Does it follow existing patterns?
+3. Does it need design judgment?
+4. Is it security-sensitive?
+5. Is it medium complexity with specs?
+
+Then assigns `squad:{member}` label and posts triage notes.
+
+### New Triage Checklist (7 Points)
+
+**Extended checklist:**
+
+1. **Is this well-defined?** (no change)
+2. **Does it follow existing patterns?** (no change)
+3. **Does it need design judgment?** (no change)
+4. **Is it security-sensitive?** (no change)
+5. **Is it medium complexity with specs?** (no change)
+6. **🆕 What is the priority?** (P0/P1/P2/P3) — When must this complete? What does it block?
+7. **🆕 What are the dependencies?** (blocked-by) — What must finish before this can merge?
+
+### When and How to Assign Priority Labels
+
+**Decision tree for priority assignment:**
+
+| Question | If Yes → | If No → |
+|----------|----------|---------|
+| Does this block production or prevent all progress? | P0 | Continue |
+| Is this a sprint commitment or critical for current milestone? | P1 | Continue |
+| Is this low-impact polish or future work? | P3 | P2 (default) |
+
+**Examples:**
+
+| Issue | Priority | Reasoning |
+|-------|----------|-----------|
+| "Game crashes on level 3" | P0 if in production, P1 if in dev | Production = blocker. Dev = sprint-critical. |
+| "Implement ghost AI (GDD M1 feature)" | P1 | Sprint commitment in GDD. |
+| "Refactor game.js monolith" | P2 | Important but not urgent. |
+| "Add dark mode" | P3 | Nice-to-have polish. |
+| "Typo in README" | P3 | Cosmetic. |
+
+**Guideline:** When in doubt, default to P2. Over-prioritizing (everything is P0) defeats the purpose. Under-prioritizing (everything is P3) creates false urgency. P2 is the working default.
+
+### When and How to Identify Dependencies
+
+**Decision tree for dependency identification:**
+
+| Question | If Yes → | Action |
+|----------|----------|--------|
+| Does this require a design decision (T0 or T1)? | Yes | Add `blocked-by:decision-{tier}` label. Document which decision in body. |
+| Does this build on another open issue? | Yes | Add `blocked-by:issue` label. Link to prerequisite issue in body. |
+| Does this require a PR to merge first? | Yes | Add `blocked-by:pr` label. Link to PR in body. |
+| Does this depend on hub/upstream work? | Yes | Add `blocked-by:upstream` label. Link to hub issue in body. |
+| Does this depend on third-party (Squad CLI, external library)? | Yes | Add `blocked-by:external` label. Describe in body. |
+
+**How to document dependencies in issue body:**
+
+During triage, the Lead adds a `## Dependencies` section to the issue body:
+
+```markdown
+## Dependencies
+
+**Blocked by:**
+- #189 (Priority system design — T1 decision by Solo)
+- Decision: governance.md §2 update must be approved before Ralph implementation
+
+**Blocks:**
+- #190 (Ralph implementation)
+- #191 (Label automation)
+
+**Prepare mode allowed:** Yes
+  ✅ Write tests for priority queue behavior
+  ✅ Scaffold ralph-priority-queue.ts with function stubs
+  ✅ Update squad.agent.md with placeholder sections
+  ❌ Do NOT implement full priority logic (design may change)
+  ❌ Do NOT merge PR until #189 approved
+```
+
+**Triage template (updated):**
+
+```markdown
+## Triage Notes
+
+**Squad member:** {member}
+**Complexity:** {low/medium/high}
+**Priority:** P{0-3} — {reasoning}
+**Dependencies:** {none | blocked-by:* labels}
+**@copilot suitability:** 🟢 good fit / 🟡 needs review / 🔴 not suitable
+**Estimated effort:** {small/medium/large}
+
+{additional context}
+```
+
+### Default Priority If None Assigned
+
+**Rule:** If an issue has no `priority:*` label after triage, Ralph treats it as **P2 (Normal Backlog)**.
+
+**Rationale:** P2 is the working default. Most issues are normal backlog work. P0/P1 are exceptions that must be explicitly flagged. P3 is explicitly deprioritized.
+
+**Exception:** Untriaged issues (no `squad:{member}` label yet) have no priority until the Lead triages them. They appear in Ralph's "Untriaged" category, which is processed after P0/P1 but before P2.
+
+---
+
+## 5. Label System
+
+### Exact Label Names and Colors
+
+**Priority labels:**
+
+| Label | Color | Description |
+|-------|-------|-------------|
+| `priority:P0` | `#d73a4a` (red) | Blocker — nothing advances without this |
+| `priority:P1` | `#ff9800` (orange) | Sprint-critical — affects current sprint |
+| `priority:P2` | `#0366d6` (blue) | Normal backlog |
+| `priority:P3` | `#6c757d` (gray) | Nice-to-have |
+
+**Dependency labels:**
+
+| Label | Color | Description |
+|-------|-------|-------------|
+| `blocked-by:issue` | `#b60205` (dark red) | Blocked by another issue (see body) |
+| `blocked-by:pr` | `#b60205` (dark red) | Blocked by a PR merge (see body) |
+| `blocked-by:decision` | `#b60205` (dark red) | Blocked by a pending decision (see body) |
+| `blocked-by:upstream` | `#b60205` (dark red) | Blocked by hub/parent repo work (see body) |
+| `blocked-by:external` | `#b60205` (dark red) | Blocked by third-party (see body) |
+
+**Rationale for dark red:** `blocked-by:*` labels are alarm signals. They indicate stalled work. Dark red makes them visually distinct from `priority:P0` (bright red = urgent, dark red = blocked).
+
+### Hub-Level vs Project-Level Labels (Zone B Consideration)
+
+**Zone B rule (from governance.md §3):** Hub sets defaults, projects may extend but not weaken.
+
+| Label Type | Hub-Level (Zone A) | Project-Level (Zone B) |
+|------------|---------------------|------------------------|
+| **Priority (P0-P3)** | Required. All repos inherit. | Strict P0-P3 only. No extensions, no suffixes. Projects inherit hub priority labels exactly as defined. |
+| **Dependency (blocked-by:*)** | Required. All repos inherit. | May add project-specific blockers (blocked-by:design-doc, blocked-by:asset) if needed. |
+| **Squad (squad, squad:{member})** | Required. All repos inherit. | May add project-specific squad labels (squad:artist, squad:sound-designer) for local agents. |
+
+**Enforcement:**
+1. **Hub labels are authoritative.** If a project removes or renames `priority:P0`, sync must fail (CI check).
+2. **Project labels are extensions.** Projects may add `priority:P1-hotfix` (maps to P1) or `blocked-by:asset` (project-specific blocker).
+3. **Sync workflow validates.** `.github/workflows/sync-squad-labels.yml` checks that all hub labels exist in project repos. Does NOT remove project-specific labels.
+
+**RESOLVED (Founder decision):** Strict P0-P3 only. No extensions allowed. No `priority:P1-content` or similar suffixes. Zone B projects inherit hub priority labels exactly. This prevents priority inflation and ensures consistent semantics across all repos.
+
+### Label Automation Changes (sync-squad-labels.yml)
+
+**Current workflow:** `.github/workflows/sync-squad-labels.yml` reads `squad.labels.json` (if it exists) and syncs labels to the repo.
+
+**Changes needed:**
+
+1. **Add priority and dependency labels to `squad.labels.json`** in FFS hub repo.
+
+```json
+{
+  "labels": [
+    {
+      "name": "priority:P0",
+      "color": "d73a4a",
+      "description": "Blocker — nothing advances without this"
+    },
+    {
+      "name": "priority:P1",
+      "color": "ff9800",
+      "description": "Sprint-critical — affects current sprint"
+    },
+    {
+      "name": "priority:P2",
+      "color": "0366d6",
+      "description": "Normal backlog"
+    },
+    {
+      "name": "priority:P3",
+      "color": "6c757d",
+      "description": "Nice-to-have"
+    },
+    {
+      "name": "blocked-by:issue",
+      "color": "b60205",
+      "description": "Blocked by another issue (see body)"
+    },
+    {
+      "name": "blocked-by:pr",
+      "color": "b60205",
+      "description": "Blocked by a PR merge (see body)"
+    },
+    {
+      "name": "blocked-by:decision",
+      "color": "b60205",
+      "description": "Blocked by a pending decision (see body)"
+    },
+    {
+      "name": "blocked-by:upstream",
+      "color": "b60205",
+      "description": "Blocked by hub/parent repo work (see body)"
+    },
+    {
+      "name": "blocked-by:external",
+      "color": "b60205",
+      "description": "Blocked by third-party (see body)"
+    }
+  ]
+}
+```
+
+2. **Update `sync-squad-labels.yml` to validate priority/dependency labels** in project repos.
+
+Add a validation step:
+
+```yaml
+- name: Validate Priority and Dependency Labels
+  run: |
+    # Check that all hub-required labels exist in project repo
+    for label in "priority:P0" "priority:P1" "priority:P2" "priority:P3" \
+                 "blocked-by:issue" "blocked-by:pr" "blocked-by:decision" \
+                 "blocked-by:upstream" "blocked-by:external"; do
+      if ! gh label list --json name --jq '.[] | .name' | grep -q "^$label$"; then
+        echo "ERROR: Required label '$label' missing from project repo"
+        exit 1
+      fi
+    done
+```
+
+3. **Sync workflow runs on schedule** (existing behavior: daily cron or on `squad.labels.json` changes).
+
+**No changes to manual labeling:** Developers and agents can still manually add/remove labels via GitHub UI or `gh` CLI. The sync workflow only enforces that hub-required labels exist.
+
+---
+
+## 6. Governance Updates
+
+### Exact Text Changes Needed
+
+**Location:** governance.md §2 (Approval Tiers)
+
+**Addition:** New subsection after §2 "Approval Tiers", before §3 "Autonomy Zones".
+
+---
+
+**PROPOSED TEXT FOR GOVERNANCE.MD:**
+
+---
+
+## 2.5. Execution Priority
+
+Approval Tiers (§2) determine **who decides**. Execution Priority determines **when work runs**. These are independent axes.
+
+### Priority Levels
+
+| Priority | Name | Definition | Execution Rule |
+|----------|------|------------|----------------|
+| **P0** | Blocker | Nothing else advances until this is resolved. System-wide halt. | Ralph processes FIRST. Holds all other assignments until P0 is resolved or transitioned. |
+| **P1** | Sprint-Critical | Must complete in current sprint. Directly blocks sprint goals. | Ralph processes after P0, before P2. Parallel execution allowed. |
+| **P2** | Normal Backlog | Standard work queue. Important but not time-sensitive. | Ralph processes in FIFO order. **Default priority if none assigned.** |
+| **P3** | Nice-to-Have | Low-impact improvements. Process when capacity available. | Ralph processes last. May be deferred indefinitely. |
+
+### Tier ≠ Priority
+
+| Example | Tier | Priority | Explanation |
+|---------|------|----------|-------------|
+| Create new game repo | T0 | P2 | Founder approval required (T0), but scheduled for Q2 (P2). High authority, low urgency. |
+| Production bug in game | T2 | P0 | Agent has authority (T2), but it's a blocker (P0). Low authority, high urgency. |
+| Governance v2 design | T1 | P0 | Solo decides (T1), but 3 agents are blocked waiting (P0). Medium authority, high urgency. |
+
+### Priority Assignment
+
+The **Lead** (Solo) assigns priority during triage. Default: P2 if none assigned.
+
+**Decision tree:**
+
+1. Does this block production or prevent all progress? → **P0**
+2. Is this a sprint commitment or critical for current milestone? → **P1**
+3. Is this low-impact polish or future work? → **P3**
+4. Otherwise → **P2** (default)
+
+### Dependencies and Blocked Work
+
+Issues may be blocked by decisions, other issues, PRs, or upstream work. Blocked issues are labeled with `blocked-by:*` (see routing.md for dependency model).
+
+**Prepare-but-don't-merge rule:** When an issue is blocked, the assigned agent may:
+
+✅ **Allowed (Prepare):**
+- Write tests (TDD approach)
+- Scaffold code structure (empty functions, interfaces)
+- Write spike code to explore problem space
+- Open Draft PR with `[WIP]` prefix
+
+❌ **Forbidden (until blocker resolved):**
+- Mark PR as Ready for review
+- Merge to main
+- Close the issue
+
+**Rationale:** Agents can make progress on blocked work (tests, scaffolding) without wasting effort if the blocker decision changes direction.
+
+### Priority and Emergency Authority
+
+Emergency Authority (§4) overrides Priority. A production outage triggers Emergency Authority (immediate fix, retroactive review), not P0 (which would wait for next Ralph cycle). After emergency fix merges, follow-up work is automatically labeled P1 (sprint-critical). Lead may escalate to P0 if truly blocking.
+
+**Rule:** Emergency Authority is for active production crises requiring immediate action. P0 is for blocking work that prevents the team from making progress. They rarely overlap.
+
+---
+
+**END OF PROPOSED TEXT**
+
+---
+
+### Where Priority Fits in the Tier Decision Matrix
+
+**No changes to Tier Decision Matrix (governance.md §2).** Tiers remain unchanged. Priority is orthogonal.
+
+**New section in routing.md:** Lead triage checklist extended to include priority and dependency evaluation (see §4 above).
+
+### Any New Guardrails Needed
+
+**Proposed new guardrails:**
+
+| Guardrail | Rule |
+|-----------|------|
+| **G13** | Priority inflation guardrail (advisory). Ralph warns when >20% of open issues are labeled P0 or P1. Lead decides whether to re-triage. No CI enforcement. |
+| **G14** | Blocked issues must have a `## Dependencies` section in the issue body documenting the blocker and what "prepare mode" work is allowed. |
+| **G15** | P0 items blocked for >3 days trigger escalation. Lead must intervene: resolve blocker, downgrade priority, or escalate to Founder. |
+
+**Rationale:**
+
+- **G13:** Prevents "everything is urgent" syndrome. If 20%+ of the backlog is P0/P1, priorities have lost meaning. Lead must re-calibrate.
+- **G14:** Ensures blocked work is actionable. Agents need to know what they can do while blocked.
+- **G15:** P0 should resolve quickly (by definition, it's blocking everything). If a P0 is blocked for 3+ days, something is wrong (bad priority assignment, unresolved blocker, or legitimate escalation).
+
+---
+
+## 7. Edge Cases & Risks
+
+### Circular Dependencies
+
+**Problem:** Issue #A depends on #B, #B depends on #C, #C depends on #A. Nobody can start.
+
+**Detection:**
+1. **Manual:** Lead notices during triage ("This issue is blocked by #B, but #B is blocked by this issue").
+2. **Automated (future):** GitHub Action or Ralph enhancement that builds a dependency graph and detects cycles.
+
+**Resolution:**
+1. **Break the cycle:** One issue is designated as the "entry point" — remove its `blocked-by:*` label and start there.
+2. **Escalate to Lead:** If cycle is legitimate (architectural deadlock), Solo must redesign the work breakdown.
+3. **Immediate action:** If P0 is involved in a cycle, this is a CRITICAL failure. Lead must resolve within 24 hours or escalate to Founder.
+
+**Example:**
+- #189 (priority system design) depends on #190 (Ralph implementation) for testing
+- #190 depends on #189 for design spec
+- **Resolution:** Remove #190's dependency on #189. Ralph implementation can scaffold tests without full design. Design adjusts based on implementation feedback.
+
+### Cross-Repo Dependencies (ComeRosquillas Blocked by FFS Decision)
+
+**Problem:** Game repo (ComeRosquillas) has an issue blocked by a hub decision (FFS #189). How is this tracked?
+
+**Current model:** `blocked-by:upstream` label + comment linking to hub issue.
+
+**Process:**
+
+1. **Game repo issue #25:** "Implement priority-aware work queue in ComeRosquillas"
+   - Label: `blocked-by:upstream`
+   - Body: "Blocked by FFS hub #189 (priority system design). Cannot implement until hub governance defines priority semantics."
+
+2. **Hub issue #189:** "Design priority system"
+   - Body: "Blocks downstream: ComeRosquillas #25"
+
+3. **Ralph in ComeRosquillas:** Sees `blocked-by:upstream`, checks comment, realizes blocker is in FFS hub. Reports: "Blocked by upstream hub #189."
+
+4. **Ralph in FFS hub:** Processes #189 (P0). When closed, no automatic unlabeling of downstream ComeRosquillas #25.
+
+5. **Manual unblock:** Lead (or ComeRosquillas agent) removes `blocked-by:upstream` label from ComeRosquillas #25 after confirming FFS #189 is resolved.
+
+**Risk:** Stale `blocked-by:upstream` labels (FFS #189 closes, but ComeRosquillas #25 still says blocked).
+
+**Mitigation:**
+1. **Ralph checks blocker status:** When Ralph scans ComeRosquillas and finds `blocked-by:upstream`, it parses the comment, extracts the hub issue link, and checks if it's closed. If closed >24 hours ago, Ralph flags: "⚠️ Stale blocker: Upstream FFS #189 closed >24 hours ago, but #25 still blocked."
+2. **Weekly grooming:** Lead reviews all `blocked-by:*` labels weekly (manual ceremony). Remove stale labels.
+3. **GitHub Action (future):** Automated cron job that checks `blocked-by:issue` and `blocked-by:upstream` labels, flags stale blocks as comments on the issue.
+
+### P0 Declared by Wrong Agent (Who Can Set P0?)
+
+**Problem:** An agent labels their own issue as P0 to get it prioritized. Priority inflation.
+
+**Governance rule:**
+
+| Role | Can Assign P0? | Can Assign P1? | Can Assign P2/P3? |
+|------|----------------|----------------|-------------------|
+| **Lead (Solo)** | ✅ Yes | ✅ Yes | ✅ Yes |
+| **Producer (Mace)** | ⚠️ With Lead approval | ✅ Yes (sprint scope) | ✅ Yes |
+| **Assigned agent** | ❌ No — escalate to Lead | ❌ No — escalate to Lead | ✅ Yes (self-prioritize within backlog) |
+| **Founder (Joaquín)** | ✅ Yes (emergency override) | ✅ Yes | ✅ Yes |
+
+**Rationale:**
+- **P0 is system-wide.** Only Lead (Solo) or Founder can declare a blocker that halts all other work.
+- **P1 is sprint-scoped.** Producer (Mace) owns sprint scope, so can assign P1 (with Lead alignment on cross-project impact).
+- **P2/P3 are self-service.** Agents can prioritize their own backlog items as P2 (normal) or P3 (low).
+
+**Enforcement:**
+1. **GitHub Action (future):** CI check that fails PRs adding `priority:P0` label without Lead approval.
+2. **Ralph validation:** When Ralph scans and finds P0, it checks who labeled it (GitHub API audit log). If not Lead/Founder, Ralph flags: "⚠️ Unauthorized P0: #N labeled by {agent}, not Lead. Awaiting triage."
+3. **Retroactive correction:** Lead reviews P0 labels weekly. Demote false P0s to P1/P2.
+
+**Exception:** Emergency Authority (governance §4) allows any agent to fix production outages immediately. After the fix, follow-up work is automatically labeled P1 (sprint-critical). Lead may escalate to P0 if truly blocking, or downgrade to P2 if minor.
+
+### Priority Inflation ("Everything is P0")
+
+**Problem:** Over time, more and more issues get labeled P0 or P1, defeating the purpose of prioritization.
+
+**Guardrail G13:** If >20% of open issues are labeled P0 or P1, the Lead must re-triage and demote non-critical items.
+
+**Monitoring:**
+1. **Ralph weekly report:** "📊 Priority distribution: 12 P0 (15%), 30 P1 (38%), 40 P2 (50%), 5 P3 (6%). ⚠️ P1 exceeds threshold — re-triage recommended."
+2. **Lead reviews:** Solo scans P0/P1 labels weekly during grooming. Demote items that aren't truly blocking/sprint-critical.
+3. **GitHub Action (future):** Weekly cron job that calculates priority distribution, opens issue if thresholds exceeded.
+
+**Threshold tuning:** 20% is a starting point. Adjust based on team size and sprint length. Small teams may tolerate 30% P0/P1 (short sprints, high urgency). Large teams should aim for <10% P0/P1 (long sprints, more parallelism).
+
+### Stale Blocked-By Labels (Dependency Resolved But Label Not Removed)
+
+**Problem:** Issue #190 is blocked by #189. #189 closes. Nobody removes `blocked-by:issue` label from #190. Ralph keeps treating it as blocked.
+
+**Detection:**
+
+1. **Ralph scans blocked issues:** For each `blocked-by:*` label, Ralph checks if the blocker is resolved (see §3.3 Dependency Check).
+2. **Stale block threshold:** If blocker closed >24 hours ago and label still exists, Ralph flags: "⚠️ Stale blocker: #190 blocked by #189, but #189 closed >24 hours ago. Recommend unblocking."
+3. **Weekly grooming:** Lead reviews all `blocked-by:*` labels. Remove stale labels manually.
+
+**Auto-removal (active — Founder approved):**
+
+GitHub Action that runs daily:
+
+```yaml
+name: Clean Stale Blockers
+
+on:
+  schedule:
+    - cron: "0 12 * * *"  # Daily at noon UTC
+
+jobs:
+  clean-stale-blockers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find stale blocked-by labels
+        run: |
+          # For each issue with blocked-by:issue label
+          # Parse issue body, extract blocker issue number
+          # Check if blocker is closed
+          # If closed >24 hours ago, remove label and comment:
+          # "🤖 Auto-unblocked: Blocker #N closed 24+ hours ago."
+```
+
+**Manual override:** If Lead intentionally keeps `blocked-by:*` label after blocker closes (e.g., waiting for deployment, not just merge), add comment: "HOLD: Do not auto-remove. Waiting for production deployment of #N."
+
+---
+
+## Summary of Changes Required
+
+### Documentation Updates (T1 decisions by Solo)
+
+| File | Change | Tier |
+|------|--------|------|
+| `governance.md` | Add §2.5 "Execution Priority" (full text in §6 above) | T1 |
+| `governance.md` | Add guardrails G13, G14, G15 | T1 |
+| `routing.md` | Update Lead triage checklist (add priority + dependency steps) | T1 |
+| `.github/agents/squad.agent.md` | Update Ralph reference (priority-aware scan logic, dependency checking, board format) | T1 |
+| `.squad/templates/ralph-reference.md` | Full rewrite to reflect priority system (if this file exists) | T1 |
+| `.squad/templates/triage-template.md` | Add priority and dependency fields | T1 |
+
+### Label System (T1 decisions by Solo)
+
+| Action | Details | Tier |
+|--------|---------|------|
+| Create `squad.labels.json` | Add 9 labels (4 priority + 5 blocked-by) with colors and descriptions | T1 |
+| Update `sync-squad-labels.yml` | Add validation step for required labels | T1 |
+| Run label sync | Apply labels to FFS hub and all downstream repos | T1 |
+
+### Ralph Implementation (T2 work, blocked by this design)
+
+| Issue | Work | Tier | Blocked By |
+|-------|------|------|------------|
+| #190 | Implement priority-aware scan logic in Ralph | T2 | This design (#189) |
+| #190 | Implement dependency checking before spawning | T2 | This design (#189) |
+| #190 | Update Ralph board format | T2 | This design (#189) |
+| #191 | Create `squad.labels.json` and sync labels | T2 | This design (#189) |
+
+**All T2 work may PREPARE (tests, scaffolding) but NOT MERGE until this design is approved (T1 decision).**
+
+---
+
+## Resolved Questions (Founder Decisions)
+
+All design questions have been resolved by Founder review:
+
+1. **Priority label extensions** — **RESOLVED: Strict P0-P3 only.** No extensions allowed. Zone B projects inherit hub priority labels exactly as defined.
+
+2. **Emergency follow-up priority** — **RESOLVED: Follow-up inherits P1 automatically.** Lead may escalate to P0 if truly blocking, or downgrade to P2 if minor.
+
+3. **G13 priority inflation guardrail** — **RESOLVED: Advisory only.** Ralph warns when >20% P0/P1. Lead decides whether to re-triage. No CI enforcement.
+
+4. **Stale blocked-by label removal** — **RESOLVED: Ralph auto-unblocks after 24h.** When a blocker closes, Ralph auto-removes `blocked-by:*` label after 24 hours and comments "🤖 Auto-unblocked: #{blocker} closed". Lead can re-block if needed.
+
+5. **P0 interrupt behavior** — **RESOLVED: Complete current cycle, then P0 exclusive.** Running agents finish their current task. No preemption, no agent killing mid-task.
+
+---
+
+## Approval and Next Steps
+
+**This is a T1 design decision.** Solo (Lead) has full authority to approve and implement. Founder has resolved all open questions.
+
+**Next steps:**
+
+1. **Solo approves** (T1 authority) and moves this document from `inbox/` to active `decisions.md`.
+2. **Ralph + Label implementation spawned** (#190, #191) as T2 work.
+
+**Success criteria:**
+- Ralph processes P0 items first (verified via board status reports)
+- Blocked issues don't spawn agents prematurely (verified via Ralph logs)
+- Priority distribution stays healthy (<20% P0/P1) after 2 sprints
+- Zero stale blockers after 1 month (24h auto-unblock effective)
+
+---
+
+**Document Status:** Final — Founder decisions incorporated, ready for T1 approval  
+**Next Action:** Solo approves (T1) and moves to active decisions  
+**Approval Authority:** T1 (Solo decides — Founder input received and incorporated)
+

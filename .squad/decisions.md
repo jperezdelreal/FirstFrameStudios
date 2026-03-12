@@ -80,6 +80,17 @@ Two-file structure for skills: SKILL.md (max 5KB) with frontmatter, core pattern
 
 ## Active Process Decisions
 
+### Priority & Dependency System (P0-P3)
+**By:** Solo | **Date:** 2026-03-12 | **Status:** Active (T1, Founder-reviewed)
+Priority (P0-P3) determines execution order; Tiers (T0-T3) determine approval authority. Independent axes.
+- P0=Blocker, P1=Sprint-critical, P2=Normal (default), P3=Nice-to-have
+- Dependencies tracked via `blocked-by:*` labels + issue body `## Dependencies` section
+- Blocked work: prepare (tests, scaffold, draft PR) but don't merge until blocker resolved
+- Emergency follow-up auto-labeled P1; Lead can bump to P0
+- Ralph auto-unblocks after 24h when blocker closes; Lead can re-block
+- G13: Advisory inflation warning at >20% P0/P1
+- Full design: `.squad/decisions-archive.md`
+
 ### PR Convention
 All PRs must include `Closes #N` in body. Branch naming: `squad/{issue-number}-{slug}`.
 
