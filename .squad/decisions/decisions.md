@@ -7,6 +7,37 @@ This log captures architectural, process, and operational decisions made across 
 
 ## Active Decisions
 
+### 2026-03-12T18:17Z: User directive — Premium barra libre
+**By:** Joaquin Perez del Real (via Copilot)
+**Status:** APPROVED
+**What:** Premium requests (premium models) have unlimited budget — use them freely whenever it makes sense. This applies to ALL FFS repos (Hub, ComeRosquillas, Flora, ffs-squad-monitor). No need to justify or hold back.
+**Why:** User request — captured for team memory
+
+---
+
+### 2026-03-12T18:00Z: Garden UI/HUD Architecture Decision
+**By:** Erika (Systems Dev)
+**Status:** APPROVED
+**Context:** Issue #9 — Garden UI/HUD Implementation
+**What:** Implemented comprehensive UI system for FLORA's garden scene with 5 new components (HUD, SeedInventory, PlantInfoPanel, DaySummary, PauseMenu) following consistent architectural pattern.
+**Decision:**
+- Container wrappers with position() and getContainer() methods
+- destroy() for cleanup
+- Semi-transparent panels (alpha 0.9-0.95)
+- Rounded corners (8-16px radius)
+- Color-blind friendly: Icons + patterns alongside colors
+- Keyboard shortcuts centralized in setupKeyboardShortcuts()
+- UI lifecycle managed in GardenScene (init, update, destroy)
+
+**Alternatives Rejected:**
+- Separate UI Scene Layer (adds complexity)
+- React/DOM-based UI (PixiJS native preferred)
+- Single monolithic HUD class (breaks SRP)
+
+**Why:** Complete UI coverage for core gameplay loop with excellent UX, accessibility, and extensibility.
+
+---
+
 ### 2026-03-12T15:51Z: Founder directive — Remove games/ComeRosquillas/ from Hub
 **By:** Joaquin Perez del Real (via Copilot)
 **Status:** APPROVED
