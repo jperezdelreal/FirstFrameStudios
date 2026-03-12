@@ -102,3 +102,30 @@
 **2026-03-11: ralph-watch v2** — Added failure alerts (tools/logs/alerts.json), activity monitor (PowerShell runspace), multi-repo defaults, metrics parsing. 233→454 lines.
 
 **2026-07-25: Priority Labels** — Created P0-P3 + blocked-by:* labels. Key lesson: sync-squad-labels.yml has hardcoded labels that override — config files only work if workflows consume them.
+
+---
+
+## 2026-03-12: R3 Cleanup — Multi-Repo Optimization
+
+**Tasks Completed (All 5):**
+
+1. **R3.1: Delete merged branch (Monitor)** — Removed `squad/13-real-data` locally and remotely after PR #16 merge.
+
+2. **R3.5: Regenerate squad.labels.json (Hub)** — Created `.squad/squad.labels.json` documenting all standard labels from sync-squad-labels.yml workflow. Includes 7 categories: squad, priority, blocked_by, go, release, type, signal. Also notes that member-specific labels are auto-generated.
+
+3. **R3.6: Clean obsolete labels (Flora + ComeRosquillas)** — Deleted 8 Star Wars agent labels (solo, chewie, lando, wedge, greedo, tarkin, jango, yoda/ackbar) from each repo. Flora now has only local squad members: oak, brock, erika, misty, sabrina + copilot base label. ComeRosquillas now has: moe, barney, lenny, nelson + ralph + copilot base label.
+
+4. **R3.8: Update squad.config.ts (Hub)** — Removed `games/**` from `allowedWritePaths` (games code moved to separate repos). Updated routing rules to current active agents: feature-dev→@solo/@jango/@mace, bug-fix→@jango/@mace, testing→@mace (removed retired agents @chewie, @lando, @ackbar).
+
+5. **R3.10: Rename master → main (Monitor)** — Completed branch migration: local rename, push new main, set GitHub default, delete remote master, fix local/remote HEAD tracking. Monitor is now fully on main.
+
+**Key Learnings:**
+- Branch default changes require API call before deletion (can't delete current default)
+- Label cleanup across repos benefited from listing first to avoid errors on missing labels
+- Config files (squad.config.ts) require careful agent roster maintenance — used current team (Solo, Jango, Mace)
+
+**Commits:**
+- Hub: `86db7b5` — squad.labels.json + squad.config.ts updates
+- Monitor: No additional commits (already on main, branch deletions complete)
+- Flora: No commits (label deletions only)
+- ComeRosquillas: No commits (label deletions only)
