@@ -655,6 +655,125 @@ function Invoke-UpstreamSync {
     }
 }
 
+# --- Helper: Check project lifecycle and trigger ceremonies ---
+# Runs before issue scan each round. For each repo with project-state.json,
+# checks if Sprint Planning ceremony needs to be triggered.
+function Check-ProjectLifecycle {
+    param([string[]]$RepoNames)
+
+    foreach ($repoName in $RepoNames) {
+        $ghRepo = $repoGitHubMap[$repoName]
+        if (-not $ghRepo) { continue }
+
+        # Hub exception: FirstFrameStudios does not use lifecycle
+        if ($repoName -eq "FirstFrameStudios") { continue }
+
+        $owner, $repo = $ghRepo -split '/'
+
+        # Fetch project-state.json from repo
+        try {
+            $stateB64 = gh api "repos/$ghRepo/contents/.squad/project-state.json" --jq '.content' 2>$null
+            if (-not $stateB64 -or $LASTEXITCODE -ne 0) { continue }
+        } catch { continue }
+
+        try {
+            $stateRaw = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($stateB64))
+            $state = $stateRaw | ConvertFrom-Json
+        } catch {
+            Write-Host "   [lifecycle] $repoName -- failed to parse project-state.json, skipping" -ForegroundColor Yellow
+            continue
+        }
+
+        $phase = $state.phase
+        $sprint = [int]$state.sprint
+        $designDoc = $state.design_doc
+        Write-Host "   [lifecycle] $repoName -- phase=$phase, sprint=$sprint" -ForegroundColor DarkGray
+
+        # Find Lead from team.md
+        $leadName = "solo"
+        try {
+            $teamB64 = gh api "repos/$ghRepo/contents/.squad/team.md" --jq '.content' 2>$null
+            if ($teamB64 -and $LASTEXITCODE -eq 0) {
+                $teamRaw = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($teamB64))
+                # Look for Lead role in Members table: | Name | Role | ...
+                # Match line with "Lead" in a table row
+                if ($teamRaw -match '(?m)\|\s*\*{0,2}(\w+)\*{0,2}\s*\|[^|]*Lead') {
+                    $leadName = $Matches[1].ToLower()
+                }
+            }
+        } catch {
+            # Default to solo if team.md fetch fails
+        }
+
+        if ($phase -eq "closeout") {
+            Write-Host "   [lifecycle] $repoName -- closeout phase, no auto action" -ForegroundColor DarkGray
+            continue
+        }
+
+        if ($phase -eq "sprint-planning") {
+            # Check if a ceremony issue already exists
+            $existingCeremony = gh issue list -R $ghRepo --state open --search "[CEREMONY]" --json title --limit 10 2>$null
+            $hasExisting = $false
+            if ($existingCeremony) {
+                $parsed = $existingCeremony | ConvertFrom-Json -ErrorAction SilentlyContinue
+                foreach ($iss in $parsed) {
+                    if ($iss.title -match '^\[CEREMONY\]|^\[ROADMAP\]') { $hasExisting = $true; break }
+                }
+            }
+            if (-not $hasExisting) {
+                $nextSprint = $sprint + 1
+                $body = "Sprint Planning ceremony triggered. Lead: read the design doc at ``$designDoc``, compare with open issues, create Sprint $nextSprint issues. See .squad/ceremonies.md for the full process."
+                $labels = "squad,squad:$leadName,ceremony:sprint-planning,go:ready"
+                Write-Host "   [lifecycle] $repoName -- creating Sprint Planning ceremony issue" -ForegroundColor Cyan
+                if (-not $DryRun) {
+                    gh issue create -R $ghRepo --title "[CEREMONY] Sprint Planning" --body $body --label $labels 2>$null
+                } else {
+                    Write-Host "   [lifecycle] [DRY RUN] Would create: [CEREMONY] Sprint Planning (labels: $labels)" -ForegroundColor Yellow
+                }
+            }
+        }
+        elseif ($phase -eq "sprinting") {
+            # Check if all sprint:N issues are closed
+            $sprintLabel = "sprint:$sprint"
+            $openIssues = gh issue list -R $ghRepo --state open --label $sprintLabel --json number --limit 1 2>$null
+            $hasOpen = $false
+            if ($openIssues) {
+                $parsed = $openIssues | ConvertFrom-Json -ErrorAction SilentlyContinue
+                if ($parsed -and $parsed.Count -gt 0) { $hasOpen = $true }
+            }
+
+            if (-not $hasOpen) {
+                Write-Host "   [lifecycle] $repoName -- all sprint:$sprint issues closed, transitioning to sprint-planning" -ForegroundColor Cyan
+
+                if (-not $DryRun) {
+                    # Fetch current file SHA for update
+                    $fileMeta = gh api "repos/$ghRepo/contents/.squad/project-state.json" --jq '.sha' 2>$null
+                    if ($fileMeta -and $LASTEXITCODE -eq 0) {
+                        $newState = @{ phase = "sprint-planning"; sprint = $sprint + 1; design_doc = $designDoc } | ConvertTo-Json -Compress
+                        $newContentB64 = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($newState))
+                        $updateBody = @{
+                            message = "chore: transition to sprint-planning (sprint $($sprint + 1))"
+                            content = $newContentB64
+                            sha = $fileMeta
+                        } | ConvertTo-Json -Compress
+                        $updateBody | gh api -X PUT "repos/$ghRepo/contents/.squad/project-state.json" --input - 2>$null | Out-Null
+
+                        # Create ceremony trigger issue
+                        $nextSprint = $sprint + 1
+                        $body = "Sprint Planning ceremony triggered. Lead: read the design doc at ``$designDoc``, compare with open issues, create Sprint $nextSprint issues. See .squad/ceremonies.md for the full process."
+                        $labels = "squad,squad:$leadName,ceremony:sprint-planning,go:ready"
+                        Write-Host "   [lifecycle] $repoName -- creating Sprint Planning ceremony issue" -ForegroundColor Cyan
+                        gh issue create -R $ghRepo --title "[CEREMONY] Sprint Planning" --body $body --label $labels 2>$null
+                    }
+                } else {
+                    Write-Host "   [lifecycle] [DRY RUN] Would transition $repoName to sprint-planning (sprint $($sprint + 1))" -ForegroundColor Yellow
+                    Write-Host "   [lifecycle] [DRY RUN] Would create: [CEREMONY] Sprint Planning" -ForegroundColor Yellow
+                }
+            }
+        }
+    }
+}
+
 # --- Helper: Fetch and filter issues for scheduling ---
 # Returns array of issue objects sorted by priority, then repo issue count, then game > hub
 function Get-ScheduledIssues {
@@ -1060,6 +1179,9 @@ while ($true) {
 
     # Step 3: Run scheduler
     Invoke-Scheduler
+
+    # Step 3.5: Check project lifecycle and trigger ceremonies
+    Check-ProjectLifecycle -RepoNames $validRepoNames
 
     # Step 4: Fetch and schedule issues with governance filter
     $totalMaxIssues = $sessionCount * $maxIssuesPerSess
