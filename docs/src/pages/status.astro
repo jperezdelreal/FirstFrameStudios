@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import '../styles/global.css';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const base = import.meta.env.BASE_URL;
 
@@ -245,6 +247,35 @@ const timeline = [
     detail: 'One founder, one idea: can AI agents ship real games? The answer starts here.',
   },
 ];
+
+// Ralph Metrics — load latest metrics from tools/metrics/
+const EPOCH = new Date('2026-03-11T16:31:48Z');
+let ralphMetrics = null;
+let currentDay = 0;
+
+try {
+  // Calculate current day number
+  const now = new Date();
+  const diffMs = now.getTime() - EPOCH.getTime();
+  currentDay = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  // Resolve metrics directory relative to this file
+  const metricsDir = path.resolve(process.cwd(), 'tools', 'metrics');
+  
+  if (fs.existsSync(metricsDir)) {
+    const files = fs.readdirSync(metricsDir).filter(f => f.endsWith('.json'));
+    
+    if (files.length > 0) {
+      // Get the latest metrics file (sorted by name, which is date-based)
+      const latestFile = files.sort().reverse()[0];
+      const metricsPath = path.join(metricsDir, latestFile);
+      const metricsContent = fs.readFileSync(metricsPath, 'utf-8');
+      ralphMetrics = JSON.parse(metricsContent);
+    }
+  }
+} catch (error) {
+  console.warn('Could not load Ralph metrics:', error);
+}
 ---
 
 <BaseLayout title="Status">
@@ -371,6 +402,110 @@ const timeline = [
         </details>
       ))}
     </div>
+  </section>
+
+  <!-- ═══ Ralph Daily Metrics ═══ -->
+  <section class="max-w-6xl mx-auto px-6 py-20 fade-on-scroll">
+    <div class="text-center mb-12">
+      <p class="text-sm text-[#06b6d4] uppercase tracking-widest font-medium mb-3">Studio Metrics</p>
+      <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">🔄 Ralph Daily Stats</h2>
+      <p class="text-[#9890b0] max-w-xl mx-auto">
+        Day <span class="text-[#a78bfa] font-bold" data-count={currentDay}>0</span> since studio epoch
+      </p>
+    </div>
+
+    {ralphMetrics ? (
+      <div class="space-y-8">
+        <!-- Key Metrics Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="p-6 rounded-xl border border-[#2d2640]/60 bg-[#1a1625]/80 text-center">
+            <div class="text-3xl font-bold text-[#a78bfa] mb-1" data-count={ralphMetrics.totals.issues_opened}>0</div>
+            <div class="text-xs text-[#9890b0]">Issues Opened</div>
+          </div>
+          <div class="p-6 rounded-xl border border-[#2d2640]/60 bg-[#1a1625]/80 text-center">
+            <div class="text-3xl font-bold text-[#67e8f9] mb-1" data-count={ralphMetrics.totals.issues_closed}>0</div>
+            <div class="text-xs text-[#9890b0]">Issues Closed</div>
+          </div>
+          <div class="p-6 rounded-xl border border-[#2d2640]/60 bg-[#1a1625]/80 text-center">
+            <div class="text-3xl font-bold text-[#a78bfa] mb-1" data-count={ralphMetrics.totals.prs_opened}>0</div>
+            <div class="text-xs text-[#9890b0]">PRs Opened</div>
+          </div>
+          <div class="p-6 rounded-xl border border-[#2d2640]/60 bg-[#1a1625]/80 text-center">
+            <div class="text-3xl font-bold text-[#67e8f9] mb-1" data-count={ralphMetrics.totals.prs_merged}>0</div>
+            <div class="text-xs text-[#9890b0]">PRs Merged</div>
+          </div>
+        </div>
+
+        <!-- Ralph Activity Card -->
+        <div class="p-6 rounded-xl border border-[#8b5cf6]/20 bg-gradient-to-br from-[#8b5cf6]/5 to-transparent">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-2xl">🔄</span>
+            <h3 class="text-xl font-bold text-white">Ralph Activity</h3>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+            <div>
+              <div class="text-[#9890b0] mb-1">Rounds</div>
+              <div class="text-white font-semibold" data-count={ralphMetrics.ralph.rounds}>0</div>
+            </div>
+            <div>
+              <div class="text-[#9890b0] mb-1">Duration</div>
+              <div class="text-white font-semibold">{ralphMetrics.ralph.duration_minutes.toFixed(1)}m</div>
+            </div>
+            <div>
+              <div class="text-[#9890b0] mb-1">Issues Processed</div>
+              <div class="text-white font-semibold" data-count={ralphMetrics.ralph.issues_processed}>0</div>
+            </div>
+            <div>
+              <div class="text-[#9890b0] mb-1">PRs Merged</div>
+              <div class="text-white font-semibold" data-count={ralphMetrics.ralph.prs_merged}>0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Per-Repo Breakdown -->
+        <div class="p-6 rounded-xl border border-[#2d2640]/60 bg-[#1a1625]/80">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="text-2xl">📊</span>
+            <h3 class="text-xl font-bold text-white">Per-Repo Activity</h3>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Object.entries(ralphMetrics.repos).map(([repo, stats]: [string, any]) => (
+              <div class="p-4 rounded-lg bg-white/[0.02] border border-white/5">
+                <div class="text-white font-semibold mb-3 text-sm">{repo}</div>
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <div class="text-[#9890b0]">Issues: <span class="text-[#a78bfa]">{stats.issues_opened}</span> opened, <span class="text-[#67e8f9]">{stats.issues_closed}</span> closed</div>
+                  </div>
+                  <div>
+                    <div class="text-[#9890b0]">PRs: <span class="text-[#a78bfa]">{stats.prs_opened}</span> opened, <span class="text-[#67e8f9]">{stats.prs_merged}</span> merged</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Contributors -->
+        <div class="text-center">
+          <div class="text-xs text-[#9890b0] mb-2">Active Contributors</div>
+          <div class="flex flex-wrap justify-center gap-2">
+            {ralphMetrics.contributors.map((contributor: string) => (
+              <span class="text-xs px-3 py-1 rounded-full bg-white/5 text-[#a78bfa] border border-white/10">
+                {contributor}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    ) : (
+      <div class="text-center p-12 rounded-xl border border-[#2d2640]/60 bg-[#1a1625]/80">
+        <div class="text-4xl mb-4">📊</div>
+        <div class="text-[#9890b0] text-lg mb-2">No metrics data yet</div>
+        <div class="text-[#9890b0]/60 text-sm">
+          {currentDay === 0 ? "Today is Day 0 — check back tomorrow!" : "Metrics collection will start soon"}
+        </div>
+      </div>
+    )}
   </section>
 
   <!-- ═══ What's New — Expanded Timeline ═══ -->
