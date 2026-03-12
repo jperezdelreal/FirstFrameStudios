@@ -152,3 +152,29 @@
 **Files Modified:** `.github/workflows/squad-triage.yml`, `tools/ralph-watch.ps1`
 
 **Status:** PR #191 opened
+
+---
+
+## Learnings
+
+### 2026-07-25: Check-ProjectLifecycle in ralph-watch.ps1 (PR #193)
+
+**Task:** Add autonomous lifecycle ceremony triggering to ralph-watch.
+
+**What Changed:**
+1. **Check-ProjectLifecycle function** -- Fetches `.squad/project-state.json` via GitHub API for each monitored repo (except Hub)
+2. **sprint-planning detection** -- Creates `[CEREMONY] Sprint Planning` issue if none exists, with ceremony labels and go:ready
+3. **sprinting transition** -- Detects when all `sprint:N` issues close, updates project-state.json via API (PUT with SHA), increments sprint, creates ceremony issue
+4. **closeout skip** -- Event-driven per Solo's design, no automatic action
+5. **Lead extraction** -- Parses `.squad/team.md` Members table via regex to find Lead for `squad:{lead}` label
+6. **Integration point** -- Step 3.5 in main loop, after Invoke-Scheduler, before issue scan
+
+**Key Patterns:**
+- GitHub Contents API requires SHA for PUT updates (fetch first, then update)
+- PowerShell pipe (`$body | gh api --input -`) instead of bash heredoc (`<<<`) for stdin
+- Dedup ceremony issues by checking for existing `[CEREMONY]` or `[ROADMAP]` titles before creating
+- Hub exception hardcoded: FirstFrameStudios is infrastructure, not a project
+
+**File Modified:** `tools/ralph-watch.ps1`
+
+**Status:** PR #193 opened
