@@ -130,8 +130,8 @@ FFS creció orgánicamente desde Ashfall (Godot) hasta un estudio multi-repo de 
 |------|-----|-------|--------|
 | 5a | Reducir squad-heartbeat a 1h (#32) | Jango | ✅ Done |
 | 5b | Reducir ralph-notify a 4h (#32) | Jango | ✅ Done |
-| 5c | Añadir roster check a ralph-watch (G10) | Jango | ❌ Pendiente — requires ralph-watch.ps1 code change |
-| 5d | Añadir upstream sync a ralph-watch (G11) | Jango | ❌ Pendiente — requires ralph-watch.ps1 code change |
+| 5c | Añadir roster check a ralph-watch (G10) | Jango | ✅ Done |
+| 5d | Añadir upstream sync a ralph-watch (G11) | Jango | ✅ Done |
 
 ### Fase 6 — Guardrails (post-cleanup)
 

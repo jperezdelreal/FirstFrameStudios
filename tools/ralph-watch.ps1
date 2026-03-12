@@ -484,6 +484,111 @@ function Get-RepoName {
     return (Split-Path $RepoPath -Leaf)
 }
 
+# --- Helper: Check if repo has squad roster (G10) ---
+function Test-HasSquadRoster {
+    param([string]$RepoPath)
+    $teamMdPath = Join-Path $RepoPath ".squad\team.md"
+    if (-not (Test-Path $teamMdPath)) { return $false }
+    try {
+        $content = Get-Content $teamMdPath -Raw -ErrorAction SilentlyContinue
+        if (-not $content) { return $false }
+        # Check for ## Members section (case-insensitive)
+        return $content -match '(?m)^## Members'
+    } catch {
+        return $false
+    }
+}
+
+# --- Helper: Sync hub content to downstream repos (G11) ---
+function Invoke-UpstreamSync {
+    param(
+        [string]$HubPath,
+        [string]$DownstreamPath
+    )
+    $downstreamName = Get-RepoName -RepoPath $DownstreamPath
+    
+    # Don't sync if downstream doesn't have .squad/ directory
+    $downstreamSquadDir = Join-Path $DownstreamPath ".squad"
+    if (-not (Test-Path $downstreamSquadDir)) {
+        Write-Host "   [sync] Skipping $downstreamName -- no .squad/ directory" -ForegroundColor DarkGray
+        return
+    }
+
+    Write-Host "   [sync] Syncing hub -> $downstreamName..." -ForegroundColor Cyan
+
+    # Files and directories to sync from hub to downstream
+    $syncItems = @(
+        @{ Type = "Directory"; Path = ".squad\skills" },
+        @{ Type = "File"; Path = ".squad\identity\quality-gates.md" },
+        @{ Type = "File"; Path = ".squad\identity\governance.md" },
+        @{ Type = "File"; Path = ".squad\decisions.md" }
+    )
+
+    $syncedCount = 0
+    foreach ($item in $syncItems) {
+        $sourcePath = Join-Path $HubPath $item.Path
+        $destPath = Join-Path $DownstreamPath $item.Path
+        
+        # Skip if source doesn't exist in hub
+        if (-not (Test-Path $sourcePath)) {
+            Write-Host "      [sync] Skipping $($item.Path) -- not found in hub" -ForegroundColor DarkGray
+            continue
+        }
+
+        try {
+            if ($script:DryRun) {
+                Write-Host "      [DRY RUN] Would sync: $($item.Path)" -ForegroundColor Yellow
+                $syncedCount++
+            } else {
+                # Ensure destination directory exists
+                $destDir = Split-Path $destPath -Parent
+                if (-not (Test-Path $destDir)) {
+                    New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+                }
+
+                if ($item.Type -eq "Directory") {
+                    # Copy directory contents (not the dir itself) to avoid nested duplication
+                    if (-not (Test-Path $destPath)) {
+                        New-Item -ItemType Directory -Path $destPath -Force | Out-Null
+                    }
+                    Copy-Item -Path "$sourcePath\*" -Destination $destPath -Recurse -Force -ErrorAction Stop
+                } else {
+                    # Copy single file
+                    Copy-Item -Path $sourcePath -Destination $destPath -Force -ErrorAction Stop
+                }
+                $syncedCount++
+            }
+        } catch {
+            Write-Host "      [sync] Failed to sync $($item.Path): $_" -ForegroundColor Yellow
+        }
+    }
+
+    if ($syncedCount -eq 0) {
+        Write-Host "   [sync] $downstreamName : no files to sync" -ForegroundColor DarkGray
+        return
+    }
+
+    # Check if there are changes to commit
+    Push-Location $DownstreamPath
+    try {
+        $status = git status --porcelain 2>$null
+        if (-not $status) {
+            Write-Host "   [sync] $downstreamName : already up to date" -ForegroundColor DarkGray
+        } else {
+            if ($script:DryRun) {
+                Write-Host "   [DRY RUN] Would commit upstream sync in $downstreamName" -ForegroundColor Yellow
+            } else {
+                git add .squad/ 2>&1 | Out-Null
+                git commit -m "chore: upstream sync from hub`n`nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>" 2>&1 | Out-Null
+                git push origin 2>&1 | Out-Null
+                Write-Host "   [sync] $downstreamName : synced $syncedCount files, committed and pushed" -ForegroundColor Green
+            }
+        }
+    } finally {
+        Pop-Location
+    }
+}
+
 # --- Helper: Fetch and filter issues for scheduling ---
 # Returns array of issue objects sorted by priority, then repo issue count, then game > hub
 function Get-ScheduledIssues {
@@ -495,6 +600,16 @@ function Get-ScheduledIssues {
     $repoIssueCounts = @{}
 
     foreach ($repoName in $RepoNames) {
+        # G10: Check if repo has squad roster before fetching issues
+        $repoPath = $script:Repos | Where-Object { (Get-RepoName $_) -eq $repoName } | Select-Object -First 1
+        if ($repoPath) {
+            $resolvedPath = Resolve-Path $repoPath -ErrorAction SilentlyContinue
+            if ($resolvedPath -and -not (Test-HasSquadRoster -RepoPath $resolvedPath.Path)) {
+                Write-Host "   [roster] Skipping $repoName -- no squad roster (missing .squad\team.md or ## Members section)" -ForegroundColor DarkYellow
+                continue
+            }
+        }
+
         $ghRepo = $repoGitHubMap[$repoName]
         if (-not $ghRepo) { continue }
 
@@ -828,6 +943,21 @@ while ($true) {
             Invoke-GitPull -RepoPath $resolvedPath.Path
         } else {
             Write-Host "   [!] Repo path not found: $repo" -ForegroundColor Yellow
+        }
+    }
+
+    # Step 2.5: Upstream sync (G11) - sync hub content to downstream repos
+    if ($validRepos.Count -gt 0) {
+        $hubPath = Resolve-Path $validRepos[0] -ErrorAction SilentlyContinue
+        if ($hubPath) {
+            $hubName = Get-RepoName -RepoPath $hubPath.Path
+            # Sync to all downstream repos (skip the hub itself)
+            foreach ($repo in $validRepos | Select-Object -Skip 1) {
+                $downstreamPath = Resolve-Path $repo -ErrorAction SilentlyContinue
+                if ($downstreamPath) {
+                    Invoke-UpstreamSync -HubPath $hubPath.Path -DownstreamPath $downstreamPath.Path
+                }
+            }
         }
     }
 

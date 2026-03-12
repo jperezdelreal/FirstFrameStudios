@@ -425,3 +425,25 @@ Completed. PR #12 open on jperezdelreal/flora. CI green (23s). deploy-pages@v4 p
 **Status:** ✅ COMPLETE
 
 ## Learnings
+
+### 2026-03-12: G10 + G11 Guardrails in ralph-watch.ps1
+
+**What:**
+- Implemented G10 (Roster Check) — Ralph now skips repos without `.squad/team.md` or a `## Members` section before fetching issues
+- Implemented G11 (Upstream Sync) — Hub content (skills, quality-gates, governance, decisions) syncs to downstream repos after every git pull
+
+**Architecture Decisions:**
+- G10: Added `Test-HasSquadRoster` helper, called in `Get-ScheduledIssues` before each repo's issue fetch
+- G11: Added `Invoke-UpstreamSync` helper as Step 2.5 in main loop (between git pull and scheduler)
+- G11 syncs: `.squad/skills/` (directory), `.squad/identity/quality-gates.md`, `.squad/identity/governance.md`, `.squad/decisions.md`
+- G11 only syncs if downstream has `.squad/` directory (won't create it — that's `squad init`'s job)
+- G11 commits changes only if git detects differences (`git status --porcelain`), with message "chore: upstream sync from hub"
+- DryRun support for both G10 and G11 (shows what would happen without executing)
+
+**Key Patterns:**
+- ASCII-safe output — used `[roster]` and `[sync]` text markers instead of emojis for Windows PowerShell 5.1 compatibility
+- Consistent error handling — all functions have try/catch with graceful fallback
+- Hub = first repo in `` array (`.` / `FirstFrameStudios`)
+- Downstream = all other repos (skip hub when syncing)
+
+**File Modified:** `tools/ralph-watch.ps1` (verified parse OK, no non-ASCII characters)

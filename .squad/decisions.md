@@ -105,4 +105,39 @@ Scan code for TODOs, auto-create issues. Lead adjusts workload independently.
 
 ---
 
+### GitHub Actions Cron Reduction
+**By:** Jango (Tool Engineer) | **Date:** 2025-07-16 | **Status:** Implemented
+Reduced scheduled workflow frequency to lower monthly GitHub Actions run volume from ~4,320 to ~900.
+- `squad-heartbeat.yml`: `*/15 * * * *` → `0 * * * *` (720 runs/month)
+- `squad-notify-ralph-heartbeat.yml`: `*/30 * * * *` → `0 */4 * * *` (180 runs/month)
+- Event triggers unchanged; only scheduled polling reduced
+
+### Ralph-Watch Guardrails (G10 + G11)
+**By:** Jango (Tool Engineer) | **Date:** 2026-03-12 | **Status:** Implemented
+Two safeguards in ralph-watch.ps1 to prevent wasted cycles and ensure downstream repo currency.
+- **G10 — Roster Check:** Ralph skips repos without `.squad/team.md` containing `## Members` section
+- **G11 — Upstream Sync:** After git pull, hub syncs `.squad/skills/`, quality-gates.md, governance.md, decisions.md to downstream repos with `.squad/` directory; auto-commits as "chore: upstream sync from hub"
+- Both features support DryRun mode; ASCII-safe logging for Windows PowerShell 5.1
+
+### Guardrails G1-G14 Implementation
+**By:** Solo (Lead / Chief Architect) | **Date:** 2026-07-25 | **Status:** Implemented
+Distributed guardrails across governance files per their operational domain:
+- **Scribe charter:** G1 (decisions.md max 5KB auto-archive), G2 (SKILL.md max 5KB overflow), G3 (log cleanup >30 days)
+- **Governance.md:** G5 (hub roster infra-only), G7 (now.md single source), G8 (squad.agent.md hash consistency), G9 (cron ≥1h), G12 (identity docs no rejected options)
+- **Ceremonies.md:** G4 (quality-gates review at kickoff), G6 (cleanup at closeout), G14 (squad.config.ts project name)
+- Changes <50 lines total; no content removed, only surgical additions
+
+### Priority & Dependency System (P0-P3)
+**By:** Solo (Lead / Chief Architect) | **Date:** 2026-07-26 | **Status:** Implemented (T1 Authority)
+Implemented priority and dependency tracking system per T1 governance. Independent from approval tiers.
+- **Levels:** P0=Blocker, P1=Sprint-critical, P2=Normal (default), P3=Nice-to-have
+- **Dependencies:** `blocked-by:*` labels + issue body `## Dependencies` section
+- **Blocked work rule:** Prepare (tests, scaffold, draft PR) but don't merge until blocker resolves
+- **Emergency follow-up:** Auto-labeled P1; Lead can bump to P0
+- **Ralph auto-unblock:** 24h after blocker closes; Lead can re-block
+- **G13 advisory:** No CI enforcement on priority inflation; Lead judgment prevails
+- **No preemption:** P0 work finishes current task first, doesn't interrupt
+
+---
+
 *Last cleaned: 2026-03-12. Previous content archived to `decisions-archive.md`.*
