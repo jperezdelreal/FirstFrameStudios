@@ -8,9 +8,9 @@
 #
 # v3 features:
 #   - Night/day mode auto-detection via system clock
-#   - Parallel copilot sessions in night mode (1 repo per session)
+#   - Night mode: more issues per session + shorter interval (not parallel)
 #   - Governance filter: skips T0 and T1 issues (require formal approval process)
-#   - Governance: ralph can auto-merge T2/T3 PRs (no human review needed)
+#   - Governance: ralph must NEVER auto-merge PRs (all PRs need Lead/Founder review)
 #   - Governance: issue labels inherited by PRs (no zero-label PRs)
 #   - Priority-based scheduling: P0 > P1 > P2 > P3, then repo issue count
 #   - Remote URL validation before each round
@@ -60,6 +60,7 @@ $schedulerScript = Join-Path $scriptRoot "scheduler\Invoke-SquadScheduler.ps1"
 $maxLogBytes = 1048576  # 1MB
 $consecutiveFailures = 0
 $alertThreshold = 3
+$circuitBreakerThreshold = 10
 
 # Repo name-to-GitHub mapping for issue queries
 $repoGitHubMap = @{
@@ -131,6 +132,13 @@ if (Test-Path $lockFile) {
     started = (Get-Date -Format 'yyyy-MM-ddTHH:mm:ss')
     directory = $repoRoot
 } | ConvertTo-Json | Out-File $lockFile -Encoding utf8 -Force
+
+# Pre-flight: verify copilot CLI is available
+if (-not (Get-Command copilot -ErrorAction SilentlyContinue)) {
+    Remove-Item $lockFile -Force -ErrorAction SilentlyContinue
+    Write-Host "[FATAL] 'copilot' CLI not found in PATH. Install GitHub Copilot CLI first." -ForegroundColor Red
+    exit 1
+}
 
 # Clean up lock on exit
 Register-EngineEvent PowerShell.Exiting -Action { Remove-Item $lockFile -Force -ErrorAction SilentlyContinue } | Out-Null
@@ -425,6 +433,7 @@ function Invoke-GitPull {
                 Write-Host "      [fix] Switching from '$currentBranch' to '$defaultBranch'" -ForegroundColor Yellow
                 git stash 2>&1 | Out-Null
                 git checkout $defaultBranch 2>&1 | Out-Null
+                git stash drop 2>&1 | Out-Null
             }
             git fetch origin 2>&1 | Out-Null
             git pull --rebase --autostash 2>&1 | ForEach-Object { Write-Host "      $_" -ForegroundColor DarkGray }
@@ -594,7 +603,7 @@ function Invoke-UpstreamSync {
             if ($script:DryRun) {
                 Write-Host "   [DRY RUN] Would commit upstream sync in $downstreamName" -ForegroundColor Yellow
             } else {
-                git add .squad/ 2>&1 | Out-Null
+                git add .squad/ .github/agents/ 2>&1 | Out-Null
                 git commit -m "chore: upstream sync from hub`n`nCo-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>" 2>&1 | Out-Null
                 git push origin 2>&1 | Out-Null
                 Write-Host "   [sync] $downstreamName : synced $syncedCount files, committed and pushed" -ForegroundColor Green
@@ -648,12 +657,14 @@ function Get-ScheduledIssues {
 
                 # Governance filter: skip T0 entirely, skip T1 unless approved
                 # Issues without tier label default to T2 (safe to work)
+                # Take the MOST RESTRICTIVE (lowest-numbered) tier if multiple labels exist
                 $tier = "t2"
+                $tierNum = 2
                 foreach ($l in $labelNames) {
-                    if ($l -match '^tier:t0$') { $tier = "t0"; break }
-                    if ($l -match '^tier:t1$') { $tier = "t1" }
-                    if ($l -match '^tier:t2$') { $tier = "t2" }
-                    if ($l -match '^tier:t3$') { $tier = "t3" }
+                    if ($l -match '^tier:t(\d)$') {
+                        $t = [int]$Matches[1]
+                        if ($t -lt $tierNum) { $tierNum = $t; $tier = "t$t" }
+                    }
                 }
                 if ($tier -eq "t0") {
                     Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t0 needs founder approval" -ForegroundColor DarkYellow
@@ -794,89 +805,7 @@ function Invoke-CopilotSession {
     }
 }
 
-# --- Helper: Run parallel copilot sessions via Start-Job ---
-function Invoke-ParallelSessions {
-    param(
-        [array]$Assignments,
-        [int]$Round
-    )
-    $jobs = @()
-    $sessionId = 0
-
-    foreach ($assignment in $Assignments) {
-        $sessionId++
-        $ghRepo = $assignment.GhRepo
-        $issues = $assignment.Issues
-        $sid = $sessionId
-
-        # Build issue lines (include labels for PR label inheritance)
-        $issueLines = @()
-        foreach ($iss in $issues) {
-            $labelStr = ""
-            if ($iss.Labels -and $iss.Labels.Count -gt 0) {
-                $labelStr = " labels:($($iss.Labels -join ', '))"
-            }
-            $blockStr = if ($iss.IsBlocked) { " [PREPARE-ONLY]" } else { "" }
-            $issueLines += "- #$($iss.Number): $($iss.Title) [P$($iss.Priority)]$blockStr$labelStr"
-        }
-        $prompt = Build-SessionPrompt -RepoFullName $ghRepo -IssueLines $issueLines
-
-        Write-Host "   [session $sid] Launching parallel job for $ghRepo ($($issues.Count) issues)..." -ForegroundColor Cyan
-        foreach ($line in $issueLines) {
-            Write-Host "      $line" -ForegroundColor DarkGray
-        }
-
-        $job = Start-Job -ScriptBlock {
-            param($sessionPrompt, $repoName, $sessionNum)
-            # UTF-8 in job context
-            [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-            $OutputEncoding = [System.Text.Encoding]::UTF8
-            $output = copilot --agent squad --yolo -p $sessionPrompt 2>&1 | Out-String
-            $code = $LASTEXITCODE
-            return @{
-                Output   = $output
-                ExitCode = $code
-                Repo     = $repoName
-                Session  = $sessionNum
-            }
-        } -ArgumentList $prompt, $ghRepo, $sid
-
-        $jobs += @{ Job = $job; SessionId = $sid; Repo = $ghRepo }
-    }
-
-    # Wait for all jobs, with mid-round heartbeat
-    $results = @()
-    $pending = $jobs.Count
-    while ($pending -gt 0) {
-        Start-Sleep -Seconds 30
-        Update-Heartbeat -Status "running" -Round $Round -Extra @{
-            phase = "copilot-sessions"
-            pendingJobs = $pending
-        }
-        $ts = (Get-Date -Format 'HH:mm:ss')
-
-        foreach ($j in $jobs) {
-            if ($j.Job.State -eq 'Completed' -or $j.Job.State -eq 'Failed') {
-                if (-not $j.Done) {
-                    $j.Done = $true
-                    $pending--
-                    try {
-                        $result = Receive-Job -Job $j.Job -ErrorAction SilentlyContinue
-                        $results += $result
-                    } catch {
-                        $results += @{ Output = ""; ExitCode = -1; Repo = $j.Repo; Session = $j.SessionId }
-                    }
-                    Remove-Job -Job $j.Job -Force -ErrorAction SilentlyContinue
-                    Write-Host "   [$ts] [session $($j.SessionId)] Completed ($($j.Repo))" -ForegroundColor Cyan
-                }
-            }
-        }
-        if ($pending -gt 0) {
-            Write-Host "   [$ts] [monitor] Waiting for $pending session(s)..." -ForegroundColor DarkCyan
-        }
-    }
-    return $results
-}
+# --- (Invoke-ParallelSessions removed: Start-Job causes copilot CLI serialization failures) ---
 
 # --- Validate repos: filter to only those that exist ---
 $validRepos = @()
@@ -1055,7 +984,7 @@ while ($true) {
                 $exitCode = $worstExit
             }
             if ($false) {
-                # DISABLED: old day-mode single-session path (now handled above for all modes)
+                # REMOVED: old day-mode path and parallel sessions path
             }
 
             # Parse metrics from copilot output
@@ -1097,6 +1026,13 @@ while ($true) {
             if ($consecutiveFailures -ge $alertThreshold) {
                 Write-Host "   [ALERT] $consecutiveFailures consecutive failures -- writing alert" -ForegroundColor Red
                 Write-FailureAlert -Round $round -Failures $consecutiveFailures -ExitCode $exitCode
+            }
+            # Circuit breaker: pause 1 hour after too many consecutive failures
+            if ($consecutiveFailures -ge $circuitBreakerThreshold) {
+                Write-Host "   [CIRCUIT BREAKER] $consecutiveFailures consecutive failures. Pausing 1 hour." -ForegroundColor Red
+                Write-RalphLog -Round $round -Status "CIRCUIT_BREAKER" -ExitCode $exitCode -DurationSeconds 0 -Phase "cooldown"
+                Start-Sleep -Seconds 3600
+                $consecutiveFailures = 0
             }
         }
     } catch {
