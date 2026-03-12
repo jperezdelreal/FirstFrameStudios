@@ -65,6 +65,10 @@ $circuitBreakerTrips = 0
 $maxCircuitBreakerTrips = 3
 $sessionTimeoutSeconds = 1800  # 30 minutes max per copilot session
 
+# Session-scoped PR tracking to prevent re-commenting on same PR in a loop (Bug 5)
+# Key: "{ghRepo}#{pr_number}", Value: last processed commit SHA
+$script:processedPRs = @{}
+
 # Repo name-to-GitHub mapping for issue queries
 $repoGitHubMap = @{
     "FirstFrameStudios" = "jperezdelreal/FirstFrameStudios"
@@ -196,6 +200,30 @@ You must NOT:
 After preparing, move the issue to "Blocked" on the project board and comment:
   "Prepared in prepare-mode (blocked by dependencies). Tests/scaffold ready. Waiting for blocker resolution."
 
+RESEARCH MODE (needs-research issues):
+Issues marked [NEEDS-RESEARCH] need investigation before implementation.
+For these issues:
+  - Read the issue body carefully and analyze what is needed
+  - Propose a design or implementation approach in a comment
+  - If the issue is clear enough to implement, remove the go:needs-research label and add go:ready:
+    gh issue edit <number> -R <repo> --remove-label "go:needs-research" --add-label "go:ready"
+  - Then proceed with implementation if you are confident
+  - If the issue is too vague, comment with clarifying questions and move on
+
+PR REVIEW RULES:
+When reviewing PRs, use the correct gh pr review flags:
+  - When REJECTING a PR: use "gh pr review --request-changes" (NEVER use --comment for rejections)
+  - When APPROVING a PR: use "gh pr review --approve" (NEVER use --comment for approvals)
+  - Use --comment ONLY for questions or non-blocking suggestions that do not require changes
+  - Every review MUST have a clear verdict: approve or request-changes. No ambiguous --comment reviews.
+
+RE-REVIEW DETECTION:
+When checking PRs, look for PRs with review state COMMENTED (not formal CHANGES_REQUESTED)
+where the review body contains "Request Changes" or "Verdict: Request Changes".
+If there are commits AFTER that review date, comment on the PR:
+  "Fixes have been pushed since the last review. @<reviewer> please re-review with --approve or --request-changes."
+Do NOT re-comment if you have already posted this message on the PR.
+
 PROJECT BOARD: Read .squad/skills/github-project-board/SKILL.md BEFORE starting.
 Update the GitHub Project board status for every issue you touch.
 BEFORE spawning an agent, move the issue to In Progress on the board.
@@ -209,6 +237,11 @@ Do NOT create duplicates for things already tracked.
 DONE ITEMS ARCHIVING: Check for issues in Done status for 3+ days.
 Close them with a summary comment of what was accomplished.
 Archive them from the project board.
+
+PR DEDUP: Before commenting on any PR, check if you already commented in this session.
+Track PRs you have commented on. If a PR already has your comment from this session,
+skip it UNLESS there are NEW commits since your last comment.
+Use "gh pr view <number> --json commits" to check the latest commit SHA before re-commenting.
 
 AFTER completing work, report counts: issues closed, PRs merged, PRs opened.
 COMMIT all .squad/ changes before finishing.
@@ -682,13 +715,26 @@ function Get-ScheduledIssues {
                     Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- tier:t1 needs Lead (Solo) authority" -ForegroundColor DarkYellow
                     continue
                 }
-                # Skip issues marked as needing research (not ready for implementation)
+                # Handle issues marked as needing research
+                # If the issue has a squad:{member} label, include it but flag for research
+                # If no squad:{member} label, skip entirely (not triaged yet)
                 if ($labelNames -contains "go:needs-research") {
-                    Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- needs-research, not ready" -ForegroundColor DarkYellow
-                    continue
+                    $hasSquadMember = $false
+                    foreach ($l in $labelNames) {
+                        if ($l -match '^squad:.+') {
+                            $hasSquadMember = $true
+                            break
+                        }
+                    }
+                    if (-not $hasSquadMember) {
+                        Write-Host "      [gov] Skipping #$($issue.number) ($($issue.title)) -- needs-research, no squad member assigned" -ForegroundColor DarkYellow
+                        continue
+                    }
+                    # Has squad member -- will be included with [NEEDS-RESEARCH] marker below
+                    Write-Host "      [gov] Including #$($issue.number) ($($issue.title)) -- needs-research but has squad member, flagged for investigation" -ForegroundColor DarkCyan
                 }
 
-                # Extract priority (default P2 per governance — normal backlog)
+                # Extract priority (default P2 per governance -- normal backlog)
                 $priority = 2
                 foreach ($l in $labelNames) {
                     if ($l -match '^priority:p(\d)$') {
@@ -713,15 +759,17 @@ function Get-ScheduledIssues {
                 }
 
                 $isGame = $gameRepoNames -contains $repoName
+                $needsResearch = $labelNames -contains "go:needs-research"
                 $allIssues += [PSCustomObject]@{
-                    Number    = $issue.number
-                    Title     = $issue.title
-                    RepoName  = $repoName
-                    GhRepo    = $ghRepo
-                    Priority  = $priority
-                    IsGame    = $isGame
-                    IsBlocked = $isBlocked
-                    Labels    = $labelNames
+                    Number         = $issue.number
+                    Title          = $issue.title
+                    RepoName       = $repoName
+                    GhRepo         = $ghRepo
+                    Priority       = $priority
+                    IsGame         = $isGame
+                    IsBlocked      = $isBlocked
+                    NeedsResearch  = $needsResearch
+                    Labels         = $labelNames
                 }
             }
         } catch {
@@ -798,7 +846,8 @@ function Invoke-CopilotSession {
             $labelStr = " labels:($($iss.Labels -join ', '))"
         }
         $blockStr = if ($iss.IsBlocked) { " [PREPARE-ONLY]" } else { "" }
-        $issueLines += "- #$($iss.Number): $safeTitle [P$($iss.Priority)]$blockStr$labelStr"
+        $researchStr = if ($iss.NeedsResearch) { " [NEEDS-RESEARCH]" } else { "" }
+        $issueLines += "- #$($iss.Number): $safeTitle [P$($iss.Priority)]$blockStr$researchStr$labelStr"
     }
     $prompt = Build-SessionPrompt -RepoFullName $RepoFullName -IssueLines $issueLines
 
@@ -832,6 +881,61 @@ function Invoke-CopilotSession {
         ExitCode = $exitCode
         Repo     = $RepoFullName
     }
+}
+
+# --- Helper: Track processed PRs from session output ---
+# Parses PR numbers from copilot output and records the latest commit SHA
+function Update-ProcessedPRs {
+    param(
+        [string]$RepoFullName,
+        [string]$Output
+    )
+    if (-not $Output) { return }
+    # Match PR references like #123, PR #123, pull/123
+    $prMatches = [regex]::Matches($Output, '(?:PR\s*#|pull/|#)(\d+)')
+    foreach ($m in $prMatches) {
+        $prNum = $m.Groups[1].Value
+        $key = "${RepoFullName}#${prNum}"
+        # Get latest commit SHA for this PR
+        try {
+            $prJson = gh pr view $prNum -R $RepoFullName --json headRefOid 2>$null
+            if ($prJson) {
+                $prData = $prJson | ConvertFrom-Json -ErrorAction SilentlyContinue
+                if ($prData -and $prData.headRefOid) {
+                    $script:processedPRs[$key] = $prData.headRefOid
+                    Write-Host "      [dedup] Tracked PR $key (SHA: $($prData.headRefOid.Substring(0,7)))" -ForegroundColor DarkGray
+                }
+            }
+        } catch {
+            # Non-critical, just skip tracking
+        }
+    }
+}
+
+# --- Helper: Check if a PR was already processed in this session ---
+function Test-PRAlreadyProcessed {
+    param(
+        [string]$RepoFullName,
+        [int]$PRNumber
+    )
+    $key = "${RepoFullName}#${PRNumber}"
+    if (-not $script:processedPRs.ContainsKey($key)) { return $false }
+    # Check if there are new commits since we last processed
+    try {
+        $prJson = gh pr view $PRNumber -R $RepoFullName --json headRefOid 2>$null
+        if ($prJson) {
+            $prData = $prJson | ConvertFrom-Json -ErrorAction SilentlyContinue
+            if ($prData -and $prData.headRefOid) {
+                if ($prData.headRefOid -eq $script:processedPRs[$key]) {
+                    return $true  # Same SHA, already processed
+                }
+                # New commits, update and allow re-processing
+                $script:processedPRs[$key] = $prData.headRefOid
+                return $false
+            }
+        }
+    } catch { }
+    return $false
 }
 
 # --- (Invoke-ParallelSessions removed: Start-Job causes copilot CLI serialization failures) ---
@@ -1004,7 +1108,11 @@ while ($true) {
                     $monitor = Start-ActivityMonitor -Round $round
                     Update-Heartbeat -Status "running" -Round $round -Extra @{ phase = "session-$sessionNum-of-$($assignments.Count)" }
                     $result = Invoke-CopilotSession -RepoFullName $a.GhRepo -Issues $a.Issues -SessionId $sessionNum -Round $round
-                    if ($result.Output) { $allOutput += $result.Output }
+                    if ($result.Output) {
+                        $allOutput += $result.Output
+                        # Track PRs mentioned in session output to prevent re-commenting loops
+                        Update-ProcessedPRs -RepoFullName $a.GhRepo -Output $result.Output
+                    }
                     if ($result.ExitCode -ne 0) { $worstExit = $result.ExitCode }
                     Stop-ActivityMonitor -Monitor $monitor
                     $monitor = $null
