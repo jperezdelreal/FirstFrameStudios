@@ -143,6 +143,19 @@ FFS creció orgánicamente desde Ashfall (Godot) hasta un estudio multi-repo de 
 | 6d | Implementar G7 en coordinator session start (squad.agent.md) | Solo | ✅ Done |
 | 6e | Implementar G8 en Scribe commit hook | Jango | ❌ Pendiente — documented in governance but not in Scribe charter |
 
+### Fase 7 — Priority & Dependency System (governance evolution)
+
+| Task | Qué | Quién | Estado |
+|------|-----|-------|--------|
+| 7a | Definir prioridades P0-P3 en governance.md | Solo | ❌ Pendiente — issue #189 |
+| 7b | Implementar dependency tracking (labels `blocked-by`, `needs-decision`) | Solo + Jango | ❌ Pendiente |
+| 7c | Actualizar Ralph para chequear dependencias antes de asignar | Jango | ❌ Pendiente |
+| 7d | Actualizar Lead triage con evaluación de dependencias | Solo | ❌ Pendiente |
+| 7e | Implementar "prepare but don't merge" mode en spawn template | Solo | ❌ Pendiente |
+| 7f | Crear labels P0-P3 + blocked-by en GitHub (hub + downstream) | Jango | ❌ Pendiente |
+
+> **Prerequisito:** Solo diseña la propuesta completa en issue #189 antes de implementar.
+
 ---
 
 ## Impacto esperado post-ejecución
