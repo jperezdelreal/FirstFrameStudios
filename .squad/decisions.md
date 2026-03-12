@@ -67,6 +67,18 @@ FFS is hub-and-spoke. Hub = no game code, only infrastructure. Each game/tool ha
 
 ## Active Process Decisions
 
+### Autonomous Backlog Generation Vision
+**By:** Joaquin Perez del Real | **Date:** 2026-03-12 | **Status:** Active (Strategic Vision)
+Each game repo has "vida propia" — a life of its own. Ralph-watch provides autonomous session execution; the missing piece is autonomous backlog generation. Repos should self-generate issues by having their Lead read the GDD/PRD and create sprint issues automatically. This closes the loop: repos generate → Ralph consumes → sessions execute autonomously. Tracked by issue #190.
+
+### Standard Project Lifecycle with Issue Generation
+**By:** Joaquin Perez del Real (via Founder directive) | **Date:** 2026-03-12 | **Status:** Active (T1, Implemented)
+Every ceremony (Kickoff, Sprint Planning, Mid-Project, Closeout) must produce GitHub issues as output, not just .md documentation. The lifecycle flows: Kickoff (roadmap + sprint definitions) → Sprint Planning N (create issues, define success criteria) → sprint ends when issues done → Mid-Project (evaluate, decide continue or closeout) → Closeout (continuous improvement loop: evaluate → create issues → resolve → re-evaluate). Non-game repos (Hub, Squad Monitor) don't have GDDs — they use PRDs or equivalent specs. The design must be standard across all FFS repos regardless of project type. This closes the "pipeline dries up" gap. Full design: `.squad/decisions.md` → Standard Project Lifecycle (Final).
+
+### Solo Authority on Lifecycle Design
+**By:** Joaquin Perez del Real | **Date:** 2026-03-12 | **Status:** Active (T1)
+Solo has full T1 authority to make final lifecycle design decisions. The Lead should review critically, trim what's excessive, keep what's practical, then implement autonomously. Not all founder suggestions should be adopted directly.
+
 ### Priority & Dependency System (P0-P3)
 **By:** Solo | **Date:** 2026-03-12 | **Status:** Active (T1, Founder-reviewed)
 Priority (P0-P3) determines execution order; Tiers (T0-T3) determine approval authority. Independent axes.
@@ -77,6 +89,15 @@ Priority (P0-P3) determines execution order; Tiers (T0-T3) determine approval au
 - Ralph auto-unblocks after 24h when blocker closes; Lead can re-block
 - G13: Advisory inflation warning at >20% P0/P1
 - Full design: `.squad/decisions-archive.md`
+
+### Defense-in-Depth for PR Dedup and Issue Triage
+**By:** Jango | **Date:** 2026-03-12 | **Status:** Proposed
+Ralph-watch had 5 interrelated bugs causing issues with triage labeling, needs-research handling, PR review quality, and PR comment loops.
+- **Triage heuristic over blind defaults:** squad-triage.yml evaluates issue body quality (acceptance criteria, checklists, structured sections, 100+ char body) before assigning go:ready vs go:needs-research. Simple regex heuristic, not NLP.
+- **needs-research is not a hard gate:** Issues with squad:{member} labels are included in sessions with [NEEDS-RESEARCH] marker. Agents can investigate and promote to go:ready.
+- **PR review dedup uses dual enforcement:** Both server-side (PowerShell hashtable tracking PR#/SHA) and prompt-side (instructions). Defense in depth pattern from prepare-mode.
+- **Formal review flags required:** --request-changes and --approve mandated in prompt. --comment reserved for non-blocking only.
+- Consequences: Fewer issues stuck in needs-research limbo, cleaner PR review history, no more re-comment loops on PRs.
 
 ### PR Convention
 All PRs must include `Closes #N` in body. Branch naming: `squad/{issue-number}-{slug}`.
@@ -89,6 +110,28 @@ Scan code for TODOs, auto-create issues. Lead adjusts workload independently.
 
 ### Solo/Jango Role Split
 **Date:** 2026-03-09 | Solo = architecture deep work. Jango = tooling + PR reviews + CI. Mace = ops, sprint planning, blocker tracking.
+
+---
+
+## Standard Project Lifecycle (Final)
+
+**By:** Solo (Lead / Chief Architect)  
+**Date:** 2026-03-12  
+**Status:** ✅ Implemented — T1 authority, Founder-authorized  
+**Tier:** T1 (Lead authority — ceremony/process design)  
+**Supersedes:** Issue #190 (backlog grooming ceremony)
+
+### Design Summary
+
+Two ceremonies with issue production:
+1. **Sprint Planning** — Adapts by context. First sprint = kickoff (read design doc, create roadmap). Subsequent sprints = review + plan next batch. Always produces labeled GitHub issues. Health check built in.
+2. **Closeout** — For shipped/mature projects. Evaluate live project against design doc, create improvement issues. Event-driven, not timed.
+
+State tracked in `project-state.json`: `phase`, `sprint`, `design_doc` (3 fields, no over-tracking).
+
+**Core Principle:** Every ceremony produces GitHub issues. A ceremony that only produces `.md` files is incomplete.
+
+Implementation updates: `.squad/ceremonies.md`, `.squad/templates/project-state.json`, `.squad/identity/now.md`. Issue #190 closed, superseded by this design.
 
 ---
 

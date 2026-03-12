@@ -221,3 +221,22 @@
 - `tools/scheduler/schedule.json` — scheduler tasks (backlog-grooming to be replaced by Sprint Planning ceremony)
 
 **User preference:** Joaquin wants repos to be self-sustaining ("vida propia"). Generic terminology ("design doc" not "GDD") so lifecycle works for games, tools, and infra equally. Sprint completion is issue-based, not calendar-based.
+
+### 2026-03-12: Lifecycle Self-Review — Simplification
+
+**Self-review outcome:** My initial 400-line lifecycle design was over-engineered. The founder brainstormed out loud and I transcribed too faithfully instead of applying my own judgment. Revised from 4 ceremonies to 2, from 5 JSON fields to 3, and extracted bug fixes into separate concerns.
+
+**Key simplifications:**
+- Kickoff merged into Sprint Planning (kickoff = first sprint planning, nothing more)
+- Mid-Project Evaluation merged into Sprint Planning (health check happens at every sprint boundary)
+- Closeout changed from 7-day timer loop to event-driven (timers create noise)
+- Hub explicitly excluded from lifecycle — it's infrastructure, not a project
+- Bug fixes (squad-triage.yml, ralph-watch.ps1) extracted from design doc — real bugs but orthogonal to ceremony architecture
+
+**Lesson learned:** When a stakeholder brainstorms, the architect's job is to distill, not transcribe. A 400-line ceremony spec for a small studio would be ignored. Two ceremonies and three JSON fields close the same gap.
+
+**Decisions made (T1 authority, Founder-authorized):**
+1. Sprints end by issues closed, not calendar — calendar sprints are overhead for this studio size
+2. Closeout is event-driven, not timer-driven — 7-day loops create noise
+3. Hub has no lifecycle — infrastructure doesn't sprint
+4. Archive signal = close the roadmap issue — simplest native GitHub action
