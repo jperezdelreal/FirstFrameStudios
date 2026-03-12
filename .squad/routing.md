@@ -50,6 +50,31 @@ When triaging, the Lead should ask:
 3. **Does it need design judgment?** Architecture, API design, UX decisions → likely 🔴
 4. **Is it security-sensitive?** Auth, encryption, access control → always 🔴
 5. **Is it medium complexity with specs?** Feature with clear requirements, refactoring with tests → likely 🟡
+6. **What is the priority?** (P0/P1/P2/P3) — Does this block production (P0)? Sprint commitment (P1)? Normal work (P2, default)? Polish (P3)?
+7. **What are the dependencies?** — Does this depend on another open issue, a pending decision, upstream hub work, or a PR? If yes, add `blocked-by:*` label and document in issue body.
+
+### Priority-Aware Routing
+
+Ralph processes work in priority order: P0 Active > P1 Active > Untriaged > Assigned (by priority) > CI failures > Review feedback > Approved PRs > Blocked (prepare mode) > P3.
+
+**Dependency labels** (required on all repos — Zone A):
+| Label | Meaning |
+|-------|---------|
+| `blocked-by:issue` | Blocked by another issue (see body) |
+| `blocked-by:pr` | Blocked by a PR merge (see body) |
+| `blocked-by:decision` | Blocked by a pending decision (see body) |
+| `blocked-by:upstream` | Blocked by hub/parent repo work (see body) |
+| `blocked-by:external` | Blocked by third-party (see body) |
+
+**Priority labels** (required on all repos — Zone A):
+| Label | Meaning |
+|-------|---------|
+| `priority:P0` | Blocker — nothing advances without this |
+| `priority:P1` | Sprint-critical — current sprint |
+| `priority:P2` | Normal backlog (default if none assigned) |
+| `priority:P3` | Nice-to-have |
+
+Default priority: **P2** if no label assigned after triage.
 
 ## Integration & Quality Gates
 

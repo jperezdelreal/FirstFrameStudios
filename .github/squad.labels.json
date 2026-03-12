@@ -1,0 +1,49 @@
+{
+  "labels": [
+    {
+      "name": "priority:P0",
+      "color": "d73a4a",
+      "description": "Blocker — nothing advances without this"
+    },
+    {
+      "name": "priority:P1",
+      "color": "ff9800",
+      "description": "Sprint-critical — affects current sprint"
+    },
+    {
+      "name": "priority:P2",
+      "color": "0366d6",
+      "description": "Normal backlog"
+    },
+    {
+      "name": "priority:P3",
+      "color": "6c757d",
+      "description": "Nice-to-have"
+    },
+    {
+      "name": "blocked-by:issue",
+      "color": "b60205",
+      "description": "Blocked by another issue (see body)"
+    },
+    {
+      "name": "blocked-by:pr",
+      "color": "b60205",
+      "description": "Blocked by a PR merge (see body)"
+    },
+    {
+      "name": "blocked-by:decision",
+      "color": "b60205",
+      "description": "Blocked by a pending decision (see body)"
+    },
+    {
+      "name": "blocked-by:upstream",
+      "color": "b60205",
+      "description": "Blocked by hub/parent repo work (see body)"
+    },
+    {
+      "name": "blocked-by:external",
+      "color": "b60205",
+      "description": "Blocked by third-party (see body)"
+    }
+  ]
+}

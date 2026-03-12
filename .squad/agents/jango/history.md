@@ -405,4 +405,23 @@ Completed. PR #12 open on jperezdelreal/flora. CI green (23s). deploy-pages@v4 p
 
 **Status:** ✅ COMPLETE -- Branch `squad/163-webhook-notifications` pushed, PR #171 created, closes #163
 
+### Priority & Dependency Labels Setup
+**Date:** 2025-07-25
+**Task:** Create priority (P0-P3) and dependency (blocked-by:*) labels for FFS hub repo.
+
+**What Changed:**
+1. **`.github/squad.labels.json` created** — New JSON config file with 9 labels (4 priority, 5 blocked-by). Machine-readable format consumable by sync workflows.
+2. **All 9 labels created on GitHub** — Used `gh label create --force` on jperezdelreal/FirstFrameStudios. All created successfully.
+
+**Sync Workflow Analysis (`sync-squad-labels.yml`):**
+- The workflow does NOT read from `squad.labels.json`. It has all labels hardcoded inline.
+- It already defines `priority:p0`, `priority:p1`, `priority:p2` (lowercase, different colors/descriptions).
+- The new labels use uppercase (`priority:P0` etc.) — GitHub labels are case-insensitive, so these overlap.
+- When the workflow next runs, it will overwrite P0/P1/P2 back to its hardcoded values (different colors/descriptions). P3 and all blocked-by labels will be unaffected since the workflow doesn't touch them.
+- **Action needed (separate task):** Update `sync-squad-labels.yml` to either (a) read from `.github/squad.labels.json` for priority/blocked-by labels, or (b) update its hardcoded PRIORITY_LABELS to match the new P0-P3 spec and add BLOCKED_BY_LABELS. Also update the trigger paths to include `.github/squad.labels.json`.
+
+**Lesson:** When adding labels that overlap with existing workflow-managed labels, the workflow must be updated to match or it will revert them on next run. Label config files are only useful if workflows consume them.
+
+**Status:** ✅ COMPLETE
+
 ## Learnings

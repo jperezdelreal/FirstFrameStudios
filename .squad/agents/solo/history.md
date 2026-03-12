@@ -527,3 +527,40 @@ The "prepare but don't merge" rule is the critical innovation. Agents can make u
 
 5. **No preemption for P0 interrupts** — Running agents finish their current task. After in-flight work completes, Ralph switches exclusively to P0. No agent killing mid-task. Founder values avoiding wasted work over immediate P0 response.
 
+### Priority & Dependency System — Documentation Implementation
+
+**Date:** 2026-07-26  
+**Type:** T1 Implementation (Lead authority)  
+**Requested by:** Joaquín (Founder)
+
+**What was implemented:**
+
+1. **governance.md — §2.5 Execution Priority** inserted between §2 (Approval Tiers) and §3 (Autonomy Zones):
+   - Priority levels table (P0-P3) with definitions and Ralph execution rules
+   - Tier ≠ Priority matrix with 3 concrete examples showing independence of axes
+   - Priority assignment decision tree for Lead triage
+   - Dependencies and blocked work: "prepare-but-don't-merge" rule with allowed/forbidden actions
+   - Priority and Emergency Authority interaction (Emergency ≠ P0)
+
+2. **governance.md — §7 Guardrails** extended with G13-G15:
+   - G13: Priority inflation advisory (>20% P0/P1 → Ralph warns, Lead decides)
+   - G14: Blocked issues require `## Dependencies` section in body
+   - G15: P0 blocked >3 days → escalation to Lead
+
+3. **routing.md — Lead Triage Guidance** extended from 5 to 7 checklist items:
+   - Point 6: Priority evaluation (P0/P1/P2/P3)
+   - Point 7: Dependency identification and `blocked-by:*` labeling
+
+4. **routing.md — Priority-Aware Routing** new section added:
+   - Ralph processing order (P0 Active > P1 Active > ... > P3)
+   - Dependency label definitions (5 blocked-by:* labels)
+   - Priority label definitions (4 priority:* labels)
+   - Default priority rule (P2 if no label after triage)
+
+**Design principles applied:**
+- Surgical insertions only — no existing content rewritten
+- Exact approved text used (no editorial changes)
+- All 5 Founder decisions from design review incorporated into final text
+
+**Status:** ✅ COMPLETE
+

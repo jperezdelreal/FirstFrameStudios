@@ -160,6 +160,63 @@ Use top-to-bottom. First "Yes" wins.
 
 ---
 
+## 2.5. Execution Priority
+
+Approval Tiers (§2) determine **who decides**. Execution Priority determines **when work runs**. These are independent axes.
+
+### Priority Levels
+
+| Priority | Name | Definition | Execution Rule |
+|----------|------|------------|----------------|
+| **P0** | Blocker | Nothing else advances until this is resolved. System-wide halt. | Ralph processes FIRST. Holds all other assignments until P0 is resolved or transitioned. |
+| **P1** | Sprint-Critical | Must complete in current sprint. Directly blocks sprint goals. | Ralph processes after P0, before P2. Parallel execution allowed. |
+| **P2** | Normal Backlog | Standard work queue. Important but not time-sensitive. | Ralph processes in FIFO order. **Default priority if none assigned.** |
+| **P3** | Nice-to-Have | Low-impact improvements. Process when capacity available. | Ralph processes last. May be deferred indefinitely. |
+
+### Tier ≠ Priority
+
+| Example | Tier | Priority | Explanation |
+|---------|------|----------|-------------|
+| Create new game repo | T0 | P2 | Founder approval required (T0), but scheduled for Q2 (P2). High authority, low urgency. |
+| Production bug in game | T2 | P0 | Agent has authority (T2), but it's a blocker (P0). Low authority, high urgency. |
+| Governance v2 design | T1 | P0 | Solo decides (T1), but 3 agents are blocked waiting (P0). Medium authority, high urgency. |
+
+### Priority Assignment
+
+The **Lead** (Solo) assigns priority during triage. Default: P2 if none assigned.
+
+**Decision tree:**
+
+1. Does this block production or prevent all progress? → **P0**
+2. Is this a sprint commitment or critical for current milestone? → **P1**
+3. Is this low-impact polish or future work? → **P3**
+4. Otherwise → **P2** (default)
+
+### Dependencies and Blocked Work
+
+Issues may be blocked by decisions, other issues, PRs, or upstream work. Blocked issues are labeled with `blocked-by:*` (see routing.md for dependency model).
+
+**Prepare-but-don't-merge rule:** When an issue is blocked, the assigned agent may:
+
+✅ **Allowed (Prepare):**
+- Write tests (TDD approach)
+- Scaffold code structure (empty functions, interfaces)
+- Write spike code to explore problem space
+- Open Draft PR with `[WIP]` prefix
+
+❌ **Forbidden (until blocker resolved):**
+- Mark PR as Ready for review
+- Merge to main
+- Close the issue
+
+### Priority and Emergency Authority
+
+Emergency Authority (§4) overrides Priority. A production outage triggers Emergency Authority (immediate fix, retroactive review), not P0 (which would wait for next Ralph cycle). After emergency fix merges, follow-up work is automatically labeled P1 (sprint-critical). Lead may escalate to P0 if truly blocking.
+
+**Rule:** Emergency Authority is for active production crises requiring immediate action. P0 is for blocking work that prevents the team from making progress. They rarely overlap.
+
+---
+
 ## 3. Autonomy Zones
 
 ### Zone A — Hub-Controlled (No Override)
@@ -304,6 +361,9 @@ These rules prevent common infrastructure problems and keep governance enforceab
 | **G8** | squad.agent.md must be consistent across hub and downstream repos. Scribe checks for drift during commits (hash comparison). |
 | **G9** | Cron-triggered workflows must use intervals of 1 hour or longer. No sub-hour polling. |
 | **G12** | Identity documents must not contain rejected options or historical alternatives. Keep only the active decision. Archive rejected options to decisions-archive.md. |
+| **G13** | Priority inflation guardrail (advisory). Ralph warns when >20% of open issues are labeled P0 or P1. Lead decides whether to re-triage. No CI enforcement. |
+| **G14** | Blocked issues must have a `## Dependencies` section in the issue body documenting the blocker and what "prepare mode" work is allowed. |
+| **G15** | P0 items blocked for >3 days trigger escalation. Lead must intervene: resolve blocker, downgrade priority, or escalate to Founder. |
 
 ---
 
