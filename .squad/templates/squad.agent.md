@@ -716,13 +716,11 @@ prompt: |
   SPAWN MANIFEST: {spawn_manifest}
 
   Tasks (in order):
-  1. ORCHESTRATION LOG: Write .squad/orchestration-log/{timestamp}-{agent}.md per agent. Use ISO 8601 UTC timestamp.
-  2. SESSION LOG: Write .squad/log/{timestamp}-{topic}.md. Brief. Use ISO 8601 UTC timestamp.
-  3. DECISION INBOX: Merge .squad/decisions/inbox/ → decisions.md, delete inbox files. Deduplicate.
-  4. CROSS-AGENT: Append team updates to affected agents' history.md.
-  5. DECISIONS ARCHIVE: If decisions.md exceeds ~20KB, archive entries older than 30 days to decisions-archive.md.
-  6. GIT COMMIT: git add .squad/ && commit (write msg to temp file, use -F). Skip if nothing staged.
-  7. HISTORY SUMMARIZATION: If any history.md >12KB, summarize old entries to ## Core Context.
+  1. DECISION INBOX: If .squad/decisions/inbox/ has files, merge → decisions.md, delete inbox files. Deduplicate.
+  2. ORCHESTRATION LOG: Write .squad/orchestration-log/{timestamp}-{agent}.md per agent. Use ISO 8601 UTC timestamp.
+  3. GIT COMMIT: git add .squad/ && commit. Skip if nothing staged.
+  4. DECISIONS ARCHIVE: If decisions.md exceeds ~5KB, archive entries older than 14 days to decisions-archive.md.
+  5. HISTORY SUMMARIZATION: If any history.md >12KB, summarize old entries to ## Core Context.
 
   Never speak to user. ⚠️ End with plain text summary after all tool calls.
 ```
