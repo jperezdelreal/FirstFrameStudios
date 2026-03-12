@@ -2,6 +2,27 @@
 
 ## Learnings
 
+### R3 Cleanup Wave (Session 9 - 2026-03-12)
+
+**Objective:** Optimization-plan-review.md cleanup tasks
+- **R3.2:** Cleared 27 stashes from Hub (git stash clear)
+- **R3.3:** Deleted 30 unmerged branches across all repos (Hub: 8, Flora: 4, ComeRosquillas: 10, Monitor: 7). All branches had merged or closed PRs — safe to remove. Updated local remote refs with `git fetch --prune` to sync deletions.
+- **R3.4:** Added Issue Source sections to ComeRosquillas and Monitor `.squad/team.md` files, connecting repos to GitHub issue tracking.
+- **R3.7+R3.9:** Removed games/ComeRosquillas/ directory from Hub (already untracked due to .gitignore). Enforces hub-and-spoke model — game code stays in game repo, not Hub.
+- **R3.11:** Removed orphaned `games/ashfall/` line from CODEOWNERS. Path doesn't exist; cleanup was overdue.
+
+**Key Process Notes:**
+- games/ directory was gitignored, so branch deletion was local cleanup only.
+- Monitor's default branch is now main (not master). Verify future operations use correct branch.
+- All changes committed and pushed to origin with Copilot co-author trailer.
+
+**Outcomes:**
+- ✅ 27 stashes cleared
+- ✅ 30 branches deleted (8+4+10+7)
+- ✅ 2 repos documented (ComeRosquillas, Monitor)
+- ✅ Hub cleaned of orphaned game code references
+- ✅ CODEOWNERS fixed
+
 ### Historical Work (Sessions 1-8)
 
 - Sprint 1 Closure — Art Phase Shipped (2026-03-20)
