@@ -167,3 +167,19 @@
 3. Check animation frame counts and timing feel right
 4. Verify sprite positioning and scale relative to game viewport
 5. Document any visual inconsistencies as issues
+
+---
+
+## Mandatory Project Ceremonies
+
+Certain ceremonies are **required** at specific project milestones, regardless of repo type or team composition.
+
+| Milestone | Ceremony | Content |
+|-----------|----------|---------|
+| **Project START** | Kickoff Review | Team assignment, skills assessment, architecture plan, upstream relationship verification |
+| **Project MIDPOINT** | Mid-Project Health Check | Skills assessment, team member evaluation, course correction, hub alignment check |
+| **Project END** | Closeout & Harvest | Final team member evaluation, skill harvest, lessons learned, hub skill promotion |
+
+**Skills Assessment:** At each mandatory ceremony, every active agent's skills are evaluated against the project's needs. Gaps are identified and addressed (training, reassignment, or skill creation).
+
+**Team Member Evaluation:** Performance, collaboration quality, and growth trajectory are reviewed. Results inform future team composition decisions.

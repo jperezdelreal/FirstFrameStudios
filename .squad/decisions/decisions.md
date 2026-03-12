@@ -3100,3 +3100,759 @@ Replaced all non-ASCII characters in 	ools/scheduler/schedule.json:
 - schedule.json is now 100% ASCII-safe for Windows PowerShell 5.1
 - ralph-watch.ps1 can safely parse and execute scheduled tasks without encoding errors
 - Any future JSON config files in tools/ should follow this ASCII-first convention per history.md guidelines
+
+
+# Flora PR #20 Review — Build Failure + Integration Gaps
+
+**Date:** 2026-03-11  
+**Reviewer:** Ackbar (QA/Playtester)  
+**PR:** jperezdelreal/flora#20 — "feat: hazard system with pests and weather events"  
+**Issue:** #7 (Priority P0)  
+**Review Link:** https://github.com/jperezdelreal/flora/pull/20#issuecomment-4041007260
+
+---
+
+## Summary
+
+The hazard system **core logic is architecturally sound and well-balanced**, but the PR is **not shippable** due to:
+1. TypeScript compilation errors (blocker)
+2. Missing UI/input integration (can't be playtested)
+3. Incomplete acceptance criteria from issue #7
+
+**Verdict:** ⛔ **Changes Requested**
+
+---
+
+## Critical Issues
+
+### 1. TypeScript Build Failure (BLOCKER)
+
+**Severity:** 🛑 Critical  
+**Impact:** PR cannot be merged — CI build fails
+
+**Error:**
+```
+src/main.ts(22,42): error TS2345: Argument of type 'GardenScene' is not assignable to parameter of type 'Scene'.
+  Types of property 'init' are incompatible.
+    Type '(app: Application<Renderer>) => Promise<void>' is not assignable to type '(ctx: SceneContext) => Promise<void>'.
+```
+
+**Root cause:** Scene interface expects `SceneContext` parameter, but GardenScene provides `Application<Renderer>`. This is **NOT** in the hazard system code — appears to be a bad merge or pre-existing issue on the branch.
+
+**Required fix:** Resolve Scene/GardenScene type mismatch before re-review.
+
+---
+
+### 2. Missing Acceptance Criteria
+
+From issue #7, these are **not implemented**:
+
+#### ❌ Pest UI marker on affected plant tile
+- **Expected:** Visual indicator (sprite, icon, debug circle) appears on infested plant
+- **Actual:** No rendering code in PR
+- **Impact:** Can't playtest pest spawning or removal
+
+#### ❌ Player click-to-remove pest action
+- **Expected:** InputManager integration to detect click on pest tile → call `HazardSystem.removePest(pestId)`
+- **Actual:** No input wiring in PR
+- **Impact:** Core interaction mechanic is unimplemented
+
+#### ❌ Drought visual warning (sky color shift, UI alert)
+- **Expected:** Visual feedback when drought is active (sky tint, weather icon, notification)
+- **Actual:** No rendering code in PR
+- **Impact:** Player can't see drought state during gameplay
+
+**Note:** The **system logic exists** (drought multiplier, day tracking, state management), but without UI/input, this is backend-only code.
+
+---
+
+### 3. Pest Spawning Flow Unclear
+
+**Code:**
+```typescript
+private spawnPests(): void {
+  // No implementation needed here - spawning happens externally
+  // This is a hook for future plant-targeting logic
+}
+```
+
+**Issues:**
+- `spawnPests()` is called during day advancement but does nothing
+- `trySpawnPestOnPlant(plant)` exists but has no external caller
+- What happens if there are 0 plants in the garden on day 6-8?
+
+**Required fix:** Either:
+1. Implement `spawnPests()` to iterate over plants and call `trySpawnPestOnPlant()`
+2. Document the expected external integration point (e.g., "PlantSystem must call `trySpawnPestOnPlant` for each eligible plant")
+
+---
+
+## What Works Well
+
+### ✅ Type Safety
+- Strong TypeScript types throughout (`PestConfig`, `DroughtConfig`, `HazardData`)
+- Proper type guards: `isPest()`, `isDrought()`, `getPestData()`, `getDroughtData()`
+- No `any` casts found
+
+### ✅ Architecture
+- Clean System/Entity pattern following existing conventions
+- Proper state management with `PestState` enum
+- Config-driven design with tunable parameters
+- Hazards stored in Map (efficient lookup by ID)
+
+### ✅ Game Balance
+All numbers feel fair for an MVP:
+- **Pest damage:** 12/day (tunable via config)
+- **Resistance:** 30% chance at >70% health (prevents determinism, feels fair)
+- **Drought multiplier:** 1.5× water needs (punishing but not brutal)
+- **Drought duration:** 2-3 days (short enough to recover)
+- **Spawn window:** Day 6-8 (gives player time to learn systems)
+
+### ✅ Difficulty Scaling
+Elegant 0→1 ramp across seasons:
+- Pest spawn chance: 0.5× → 1.2× (easy to hard)
+- Drought intensity: 1.0× → 1.3× (water needs)
+- Max hazards: 1 → 3 (early to late game)
+
+### ✅ "Never Instant-Fail" Design
+- Pests deal damage over time (not instant death)
+- Drought increases needs (not instant withering)
+- Resistance mechanic gives healthy plants a chance
+- Players always have counterplay options
+
+---
+
+## Required Fixes (Before Approval)
+
+1. **Fix TypeScript Scene/GardenScene errors** (blocker)
+2. **Add pest visual indicators** (sprites, markers, or debug circles)
+3. **Wire InputManager for click-to-remove pests** (interaction mechanic)
+4. **Add drought visual warning** (sky tint, weather icon, UI notification)
+5. **Clarify/implement pest spawning flow** (link to PlantSystem or document external hook)
+
+---
+
+## Decision Points for Team
+
+### Should hazard rendering live in HazardSystem or a separate Renderer?
+
+**Current state:** HazardSystem has no rendering logic  
+**Options:**
+1. Add `render(app)` method to HazardSystem (like PlantSystem pattern)
+2. Create separate HazardRenderer component
+3. Let GardenScene handle hazard rendering directly
+
+**Recommendation:** Follow existing PlantSystem pattern — add rendering to HazardSystem for consistency.
+
+---
+
+### Should pest spawning be automatic or manual?
+
+**Current state:** `spawnPests()` is empty, `trySpawnPestOnPlant()` requires external caller  
+**Options:**
+1. **Automatic:** HazardSystem fetches plants from PlantSystem and spawns pests autonomously
+2. **Manual:** Caller (GardenScene or PlantSystem) must invoke `trySpawnPestOnPlant()` for each plant
+
+**Recommendation:** Automatic spawning keeps HazardSystem self-contained. Pass PlantSystem reference during init or `onDayAdvance()`.
+
+---
+
+## QA Learnings
+
+### Key Pattern Identified
+**"Architecturally sound ≠ shippable"**
+
+A system can have:
+- ✅ Clean architecture
+- ✅ Strong types
+- ✅ Good balance
+- ✅ Solid logic
+
+...but still be **un-shippable** if it can't be playtested. "Does it compile?" and "Can I interact with it in-game?" are equally critical gates.
+
+### Acceptance Criteria Completeness
+Issue #7 explicitly listed:
+- Pest UI marker ❌
+- Click-to-remove action ❌
+- Drought visual warning ❌
+
+These should've been implemented alongside the system logic, not deferred. A hazard system without visuals is like a car engine without a dashboard — technically functional but practically unusable.
+
+---
+
+## Re-Review Criteria
+
+I'll approve once:
+1. ✅ Build passes (TypeScript errors resolved)
+2. ✅ Pests have visual indicators in-game
+3. ✅ Player can click to remove pests
+4. ✅ Drought shows visual warning
+5. ✅ Pest spawning flow is clear/implemented
+
+The **core hazard logic is excellent** — it just needs to be wired into the game. Once integrated, I expect this to be a strong foundation for future hazard types (heat waves, frost, locusts, etc.).
+
+---
+
+**Next Steps:**
+- Assignee (Tarkin?) should address the 5 required fixes
+- Re-request review from Ackbar when ready
+- Consider splitting into two PRs if rendering/input work is substantial (backend logic + frontend integration)
+
+
+### 2026-03-11T20:13Z: User directive — Repo creation tiers
+**By:** Joaquin (Founder, via Copilot)
+**What:** New repo creation is NOT always T0. Tiers depend on repo type:
+- New GAME repo → T0 (founder only — changes studio direction)
+- New TOOL/UTILITY repo (like squad-monitor) → T1 (Lead proposes, FFS Hub approves via PR)
+- Fork or clone of existing tool → T2 (agent can do if issue justifies)
+**Why:** Founder wants freedom for tool creation without bottlenecking on T0 approval. Tools are infrastructure, not strategic direction changes.
+
+
+### 2026-03-11T20:30Z: Founder governance vision (comprehensive)
+**By:** Joaquin (Founder, via Copilot)
+
+**T0 (Founder only) -- MINIMAL, only paradigm-shifting decisions:**
+- Deciding what NEW GAMES to build (Project = Game). This is the founder's only "capricho"
+- Everything else should be automatic. T0 must NOT slow down the studio
+
+**Moving FROM T0 to T1:**
+- Adding/removing team members (agents) from roster -> T1 (not T0)
+
+**Moving FROM T1 to T0:**
+- Modifying studio principles (principles.md) -> T0 (these are foundational)
+
+**T1 (FFS Hub = the Bible):**
+- FFS Hub IS the brand, strategy, vision, everything
+- Hub contains all that's needed for game repos to make good decisions autonomously
+- Projects (games) are BORN from FFS but have their own "soul" -- artistic freedom within FFS values
+- Tool repos that serve multiple repos should live at hub level or as separate repos (like squad-monitor)
+
+**Ceremonies (MANDATORY):**
+- At project START, MIDPOINT, and END
+- Must include skills assessment and team member evaluation
+- These inform decisions about team needs
+
+**Project Autonomy:**
+- Each project has TOTAL freedom to create its own tools, plugins, MCP connections
+- If a tool has cross-repo application, escalate to FFS level:
+  - Either inherit from hub
+  - Or create a new tool repo (T1, not T0)
+
+**Philosophy:**
+- FFS must be 99% autonomous
+- The founder decides WHAT games to make, not HOW
+- The hub is the Bible -- everything downstream inherits and respects it
+- Each game breathes FFS values but has creative freedom
+
+
+### 2026-03-11T20:35: User directive
+**By:** Joaquin (via Copilot)
+**What:** Major refactors to `.squad/` directory structure remain at T0 (founder approval required). Rationale: foundational infrastructure, too risky for autonomous changes. Can be revisited if it causes bottlenecks.
+**Why:** User request — captured for team memory
+
+### 2026-03-11T20:35: User directive (governance tier refinements)
+**By:** Joaquin (via Copilot)
+**What:** Agent roster changes tiered by scope:
+- Adding/removing agents in FFS Hub roster = T0 (founder approval)
+- Adding/removing agents in game repo roster = T2 (project autonomy)
+**Why:** User request — hub agents influence studio-wide decisions, game agents are project-scoped
+
+
+### 2026-03-12T07-02-25Z: Founder directive — Governance tier restructuring
+**By:** Joaquin (Founder, via Copilot)
+**What:** 
+1. T0 must be ULTRA minimal — ONLY: creating new game repos (founder's capricho) and modifying principles.md. Nothing else. T0 = only decisions that ABSOLUTELY change the paradigm of FFS.
+2. T1: Founder does NOT want to approve anything at T1. T1 becomes Lead-authority (Solo decides alone). Hub roster changes, .squad/ refactors, and everything currently marked "Lead+Founder" becomes Lead-only.
+3. Hub is the Bible — brand, strategy, vision, everything. Projects inherit but have artistic freedom.
+4. Ceremonies mandatory at project start, midpoint, and end. Skills assessment and team evaluation at each.
+5. Total project autonomy for tools, plugins, MCP connections. If cross-repo applicable, escalate to FFS level or create new repo.
+6. FFS must be 99% autonomous. Founder decides WHAT games, not HOW.
+**Why:** Founder vision — current governance has too many founder touchpoints, slowing studio autonomy. T0 was bloated with items that should be T1, and T1 required founder approval unnecessarily.
+
+
+### 2026-03-12T07-16-15Z: Founder directive — .squad/ refactor tier split
+**By:** Joaquin (Founder, via Copilot)
+**What:** .squad/ refactors are NOT uniformly one tier. Split into:
+- T1 (Lead authority): Content/organizational refactors — reorganizing analysis/, archiving logs, restructuring skills/ folders, consolidating duplicate casting files. These are housekeeping and Solo can handle them.
+- T0 (Founder review): Structural/workflow refactors that could break the squad system — modifying routing.md tier definitions, refactoring config.json schema, changing the decisions inbox pipeline, renaming agents/ folder structure. These are "fox guarding the henhouse" scenarios.
+**Why:** Founder agreed with Solo's risk analysis showing 3 of 8 example refactors are genuinely dangerous (routing, config, decisions pipeline). The rest are safe for Lead authority.
+
+
+### 2026-03-12T07-27-32Z: Founder directive -- No agent-to-founder escalation at T1
+**By:** Joaquin (Founder, via Copilot)
+**What:** Remove the "any agent may appeal a T1 decision to the Founder" escalation path from governance. This undermines the Lead's authority at T1. The chain is: agents escalate to Solo (Lead), Solo is the ceiling for T1 decisions. Only Solo escalates to Founder, and only for T0 matters. No agent should be able to bypass the Lead.
+**Why:** The whole point of T1 being Lead-only is that the Founder doesn't want to be involved. An appeal path to the Founder defeats that purpose and creates a shortcut around the Lead's authority.
+
+
+# Decision: Daily Metrics Collector Script
+
+**Date:** 2026-03-11
+**Author:** Jango (Tool Engineer)
+**Issue:** #164
+**PR:** #168
+
+## Decision
+
+Created `tools/collect-daily-metrics.ps1` to collect daily studio productivity metrics across all 4 FFS repos. The script uses `gh` CLI exclusively for GitHub API calls and outputs structured JSON to `tools/metrics/YYYY-MM-DD.json`.
+
+## Key Design Choices
+
+1. **gh CLI over raw API** -- consistent with ralph-watch patterns, simpler auth
+2. **Date search filters** -- uses `--search "created:DATE..DATE"` syntax for reliable date scoping
+3. **JSONL log parsing** -- reads ralph-watch logs to extract round/duration/metrics data
+4. **Parameterized** -- supports `-Date`, `-DryRun`, `-RepoNames`, `-Owner` for flexibility
+5. **Day number from epoch** -- auto-calculates from 2026-03-11T16:31:48Z (same epoch as issue spec)
+6. **ASCII-safe** -- no emojis or unicode, compatible with Windows PowerShell 5.1
+
+## Open Questions
+
+- Should this be integrated into ralph-watch as a post-round task, or run separately via scheduler?
+- Should we add a rolling averages file (`tools/metrics/averages.json`) as mentioned in the issue?
+- Should metrics JSON files be committed to the repo or gitignored?
+
+
+# Decision: ralph-watch v3 Night/Day Mode Scheduling
+
+**Date:** 2026-03-11
+**Author:** Jango (Tool Engineer)
+**Issue:** #167
+**PR:** #169
+**Status:** Pending Review
+
+## Context
+
+ralph-watch.ps1 ran a single copilot session per round at a fixed 15-minute interval regardless of time of day. Nights and weekends were wasted capacity; daytime sessions competed with the user's VS Code.
+
+## Decision
+
+Implement automatic night/day mode scheduling:
+
+- **Night mode** (weeknights 21:00-07:00, weekends 24h): 2 parallel Start-Job copilot sessions, 5 issues/session, 2-minute intervals. Each session scoped to exactly 1 repo.
+- **Day mode** (weekdays 07:00-21:00): 1 session, 3 issues/round, 10-minute intervals.
+- **Auto-detect** via system clock (Get-Date). Manual override via -Mode param.
+
+### Governance Filter
+- T0: skip (founder approval required)
+- T1: skip unless labeled "approved"
+- T2/T3: auto-assign
+
+### Scheduling Algorithm
+1. Sort by priority label (P0 > P1 > P2 > P3)
+2. Then by repo open issue count (busiest repo first)
+3. Then game repos over hub (more user-facing work)
+
+## Rationale
+
+- Nights/weekends have no user competition -- maximize throughput
+- 1 session per repo prevents cross-repo prompt confusion
+- Governance filter prevents autonomous agents from touching high-stakes work
+- Priority scheduling ensures critical issues get worked first
+
+## Alternatives Considered
+
+1. **Fixed schedule table** -- Rejected; clock-based auto-detection is simpler and self-maintaining
+2. **Single session with larger issue count at night** -- Rejected; parallel sessions reduce round time by ~50%
+3. **No governance filter** -- Rejected; T0/T1 issues need human judgment
+
+## Consequences
+
+- Night throughput roughly doubles (2 sessions vs 1)
+- Day mode is gentler on system resources and git contention
+- Mode transitions are logged, making it auditable
+- Start-Job introduces PowerShell job cleanup complexity (mitigated with Wait/Remove patterns)
+
+
+# Decision: Discord Webhook Notifications Architecture
+
+**Date:** 2026-03-12  
+**Author:** Jango (Tool Engineer)  
+**Status:** Implemented  
+**Related:** Issue #163, PR #171
+
+## Context
+
+The squad needed proactive notifications for critical events (CI failures, PR merges, priority issues, Ralph rounds) to keep Joaquin informed without requiring constant manual checking of GitHub.
+
+## Decision
+
+Implement Discord webhook notifications via GitHub Actions workflows with strict rate limiting and simple, spam-free design.
+
+## Architecture
+
+### Reusable Workflow Pattern
+- **squad-notify-discord.yml** is the core reusable workflow
+- All event-specific workflows call this with inputs (event_type, summary, link, color)
+- Centralizes notification logic, rate limiting, and Discord API interaction
+
+### Rate Limiting
+- **Max 10 notifications per hour** (hard limit)
+- Enforced at both workflow level and PowerShell script level
+- Rate limit file tracks timestamps of last 20 notifications
+- Silently skips notifications when limit exceeded (logs warning)
+
+### Event Coverage
+| Event | Trigger | Workflow |
+|-------|---------|----------|
+| CI Failure on main | workflow_run (completed + failure) | squad-notify-ci-failure.yml |
+| PR Merged | pull_request (closed + merged) | squad-notify-pr-merged.yml |
+| Priority Issue | issues (labeled + p0/critical) | squad-notify-priority-issue.yml |
+| Ralph Round | schedule (*/30) + heartbeat check | squad-notify-ralph-heartbeat.yml |
+
+### ASCII-Safe Design
+- **No emojis** in PowerShell scripts (Windows compatibility)
+- Text prefixes instead: `[FAIL]`, `[MERGE]`, `[ALERT]`, `[RALPH]`, `[INFO]`
+- Discord embeds support emojis natively (if webhook sender adds them manually)
+
+### Security
+- Webhook URL stored in GitHub secret `DISCORD_WEBHOOK_URL`
+- Never hardcoded or committed to repo
+- PowerShell script reads from environment variable `$env:DISCORD_WEBHOOK_URL`
+
+## Alternatives Considered
+
+**1. Slack webhook** -- More complex setup, requires workspace admin approval  
+**2. Email notifications** -- No immediate visibility, requires SMTP config  
+**3. GitHub Discussions posts** -- Too noisy, not real-time  
+**4. Teams webhook** -- Organizational restrictions, harder to test  
+
+**Why Discord:** Free, simple webhook URL, no auth complexity, instant delivery, Joaquin already uses it.
+
+## Implementation Details
+
+### Heartbeat Round Detection
+Ralph heartbeat workflow runs every 30 minutes but only notifies when round number increases:
+- Reads `tools/.ralph-heartbeat.json` for current round
+- Compares to `.github/.ralph-last-notified-round` (last notified round)
+- Only sends notification if current > last
+- Updates last notified round on successful send
+
+### Color Codes (Decimal)
+- Red (failures/alerts): `15158332`
+- Green (success): `5763719`
+- Blue (info): `3066993`
+- Gray (neutral): `5814783`
+
+### Rate Limit Cleanup
+- Keeps last 20 timestamps in rate limit file
+- Auto-cleans on every send (tail -n 20 pattern)
+- Prevents file growth over time
+
+## Trade-offs
+
+**Pros:**
+- Simple setup (one webhook URL, one secret)
+- Instant notifications (Discord delivers in <1 second)
+- Rate limiting prevents spam
+- Reusable workflow reduces duplication
+- PowerShell script allows ralph-watch integration
+
+**Cons:**
+- Requires Discord webhook URL (manual setup step)
+- Rate limit may skip notifications during bursts (acceptable — prevents spam)
+- Heartbeat checks every 30 min (not instant, but acceptable for background updates)
+
+## Success Criteria
+
+✅ Webhook endpoint configured (Discord webhook via secret)  
+✅ Notification on: CI failure on main branch  
+✅ Notification on: PR merged to main  
+✅ Notification on: Issue labeled priority:p0 or priority:critical  
+✅ Notification on: Ralph round completed (via heartbeat check)  
+✅ Notifications include: event type, link, 1-line summary  
+✅ Rate limiting: max 10 notifications per hour  
+✅ GitHub Actions workflow integration  
+
+## Lessons Learned
+
+1. **Reusable workflows** simplify event-triggered notification patterns
+2. **Rate limiting at the source** (before API call) is more reliable than relying on external limits
+3. **ASCII-safe constraint** matters for PowerShell — emojis break on some Windows systems
+4. **Heartbeat round tracking** prevents duplicate notifications on scheduled checks
+5. **workflow_run event** is the cleanest way to catch all CI failures (wildcards work: workflows: ["*"])
+
+## Related Decisions
+
+- Ralph Watch v2 (#167) -- provides heartbeat file for round completion detection
+- Daily Metrics Collector (#164) -- could extend to send daily summary notifications
+
+## Tags
+
+`infrastructure`, `notifications`, `discord`, `github-actions`, `webhooks`, `rate-limiting`
+
+
+# Decision: autonomy-model.md Created as Reference Document
+
+**Author:** Solo (Lead / Chief Architect)
+**Date:** 2025-07-25
+**Tier:** T1 (`.squad/` content refactor — Lead authority)
+**Status:** Executed
+
+## Decision
+
+Created `.squad/identity/autonomy-model.md` to rescue operational content from governance v1 (Domains 2, 6, 7) that was intentionally cut from governance-v2.md for brevity.
+
+## Rationale
+
+Governance v2 reduced v1 from 1051 → 237 lines. The zone summary tables survived, but detailed rationale, configuration inheritance mechanics, hub/downstream responsibilities, and per-repo autonomy profiles were cut. These are needed by agents for day-to-day decisions about what they can and can't do locally.
+
+## Scope
+
+- **Reference doc only** — governance.md remains the authority on tiers and zones.
+- **147 lines, tables over prose** — no philosophy paragraphs.
+- **No duplication** — doesn't repeat what v2 already says well; adds the WHY and HOW.
+
+## Content
+
+Zone A/B/C rationale tables, Zone B extension example, Configuration Inheritance (cascades + local), Inheritance Conflict Resolution (4 rules), Hub Responsibilities (5), Downstream Responsibilities (6), Conflict Resolution (4 rules), Autonomy by Repository (4 repos).
+
+
+# Decision: SceneContext Pattern Enforcement in Flora
+
+**Date:** 2025-01-XX  
+**Author:** Solo (Lead Architect)  
+**Context:** flora repository (jperezdelreal/flora) Issue #23  
+**Status:** Implemented  
+
+## Decision
+
+Enforced the SceneContext architectural pattern across all Scene implementations in the Flora project. All Scene.init() and Scene.update() methods must accept SceneContext instead of direct Application references.
+
+## Rationale
+
+**Problem:**  
+GardenScene was implementing Scene interface incorrectly by accepting `Application` directly in init() instead of the SceneContext wrapper. This caused TypeScript build failures and deploy workflow blockage.
+
+**Solution:**  
+Updated GardenScene to conform to the SceneContext pattern:
+- `init(app: Application)` → `init(ctx: SceneContext)`
+- `update(delta: number)` → `update(delta: number, ctx: SceneContext)`
+- All Application references changed to `ctx.app`
+- Scene stage access changed to `ctx.sceneManager.stage`
+
+## Benefits
+
+1. **Consistent Architecture:** All scenes access shared resources through SceneContext
+2. **Better Testability:** SceneContext can be mocked more easily than Application
+3. **Dependency Injection:** Scenes receive input, assets, and sceneManager without tight coupling
+4. **Type Safety:** TypeScript enforces the pattern at compile time
+
+## Implementation Details
+
+**Files Modified:**
+- `src/scenes/GardenScene.ts`
+
+**Changes:**
+- Import SceneContext type
+- Updated init() signature to accept SceneContext
+- Updated update() signature to accept SceneContext
+- Changed all `app.*` references to `ctx.app.*`
+- Changed scene stage access to use `ctx.sceneManager.stage`
+
+## Verification
+
+- ✅ TypeScript compilation passes (`npx tsc --noEmit`)
+- ✅ Production build succeeds (`npm run build`)
+- ✅ Deploy workflow unblocked
+
+## Future Considerations
+
+When implementing new Scenes in Flora:
+1. Always implement Scene interface with correct signatures
+2. Use SceneContext for all shared resource access
+3. Run TypeScript type check early in development to catch signature mismatches
+4. Reference BootScene.ts or GardenScene.ts as pattern examples
+
+## Related
+
+- Issue: jperezdelreal/flora#23
+- PR: jperezdelreal/flora#24
+- Pattern defined in: src/core/SceneManager.ts
+
+
+# Decision: Governance T0/T1 Restructure — Founder Directives Applied
+
+**Author:** Solo (Lead / Chief Architect)  
+**Date:** 2026-07-25  
+**Status:** Implemented  
+**Tier:** T0 (modifies T0 scope)  
+**Scope:** Studio-wide — affects all repos, all agents, all approval flows
+
+## What Was Decided
+
+Per explicit Founder directives from Joaquín:
+
+### 1. T0 Ultra-Minimized
+T0 now contains **only two items**:
+- Creating a new game repository (the founder's "capricho")
+- Modifying studio principles (`principles.md`)
+
+**Removed from T0:**
+- Hub roster changes → moved to T1
+- `.squad/` directory refactors → moved to T1
+- Technology pivots → moved to T1
+- Governance changes (unless modifying T0 scope) → moved to T1
+
+### 2. T1 = Lead Authority Only
+T1 no longer requires Founder approval. Solo (Lead) has full, permanent authority over all T1 decisions. The Founder does not participate in routine T1 approvals.
+
+**What this means:**
+- Solo can create tool repos, change quality gates, add/remove hub agents, refactor `.squad/`, update ceremonies, modify governance, and make all cross-repo architectural decisions without waiting for Founder sign-off.
+- Agents may appeal T1 decisions to the Founder, but this is an exception path, not the default.
+
+### 3. Delegation Rules Updated
+New permanent rule: "T1 is fully delegated to Lead — no founder approval required for any T1 decision."
+
+### 4. Governance Self-Governance Updated
+- Changes to governance that don't modify T0 scope: T1 (Lead authority)
+- Changes to governance that modify T0 scope: T0 (Founder only)
+
+## Why
+
+Joaquín's directive: **"FFS must be 99% autonomous. The founder decides WHAT games to make, not HOW."**
+
+The previous governance had the Founder as a bottleneck on every T1 decision — tool repos, quality gates, skills, ceremonies, sprint scope, roster changes. This created an approval funnel through a single human for decisions that are reversible and within the Lead's domain expertise.
+
+The hub is the Bible. Solo is its steward. The Founder's role is strategic direction (new games, principles), not operational governance.
+
+## Impact
+
+| Who | What Changes |
+|-----|-------------|
+| **Solo (Lead)** | Full T1 authority — no more "propose and wait for Founder" |
+| **All agents** | T1 proposals go to Solo only. Faster turnaround on cross-repo decisions |
+| **Joaquín (Founder)** | Only involved in T0 (new games, principles, archival, T0 scope changes) |
+| **Mace (Producer)** | Sprint scope changes need Solo alignment, not Solo + Joaquín |
+| **Jango (Tool Engineer)** | Tool repo creation approved by Solo only |
+
+## Files Modified
+
+- `.squad/identity/governance.md` — 20+ edits across all 9 domains + appendices
+- `.squad/agents/solo/history.md` — learning entry added
+
+
+# Decision: Governance v2.0 Draft — Full Rewrite for Founder Review
+
+**Author:** Solo (Lead / Chief Architect)
+**Date:** 2026-07-25
+**Status:** Proposed — awaiting Founder comparison with v1
+**Tier:** T0 (structural changes to governance tiers and T0 scope definition)
+**Scope:** Studio-wide governance
+
+## What Is Being Proposed
+
+A complete rewrite of `.squad/identity/governance.md` (1051 lines, 9 domains, ~55KB) into `.squad/identity/governance-v2.md` (237 lines, 6 sections, ~14KB).
+
+Written as a **separate file** so the Founder can compare both versions side-by-side before deciding.
+
+## What Changed
+
+### Structural
+- **9 domains → 6 focused sections** plus Quick Reference and Appendix
+- **1051 → 237 lines** (77% reduction)
+- Quick Reference tables placed FIRST for immediate agent use
+- Tables over prose throughout — killed philosophy paragraphs
+
+### Redundancy Eliminated
+- Domains 2 (Autonomy), 6 (Hub-Downstream), 7 (Config Inheritance) explained the same hub-vs-downstream model three times → consolidated into one **Autonomy Zones** section
+- Domains 3 (Skills), 4 (Ceremonies), 5 (Lifecycle), 8 (Routing) duplicated content from `ceremonies.md`, `routing.md`, `new-project-playbook.md` → replaced with **cross-references**
+
+### Contradictions Resolved
+- Old Domain 1 (Tiers) and Domain 9 (Decision Authority) had conflicting T0 scope → **Decision Authority Matrix now matches Tier definitions exactly**
+
+### T0 Refined Per Latest Founder Directives
+T0 is exhaustively defined as:
+1. New game repos
+2. `principles.md` changes
+3. `routing.md` tier definitions changes
+4. `config.json` schema changes
+5. Decisions pipeline structure changes
+6. Agent folder naming convention changes
+7. T0 scope changes
+
+### T1 Confirmed Lead-Only
+Every T1 entry says "Solo (Lead)" — never "Lead + Founder." Hub roster changes, content-level `.squad/` refactors, tool repos, governance changes (not T0 scope) — all Lead authority.
+
+## Why
+
+The Founder couldn't finish reading v1 (55KB). The audit found only ~150 lines of actionable content buried in philosophy paragraphs. A constitution should be readable in 5 minutes and unambiguous. v2 achieves this.
+
+## Action Required
+
+**Founder:** Compare `governance.md` (v1) with `governance-v2.md` (v2). If approved, v2 replaces v1. If changes needed, provide feedback for revision.
+
+## Files
+
+- **Created:** `.squad/identity/governance-v2.md` (237 lines)
+- **NOT modified:** `.squad/identity/governance.md` (v1 untouched)
+
+
+# Cutscene System Architecture for ComeRosquillas
+
+**Date:** 2025-01-XX  
+**Agent:** Wedge (UI/UX Developer)  
+**Project:** ComeRosquillas  
+**Issue:** #5 - Simpsons-themed intermission cutscenes
+
+## Decision
+
+Implemented a timeline-based cutscene system using a dedicated game state (ST_CUTSCENE) with declarative actor spawning and simple action processing.
+
+## Context
+
+ComeRosquillas needed Pac-Man-style intermission cutscenes between levels to add personality and humor. The game already had a state machine and rich sprite rendering methods for characters.
+
+## Design Choices
+
+### Timeline-Based Architecture
+- Cutscenes defined as `{duration, timeline: [{frame, action, params}]}` objects
+- Events trigger at specific frames (e.g., frame 0, 30, 60)
+- Actors stored in array with position, velocity, and type
+- Update loop advances frame counter and spawns/updates actors
+
+**Why:** Declarative timelines are easier to author and modify than imperative animation code. Non-programmers can add cutscenes by editing data.
+
+### Reuse Existing Sprite Methods
+- Called Sprites.drawHomer(), _drawBurns(), _drawNelson(), drawDonut(), drawDuff()
+- No new rendering code needed
+- Actors positioned in screen space, not grid space
+
+**Why:** DRY principle — sprites already looked good, no need to redraw. Maintains visual consistency with gameplay.
+
+### Skip on Any Key
+- Any keypress during ST_CUTSCENE calls skipCutscene()
+- Immediately transitions to next level via endCutscene()
+
+**Why:** Player agency — some players want to skip, others want to watch. Match arcade conventions.
+
+### Black Background
+- Full black canvas instead of game maze
+- Focuses attention on animated sprites
+
+**Why:** Simplicity and performance. No need to render maze during cutscenes. Classic arcade aesthetic.
+
+## Trade-offs
+
+- **Pro:** Easy to add new cutscenes without touching logic code
+- **Pro:** Minimal performance impact (just sprite drawing)
+- **Pro:** Consistent with existing codebase patterns (state machine)
+- **Con:** Timeline format is rigid — complex branching/looping would require new actions
+- **Con:** No audio/dialogue system yet (could extend action types)
+
+## Alternatives Considered
+
+1. **Sprite sheets + frame-by-frame animation** — Too heavyweight for a Pac-Man clone
+2. **Video files** — Would break "no external assets" constraint
+3. **CSS animations** — Mixing canvas and DOM would complicate rendering
+
+## Future Extensions
+
+- Add 'sound' action type to trigger SFX at specific frames
+- Add 'camera' action for pan/zoom effects
+- Support looping cutscenes (e.g., attract mode)
+- Add cutscene editor UI (stretch goal)
+
+## Files Modified
+
+- `js/config.js` — Added ST_CUTSCENE, CUTSCENE_LEVELS, CUTSCENES data
+- `js/game-logic.js` — Added cutscene methods, state handling, skip logic
+

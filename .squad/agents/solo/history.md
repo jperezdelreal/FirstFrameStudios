@@ -333,3 +333,54 @@ Ralph (Work Monitor) can now auto-route all 8 issues to the correct squad member
 The founder's directive is clear: FFS must be 99% autonomous. The founder decides WHAT games to make, not HOW. By removing the founder from all T1 approvals, the studio can operate at full speed without bottlenecking on a single human. The hub is the Bible, and Solo (Lead) is its steward.
 
 **Status:** ✅ COMPLETE
+
+---
+
+### 2026-07-25: Governance v2 Draft — Full Rewrite (Constitution Format)
+
+**Requested by:** Joaquín (Founder)
+**Scope:** `.squad/identity/governance-v2.md` — separate file for Founder comparison with v1
+
+**What was done:**
+1. Rewrote governance from 1051 lines → 237 lines (77% reduction).
+2. Eliminated triple redundancy: Domains 2/6/7 (hub-vs-downstream) consolidated into one Autonomy Zones section. Domains 3/4/5/8 replaced with cross-references to their dedicated docs.
+3. Resolved T0/T1 contradictions between old Domains 1 and 9 — Decision Authority Matrix now matches Tier definitions exactly.
+4. T0 expanded per latest Founder directive: new games + `principles.md` + 4 specific critical `.squad/` structural changes (routing.md tier defs, config.json schema, decisions pipeline, agent folder naming).
+5. Hub roster changes confirmed at T1 per Founder directive.
+6. Quick Reference tables placed FIRST for immediate agent use.
+7. Structure: Quick Ref → Philosophy → Tiers → Zones → Authority → Ceremonies → Cross-refs → Appendix.
+
+**Key design principle:** One source of truth per concept. Tables over prose. Constitution, not operating manual. Cross-reference dedicated docs instead of duplicating them.
+
+**Status:** 📋 DRAFT — awaiting Founder comparison and approval
+
+---
+
+### 2025-07-25: Governance Extraction — Ceremonies & Skill Lifecycle
+
+**Requested by:** Joaquín (Founder)
+
+**What was done:**
+1. Added "Mandatory Project Ceremonies" section to `.squad/ceremonies.md` — Kickoff Review (START), Mid-Project Health Check (MIDPOINT), Closeout & Harvest (END). Includes skills assessment and team evaluation requirements per governance v1 Domain 4.
+2. Created `.squad/skills/SKILL-LIFECYCLE.md` — lean reference doc (tables over prose) covering skill categories, promotion rule, lifecycle phases, confidence levels, and cascade mechanics. Sourced from governance v1 Domain 3.
+
+**Why this matters:** These were embedded in the 1051-line governance.md and not surfaced as standalone operational docs. Extracting them makes them discoverable by agents without reading the full governance document. The ceremonies are founder-mandated hard gates — missing them means skipping skills assessment and team evaluation at critical project milestones.
+
+---
+
+### 2025-07-25: Autonomy Model Reference Document
+
+**Requested by:** Joaquín (Founder)
+
+**What was done:**
+Created `.squad/identity/autonomy-model.md` (147 lines) — rescued operational content from governance v1 Domains 2, 6, and 7 that was intentionally cut from governance-v2 for brevity but still needed as a reference.
+
+**Content rescued:**
+- Zone A/B/C detailed rationale tables (WHY each element is in its zone, not just WHAT)
+- Flora TypeScript strict gate example for Zone B extension
+- Configuration Inheritance tables (What Cascades + inheritance modes, What Stays Local)
+- Inheritance Conflict Resolution rules (4 modes: mandatory, mandatory minimum, available, default)
+- Hub Responsibilities (5 items) and Downstream Responsibilities (6 items)
+- Autonomy by Repository table (4 repos with profiles)
+
+**Design decision:** This is a reference doc, not governance. `governance.md` remains the authority on tiers and zones. `autonomy-model.md` explains HOW the model works operationally — tables over prose, zero philosophy paragraphs.
