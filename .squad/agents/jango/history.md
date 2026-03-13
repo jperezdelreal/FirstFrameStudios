@@ -43,65 +43,40 @@
 
 ---
 
-## 2026-03-12: Prepare-Mode for Blocked Issues in ralph-watch.ps1
+## Core Context (Sessions Summarized)
 
-**Task:** Implement "prepare but don't merge" mode per governance.md Dependencies section.
+**Major Initiatives (2026-03-11 to 2026-03-12):**
 
-**What Changed:**
-1. **blocked-by detection** — Scans labels for `blocked-by:*` pattern, sets `IsBlocked` flag on issue objects
-2. **P3 blocked skip** — Skip entirely (not worth preparing), logged with `[dep]` marker
-3. **Sort order** — Blocked issues sort after non-blocked (work non-blocked first)
-4. **[PREPARE-ONLY] marker** — Issue lines tagged for blocked issues in both sync and parallel sessions
-5. **Prompt instructions** — New `PREPARE MODE (blocked issues)` section instructing Ralph to only write tests, scaffold, open Draft PRs [WIP], never merge/close blocked issues
+1. **ralph-watch v3 + Governance Integration**
+   - Prepare-mode for blocked issues (blocked-by detection, [PREPARE-ONLY] markers, defense-in-depth at scheduler + prompt)
+   - G10 Roster Check: Skip repos without team.md ## Members
+   - G11 Upstream Sync: Auto-sync skills/governance/decisions from Hub to downstream repos after git pull
+   - Check-ProjectLifecycle function for autonomous ceremony triggering (Sprint Planning issues auto-created, project-state.json updates)
+   - PR review dedup (hashtable + prompt-level instructions), needs-research handling (no hard skip, [NEEDS-RESEARCH] marker if squad:{member} labeled)
+   - squad-triage.yml body-quality heuristic (acceptance criteria, checklists, ≥100 char body)
 
-**Key Pattern:** Defense in depth — enforce at scheduler level (skip/filter) AND prompt level (instructions). Even if prompt ignored, governance rules still enforced.
+2. **PR Review Cycles**
+   - Round 2 (2026-03-11): 5/5 PRs merged (Flora #15-17, ComeRosq #15-16). Learned: merge conflicts resolved by combining exports, --admin flag for same-owner repos.
+   - Updated tools/README.md docs (was outdated, missing v2 features)
 
-**File Modified:** tools/ralph-watch.ps1
+3. **Tooling & Metrics**
+   - collect-daily-metrics.ps1: per-repo issue/PR/contributor stats + Ralph metrics → tools/metrics/YYYY-MM-DD.json
+   - ComeRosquillas CI (ci.yml): HTML validation, JS syntax, assets check (no build step)
+   - GitHub Pages Blog: Jekyll + minima, docs/ on main
+   - Priority Labels (P0-P3 + blocked-by:*): Key lesson — workflows must consume config files
 
-**Status:** ✅ COMPLETE
+4. **Studio Infrastructure Cleanup (R3)**
+   - Deleted merged branch (Monitor: squad/13-real-data)
+   - squad.labels.json: 7 categories, member-specific auto-generated
+   - Cleaned 8 obsolete Star Wars labels from Flora & ComeRosquillas; updated to local team
+   - squad.config.ts: Removed games/**, updated routing to @solo/@jango/@mace, removed retired agents
 
----
-
-## 2026-03-12: G10 + G11 Guardrails in ralph-watch.ps1
-
-**What:**
-- **G10 Roster Check** — Ralph skips repos without `.squad/team.md` containing `## Members` section before fetching issues
-- **G11 Upstream Sync** — Hub content syncs to downstream repos after every git pull (skills/, quality-gates.md, governance.md, decisions.md, squad.agent.md)
-
-**Architecture:**
-- G10: `Test-HasSquadRoster` helper, called before each repo's issue fetch
-- G11: `Invoke-UpstreamSync` helper as Step 2.5 in main loop (between git pull and scheduler)
-- G11 only syncs if downstream has `.squad/` directory (won't create it)
-- G11 commits only if git detects differences, message: "chore: upstream sync from hub"
-- DryRun support for both guardrails
-
-**ASCII-safe markers:** Used `[roster]` and `[sync]` text instead of emojis for Windows PowerShell 5.1
-
-**File Modified:** tools/ralph-watch.ps1
-
-**Status:** ✅ COMPLETE
-
----
-
-## Earlier Sessions (Compressed)
-
-**2026-03-11: PR Review Round 2** — 5/5 PRs merged (Flora #15-17, ComeRosq #15-16). Key: merge conflicts resolved by combining exports, --admin flag needed for same-owner repos.
-
-**2026-03-11: ralph-watch Docs (#152)** — Verified dry-run 1+3 rounds PASS. Rewrote tools/README.md (was out of date — showed single-repo default, missing v2 features).
-
-**2026-03-11: Daily Metrics (#164)** — Created tools/collect-daily-metrics.ps1 with per-repo issue/PR/contributor stats + Ralph round metrics. Output: tools/metrics/YYYY-MM-DD.json. PR #168.
-
-**2026-03-11: ComeRosquillas CI (#6)** — ci.yml with HTML validation, JS syntax check, assets verification. No build step, simple.
-
-**2026-07-24: ComeRosq Pivot** — Switched now.md + schedule.json from Godot to web. Gap was operational, not construction.
-
-**2026-07-24: Upstream Connection** — Manual upstream setup (squad-cli lacks native upstream cmds). Hub provides identity + skills catalog via .squad/upstream/. config.json teamRoot uses relative `.`.
-
-**2026-07-24: GitHub Pages Blog** — Jekyll + minima in docs/, GitHub Pages from /docs on main. Studio blog with launch post.
-
-**2026-03-11: ralph-watch v2** — Added failure alerts (tools/logs/alerts.json), activity monitor (PowerShell runspace), multi-repo defaults, metrics parsing. 233→454 lines.
-
-**2026-07-25: Priority Labels** — Created P0-P3 + blocked-by:* labels. Key lesson: sync-squad-labels.yml has hardcoded labels that override — config files only work if workflows consume them.
+5. **Architecture Learnings**
+   - Branch defaults require API call before deletion
+   - Label cleanup benefits from listing first
+   - Defense-in-depth patterns (scheduler + prompt) more reliable than single-layer enforcement
+   - Windows PowerShell 5.1: ASCII-safe only (no unicode/emojis, use -- not em-dash)
+   - GitHub API: Contents API requires SHA for PUT updates, use PowerShell pipes for stdin
 
 ---
 

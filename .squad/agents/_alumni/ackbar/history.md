@@ -1,53 +1,24 @@
 ﻿# Ackbar — History
 
-## Project Context
-- **Project:** firstPunch — Browser-based game beat 'em up
-- **User:** joperezd
-- **Stack:** HTML + CSS + JS (ES modules), HTML5 Canvas, Web Audio API
-- **Current state:** MVP playable with 3 enemy waves, basic combat. Combat feel scored 5/10 in gap analysis. No hitlag, no combos, no jump attacks. Input responsiveness 7/10. Knockback satisfaction 6/10.
-- **Key role:** Only team member whose job is playing the game critically. Engineers test their own code — Ackbar tests the experience.
+## Core Context (Summarized)
 
-## Learnings
+**Role:** Game QA specialist for Ashfall. Only team member testing the experience critically; engineers test their own code.
 
-### Historical Work (Sessions 1-13)
+**Key Contributions:**
+1. **Frame Data Analysis** — Built debug overlay, performed DPS balance analysis, created comprehensive playtest protocol
+2. **Sprint 1 Code Quality Audit (2026-03-09)** — Reviewed all 53 GDScript files; 37 clean (70%), 16 issues found (1 critical)
+   - Critical: vfx_manager.gd uses _process instead of _physics_process (violates "Frame Data Is Law")
+   - Pattern: 5 files use float delta timing instead of deterministic frame counters; 3 files missing is_instance_valid() checks
+3. **Visual Quality Playtest (2026-03-22)** — Sprint 1 art APPROVED: silhouette test PASS, VFX PASS, stage visuals PASS, AnimationPlayer PASS
+   - Found: MP/MK startup 1f faster than spec; medium attacks missing from movesets; frame data drift
+   - Key insight: Pipeline architecturally sound; gaps are numerical, not structural
 
-- 2026-06-03: Frame Data Extraction & Debug Overlay (EX-A1, EX-A2)
-- 2026-06-04: Performance Metrics & QA Regression Checklist (EX-A3, EX-A4)
-- 2026-06-04: DPS Balance Analysis & Playtest Protocol (EX-A5, EX-A6)
-- 2026-06-04: Comprehensive Bug Hunt & Visual Quality Audit (MISSION REQUEST)
-- 2025-07-21: Post-Fix Verification — Critical Bug Fixes (C1 hitstun, C2 passive enemies)
-- 2025-07-21: Self-Assessment & Quality Excellence Proposal
-- 2025-07-21: Comprehensive Skills Audit
-- 2025-07-21: Comprehensive Skills Audit — Gap Analysis & Roadmap (Session 8)
-- 2025-07-21: Skills Audit v2 — Deep Dive (Second-Pass)
-- Session 17: Deep Research Wave — Skills Audit v2 (2026-03-07)
-- 2025-07-21: Post-Research Team & Skills Re-Evaluation (EX-A7, EX-A8)
-- 2026-03-08T00:10 — Phase 2: Team Evaluation Post-Research
-- 2025-07-25: Ashfall M4 Gate Playtest (Sprint 0 Ship Verification)
+**Technical Standards (Ashfall):**
+- Fixed 60fps deterministic; inputs drive state (enables rollback netcode)
+- _physics_process() only; integer frame counters > float timers
+- Node-based state machine per fighter; AnimationPlayer drives timing; MoveData resources; 6 collision layers
 
-### 2025-07-22: Sprint 1 Art Phase — Visual Quality Playtest (M4)
-- **Verdict: PASS WITH NOTES** — Sprint 1 art deliverables meet quality bar for shipping.
-- **PRs Reviewed:** #103 (EmberGrounds stage art), #104 (41 animation states), #105 (Character VFX), #106 (AnimationPlayer integration)
-- **Scope:** Code-level review of all art deliverables against GDD v1.0 and ARCHITECTURE.md
-- **Report:** `games/ashfall/docs/PLAYTEST-REPORT-SPRINT1.md`
-- **Sprite Coverage:** 41/41 poses implemented per character (Kael + Rhena). All 4 specials have distinct `_draw()` — not routed to ignition. Kicks have distinct art from punches. Base class fallbacks exist but are properly overridden.
-- **Silhouette Test:** PASS. Kael (narrow, controlled, blue-ember) vs Rhena (wide, chaotic, orange-ember) are immediately distinguishable. Body proportions, spark spread, and particle behavior all reinforce character identity.
-- **VFX Integration:** PASS. VFXManager connects to 7 EventBus signals (hit_landed, hit_blocked, hit_confirmed, fighter_ko, ember_changed, ember_spent, round_started). 10+ VFX types spawned with character-specific palettes. Zero direct coupling.
-- **Stage Visuals:** PASS. EmberGrounds escalation wired to round_started signal with 3 states (dormant/warming/eruption). Dual-axis reactivity (round + ember gauge). 5 parallax layers. Lava, embers, smoke, vignette all interpolate independently.
-- **AnimationPlayer:** PASS. FighterAnimationController builds Animation resources from MoveData with frame-perfect hitbox sync via CollisionShape.disabled + Area2D.monitoring keyframes. Process mode = PHYSICS.
-- **Frame Data Issues Found:**
-  1. P1-001: MP/MK base .tres startup is 1f faster than GDD spec (6f/7f vs 7f/8f minimum).
-  2. P1-002: Medium attacks (MP, MK) missing from character moveset .tres files. Only 6 moves per character.
-  3. P1-003: Frame data drift between base .tres and character moveset .tres (HP startup 10f vs 12f).
-- **Key Insight:** The art pipeline is architecturally excellent — procedural 2D drawing with parametric palettes, EventBus-decoupled VFX, and data-driven animation building. The gaps are numerical (frame data values) not structural. Fix the numbers, not the system.
-### 2026-03-09: Sprint 1 Code Quality Audit (Full Codebase)
-- **Audit scope:** All 53 GDScript files in games/ashfall/scripts/**
-- **Issues found:** 16 total (1 critical, 7 warnings, 8 info)
-- **Clean files:** 37 of 53 (70% of codebase has zero issues)
-- **Critical issue:** vfx_manager.gd uses _process instead of _physics_process for VFX timing (violates "Frame Data Is Law" principle from GDD)
-- **Key patterns identified:**
-  1. **_process vs _physics_process inconsistency** — 5 files use float delta timing for animations instead of deterministic frame counters
-  2. **Missing is_instance_valid() checks** — 3 files have potential crash risk from freed node access
+**Archived Skills:** VFX integration, hitlag system, event system, animation design, screen transitions, particles, music wiring
   3. **Unsafe type inference** — Dictionary.get() and Array[] access without explicit types (Godot 4.6 := bug)
   4. **has_method() overuse** — 2 files use runtime checks instead of type guards
   5. **Missing type hints on helpers** — Internal methods lack type annotations
