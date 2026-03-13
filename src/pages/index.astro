@@ -10,6 +10,8 @@ const games = [
     playUrl: '/FirstFrameStudios/games/flora',
     stack: 'Vite + TypeScript + PixiJS v8',
     status: '🌱 Starting',
+    gradient: 'from-emerald-500/20 to-green-600/20',
+    accentColor: 'emerald',
   },
   {
     id: 'comerosquillas',
@@ -19,60 +21,110 @@ const games = [
     playUrl: '/FirstFrameStudios/games/comerosquillas',
     stack: 'HTML + JS + Canvas',
     status: '🎮 Playable',
+    gradient: 'from-yellow-500/20 to-orange-600/20',
+    accentColor: 'yellow',
   },
 ];
 ---
 
 <Layout title="FirstFrame Studios — AI-Powered Game Development">
   <!-- Hero Section -->
-  <section class="bg-gradient-to-b from-gray-800 to-gray-900 py-20">
-    <div class="container mx-auto px-4 text-center">
-      <h1 class="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
-        FirstFrame Studios
-      </h1>
-      <p class="text-xl md:text-2xl text-gray-300 mb-4">
-        AI-Powered Game Development
-      </p>
-      <p class="text-lg text-gray-400 max-w-2xl mx-auto">
-        We build complete, playable games that players want to come back to. Our secret weapon: a team of specialized AI agents coordinated by Squad, each owning a domain.
-      </p>
+  <section class="relative py-32 md:py-40 overflow-hidden">
+    <!-- Animated background elements -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-1/4 -left-20 w-96 h-96 bg-neon-cyan/10 rounded-full blur-3xl animate-float"></div>
+      <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-neon-purple/10 rounded-full blur-3xl animate-float" style="animation-delay: -3s;"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon-pink/5 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="container mx-auto px-4 text-center relative z-10">
+      <div class="animate-slide-up">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8 text-sm font-medium">
+          <span class="w-2 h-2 bg-neon-green rounded-full animate-glow"></span>
+          AI Agents Building Games 24/7
+        </div>
+        
+        <h1 class="text-6xl md:text-8xl font-black mb-6 font-display">
+          <span class="bg-gradient-to-r from-primary via-neon-purple to-neon-pink bg-clip-text text-transparent text-glow">
+            FirstFrame
+          </span>
+          <br />
+          <span class="text-white/90">Studios</span>
+        </h1>
+        
+        <p class="text-xl md:text-3xl text-gray-300 mb-6 font-semibold">
+          Where AI Agents Craft Games
+        </p>
+        
+        <p class="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed mb-12">
+          We build complete, playable games that players want to come back to. Our secret weapon: 
+          <span class="text-primary font-semibold">15 specialized AI agents</span> coordinated by Squad, 
+          each owning their domain—from engine architecture to sound design.
+        </p>
+        
+        <div class="flex flex-wrap gap-4 justify-center">
+          <a 
+            href="#games"
+            class="px-8 py-4 rounded-xl bg-gradient-to-r from-primary to-primary-light hover:shadow-xl hover:shadow-primary/50 transition-all duration-300 font-bold text-lg transform hover:scale-105"
+          >
+            Explore Games
+          </a>
+          <a 
+            href="/FirstFrameStudios/devlog"
+            class="px-8 py-4 rounded-xl glass hover:bg-white/10 transition-all duration-300 font-semibold text-lg border border-white/10 hover:border-primary/50"
+          >
+            Read Devlog
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- Games Grid -->
-  <section class="container mx-auto px-4 py-16">
-    <h2 class="text-3xl font-bold mb-12 text-center">Our Games</h2>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+  <section id="games" class="container mx-auto px-4 py-24">
+    <div class="text-center mb-16">
+      <h2 class="text-5xl font-black mb-4 font-display bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Our Games</h2>
+      <p class="text-gray-400 text-lg">Built by AI, played by humans</p>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
       {games.map((game) => (
-        <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 hover:scale-105">
-          <div class="bg-gradient-to-br from-primary/20 to-purple-500/20 h-48 flex items-center justify-center">
-            <span class="text-6xl">{game.title.split(' ')[0]}</span>
-          </div>
-          <div class="p-6">
-            <div class="flex items-center justify-between mb-2">
-              <h3 class="text-xl font-bold">{game.title}</h3>
-              <span class="text-xs bg-gray-700 px-2 py-1 rounded">{game.status}</span>
+        <div class="group relative">
+          <div class="glass-dark rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20">
+            <!-- Game thumbnail area -->
+            <div class={`bg-gradient-to-br ${game.gradient} h-64 flex items-center justify-center relative overflow-hidden`}>
+              <div class="absolute inset-0 bg-gradient-to-t from-dark-900/80 to-transparent"></div>
+              <span class="text-8xl relative z-10 transform group-hover:scale-110 transition-transform duration-500">{game.title.split(' ')[0]}</span>
+              <div class="absolute top-4 right-4 z-10">
+                <span class="text-xs font-bold px-3 py-1.5 rounded-full glass">{game.status}</span>
+              </div>
             </div>
-            <p class="text-sm text-gray-400 mb-2">{game.stack}</p>
-            <p class="text-gray-300 mb-4 text-sm">{game.description}</p>
-            <div class="flex gap-3">
-              <a 
-                href={game.playUrl}
-                class="flex-1 bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded text-center transition-colors font-medium"
-              >
-                Play Now
-              </a>
-              <a 
-                href={game.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors"
-                aria-label="View on GitHub"
-              >
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-                </svg>
-              </a>
+            
+            <!-- Game info -->
+            <div class="p-6">
+              <h3 class="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">{game.title}</h3>
+              <p class="text-sm text-primary/80 font-mono mb-3">{game.stack}</p>
+              <p class="text-gray-300 mb-6 leading-relaxed">{game.description}</p>
+              
+              <div class="flex gap-3">
+                <a 
+                  href={game.playUrl}
+                  class="flex-1 bg-gradient-to-r from-primary to-primary-light hover:shadow-lg hover:shadow-primary/50 text-white px-5 py-3 rounded-xl text-center transition-all duration-300 font-bold transform hover:scale-[1.02]"
+                >
+                  ▶ Play Now
+                </a>
+                <a 
+                  href={game.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="glass hover:bg-white/10 px-5 py-3 rounded-xl transition-all duration-300 flex items-center justify-center"
+                  aria-label="View on GitHub"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -81,36 +133,52 @@ const games = [
   </section>
 
   <!-- Studio Info -->
-  <section class="bg-gray-800 py-16 mt-12">
-    <div class="container mx-auto px-4">
-      <div class="grid md:grid-cols-2 gap-8">
+  <section class="py-24 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-neon-purple/5 to-transparent"></div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto">
         <!-- Squad Info -->
-        <div class="text-center">
-          <h2 class="text-3xl font-bold mb-6">Built with Squad</h2>
-          <p class="text-gray-300 mb-8">
-            Our games are created by a team of specialized AI agents, each owning their domain: engine, gameplay, art, audio, QA, and production. Coordinated by Squad, a 15-agent Star Wars universe casting.
+        <div class="glass-dark rounded-2xl p-8 hover:border-primary/30 transition-all duration-300">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-neon-purple/20 flex items-center justify-center mb-6">
+            <span class="text-3xl">🤖</span>
+          </div>
+          <h2 class="text-3xl font-black mb-4 font-display">Built with Squad</h2>
+          <p class="text-gray-300 mb-8 leading-relaxed">
+            Our games are created by a team of specialized AI agents, each owning their domain: engine, gameplay, art, audio, QA, and production. 
+            Coordinated by <span class="text-primary font-semibold">Squad</span>, a 15-agent Star Wars universe casting.
           </p>
           <a 
             href="https://github.com/bradygaster/squad"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-block bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-colors font-medium"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-neon-purple to-neon-pink hover:shadow-lg hover:shadow-neon-purple/50 transition-all duration-300 font-bold"
           >
             Learn About Squad
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
           </a>
         </div>
 
         <!-- Devlog -->
-        <div class="text-center">
-          <h2 class="text-3xl font-bold mb-6">Daily Devlog</h2>
-          <p class="text-gray-300 mb-8">
-            The team works 24/7. Every day at 02:00 UTC, our automated devlog captures all closed issues, merged PRs, deployments, and decisions across the constellation. Zero manual writing — pure progress tracking.
+        <div class="glass-dark rounded-2xl p-8 hover:border-primary/30 transition-all duration-300">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-cyan/20 to-neon-green/20 flex items-center justify-center mb-6">
+            <span class="text-3xl">📝</span>
+          </div>
+          <h2 class="text-3xl font-black mb-4 font-display">Daily Devlog</h2>
+          <p class="text-gray-300 mb-8 leading-relaxed">
+            The team works 24/7. Every day at 02:00 UTC, our automated devlog captures all closed issues, merged PRs, deployments, and decisions across the constellation. 
+            <span class="text-neon-green font-semibold">Zero manual writing</span> — pure progress tracking.
           </p>
           <a 
             href="/FirstFrameStudios/devlog"
-            class="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-light hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 font-bold"
           >
             View Development Log
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
           </a>
         </div>
       </div>

@@ -50,15 +50,27 @@ const getRepoColor = (repo: string) => repoColors[repo] || 'bg-gray-500/20 text-
 
 <Layout title="Development Log — FirstFrame Studios" description="Daily automated development log tracking issues, PRs, deployments, and decisions across the constellation.">
   <!-- Hero -->
-  <section class="bg-gradient-to-b from-gray-800 to-gray-900 py-12">
-    <div class="container mx-auto px-4">
-      <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
+  <section class="relative py-20 overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-10 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 right-10 w-64 h-64 bg-neon-purple/5 rounded-full blur-3xl"></div>
+    </div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6 text-sm font-medium">
+        <span class="w-2 h-2 bg-neon-green rounded-full animate-glow"></span>
+        Auto-Generated Every Day at 02:00 UTC
+      </div>
+      
+      <h1 class="text-5xl md:text-6xl font-black mb-6 font-display bg-gradient-to-r from-primary via-neon-purple to-neon-pink bg-clip-text text-transparent">
         Development Log
       </h1>
-      <p class="text-lg text-gray-300 max-w-3xl">
+      
+      <p class="text-xl text-gray-300 max-w-3xl leading-relaxed mb-4">
         Daily automated chronicle of progress across the constellation. Issues closed, PRs merged, deployments shipped, and decisions made — all tracked autonomously.
       </p>
-      <p class="text-sm text-gray-400 mt-2">
+      
+      <p class="text-sm text-gray-500">
         Last updated: {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
       </p>
     </div>
@@ -66,48 +78,52 @@ const getRepoColor = (repo: string) => repoColors[repo] || 'bg-gray-500/20 text-
 
   <!-- Devlog Entries -->
   <section class="container mx-auto px-4 py-12">
-    <div class="space-y-12">
+    <div class="space-y-8 max-w-4xl mx-auto">
       {devlogData.length === 0 ? (
-        <div class="bg-gray-800 rounded-lg p-8 text-center">
-          <p class="text-gray-400">No devlog entries yet. The automated generation will populate this daily.</p>
+        <div class="glass-dark rounded-2xl p-12 text-center">
+          <span class="text-6xl mb-4 block">📝</span>
+          <p class="text-gray-400 text-lg">No devlog entries yet. The automated generation will populate this daily.</p>
         </div>
       ) : (
         devlogData.map((entry) => (
-          <div class="bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700">
-            <div class="flex items-center justify-between mb-4 border-b border-gray-700 pb-3">
-              <h2 class="text-2xl font-bold text-primary">
+          <div class="glass-dark rounded-2xl p-8 hover:border-primary/30 transition-all duration-300">
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-white/10">
+              <h2 class="text-2xl md:text-3xl font-bold text-primary font-display">
                 {new Date(entry.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
               </h2>
-              <span class="text-sm bg-gray-700 px-3 py-1 rounded-full text-gray-300">
+              <span class="text-sm font-bold px-4 py-2 rounded-full glass">
                 Day {entry.dayNumber}
               </span>
             </div>
             
             {entry.events.length === 0 ? (
-              <p class="text-gray-400 italic">No activity recorded for this day.</p>
+              <p class="text-gray-400 italic text-center py-8">No activity recorded for this day.</p>
             ) : (
-              <ul class="space-y-3">
+              <ul class="space-y-4">
                 {entry.events.map((event) => (
-                  <li class="flex items-start gap-3 group">
-                    <span class="text-2xl flex-shrink-0">{typeIcons[event.type]}</span>
-                    <div class="flex-1 min-w-0">
-                      <div class="flex items-center gap-2 flex-wrap">
-                        <span class={`text-xs px-2 py-1 rounded font-medium ${getRepoColor(event.repo)}`}>
+                  <li class="flex items-start gap-4 group">
+                    <span class="text-3xl flex-shrink-0 transform group-hover:scale-110 transition-transform">{typeIcons[event.type]}</span>
+                    <div class="flex-1 min-w-0 pt-1">
+                      <div class="flex items-center gap-2 flex-wrap mb-1">
+                        <span class={`text-xs px-3 py-1 rounded-full font-semibold ${getRepoColor(event.repo)}`}>
                           {event.repo}
                         </span>
-                        {event.url ? (
-                          <a 
-                            href={event.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="text-gray-200 hover:text-primary transition-colors group-hover:underline"
-                          >
-                            {event.title}
-                          </a>
-                        ) : (
-                          <span class="text-gray-200">{event.title}</span>
-                        )}
                       </div>
+                      {event.url ? (
+                        <a 
+                          href={event.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="text-gray-200 hover:text-primary transition-colors group-hover:underline text-lg leading-relaxed inline-flex items-center gap-2"
+                        >
+                          {event.title}
+                          <svg class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                          </svg>
+                        </a>
+                      ) : (
+                        <span class="text-gray-200 text-lg leading-relaxed">{event.title}</span>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -120,12 +136,20 @@ const getRepoColor = (repo: string) => repoColors[repo] || 'bg-gray-500/20 text-
   </section>
 
   <!-- Info Box -->
-  <section class="container mx-auto px-4 pb-12">
-    <div class="bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-lg p-6 border border-primary/20">
-      <h3 class="text-lg font-bold mb-2">How This Works</h3>
-      <p class="text-sm text-gray-300">
-        This devlog is generated automatically every day at 02:00 UTC by GitHub Actions. It aggregates closed issues, merged PRs, deployments, and Squad decisions from all constellation repositories. No human writes a single line — the team works 24/7, and the devlog captures it all.
-      </p>
+  <section class="container mx-auto px-4 pb-12 max-w-4xl">
+    <div class="glass-dark rounded-2xl p-8 border border-primary/20">
+      <div class="flex items-start gap-4">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-neon-purple/20 flex items-center justify-center flex-shrink-0">
+          <span class="text-2xl">ℹ️</span>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-3 text-primary">How This Works</h3>
+          <p class="text-gray-300 leading-relaxed">
+            This devlog is generated automatically every day at 02:00 UTC by GitHub Actions. It aggregates closed issues, merged PRs, deployments, and Squad decisions from all constellation repositories. 
+            <span class="text-neon-green font-semibold">No human writes a single line</span> — the team works 24/7, and the devlog captures it all.
+          </p>
+        </div>
+      </div>
     </div>
   </section>
 </Layout>

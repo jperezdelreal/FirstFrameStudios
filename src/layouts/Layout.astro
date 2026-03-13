@@ -15,18 +15,68 @@ const { title, description = "FirstFrame Studios — AI-Powered Game Development
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+      
+      * {
+        scroll-behavior: smooth;
+      }
+      
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: linear-gradient(to bottom, #0a0e27 0%, #1a1f3a 100%);
+        background-attachment: fixed;
+      }
+      
+      .glass {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      .glass-dark {
+        background: rgba(10, 14, 39, 0.6);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      
+      .text-glow {
+        text-shadow: 0 0 30px rgba(0, 217, 255, 0.5);
+      }
+      
+      .sticky-nav {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        transition: all 0.3s ease;
+      }
+    </style>
   </head>
-  <body class="bg-gray-900 text-gray-100">
-    <header class="bg-gray-800 border-b border-gray-700">
+  <body class="text-gray-100 antialiased">
+    <header class="sticky-nav glass-dark">
       <nav class="container mx-auto px-4 py-4">
         <div class="flex items-center justify-between">
-          <a href="/FirstFrameStudios/" class="text-2xl font-bold text-primary hover:text-primary-dark transition-colors">
-            🎮 FirstFrame Studios
+          <a href="/FirstFrameStudios/" class="text-2xl font-bold text-primary hover:text-primary-light transition-all duration-300 flex items-center gap-2">
+            <span class="text-3xl animate-float">🎮</span>
+            <span class="font-display">FirstFrame</span>
           </a>
-          <div class="flex gap-6">
-            <a href="/FirstFrameStudios/" class="hover:text-primary transition-colors">Home</a>
-            <a href="/FirstFrameStudios/devlog" class="hover:text-primary transition-colors">Devlog</a>
-            <a href="https://github.com/jperezdelreal/FirstFrameStudios" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">GitHub</a>
+          <div class="flex gap-6 items-center">
+            <a href="/FirstFrameStudios/" class="hover:text-primary transition-all duration-300 font-medium">Home</a>
+            <a href="/FirstFrameStudios/devlog" class="px-4 py-2 rounded-lg bg-gradient-to-r from-neon-purple to-neon-pink hover:shadow-lg hover:shadow-neon-pink/50 transition-all duration-300 font-semibold">Devlog</a>
+            <a href="https://github.com/jperezdelreal/FirstFrameStudios" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-all duration-300">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+            </a>
           </div>
         </div>
       </nav>
@@ -36,15 +86,39 @@ const { title, description = "FirstFrame Studios — AI-Powered Game Development
       <slot />
     </main>
     
-    <footer class="bg-gray-800 border-t border-gray-700 mt-20">
-      <div class="container mx-auto px-4 py-8">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div class="text-sm text-gray-400">
-            © 2026 FirstFrame Studios — AI-Powered Game Development
+    <footer class="glass-dark border-t border-white/5 mt-32">
+      <div class="container mx-auto px-4 py-12">
+        <div class="grid md:grid-cols-3 gap-8 mb-8">
+          <div>
+            <h3 class="text-xl font-bold mb-3 text-primary">FirstFrame Studios</h3>
+            <p class="text-gray-400 text-sm">AI-powered game development where specialized agents create complete, playable experiences.</p>
           </div>
-          <div class="flex gap-6 text-sm">
-            <a href="https://github.com/jperezdelreal/FirstFrameStudios" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">Studio Hub</a>
-            <a href="https://github.com/bradygaster/squad" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors">Built with Squad</a>
+          <div>
+            <h4 class="font-semibold mb-3 text-gray-300">Quick Links</h4>
+            <div class="space-y-2 text-sm">
+              <a href="/FirstFrameStudios/" class="block text-gray-400 hover:text-primary transition-colors">Games</a>
+              <a href="/FirstFrameStudios/devlog" class="block text-gray-400 hover:text-primary transition-colors">Development Log</a>
+              <a href="https://github.com/jperezdelreal/FirstFrameStudios" target="_blank" rel="noopener noreferrer" class="block text-gray-400 hover:text-primary transition-colors">Studio Hub</a>
+            </div>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-3 text-gray-300">Technology</h4>
+            <div class="space-y-2 text-sm">
+              <a href="https://github.com/bradygaster/squad" target="_blank" rel="noopener noreferrer" class="block text-gray-400 hover:text-primary transition-colors">Built with Squad</a>
+              <p class="text-gray-500">15-agent AI constellation</p>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div class="text-sm text-gray-500">
+            © 2026 FirstFrame Studios — Crafted by AI agents
+          </div>
+          <div class="flex gap-4 text-gray-500">
+            <a href="https://github.com/jperezdelreal" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors" aria-label="GitHub">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+            </a>
           </div>
         </div>
       </div>
