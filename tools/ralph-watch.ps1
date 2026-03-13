@@ -591,8 +591,10 @@ while ($true) {
             $copilotOutput = "[DRY RUN] No output captured"
         } else {
             Write-Host "   [copilot] Running session (blocking, Tamir-style)..." -ForegroundColor Cyan
-            $copilotOutput = copilot --agent squad --yolo -p $prompt 2>&1 | Out-String
+            Write-Host "   ────────────────────────────────────────" -ForegroundColor DarkGray
+            $copilotOutput = copilot --agent squad --yolo -p $prompt 2>&1 | Tee-Object -Variable _teeBuffer | ForEach-Object { Write-Host "   $_" -ForegroundColor DarkGray; $_ } | Out-String
             $exitCode = $LASTEXITCODE
+            Write-Host "   ────────────────────────────────────────" -ForegroundColor DarkGray
         }
 
         # Step 6: Log result + heartbeat
