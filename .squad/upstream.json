@@ -1,0 +1,12 @@
+{
+  "upstream": "jperezdelreal/Syntax-Sorcery",
+  "inherits": {
+    "policies": true,
+    "skills": ["context-hygiene", "downstream-audit", "project-conventions"],
+    "governance": true
+  },
+  "overrides": {
+    "domain_skills": true
+  },
+  "connected": "2026-03-13"
+}

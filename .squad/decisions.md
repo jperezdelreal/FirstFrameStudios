@@ -3,6 +3,9 @@
 > Active decisions the team must respect. Historical decisions in `decisions-archive.md`.
 > Format: see `templates/decision-record.md`.
 
+## TLDR
+FFS autonomous game studio, governed by Syntax Sorcery (upstream). GitHub-first, multi-repo hub-and-spoke. T0-T3 governance tiers (Founder→Lead→Agent→Auto). Ralph-watch drives autonomous sessions. Sprint Planning + Closeout ceremonies produce GitHub issues. See `upstream.json` for inheritance.
+
 ---
 
 
@@ -210,4 +213,21 @@ Simpler to maintain, full squad autonomy over issue selection. Session timeout r
 
 ---
 
-*Last cleaned: 2026-03-13. Previous content archived to `decisions-archive.md`.*
+*Last cleaned: 2026-03-14. Previous content archived to `decisions-archive.md`.*
+
+---
+
+## Governance
+
+> Inherited from upstream: [Syntax Sorcery](https://github.com/jperezdelreal/Syntax-Sorcery). See `upstream.json`.
+
+| Tier | Authority | Scope | FFS Examples |
+|------|-----------|-------|--------------|
+| T0 | Founder only | New downstream companies/games, principles changes, critical `.squad/` structural changes | New game repos, modifying `principles.md`, changing T0 scope |
+| T1 | Lead (Solo) | Architecture, quality gates, skills, ceremonies, routing, `.squad/` content refactors | Cross-repo architecture, tool repos, governance updates, hub roster |
+| T2 | Assigned agent | Implementation details, test strategies, doc updates, project-scoped work | Feature work, bug fixes, game roster, project tools |
+| T3 | Auto-approved | Scribe ops, history updates, log entries, cosmetic fixes | Session logs, history.md appends, typos, formatting |
+
+**Escalation:** Agent → Solo (Lead) → Founder (T0 only). No agent bypasses the Lead.
+**Priority (P0-P3):** Independent of Tiers. P0=Blocker, P1=Sprint-critical, P2=Normal (default), P3=Nice-to-have.
+**Full governance details:** `identity/governance.md`
