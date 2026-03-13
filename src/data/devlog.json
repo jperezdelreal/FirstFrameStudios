@@ -1,1 +1,548 @@
-[]
+[
+  {
+    "date": "2026-03-13",
+    "dayNumber": -2,
+    "events": [
+      {
+        "type": "issue",
+        "title": "Closed issue #28: Phase 1: FFS Takeover",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/28",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #20: [AUDIT-INFO] Templates directory inflates .squad/ to 232KB",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/20",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #19: [AUDIT-WARN] MCP config is scaffold placeholder — @copilot not fully configured",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/19",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #18: [AUDIT-WARN] No test infrastructure — must be ready before first code",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/18",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #17: [AUDIT-WARN] Decisions lack T0-T3 tier classification",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/17",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #16: [AUDIT-WARN] sync-squad-labels workflow failure unresolved",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/16",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #15: [AUDIT-WARN] config.json missing ralph-watch — autonomy gap",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/15",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #14: [AUDIT-WARN] No squad.config.ts — missing SDK-first configuration",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/14",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #13: [AUDIT-CRITICAL] squad.agent.TEMPLATE.md at 72.6KB — 3x hard limit",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/13",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #12: [AUDIT-CRITICAL] .gitignore missing standard patterns — security risk",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/12",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #11: [AUDIT-CRITICAL] No README.md — repo has zero documentation",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/11",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #10: Self-Audit: SS Best Practices Review",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/issues/10",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: Session 2026-03-13 Phase 2 Planning Complete — Autonomy + Visibility + Repo Evolution Workstreams Locked",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/commit/d55464b1967c49b860d25a2d42a49acd40162548",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: Scribe: Event-driven autonomy session capture",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/commit/1c9285515eed0f6f7e9132d7799d02621ea4fefa",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: chore(.squad): Merge Phase 2 plan, merge decisions inbox, add session logs",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/commit/243ed0904b5ebd7c497b45607be2d0a4d03ef88a",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: docs: Scribe consolidation — merge 3 Morpheus decisions (autonomy vision, parallel evolution, visibility)",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/commit/ab1ffb5a0b2f2e9458e87ff5dd17229a2a2b4423",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: Scribe: Context hygiene — decisions.md condensed 12.55KB → 9.60KB",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/commit/0af3080645d7b9379b8dffa5d5b2479b943428fa",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: Scribe: Stages 3-5 — first game deployed, tests green, costs verified",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/commit/29042e35c9f4eb1b6a6dfebe850a266b4e976afb",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: Scribe: Phase 2 Round 2 — satellite PRs cleared, directives captured",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/commit/fad9a5f49325caf24a43a412f8bf1042a34a9b92",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: Scribe: FFS Takeover T3+T4 complete — takeover verified 🟢",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/commit/07c3e3c755bf6f6945d7c3d204232a46d164f2c7",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: Scribe: FFS Takeover T2 session logging",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/commit/c48533134f9599f34ce7840a806fe5e5f06f79f0",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: chore(squad): Phase 1 complete — 14/14 tasks, SS grade B(0.71)",
+        "url": "https://github.com/jperezdelreal/Syntax-Sorcery/commit/e9bd6709481933bd4bcfeaacb98c32ded2aa92ec",
+        "repo": "Syntax-Sorcery"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #190: Implement backlog grooming ceremony for all repos",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/issues/190",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #197: P1-04+P1-05: FFS Context Remediation + Governance Swap",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/pull/197",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #196: feat: harden ralph-watch for 24h unattended operation (P1-08)",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/pull/196",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #194: fix: auto-create ceremony labels before issue creation (hotfix)",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/pull/194",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #193: feat: Add Check-ProjectLifecycle to ralph-watch.ps1",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/pull/193",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #192: design: simplified project lifecycle (T1 — Solo)",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/pull/192",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #191: fix: 5 bugs in ralph-watch and squad-triage",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/pull/191",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/FirstFrameStudios/deployments/4062114149",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: feat: #28 context remediation + governance swap for FFS",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/commit/151ce9b70fd2d677455c3d2a2f75268dc336d021",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: squad: merge ralph-v4 decisions, log jango orchestration",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/commit/3d49cc3dd7b293e7750e89b71892de14f9b0753b",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: chore: log Sprint Planning ceremony for ffs-squad-monitor",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/commit/49e62ac7effcd2ba52ea56ff8057fa9ced3c1b19",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: design: simplified project lifecycle (T1 — Solo) (#192)",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/commit/8a73ba7e1519be13a98bdd7ac03235159b253485",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: chore(scribe): final compression — decisions 4KB, jango history 7KB [R2.1+R2.2]",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/commit/d779ed4b7c4427ff7bb41fd014875e0c1ec14a42",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: chore(scribe): archive decisions <5KB + summarize histories <12KB [R2.1+R2.2]",
+        "url": "https://github.com/jperezdelreal/FirstFrameStudios/commit/49ba3a7beb46ed6270ae7ba5b85034f7fc13fa22",
+        "repo": "FirstFrameStudios"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #28: Sync squad-triage.yml with Hub fix (content-aware triage verdicts)",
+        "url": "https://github.com/jperezdelreal/flora/issues/28",
+        "repo": "flora"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #9: [Sprint 0] Garden UI/HUD: Status & In-Game Info",
+        "url": "https://github.com/jperezdelreal/flora/issues/9",
+        "repo": "flora"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #30: chore: Upgrade upstream.json to v2 (FFS Takeover T2)",
+        "url": "https://github.com/jperezdelreal/flora/pull/30",
+        "repo": "flora"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #29: fix: Sync squad-triage.yml with Hub content-aware triage verdicts [#28]",
+        "url": "https://github.com/jperezdelreal/flora/pull/29",
+        "repo": "flora"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #26: chore: add project lifecycle (sprint planning + closeout)",
+        "url": "https://github.com/jperezdelreal/flora/pull/26",
+        "repo": "flora"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #25: [Sprint 0] Garden UI/HUD: Status & In-Game Info",
+        "url": "https://github.com/jperezdelreal/flora/pull/25",
+        "repo": "flora"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/flora/deployments/4060461481",
+        "repo": "flora"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/flora/deployments/4060448057",
+        "repo": "flora"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/flora/deployments/4056555692",
+        "repo": "flora"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/flora/deployments/4054825232",
+        "repo": "flora"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/flora/deployments/4054615527",
+        "repo": "flora"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/flora/deployments/4053819320",
+        "repo": "flora"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/flora/deployments/4053553690",
+        "repo": "flora"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/flora/deployments/4053179183",
+        "repo": "flora"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/flora/deployments/4052949646",
+        "repo": "flora"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #26: Test Infrastructure — Unit Tests for Game Logic",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/issues/26",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #25: Settings Menu — Audio, Controls, Difficulty",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/issues/25",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #24: Difficulty Settings — Easy, Normal, Hard Modes",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/issues/24",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #23: Ghost AI Tuning — Smarter Pathing & Personality",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/issues/23",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #21: Sync squad-triage.yml with Hub fix (content-aware triage verdicts)",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/issues/21",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #20: [CEREMONY] Sprint Planning",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/issues/20",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #30: feat: Settings menu with audio, controls, and difficulty UI",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/pull/30",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #29: feat: Ghost AI with pathfinding and distinct personalities",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/pull/29",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #28: feat: Difficulty system with Easy/Normal/Hard presets",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/pull/28",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #31: test: Add unit test infrastructure for game logic [#26]",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/pull/31",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #32: chore: Upgrade upstream.json to v2 (FFS Takeover T2)",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/pull/32",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #27: fix: Sync squad-triage.yml with Hub content-aware verdicts",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/pull/27",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #19: chore: add project lifecycle (sprint planning + closeout)",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/pull/19",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/ComeRosquillas/deployments/4060716781",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/ComeRosquillas/deployments/4060704904",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "deploy",
+        "title": "Deployed to GitHub Pages",
+        "url": "https://api.github.com/repos/jperezdelreal/ComeRosquillas/deployments/4060610712",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: feat: Settings menu with audio, controls, and difficulty UI (#30)",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/commit/a79ba30b0cf8677022fb2049a5c2ab005a6ff552",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: feat: Difficulty system with Easy/Normal/Hard presets",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/commit/aa5cc2d5b5dcb28e1382be935f124d0257fb43d6",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: Scribe: merge decisions, log Sprint Planning ceremony",
+        "url": "https://github.com/jperezdelreal/ComeRosquillas/commit/50012dbd248f90ff70f8c7b9ffb555b6355b44e0",
+        "repo": "ComeRosquillas"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #25: UX polish: loading states, keyboard shortcuts, export logs",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/issues/25",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #24: Document deployment process and add health check endpoint",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/issues/24",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #23: Improve error handling and offline resilience",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/issues/23",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #22: Add unit tests for core lib modules (api, scheduler, util)",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/issues/22",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #21: Extract backend API middleware from vite.config.js to dedicated server module",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/issues/21",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #19: Sync squad-triage.yml with Hub fix (content-aware triage verdicts)",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/issues/19",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "issue",
+        "title": "Closed issue #18: [CEREMONY] Sprint Planning",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/issues/18",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #32: feat: UX polish — loading states, keyboard shortcuts, export logs [#25]",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/pull/32",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #29: feat: Add unit tests for core lib modules [#22]",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/pull/29",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #28: feat: Extract backend API to dedicated server module [#21]",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/pull/28",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #27: feat: Add error handling and offline resilience [#23]",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/pull/27",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #26: docs: Sprint 1 planning — PRD and project state [#18]",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/pull/26",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #31: docs: Add deployment documentation and health check endpoint [#24]",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/pull/31",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #33: chore: Upgrade upstream.json to v2 (FFS Takeover T2)",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/pull/33",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #30: fix: Sync squad-triage.yml with Hub content-aware triage verdicts [#19]",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/pull/30",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "pr",
+        "title": "Merged PR #17: chore: add project lifecycle (sprint planning + closeout)",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/pull/17",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: feat: Extract backend API to dedicated server module [#21] (#28)",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/commit/1d71a679bd0d9fa8ccca8259082dcc1d46a62022",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: feat: Add error handling and offline resilience [#23] (#27)",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/commit/b106781359e783d2e9998d6a504c119dff96b06a",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: docs: Add deployment documentation and health check endpoint [#24]",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/commit/2d0776d8f21d2b02569363d63a28febd318c0159",
+        "repo": "ffs-squad-monitor"
+      },
+      {
+        "type": "decision",
+        "title": "Decision updated: docs: scribe session log — Ralph round, all PRs approved",
+        "url": "https://github.com/jperezdelreal/ffs-squad-monitor/commit/c6a59dc5fabba9649d95c9a8dc34c510c924461e",
+        "repo": "ffs-squad-monitor"
+      }
+    ]
+  }
+]

@@ -34,72 +34,46 @@ function getDayNumber(date = new Date()) {
   return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
 }
 
-async function ghQuery(query) {
-  try {
-    const { stdout } = await execAsync(`gh api graphql -f query="${query.replace(/"/g, '\\"')}"`);
-    return JSON.parse(stdout);
-  } catch (error) {
-    console.error('GitHub API query failed:', error.message);
-    return null;
-  }
-}
-
 async function fetchClosedIssues(owner, name) {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const query = `
-    query {
-      repository(owner: "${owner}", name: "${name}") {
-        issues(first: 20, states: CLOSED, orderBy: {field: UPDATED_AT, direction: DESC}, filterBy: {since: "${since}"}) {
-          nodes {
-            number
-            title
-            url
-            closedAt
-          }
-        }
-      }
-    }
-  `;
   
-  const result = await ghQuery(query);
-  if (!result?.data?.repository?.issues?.nodes) return [];
-  
-  return result.data.repository.issues.nodes
-    .filter(issue => new Date(issue.closedAt) > new Date(since))
-    .map(issue => ({
-      type: 'issue',
-      title: `Closed issue #${issue.number}: ${issue.title}`,
-      url: issue.url,
-    }));
+  try {
+    const { stdout } = await execAsync(
+      `gh api repos/${owner}/${name}/issues --method GET -f state=closed -f since=${since} -f per_page=20`
+    );
+    const issues = JSON.parse(stdout);
+    
+    return issues
+      .filter(issue => !issue.pull_request && new Date(issue.closed_at) > new Date(since))
+      .map(issue => ({
+        type: 'issue',
+        title: `Closed issue #${issue.number}: ${issue.title}`,
+        url: issue.html_url,
+      }));
+  } catch (error) {
+    return [];
+  }
 }
 
 async function fetchMergedPRs(owner, name) {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const query = `
-    query {
-      repository(owner: "${owner}", name: "${name}") {
-        pullRequests(first: 20, states: MERGED, orderBy: {field: UPDATED_AT, direction: DESC}, baseRefName: "main") {
-          nodes {
-            number
-            title
-            url
-            mergedAt
-          }
-        }
-      }
-    }
-  `;
   
-  const result = await ghQuery(query);
-  if (!result?.data?.repository?.pullRequests?.nodes) return [];
-  
-  return result.data.repository.pullRequests.nodes
-    .filter(pr => new Date(pr.mergedAt) > new Date(since))
-    .map(pr => ({
-      type: 'pr',
-      title: `Merged PR #${pr.number}: ${pr.title}`,
-      url: pr.url,
-    }));
+  try {
+    const { stdout } = await execAsync(
+      `gh api repos/${owner}/${name}/pulls --method GET -f state=closed -f base=main -f sort=updated -f direction=desc -f per_page=20`
+    );
+    const prs = JSON.parse(stdout);
+    
+    return prs
+      .filter(pr => pr.merged_at && new Date(pr.merged_at) > new Date(since))
+      .map(pr => ({
+        type: 'pr',
+        title: `Merged PR #${pr.number}: ${pr.title}`,
+        url: pr.html_url,
+      }));
+  } catch (error) {
+    return [];
+  }
 }
 
 async function fetchDeployments(owner, name) {
