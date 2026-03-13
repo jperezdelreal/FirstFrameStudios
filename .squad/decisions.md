@@ -182,4 +182,32 @@ Completed Sprint Planning for ffs-squad-monitor. Project decomposed into 4 sprin
 
 ---
 
-*Last cleaned: 2026-03-12. Previous content archived to `decisions-archive.md`.*
+---
+
+## 2026-03-13 Decisions (Ralph Acceleration Block)
+
+### Ralph v4 — Per-Repo Parallel Architecture (Superseded)
+**By:** Squad (Coordinator), requested by Joaquin  
+**Date:** 2026-03-13  
+**Status:** SUPERSEDED → See "ralph-watch v4 Rewrite (Tamir-style Simplification)"
+
+Initial proposal for per-repo parallel architecture (separate worker processes, cross-repo priority eliminated, 3.4x throughput gain). Replaced by simpler Tamir-style approach: multi-repo via prompt scope instead of script complexity.
+
+---
+
+### Ralph-watch v4 Rewrite (Tamir-style Simplification)
+**By:** Jango (Tool Engineer)  
+**Date:** 2026-03-13  
+**Status:** Implemented (Committed: cf6ad60)  
+**Tier:** T1
+
+Rewrote ralph-watch.ps1 from v3 (1261 lines) to v4 (641 lines, 49% reduction). Multi-repo via prompt scope, not script iteration. Single static prompt tells squad agent to scan all 4 FFS repos; agent handles parallelism internally.
+
+**Dropped:** Night/day mode, issue pre-fetching, activity monitors, PR dedup tracking, Build-SessionPrompt.  
+**Kept:** Lock file, JSONL logging, heartbeat, circuit breaker, session timeout (Start-Job), Invoke-GitPull, Invoke-Scheduler, Check-ProjectLifecycle.
+
+Simpler to maintain, full squad autonomy over issue selection. Session timeout retained as safety net.
+
+---
+
+*Last cleaned: 2026-03-13. Previous content archived to `decisions-archive.md`.*
