@@ -5,14 +5,13 @@
 **Jango's Core Role:** Tool Engineer + PR Reviewer. Tooling autonomy (no bandwidth limits), multi-repo CI/CD infrastructure, automation for operational efficiency. GitHub Actions specialist.
 
 **Key Technical Learnings:**
-- ralph-watch.ps1 is production-ready with single-instance guards, heartbeat, log rotation. Needs operational activation, not construction.
+- ralph-watch v4: Tamir-style simplification. Multi-repo via prompt scope, not script iteration. Squad agent handles parallelism internally.
 - Scheduler infrastructure works: dedup per-minute prevents duplicate issues. Task definitions must be web-game-relevant (not Godot).
 - Tools requiring manual startup need dead-simple quickstart docs — one command, no setup. Pipeline-first means launchable.
 - CI/CD pattern: validate-before-deploy, separate CI from deploy workflows, minimize build time for rapid iteration.
-- Multi-repo ralph-watch defaults to all 4 FFS repos; session-scoped prompts (1 repo/session) focus copilot better than mega-prompts.
 
 **Studio Infrastructure Owned:**
-- **ralph-watch.ps1 v3** — Multi-repo scheduler with night/day mode (2 parallel sessions night, 1 session day), priority filtering, governance filter (T0/T1 approved), metrics parsing, failure alerts, activity monitor
+- **ralph-watch.ps1 v4** — Tamir-style simplified loop. Multi-repo via prompt scope (not script iteration). Static prompt, session timeout via Start-Job, circuit breaker, upstream sync, project lifecycle. 726 lines (was 1397).
 - **GitHub Actions workflows** — 20+ workflows (triage, heartbeat, daily-digest, drift-detection, label-enforce, label-sync, CI, docs, preview, release, webhook notifications)
 - **Scheduler tasks** — 4 enabled for ComeRosquillas (daily browser playtest, browser-compat-check, performance profiling, weekly backlog grooming)
 - **Metrics collection** — daily metrics script for all repos (issues opened/closed, PRs merged, contributors, Ralph metrics)
@@ -20,7 +19,7 @@
 - **Upstream sync** — G11 guardrail, syncs skills/quality-gates/governance/decisions from hub to downstream repos after git pull
 
 **Important File Paths:**
-- `tools/ralph-watch.ps1` — Main scheduler script (454 lines, multi-repo, night/day mode)
+- `tools/ralph-watch.ps1` — Main scheduler script (726 lines, v4 Tamir-style simplified)
 - `tools/README.md` — ralph-watch activation docs (startup, prerequisites, flag reference, scheduler task table)
 - `.github/workflows/*.yml` — 20+ GitHub Actions (triage, heartbeat, discord notifications, CI/CD, label sync)
 - `schedule.json` — Ralph's scheduler task definitions (4 tasks, all enabled for web games)
@@ -153,3 +152,22 @@
 **File Modified:** `tools/ralph-watch.ps1`
 
 **Status:** PR #193 opened
+
+### 2026-07-25: ralph-watch v4 Rewrite -- Tamir-style Simplification
+
+**Task:** Rewrite ralph-watch.ps1 from 1397 lines to ~726 lines following Tamir Dresher's approach.
+
+**What Changed:**
+1. **Architecture shift** -- Multi-repo via prompt scope, not script iteration. Single static prompt tells Ralph to scan all 4 FFS repos. Squad agent handles parallelism internally.
+2. **Dropped** -- Night/day mode (Get-OperatingMode, Get-ModeConfig), issue pre-fetching (Get-ScheduledIssues, Get-SessionAssignments), activity monitors, PR dedup tracking, remote URL validation, repo branch validation, Build-SessionPrompt, Invoke-CopilotSession, multi-repo foreach loop.
+3. **Kept as-is** -- Invoke-GitPull, Invoke-Scheduler, Invoke-UpstreamSync, Check-ProjectLifecycle, Test-HasSquadRoster, Get-RepoName. These are well-tested and work.
+4. **Kept and simplified** -- Write-RalphLog (removed mode/sessions fields), Update-Heartbeat (uses IntervalMinutes instead of ModeConfig), Write-FailureAlert, Get-SessionMetrics, circuit breaker, lock file, .ralph-stop.
+5. **Params simplified** -- 4 params (IntervalMinutes, SessionTimeout, DryRun, MaxRounds) instead of 9 (Mode, NightSessions, DaySessions, NightInterval, DayInterval, MaxIssuesPerSession, DryRun, MaxRounds, Repos).
+
+**Key Patterns:**
+- Static prompt with multi-repo scope replaces per-repo session scheduling
+- Session timeout via Start-Job + Wait-Job is our safety net (Tamir doesn't have this)
+- Downstream repo discovery via filesystem (Join-Path parentDir repoName) instead of param array
+- Python writer script needed for generating clean PowerShell without backtick-escaping issues in here-strings
+
+**File Modified:** `tools/ralph-watch.ps1` (1397 -> 726 lines, 48% reduction)
