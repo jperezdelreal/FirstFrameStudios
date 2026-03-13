@@ -82,19 +82,38 @@ const games = [
 
   <!-- Studio Info -->
   <section class="bg-gray-800 py-16 mt-12">
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold mb-6">Built with Squad</h2>
-      <p class="text-gray-300 max-w-2xl mx-auto mb-8">
-        Our games are created by a team of specialized AI agents, each owning their domain: engine, gameplay, art, audio, QA, and production. Coordinated by Squad, a 15-agent Star Wars universe casting.
-      </p>
-      <a 
-        href="https://github.com/bradygaster/squad"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-block bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-colors font-medium"
-      >
-        Learn About Squad
-      </a>
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Squad Info -->
+        <div class="text-center">
+          <h2 class="text-3xl font-bold mb-6">Built with Squad</h2>
+          <p class="text-gray-300 mb-8">
+            Our games are created by a team of specialized AI agents, each owning their domain: engine, gameplay, art, audio, QA, and production. Coordinated by Squad, a 15-agent Star Wars universe casting.
+          </p>
+          <a 
+            href="https://github.com/bradygaster/squad"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-block bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-colors font-medium"
+          >
+            Learn About Squad
+          </a>
+        </div>
+
+        <!-- Devlog -->
+        <div class="text-center">
+          <h2 class="text-3xl font-bold mb-6">Daily Devlog</h2>
+          <p class="text-gray-300 mb-8">
+            The team works 24/7. Every day at 02:00 UTC, our automated devlog captures all closed issues, merged PRs, deployments, and decisions across the constellation. Zero manual writing — pure progress tracking.
+          </p>
+          <a 
+            href="/FirstFrameStudios/devlog"
+            class="inline-block bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
+          >
+            View Development Log
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 </Layout>

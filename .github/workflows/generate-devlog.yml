@@ -1,0 +1,84 @@
+name: Generate Devlog
+
+on:
+  # Daily at 02:00 UTC
+  schedule:
+    - cron: '0 2 * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate devlog data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Install GitHub CLI if not available
+          if ! command -v gh &> /dev/null; then
+            echo "Installing GitHub CLI..."
+            type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+            sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            sudo apt update
+            sudo apt install gh -y
+          fi
+          
+          # Authenticate gh CLI
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --with-token
+          
+          # Run devlog generation
+          node scripts/generate-devlog.mjs
+
+      - name: Commit updated devlog
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add src/data/devlog.json
+          
+          if git diff --staged --quiet; then
+            echo "No changes to devlog data"
+          else
+            git commit -m "chore: update daily devlog [skip ci]
+
+Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+            git push
+          fi
+
+      - name: Build Astro site
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
