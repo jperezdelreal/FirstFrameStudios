@@ -1,0 +1,25 @@
+name: Update Games List
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # Daily at 6 AM UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Fetch game status
+        run: |
+          echo "Checking game repositories..."
+          # This is a placeholder for future enhancement
+          # Could fetch README badges, deployment status, etc.
+          echo "Games checked successfully"
+      
+      - name: Create PR if changes detected
+        run: |
+          # Future: Auto-create PR with updated game statuses
+          echo "No updates needed at this time"

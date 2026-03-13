@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const games = [
+  {
+    id: 'flora',
+    title: '🌿 FLORA',
+    description: 'Cozy gardening roguelite with procedural botanical art via L-systems. Every run creates unique living fractals with watercolor gradients and seasonal palettes.',
+    githubUrl: 'https://github.com/jperezdelreal/flora',
+    playUrl: '/FirstFrameStudios/games/flora',
+    stack: 'Vite + TypeScript + PixiJS v8',
+    status: '🌱 Starting',
+  },
+  {
+    id: 'comerosquillas',
+    title: '🍩 ComeRosquillas',
+    description: "A Simpsons-themed Pac-Man arcade clone. Navigate Homer through Springfield's maze, eating donuts while avoiding ghosts with distinct AI personalities. Features procedural audio via Web Audio API.",
+    githubUrl: 'https://github.com/jperezdelreal/ComeRosquillas',
+    playUrl: '/FirstFrameStudios/games/comerosquillas',
+    stack: 'HTML + JS + Canvas',
+    status: '🎮 Playable',
+  },
+];
+---
+
+<Layout title="FirstFrame Studios — AI-Powered Game Development">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-b from-gray-800 to-gray-900 py-20">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-500">
+        FirstFrame Studios
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-300 mb-4">
+        AI-Powered Game Development
+      </p>
+      <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+        We build complete, playable games that players want to come back to. Our secret weapon: a team of specialized AI agents coordinated by Squad, each owning a domain.
+      </p>
+    </div>
+  </section>
+
+  <!-- Games Grid -->
+  <section class="container mx-auto px-4 py-16">
+    <h2 class="text-3xl font-bold mb-12 text-center">Our Games</h2>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {games.map((game) => (
+        <div class="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 hover:scale-105">
+          <div class="bg-gradient-to-br from-primary/20 to-purple-500/20 h-48 flex items-center justify-center">
+            <span class="text-6xl">{game.title.split(' ')[0]}</span>
+          </div>
+          <div class="p-6">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xl font-bold">{game.title}</h3>
+              <span class="text-xs bg-gray-700 px-2 py-1 rounded">{game.status}</span>
+            </div>
+            <p class="text-sm text-gray-400 mb-2">{game.stack}</p>
+            <p class="text-gray-300 mb-4 text-sm">{game.description}</p>
+            <div class="flex gap-3">
+              <a 
+                href={game.playUrl}
+                class="flex-1 bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded text-center transition-colors font-medium"
+              >
+                Play Now
+              </a>
+              <a 
+                href={game.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors"
+                aria-label="View on GitHub"
+              >
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Studio Info -->
+  <section class="bg-gray-800 py-16 mt-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Built with Squad</h2>
+      <p class="text-gray-300 max-w-2xl mx-auto mb-8">
+        Our games are created by a team of specialized AI agents, each owning their domain: engine, gameplay, art, audio, QA, and production. Coordinated by Squad, a 15-agent Star Wars universe casting.
+      </p>
+      <a 
+        href="https://github.com/bradygaster/squad"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-block bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-colors font-medium"
+      >
+        Learn About Squad
+      </a>
+    </div>
+  </section>
+</Layout>

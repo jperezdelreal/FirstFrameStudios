@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>First Frame Studios Monitor</title>
+  <link rel="stylesheet" href="/src/styles.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #111827;
+      color: #f3f4f6;
+      line-height: 1.6;
+    }
+
+    .monitor-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .monitor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #4b5563;
+    }
+
+    .monitor-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #f3f4f6;
+    }
+
+    .monitor-status {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .monitor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .monitor-card {
+      background-color: #1f2937;
+      border: 1px solid #4b5563;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .monitor-card:hover {
+      border-color: #6b7280;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .monitor-card-title {
+      padding: 16px;
+      background-color: #111827;
+      border-bottom: 1px solid #4b5563;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #9ca3af;
+    }
+
+    .monitor-card-content {
+      padding: 16px;
+      min-height: 200px;
+    }
+
+    #log-viewer {
+      grid-column: 1 / -1;
+      height: 400px;
+    }
+
+    #agent-activity {
+      grid-column: 1 / -1;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #9ca3af;
+    }
+
+    .loading::after {
+      content: '⟳';
+      font-size: 24px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #4b5563;
+      font-size: 12px;
+      color: #6b7280;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="monitor-container">
+    <div class="monitor-header">
+      <h1 class="monitor-title">🎬 Studio Monitor</h1>
+      <div class="monitor-status">
+        <span>Status:</span>
+        <div id="connection-status"></div>
+      </div>
+    </div>
+
+    <div class="monitor-grid">
+      <!-- Heartbeat -->
+      <div class="monitor-card">
+        <div class="monitor-card-title">System Heartbeat</div>
+        <div class="monitor-card-content">
+          <div id="heartbeat" class="loading"></div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="monitor-card">
+        <div class="monitor-card-title">Activity Timeline</div>
+        <div class="monitor-card-content">
+          <div id="timeline" class="loading"></div>
+        </div>
+      </div>
+
+      <!-- Studio Pulse -->
+      <div class="monitor-card">
+        <div class="monitor-card-title">Studio Pulse</div>
+        <div class="monitor-card-content">
+          <div id="studio-pulse" class="loading"></div>
+        </div>
+      </div>
+
+      <!-- Log Viewer -->
+      <div class="monitor-card">
+        <div class="monitor-card-title">Log Stream</div>
+        <div class="monitor-card-content">
+          <div id="log-viewer" class="loading"></div>
+        </div>
+      </div>
+
+      <!-- Cross-Repo Board -->
+      <div class="monitor-card">
+        <div class="monitor-card-title">Repositories</div>
+        <div class="monitor-card-content">
+          <div id="cross-repo-board" class="loading"></div>
+        </div>
+      </div>
+
+      <!-- Agent Activity -->
+      <div class="monitor-card">
+        <div class="monitor-card-title">Agent Activity</div>
+        <div class="monitor-card-content">
+          <div id="agent-activity" class="loading"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>First Frame Studios Monitor • Real-time system status and agent activity tracking</p>
+      <p style="margin-top: 8px; color: #4b5563;">Connection state, error handling, and auto-recovery enabled</p>
+    </div>
+  </div>
+
+  <script type="module">
+    // Import and initialize the monitor
+    import initMonitor from '/src/monitor.js';
+
+    try {
+      console.log('Initializing monitor...');
+      const monitor = await initMonitor();
+      console.log('Monitor initialized successfully');
+
+      // Cleanup on page unload
+      window.addEventListener('beforeunload', () => {
+        console.log('Cleaning up monitor...');
+        monitor.cleanup();
+      });
+    } catch (error) {
+      console.error('Failed to initialize monitor:', error);
+      
+      // Show error to user
+      const container = document.querySelector('.monitor-container');
+      if (container) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'critical-error-overlay';
+        errorDiv.innerHTML = `
+          <div class="critical-error-content">
+            <div class="error-icon">💥</div>
+            <div class="error-message">Failed to Initialize Monitor</div>
+            <div class="error-details">
+              ${error.message}
+              <br><br>
+              Please check the console for more details.
+            </div>
+          </div>
+        `;
+        document.body.appendChild(errorDiv);
+      }
+    }
+  </script>
+</body>
+</html>

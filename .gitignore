@@ -1,5 +1,9 @@
-# Archived games stay local, not on GitHub
-games/
+# Archived games directory (root level only)
+/games/
+
+# Build output
+dist/
+.astro/
 
 # OS
 .DS_Store
