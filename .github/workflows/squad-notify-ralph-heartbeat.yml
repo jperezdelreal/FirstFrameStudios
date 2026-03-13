@@ -1,15 +1,17 @@
 name: Squad Notify - Ralph Heartbeat
 
-# Scheduled check of Ralph's heartbeat status
-# Sends notification when Ralph completes a round (every 4 hours)
+# Hardened heartbeat monitor (P1-08)
+# Checks: round progress, staleness detection, failure escalation
+# Runs every hour (was every 4h) for faster failure detection
 
 on:
   schedule:
-    - cron: '0 */4 * * *'  # Every 4 hours
+    - cron: '0 * * * *'  # Every hour
   workflow_dispatch:  # Manual trigger
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   check-heartbeat:
@@ -18,8 +20,9 @@ jobs:
       should_notify: ${{ steps.heartbeat.outputs.should_notify }}
       status: ${{ steps.heartbeat.outputs.status }}
       round: ${{ steps.heartbeat.outputs.round }}
-      mode: ${{ steps.heartbeat.outputs.mode }}
       failures: ${{ steps.heartbeat.outputs.failures }}
+      alert_level: ${{ steps.heartbeat.outputs.alert_level }}
+      message: ${{ steps.heartbeat.outputs.message }}
     steps:
       - uses: actions/checkout@v4
 
@@ -27,47 +30,171 @@ jobs:
         id: heartbeat
         run: |
           HEARTBEAT_FILE="tools/.ralph-heartbeat.json"
-          
+
           if [ ! -f "$HEARTBEAT_FILE" ]; then
             echo "No heartbeat file found"
             echo "should_notify=false" >> $GITHUB_OUTPUT
             exit 0
           fi
-          
+
           # Parse heartbeat data
-          STATUS=$(jq -r '.status' "$HEARTBEAT_FILE")
-          ROUND=$(jq -r '.round' "$HEARTBEAT_FILE")
-          MODE=$(jq -r '.mode' "$HEARTBEAT_FILE")
-          FAILURES=$(jq -r '.consecutiveFailures' "$HEARTBEAT_FILE")
-          
-          # Check if round number changed since last notification
-          LAST_ROUND_FILE=".github/.ralph-last-notified-round"
-          LAST_ROUND=0
-          
-          if [ -f "$LAST_ROUND_FILE" ]; then
-            LAST_ROUND=$(cat "$LAST_ROUND_FILE")
+          STATUS=$(jq -r '.status // "unknown"' "$HEARTBEAT_FILE")
+          ROUND=$(jq -r '.round // 0' "$HEARTBEAT_FILE")
+          FAILURES=$(jq -r '.consecutiveFailures // 0' "$HEARTBEAT_FILE")
+          TIMESTAMP=$(jq -r '.timestamp // ""' "$HEARTBEAT_FILE")
+          LAST_STATUS=$(jq -r '.lastStatus // ""' "$HEARTBEAT_FILE")
+
+          # Staleness detection: alert if heartbeat is older than 30 minutes
+          STALE="false"
+          STALE_MINUTES=0
+          if [ -n "$TIMESTAMP" ] && [ "$TIMESTAMP" != "null" ]; then
+            HEARTBEAT_EPOCH=$(date -d "$TIMESTAMP" +%s 2>/dev/null || echo 0)
+            NOW_EPOCH=$(date +%s)
+            if [ "$HEARTBEAT_EPOCH" -gt 0 ]; then
+              DIFF=$(( NOW_EPOCH - HEARTBEAT_EPOCH ))
+              STALE_MINUTES=$(( DIFF / 60 ))
+              if [ "$DIFF" -gt 1800 ] && [ "$STATUS" = "running" ]; then
+                STALE="true"
+              fi
+              if [ "$DIFF" -gt 3600 ] && [ "$STATUS" != "stopped" ]; then
+                STALE="true"
+              fi
+            fi
           fi
-          
-          # Only notify if round number increased
-          if [ "$ROUND" -gt "$LAST_ROUND" ]; then
+
+          # Determine alert level
+          ALERT_LEVEL="info"
+          MESSAGE=""
+
+          if [ "$STALE" = "true" ]; then
+            ALERT_LEVEL="critical"
+            MESSAGE="⚠️ STALE HEARTBEAT: Last update ${STALE_MINUTES}m ago (status: $STATUS). Ralph may be hung or crashed."
             echo "should_notify=true" >> $GITHUB_OUTPUT
-            echo "status=$STATUS" >> $GITHUB_OUTPUT
-            echo "round=$ROUND" >> $GITHUB_OUTPUT
-            echo "mode=$MODE" >> $GITHUB_OUTPUT
-            echo "failures=$FAILURES" >> $GITHUB_OUTPUT
-            echo "$ROUND" > "$LAST_ROUND_FILE"
+          elif [ "$FAILURES" -ge 5 ]; then
+            ALERT_LEVEL="critical"
+            MESSAGE="🔴 $FAILURES consecutive failures. Circuit breaker may trip soon."
+            echo "should_notify=true" >> $GITHUB_OUTPUT
+          elif [ "$FAILURES" -ge 3 ]; then
+            ALERT_LEVEL="warning"
+            MESSAGE="🟡 $FAILURES consecutive failures. Exponential backoff active."
+            echo "should_notify=true" >> $GITHUB_OUTPUT
+          elif [ "$STATUS" = "stopped" ]; then
+            # Only notify once when stopped
+            LAST_ROUND_FILE=".github/.ralph-last-notified-round"
+            LAST_ROUND=0
+            if [ -f "$LAST_ROUND_FILE" ]; then
+              LAST_ROUND=$(cat "$LAST_ROUND_FILE")
+            fi
+            if [ "$ROUND" != "$LAST_ROUND" ]; then
+              ALERT_LEVEL="warning"
+              MESSAGE="⏹️ Ralph stopped after round $ROUND."
+              echo "should_notify=true" >> $GITHUB_OUTPUT
+              echo "$ROUND" > "$LAST_ROUND_FILE"
+            else
+              echo "should_notify=false" >> $GITHUB_OUTPUT
+            fi
           else
-            echo "should_notify=false" >> $GITHUB_OUTPUT
+            # Normal operation — notify on new round (every 4 checks = every 4h)
+            LAST_ROUND_FILE=".github/.ralph-last-notified-round"
+            LAST_ROUND=0
+            if [ -f "$LAST_ROUND_FILE" ]; then
+              LAST_ROUND=$(cat "$LAST_ROUND_FILE")
+            fi
+            if [ "$ROUND" -gt "$LAST_ROUND" ]; then
+              MESSAGE="✅ Round $ROUND completed (status: $LAST_STATUS, failures: $FAILURES)"
+              echo "should_notify=true" >> $GITHUB_OUTPUT
+              echo "$ROUND" > "$LAST_ROUND_FILE"
+            else
+              echo "should_notify=false" >> $GITHUB_OUTPUT
+            fi
           fi
+
+          echo "status=$STATUS" >> $GITHUB_OUTPUT
+          echo "round=$ROUND" >> $GITHUB_OUTPUT
+          echo "failures=$FAILURES" >> $GITHUB_OUTPUT
+          echo "alert_level=$ALERT_LEVEL" >> $GITHUB_OUTPUT
+          echo "message=$MESSAGE" >> $GITHUB_OUTPUT
 
   notify:
     needs: check-heartbeat
     if: needs.check-heartbeat.outputs.should_notify == 'true'
     uses: ./.github/workflows/squad-notify-discord.yml
     with:
-      event_type: "Ralph Round Completed"
-      summary: "Ralph completed round ${{ needs.check-heartbeat.outputs.round }} in ${{ needs.check-heartbeat.outputs.mode }} mode (Status: ${{ needs.check-heartbeat.outputs.status }}, Failures: ${{ needs.check-heartbeat.outputs.failures }})"
+      event_type: "Ralph Heartbeat"
+      summary: "${{ needs.check-heartbeat.outputs.message }}"
       link: "${{ github.server_url }}/${{ github.repository }}/actions/workflows/squad-notify-ralph-heartbeat.yml"
-      color: "3066993"
+      color: ${{ needs.check-heartbeat.outputs.alert_level == 'critical' && '15158332' || needs.check-heartbeat.outputs.alert_level == 'warning' && '16776960' || '3066993' }}
     secrets:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+  create-issue-on-critical:
+    needs: check-heartbeat
+    if: needs.check-heartbeat.outputs.alert_level == 'critical'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create alert issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Check for existing open alert issue to avoid duplicates
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'ralph-alert',
+              state: 'open',
+              per_page: 1
+            });
+
+            if (existing.length > 0) {
+              core.info('Alert issue already exists: #' + existing[0].number);
+              // Add comment instead
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing[0].number,
+                body: `${{ needs.check-heartbeat.outputs.message }}\n\nRound: ${{ needs.check-heartbeat.outputs.round }} | Failures: ${{ needs.check-heartbeat.outputs.failures }} | Status: ${{ needs.check-heartbeat.outputs.status }}`
+              });
+              return;
+            }
+
+            // Ensure label exists
+            try {
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'ralph-alert',
+                color: 'B60205',
+                description: 'Ralph autonomous loop critical alert'
+              });
+            } catch (e) { /* label may already exist */ }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Ralph Alert — ' + '${{ needs.check-heartbeat.outputs.message }}'.substring(0, 80),
+              body: [
+                '## Ralph Health Alert',
+                '',
+                '${{ needs.check-heartbeat.outputs.message }}',
+                '',
+                '| Metric | Value |',
+                '|--------|-------|',
+                '| Round | ${{ needs.check-heartbeat.outputs.round }} |',
+                '| Status | ${{ needs.check-heartbeat.outputs.status }} |',
+                '| Consecutive Failures | ${{ needs.check-heartbeat.outputs.failures }} |',
+                '',
+                '**Action needed:** Check if ralph-watch is running on the host machine.',
+                '',
+                '```powershell',
+                '# Check heartbeat',
+                'Get-Content tools\\.ralph-heartbeat.json | ConvertFrom-Json',
+                '',
+                '# Restart ralph',
+                '.\\tools\\ralph-watch.ps1',
+                '```',
+                '',
+                '---',
+                '_Auto-created by squad-notify-ralph-heartbeat workflow_'
+              ].join('\n'),
+              labels: ['ralph-alert', 'priority:p0']
+            });

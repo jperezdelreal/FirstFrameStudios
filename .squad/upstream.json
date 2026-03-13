@@ -1,12 +1,54 @@
 {
-  "upstream": "jperezdelreal/Syntax-Sorcery",
-  "inherits": {
-    "policies": true,
-    "skills": ["context-hygiene", "downstream-audit", "project-conventions"],
-    "governance": true
+  "upstream": {
+    "repo": "jperezdelreal/Syntax-Sorcery",
+    "relationship": "downstream",
+    "model": "inherit-skills-override-domain"
   },
-  "overrides": {
-    "domain_skills": true
-  },
-  "connected": "2026-03-13"
+  "inherited_skills": [
+    "blog-automation",
+    "context-hygiene",
+    "context-map",
+    "conventional-commit",
+    "create-technical-spike",
+    "downstream-audit",
+    "engineering-craft",
+    "feature-triage",
+    "github-issues",
+    "github-project-board",
+    "multi-agent-coordination",
+    "prd",
+    "ralph-hardening",
+    "refactor-plan",
+    "skill-creator",
+    "skill-lifecycle",
+    "squad-conventions",
+    "state-machine-patterns",
+    "what-context-needed"
+  ],
+  "local_overrides": [
+    "game-qa-testing",
+    "input-handling",
+    "state-machine-patterns",
+    "ui-ux-patterns"
+  ],
+  "domain_skills": [
+    "2d-game-art",
+    "animation-for-games",
+    "beat-em-up-combat",
+    "canvas-2d-game-engine",
+    "canvas-2d-optimization",
+    "enemy-encounter-design",
+    "game-audio-design",
+    "game-design-fundamentals",
+    "game-engine-web",
+    "game-feel-juice",
+    "game-pages-template",
+    "level-design-fundamentals",
+    "procedural-audio",
+    "studio-craft",
+    "vite-typescript-pixijs",
+    "web-game-deployment",
+    "web-game-engine"
+  ],
+  "notes": "Skills in inherited_skills are available from SS upstream. Domain skills are FFS-specific. Local overrides have FFS-specific versions that supplement or replace upstream versions."
 }
