@@ -44,38 +44,7 @@
 
 ## Core Context (Sessions Summarized)
 
-**Major Initiatives (2026-03-11 to 2026-03-12):**
-
-1. **ralph-watch v3 + Governance Integration**
-   - Prepare-mode for blocked issues (blocked-by detection, [PREPARE-ONLY] markers, defense-in-depth at scheduler + prompt)
-   - G10 Roster Check: Skip repos without team.md ## Members
-   - G11 Upstream Sync: Auto-sync skills/governance/decisions from Hub to downstream repos after git pull
-   - Check-ProjectLifecycle function for autonomous ceremony triggering (Sprint Planning issues auto-created, project-state.json updates)
-   - PR review dedup (hashtable + prompt-level instructions), needs-research handling (no hard skip, [NEEDS-RESEARCH] marker if squad:{member} labeled)
-   - squad-triage.yml body-quality heuristic (acceptance criteria, checklists, ≥100 char body)
-
-2. **PR Review Cycles**
-   - Round 2 (2026-03-11): 5/5 PRs merged (Flora #15-17, ComeRosq #15-16). Learned: merge conflicts resolved by combining exports, --admin flag for same-owner repos.
-   - Updated tools/README.md docs (was outdated, missing v2 features)
-
-3. **Tooling & Metrics**
-   - collect-daily-metrics.ps1: per-repo issue/PR/contributor stats + Ralph metrics → tools/metrics/YYYY-MM-DD.json
-   - ComeRosquillas CI (ci.yml): HTML validation, JS syntax, assets check (no build step)
-   - GitHub Pages Blog: Jekyll + minima, docs/ on main
-   - Priority Labels (P0-P3 + blocked-by:*): Key lesson — workflows must consume config files
-
-4. **Studio Infrastructure Cleanup (R3)**
-   - Deleted merged branch (Monitor: squad/13-real-data)
-   - squad.labels.json: 7 categories, member-specific auto-generated
-   - Cleaned 8 obsolete Star Wars labels from Flora & ComeRosquillas; updated to local team
-   - squad.config.ts: Removed games/**, updated routing to @solo/@jango/@mace, removed retired agents
-
-5. **Architecture Learnings**
-   - Branch defaults require API call before deletion
-   - Label cleanup benefits from listing first
-   - Defense-in-depth patterns (scheduler + prompt) more reliable than single-layer enforcement
-   - Windows PowerShell 5.1: ASCII-safe only (no unicode/emojis, use -- not em-dash)
-   - GitHub API: Contents API requires SHA for PUT updates, use PowerShell pipes for stdin
+**Sessions 2026-03-11 to 2026-03-13 (archived):** Implemented ralph-watch v3 governance integration (Prepare-mode, G10 Roster Check, G11 Upstream Sync, Check-ProjectLifecycle, squad-triage body-quality heuristic, PR review dedup patterns). Executed R3 infrastructure cleanup (deleted merged branches, regenerated squad.labels.json with 7 categories, cleaned obsolete Star Wars labels from Flora/ComeRosquillas, updated squad.config.ts routing rules, completed branch master→main migration in Monitor). PR review Round 2: 5/5 merged (Flora, ComeRosquillas). Delivered collect-daily-metrics.ps1 for per-repo stats + Ralph metrics. Learned: defense-in-depth (scheduler + prompt) beats single-layer enforcement; Windows PowerShell 5.1 ASCII-safe required; GitHub Contents API needs SHA for PUT updates.
 
 ---
 
