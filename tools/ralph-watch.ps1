@@ -12,11 +12,9 @@
 #   .\tools\ralph-watch.ps1 -DryRun                # show what would happen
 #   .\tools\ralph-watch.ps1 -MaxRounds 3           # stop after 3 rounds
 #   .\tools\ralph-watch.ps1 -IntervalMinutes 10    # custom interval
-#   .\tools\ralph-watch.ps1 -SessionTimeout 2400   # 40-minute timeout
 
 param(
     [int]$IntervalMinutes = 5,
-    [int]$SessionTimeout = 1800,
     [switch]$DryRun,
     [int]$MaxRounds = 0
 )
@@ -543,7 +541,6 @@ foreach ($path in $existingDownstream) {
 Write-Host ""
 Write-Host "[ralph] Ralph Watch v4 - First Frame Studios (Simplified)" -ForegroundColor Cyan
 Write-Host "   Interval:    $IntervalMinutes minutes" -ForegroundColor Gray
-Write-Host "   Timeout:     $SessionTimeout seconds" -ForegroundColor Gray
 Write-Host "   Hub:         $repoRoot" -ForegroundColor Gray
 Write-Host "   Downstream:  $($existingDownstream.Count) repos found" -ForegroundColor Gray
 Write-Host "   Heartbeat:   $heartbeatFile" -ForegroundColor Gray
@@ -593,25 +590,9 @@ while ($true) {
             Write-Host "   [DRY RUN] Would run: copilot --agent squad --yolo -p <prompt>" -ForegroundColor Yellow
             $copilotOutput = "[DRY RUN] No output captured"
         } else {
-            Write-Host "   [copilot] Spawning session (timeout=${SessionTimeout}s)..." -ForegroundColor Cyan
-            $job = Start-Job -ScriptBlock {
-                param($p)
-                $out = copilot --agent squad --yolo -p $p 2>&1 | Out-String
-                return @{ Output = $out; ExitCode = $LASTEXITCODE }
-            } -ArgumentList $prompt
-
-            $completed = $job | Wait-Job -Timeout $SessionTimeout
-            if ($completed) {
-                $jobResult = Receive-Job $job -ErrorAction SilentlyContinue
-                Remove-Job $job -Force -ErrorAction SilentlyContinue
-                $copilotOutput = if ($jobResult.Output) { $jobResult.Output } else { "" }
-                $exitCode = if ($jobResult.ExitCode) { $jobResult.ExitCode } else { 0 }
-            } else {
-                Write-Host "   [TIMEOUT] Session exceeded ${SessionTimeout}s. Killing." -ForegroundColor Red
-                Stop-Job $job -ErrorAction SilentlyContinue
-                Remove-Job $job -Force -ErrorAction SilentlyContinue
-                $exitCode = -2
-            }
+            Write-Host "   [copilot] Running session (blocking, Tamir-style)..." -ForegroundColor Cyan
+            $copilotOutput = copilot --agent squad --yolo -p $prompt 2>&1 | Out-String
+            $exitCode = $LASTEXITCODE
         }
 
         # Step 6: Log result + heartbeat
