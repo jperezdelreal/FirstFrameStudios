@@ -1,22 +1,24 @@
-﻿# Ralph Watch v4 -- Simplified Autonomous Squad Agent Loop
-# First Frame Studios -- Tamir-style rewrite
+﻿# Ralph Watch v5 -- Hardened for 24h Unattended Operation
+# First Frame Studios -- Tank hardening (P1-08)
 #
-# v4: Multi-repo via prompt scope, not script complexity.
-# Squad agent handles parallelism and issue scheduling internally.
-# Dropped: night/day mode, issue pre-fetching, activity monitors, PR dedup tracking.
-# Kept: lock file, JSONL logging, heartbeat, alerts, session timeout, circuit breaker,
+# v5: Hardened from v4 for 24h continuous operation without human intervention.
+# Added: session timeout, exponential backoff, improved log rotation,
+#        stale lock detection, pre-round health checks, enhanced heartbeat.
+# Kept: lock file, JSONL logging, heartbeat, alerts, circuit breaker,
 #       upstream sync, project lifecycle, scheduler integration.
 #
 # Usage:
-#   .\tools\ralph-watch.ps1                        # default: 5min interval
-#   .\tools\ralph-watch.ps1 -DryRun                # show what would happen
-#   .\tools\ralph-watch.ps1 -MaxRounds 3           # stop after 3 rounds
-#   .\tools\ralph-watch.ps1 -IntervalMinutes 10    # custom interval
+#   .\tools\ralph-watch.ps1                            # default: 5min interval
+#   .\tools\ralph-watch.ps1 -DryRun                    # show what would happen
+#   .\tools\ralph-watch.ps1 -MaxRounds 3               # stop after 3 rounds
+#   .\tools\ralph-watch.ps1 -IntervalMinutes 10        # custom interval
+#   .\tools\ralph-watch.ps1 -SessionTimeoutMinutes 45  # longer session limit
 
 param(
     [int]$IntervalMinutes = 5,
     [switch]$DryRun,
-    [int]$MaxRounds = 0
+    [int]$MaxRounds = 0,
+    [int]$SessionTimeoutMinutes = 30
 )
 
 # --- UTF-8 console fix for Windows PowerShell ---
@@ -42,6 +44,11 @@ $circuitBreakerThreshold = 10
 $circuitBreakerTrips = 0
 $maxCircuitBreakerTrips = 3
 
+# Backoff settings (exponential on consecutive failures)
+$baseInterval = $IntervalMinutes
+$maxBackoffMinutes = 60
+$staleLockThresholdHours = 2
+
 # Downstream repo names (siblings of hub)
 $downstreamRepoNames = @("ComeRosquillas", "flora", "ffs-squad-monitor")
 
@@ -58,15 +65,26 @@ $squadUserDir = Join-Path $env:USERPROFILE ".squad"
 if (-not (Test-Path $squadUserDir)) { New-Item -ItemType Directory -Path $squadUserDir -Force | Out-Null }
 if (-not (Test-Path $logsDir)) { New-Item -ItemType Directory -Path $logsDir -Force | Out-Null }
 
-# --- Single-instance guard ---
+# --- Single-instance guard (with stale lock detection) ---
 if (Test-Path $lockFile) {
     $lockContent = Get-Content $lockFile -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json -ErrorAction SilentlyContinue
     if ($lockContent -and $lockContent.pid) {
         $existing = Get-Process -Id $lockContent.pid -ErrorAction SilentlyContinue
         if ($existing) {
-            Write-Host "ERROR: Ralph watch is already running (PID $($lockContent.pid), started $($lockContent.started))" -ForegroundColor Red
-            Write-Host "Kill it first: Stop-Process -Id $($lockContent.pid) -Force" -ForegroundColor Yellow
-            exit 1
+            # Check if lock is stale by age
+            $lockAge = $null
+            if ($lockContent.started) {
+                try { $lockAge = (Get-Date) - [datetime]$lockContent.started } catch {}
+            }
+            if ($lockAge -and $lockAge.TotalHours -gt $staleLockThresholdHours) {
+                Write-Host "WARNING: Stale lock detected (PID $($lockContent.pid), age $([math]::Round($lockAge.TotalHours, 1))h). Killing stale process." -ForegroundColor Yellow
+                Stop-Process -Id $lockContent.pid -Force -ErrorAction SilentlyContinue
+                Start-Sleep -Seconds 2
+            } else {
+                Write-Host "ERROR: Ralph watch is already running (PID $($lockContent.pid), started $($lockContent.started))" -ForegroundColor Red
+                Write-Host "Kill it first: Stop-Process -Id $($lockContent.pid) -Force" -ForegroundColor Yellow
+                exit 1
+            }
         }
     }
     Remove-Item $lockFile -Force -ErrorAction SilentlyContinue
@@ -161,10 +179,13 @@ function Write-RalphLog {
     }
     ($entry | ConvertTo-Json -Compress) | Add-Content -Path $logPath -Encoding utf8
 
-    # Log rotation: if file exceeds 1MB, rotate to .1
+    # Log rotation: keep 3 files (rotate .2 -> .3, .1 -> .2, current -> .1)
     if ((Test-Path $logPath) -and ((Get-Item $logPath).Length -gt $maxLogBytes)) {
-        $rotated = $logPath -replace '\.jsonl$', '.1.jsonl'
-        Move-Item $logPath $rotated -Force -ErrorAction SilentlyContinue
+        for ($i = 3; $i -ge 1; $i--) {
+            $src = if ($i -eq 1) { $logPath } else { $logPath -replace '\.jsonl$', ".$($i-1).jsonl" }
+            $dst = $logPath -replace '\.jsonl$', ".$i.jsonl"
+            if (Test-Path $src) { Move-Item $src $dst -Force -ErrorAction SilentlyContinue }
+        }
     }
 }
 
@@ -251,6 +272,108 @@ function Get-RepoName {
     $resolved = Resolve-Path $RepoPath -ErrorAction SilentlyContinue
     if ($resolved) { return (Split-Path $resolved.Path -Leaf) }
     return (Split-Path $RepoPath -Leaf)
+}
+
+function Get-BackoffInterval {
+    param([int]$Failures, [int]$BaseMinutes, [int]$MaxMinutes)
+    if ($Failures -le 0) { return $BaseMinutes }
+    $backoff = $BaseMinutes * [math]::Pow(2, [math]::Min($Failures, 6))
+    return [math]::Min([int]$backoff, $MaxMinutes)
+}
+
+function Invoke-CopilotWithTimeout {
+    param(
+        [string]$Prompt,
+        [int]$TimeoutMinutes
+    )
+    $timeoutSec = $TimeoutMinutes * 60
+    $tmpOut = [System.IO.Path]::GetTempFileName()
+    $tmpErr = [System.IO.Path]::GetTempFileName()
+
+    try {
+        Write-Host "   [copilot] Running session (timeout: ${TimeoutMinutes}m)..." -ForegroundColor Cyan
+        Write-Host "   ────────────────────────────────────────" -ForegroundColor DarkGray
+
+        $psi = New-Object System.Diagnostics.ProcessStartInfo
+        $psi.FileName = "copilot"
+        $psi.Arguments = "--agent squad --yolo -p `"$($Prompt -replace '"', '\"')`""
+        $psi.UseShellExecute = $false
+        $psi.RedirectStandardOutput = $true
+        $psi.RedirectStandardError = $true
+        $psi.CreateNoWindow = $true
+
+        $proc = [System.Diagnostics.Process]::Start($psi)
+
+        # Read output async to prevent deadlocks
+        $outTask = $proc.StandardOutput.ReadToEndAsync()
+        $errTask = $proc.StandardError.ReadToEndAsync()
+
+        $exited = $proc.WaitForExit($timeoutSec * 1000)
+
+        if (-not $exited) {
+            Write-Host "   [TIMEOUT] Session exceeded ${TimeoutMinutes}m limit. Killing process." -ForegroundColor Red
+            try { Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue } catch {}
+            $proc.WaitForExit(5000)
+            $output = if ($outTask.IsCompleted) { $outTask.Result } else { "[TIMEOUT] Partial output unavailable" }
+            Write-Host "   ────────────────────────────────────────" -ForegroundColor DarkGray
+            return @{ ExitCode = 124; Output = $output; TimedOut = $true }
+        }
+
+        $output = $outTask.Result
+        $stderr = $errTask.Result
+        $exitCode = $proc.ExitCode
+
+        if ($output) {
+            $output -split "`n" | ForEach-Object { Write-Host "   $_" -ForegroundColor DarkGray }
+        }
+        Write-Host "   ────────────────────────────────────────" -ForegroundColor DarkGray
+
+        return @{ ExitCode = $exitCode; Output = $output; TimedOut = $false }
+    } catch {
+        Write-Host "   [ERROR] Failed to start copilot: $_" -ForegroundColor Red
+        return @{ ExitCode = -1; Output = ""; TimedOut = $false }
+    } finally {
+        Remove-Item $tmpOut -Force -ErrorAction SilentlyContinue
+        Remove-Item $tmpErr -Force -ErrorAction SilentlyContinue
+    }
+}
+
+function Test-SystemHealth {
+    $healthy = $true
+
+    # Check copilot CLI is available
+    if (-not (Get-Command copilot -ErrorAction SilentlyContinue)) {
+        Write-Host "   [health] FAIL: 'copilot' CLI not in PATH" -ForegroundColor Red
+        $healthy = $false
+    }
+
+    # Check gh CLI is available
+    if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+        Write-Host "   [health] WARN: 'gh' CLI not in PATH" -ForegroundColor Yellow
+    }
+
+    # Check git is available
+    if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+        Write-Host "   [health] FAIL: 'git' not in PATH" -ForegroundColor Red
+        $healthy = $false
+    }
+
+    # Check disk space (warn if < 1GB free on repo drive)
+    try {
+        $drive = (Get-Item $script:repoRoot).PSDrive
+        $freeGB = [math]::Round($drive.Free / 1GB, 1)
+        if ($freeGB -lt 1) {
+            Write-Host "   [health] WARN: Low disk space ($freeGB GB free)" -ForegroundColor Yellow
+        }
+    } catch {}
+
+    # Clean up old temp files from previous sessions
+    $tempPattern = Join-Path $env:TEMP "ralph-copilot-*"
+    Get-ChildItem $tempPattern -ErrorAction SilentlyContinue | Where-Object {
+        $_.LastWriteTime -lt (Get-Date).AddHours(-2)
+    } | Remove-Item -Force -ErrorAction SilentlyContinue
+
+    return $healthy
 }
 
 function Test-HasSquadRoster {
@@ -539,8 +662,9 @@ foreach ($path in $existingDownstream) {
 }
 
 Write-Host ""
-Write-Host "[ralph] Ralph Watch v4 - First Frame Studios (Simplified)" -ForegroundColor Cyan
-Write-Host "   Interval:    $IntervalMinutes minutes" -ForegroundColor Gray
+Write-Host "[ralph] Ralph Watch v5 - Hardened for 24h Operation" -ForegroundColor Cyan
+Write-Host "   Interval:    $IntervalMinutes minutes (backoff up to $maxBackoffMinutes min on failures)" -ForegroundColor Gray
+Write-Host "   Timeout:     $SessionTimeoutMinutes minutes per session" -ForegroundColor Gray
 Write-Host "   Hub:         $repoRoot" -ForegroundColor Gray
 Write-Host "   Downstream:  $($existingDownstream.Count) repos found" -ForegroundColor Gray
 Write-Host "   Heartbeat:   $heartbeatFile" -ForegroundColor Gray
@@ -562,6 +686,20 @@ while ($true) {
     $timestamp = $roundStart.ToString('yyyy-MM-ddTHH:mm:ss')
 
     Write-Host "[$timestamp] [>>] Round $round starting..." -ForegroundColor Green
+
+    # Pre-round health check
+    if (-not (Test-SystemHealth)) {
+        Write-Host "   [health] Pre-round check failed. Skipping round." -ForegroundColor Red
+        $consecutiveFailures++
+        Write-RalphLog -Round $round -Status "HEALTH_FAIL" -ExitCode -2 -DurationSeconds 0 -Phase "health-check"
+        Update-Heartbeat -Status "idle" -Round $round -Extra @{
+            lastStatus = "HEALTH_FAIL"
+        }
+        if ($consecutiveFailures -ge $alertThreshold) {
+            Write-FailureAlert -Round $round -Failures $consecutiveFailures -ExitCode -2 -ErrorMessage "Pre-round health check failed"
+        }
+    } else {
+
     Update-Heartbeat -Status "running" -Round $round
 
     try {
@@ -582,19 +720,19 @@ while ($true) {
         # Step 4: Check project lifecycle
         Check-ProjectLifecycle -RepoNames $allRepoNames
 
-        # Step 5: Copilot session
+        # Step 5: Copilot session (with timeout)
         $exitCode = 0
         $copilotOutput = ""
+        $timedOut = $false
 
         if ($DryRun) {
-            Write-Host "   [DRY RUN] Would run: copilot --agent squad --yolo -p <prompt>" -ForegroundColor Yellow
+            Write-Host "   [DRY RUN] Would run: copilot --agent squad --yolo -p <prompt> (timeout: ${SessionTimeoutMinutes}m)" -ForegroundColor Yellow
             $copilotOutput = "[DRY RUN] No output captured"
         } else {
-            Write-Host "   [copilot] Running session (blocking, Tamir-style)..." -ForegroundColor Cyan
-            Write-Host "   ────────────────────────────────────────" -ForegroundColor DarkGray
-            $copilotOutput = copilot --agent squad --yolo -p $prompt 2>&1 | Tee-Object -Variable _teeBuffer | ForEach-Object { Write-Host "   $_" -ForegroundColor DarkGray; $_ } | Out-String
-            $exitCode = $LASTEXITCODE
-            Write-Host "   ────────────────────────────────────────" -ForegroundColor DarkGray
+            $result = Invoke-CopilotWithTimeout -Prompt $prompt -TimeoutMinutes $SessionTimeoutMinutes
+            $exitCode = $result.ExitCode
+            $copilotOutput = $result.Output
+            $timedOut = $result.TimedOut
         }
 
         # Step 6: Log result + heartbeat
@@ -614,15 +752,17 @@ while ($true) {
             Write-Host "[$($roundEnd.ToString('yyyy-MM-ddTHH:mm:ss'))] [OK] Round $round complete ($([math]::Round($duration, 1))s) [$metricsLine]" -ForegroundColor Green
         } else {
             $consecutiveFailures++
-            Write-RalphLog -Round $round -Status "FAIL" -ExitCode $exitCode -DurationSeconds $duration -Metrics $metrics
+            $failStatus = if ($timedOut) { "TIMEOUT" } else { "FAIL" }
+            Write-RalphLog -Round $round -Status $failStatus -ExitCode $exitCode -DurationSeconds $duration -Metrics $metrics
             Update-Heartbeat -Status "idle" -Round $round -Extra @{
                 lastDuration = [math]::Round($duration, 1)
-                lastStatus   = "FAIL"
+                lastStatus   = $failStatus
             }
-            Write-Host "[$($roundEnd.ToString('yyyy-MM-ddTHH:mm:ss'))] [FAIL] Round $round failed, exit code $exitCode ($([math]::Round($duration, 1))s)" -ForegroundColor Red
+            $failMsg = if ($timedOut) { "timed out after ${SessionTimeoutMinutes}m" } else { "exit code $exitCode" }
+            Write-Host "[$($roundEnd.ToString('yyyy-MM-ddTHH:mm:ss'))] [$failStatus] Round $round failed, $failMsg ($([math]::Round($duration, 1))s)" -ForegroundColor Red
 
             if ($consecutiveFailures -ge $alertThreshold) {
-                Write-FailureAlert -Round $round -Failures $consecutiveFailures -ExitCode $exitCode
+                Write-FailureAlert -Round $round -Failures $consecutiveFailures -ExitCode $exitCode -ErrorMessage $failMsg
             }
 
             # Circuit breaker
@@ -667,6 +807,8 @@ while ($true) {
         }
     }
 
+    } # end health check else
+
     # Check MaxRounds
     if ($MaxRounds -gt 0 -and $round -ge $MaxRounds) {
         Write-Host ""
@@ -682,10 +824,16 @@ while ($true) {
         break
     }
 
+    # Calculate interval with exponential backoff on failures
+    $currentInterval = Get-BackoffInterval -Failures $consecutiveFailures -BaseMinutes $baseInterval -MaxMinutes $maxBackoffMinutes
+    if ($currentInterval -ne $baseInterval) {
+        Write-Host "   [backoff] $consecutiveFailures consecutive failures. Interval: $currentInterval minutes (base: $baseInterval)" -ForegroundColor Yellow
+    }
+
     # Sleep (responsive to Ctrl+C and .ralph-stop)
-    Write-Host "   Next round in $IntervalMinutes minutes..." -ForegroundColor Gray
+    Write-Host "   Next round in $currentInterval minutes..." -ForegroundColor Gray
     Write-Host ""
-    $sleepTotal = $IntervalMinutes * 60
+    $sleepTotal = $currentInterval * 60
     $slept = 0
     while ($slept -lt $sleepTotal) {
         $chunk = [Math]::Min(10, $sleepTotal - $slept)
