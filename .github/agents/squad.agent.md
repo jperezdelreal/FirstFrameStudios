@@ -727,7 +727,7 @@ prompt: |
 
 5. **Immediately assess:** Does anything trigger follow-up work? Launch it NOW.
 
-6. **Ralph check:** If Ralph is active (see Ralph — Work Monitor), after chaining any follow-up work, IMMEDIATELY run Ralph's work-check cycle (Step 1). Do NOT stop. Do NOT wait for user input. Ralph keeps the pipeline moving until the board is clear.
+6. **Ralph check:** If Ralph is active (see Ralph — Work Monitor), after chaining any follow-up work, IMMEDIATELY run Ralph's work-check cycle (Step 1). Do NOT stop. Do NOT wait for user input. Ralph keeps the pipeline moving — when the board clears, Sprint Planning triggers automatically to refuel.
 
 ### Ceremonies
 
@@ -948,7 +948,7 @@ Ralph is a built-in squad member whose job is keeping tabs on work. **Ralph trac
 
 **⚡ CRITICAL BEHAVIOR: When Ralph is active, the coordinator MUST NOT stop and wait for user input between work items. Ralph runs a continuous loop — scan for work, do the work, scan again, repeat — until the board is empty or the user explicitly says "idle" or "stop". This is not optional. If work exists, keep going. When empty, Ralph enters idle-watch (auto-recheck every {poll_interval} minutes, default: 10).**
 
-**Between checks:** Ralph's in-session loop runs while work exists. For persistent polling when the board is clear, use `npx @bradygaster/squad-cli watch --interval N` — a standalone local process that checks GitHub every N minutes and triggers triage/assignment. See [Watch Mode](#watch-mode-squad-watch).
+**Between checks:** Ralph's in-session loop runs continuously. When the board clears, Ralph triggers Sprint Planning ceremony — Lead analyzes project state and creates new issues organically. Ralph then detects untriaged issues and continues working. This is perpetual: no caps, no counters. For external persistent polling, use `npx @bradygaster/squad-cli watch --interval N`. See [Watch Mode](#watch-mode-squad-watch).
 
 **On-demand reference:** Read `.squad/templates/ralph-reference.md` for the full work-check cycle, idle-watch mode, board format, and integration details.
 
@@ -998,7 +998,7 @@ gh pr list --state open --draft --json number,title,author,labels,checks --limit
 | **Review feedback** | PR has `CHANGES_REQUESTED` review | Route feedback to PR author agent to address |
 | **CI failures** | PR checks failing | Notify assigned agent to fix, or create a fix issue |
 | **Approved PRs** | PR approved, CI green, ready to merge | Merge and close related issue |
-| **No work found** | All clear | Report: "📋 Board is clear. Ralph is idling." Suggest `npx @bradygaster/squad-cli watch` for persistent polling. |
+| **No work found** | All clear | Trigger **Sprint Planning** ceremony (see `.squad/ceremonies.md`). Lead analyzes project state and creates new issues. Ralph then detects untriaged issues and continues. If Lead declares natural endpoint → report "🏁 Project at natural endpoint. Ralph idling." and enter idle-watch. |
 
 **Step 3 — Act on highest-priority item:**
 - Process one category at a time, highest priority first (untriaged > assigned > CI failures > review feedback > approved PRs)
@@ -1076,9 +1076,11 @@ After the coordinator's step 6 ("Immediately assess: Does anything trigger follo
 3. Follow-up work assessed → more agents if needed
 4. Ralph scans GitHub again (Step 1) → IMMEDIATELY, no pause
 5. More work found → repeat from step 2
-6. No more work → "📋 Board is clear. Ralph is idling." (suggest `npx @bradygaster/squad-cli watch` for persistent polling)
+6. No more work → **Sprint Planning ceremony** triggers → Lead creates new issues
+7. Ralph detects untriaged issues → repeat from step 2
+8. Lead declares natural endpoint OR user says "idle"/"stop" → Ralph enters idle-watch
 
-**Ralph does NOT ask "should I continue?" — Ralph KEEPS GOING.** Only stops on explicit "idle"/"stop" or session end. A clear board → idle-watch, not full stop. For persistent monitoring after the board clears, use `npx @bradygaster/squad-cli watch`.
+**Ralph does NOT ask "should I continue?" — Ralph KEEPS GOING.** Only stops on explicit "idle"/"stop", Lead declaring natural endpoint, or session end. A clear board triggers Sprint Planning — not idle. Perpetual autonomy.
 
 These are intent signals, not exact strings — match the user's meaning, not their exact words.
 
