@@ -5,14 +5,14 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#00d9ff',
-          dark: '#00b8db',
-          light: '#5ce1ff',
+          DEFAULT: '#f59e0b',
+          dark: '#d97706',
+          light: '#fbbf24',
         },
         neon: {
           pink: '#ff0080',
           purple: '#7928ca',
-          cyan: '#00d9ff',
+          amber: '#f59e0b',
           green: '#00ff88',
         },
         dark: {

@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Pixel Bounce — FirstFrame Studios">
+  <div class="container mx-auto px-4 py-12">
+    <div class="mb-8">
+      <a href="/FirstFrameStudios/" class="inline-flex items-center gap-2 text-primary hover:text-primary-light transition-all duration-300 font-semibold">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        Back to Games
+      </a>
+    </div>
+    
+    <div class="glass-dark rounded-2xl p-8 mb-8">
+      <div class="flex flex-col md:flex-row md:items-start gap-6">
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-6xl">🏀</span>
+            <div>
+              <h1 class="text-4xl md:text-5xl font-black font-display">Pixel Bounce</h1>
+              <p class="text-primary font-mono text-sm mt-1">HTML5 Canvas — Zero Dependencies</p>
+            </div>
+          </div>
+          <p class="text-gray-300 text-lg mb-4 leading-relaxed">
+            Arcade platformer built by the Syntax Sorcery pipeline. Bounce your ball across platforms, 
+            collect stars, dodge hazards, and chase your high score — all in pure HTML5 Canvas with zero dependencies.
+          </p>
+          <div class="flex flex-wrap gap-2 mb-6">
+            <span class="px-3 py-1 rounded-full glass text-sm font-medium">✅ Deployed</span>
+            <span class="px-3 py-1 rounded-full glass text-sm font-medium">🎮 Arcade</span>
+            <span class="px-3 py-1 rounded-full glass text-sm font-medium">🧙‍♂️ Pipeline Game #1</span>
+          </div>
+        </div>
+        <a 
+          href="https://github.com/jperezdelreal/pixel-bounce" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-light hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 font-bold"
+        >
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+    
+    <div class="glass-dark rounded-2xl p-3 mb-8">
+      <iframe 
+        src="https://jperezdelreal.github.io/pixel-bounce/"
+        class="w-full rounded-xl"
+        style="height: 700px; border: none;"
+        title="Pixel Bounce Game"
+        sandbox="allow-scripts allow-same-origin"
+        loading="lazy"
+      ></iframe>
+    </div>
+    
+    <div class="glass-dark rounded-2xl p-6">
+      <h2 class="text-2xl font-bold mb-4 text-primary">How to Play</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-semibold text-lg mb-3 text-gray-200">🎮 Controls</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li class="flex items-center gap-2">
+              <span class="w-2 h-2 bg-primary rounded-full"></span>
+              <span><strong>Arrow Keys</strong> or <strong>WASD</strong> to move</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-2 h-2 bg-primary rounded-full"></span>
+              <span><strong>Touch controls</strong> on mobile</span>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-semibold text-lg mb-3 text-gray-200">🎯 About the Game</h3>
+          <p class="text-gray-300 leading-relaxed">
+            Pixel Bounce is the first game produced by the Syntax Sorcery proposal→prototype pipeline. 
+            Bounce across platforms, collect stars, and rack up your score in this arcade platformer 
+            with particle effects and responsive controls.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

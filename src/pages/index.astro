@@ -24,6 +24,17 @@ const games = [
     gradient: 'from-yellow-500/20 to-orange-600/20',
     accentColor: 'yellow',
   },
+  {
+    id: 'pixel-bounce',
+    title: '🏀 Pixel Bounce',
+    description: 'Arcade platformer where you bounce a ball across platforms, collecting stars and chasing high scores. Built by the Syntax Sorcery pipeline — zero dependencies, pure HTML5 Canvas fun.',
+    githubUrl: 'https://github.com/jperezdelreal/pixel-bounce',
+    playUrl: '/FirstFrameStudios/games/pixel-bounce',
+    stack: 'HTML5 Canvas — Zero Deps',
+    status: '✅ Deployed',
+    gradient: 'from-sky-500/20 to-indigo-600/20',
+    accentColor: 'sky',
+  },
 ];
 ---
 
@@ -32,7 +43,7 @@ const games = [
   <section class="relative py-32 md:py-40 overflow-hidden">
     <!-- Animated background elements -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
-      <div class="absolute top-1/4 -left-20 w-96 h-96 bg-neon-cyan/10 rounded-full blur-3xl animate-float"></div>
+      <div class="absolute top-1/4 -left-20 w-96 h-96 bg-neon-amber/10 rounded-full blur-3xl animate-float"></div>
       <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-neon-purple/10 rounded-full blur-3xl animate-float" style="animation-delay: -3s;"></div>
       <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon-pink/5 rounded-full blur-3xl"></div>
     </div>
@@ -87,7 +98,7 @@ const games = [
       <p class="text-gray-400 text-lg">Built by AI, played by humans</p>
     </div>
     
-    <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
       {games.map((game) => (
         <div class="group relative">
           <div class="glass-dark rounded-2xl overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20">
@@ -163,7 +174,7 @@ const games = [
 
         <!-- Devlog -->
         <div class="glass-dark rounded-2xl p-8 hover:border-primary/30 transition-all duration-300">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-cyan/20 to-neon-green/20 flex items-center justify-center mb-6">
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-neon-amber/20 to-neon-green/20 flex items-center justify-center mb-6">
             <span class="text-3xl">📝</span>
           </div>
           <h2 class="text-3xl font-black mb-4 font-display">Daily Devlog</h2>

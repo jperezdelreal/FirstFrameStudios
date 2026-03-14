@@ -12,6 +12,7 @@ We build games. Not tech demos, not prototypes — **complete, playable games** 
 |------|------|--------|-------|
 | 🌿 **FLORA** | [flora](https://github.com/jperezdelreal/flora) | 🌱 Starting | Vite + TypeScript + PixiJS v8 |
 | 🍩 **ComeRosquillas** | [ComeRosquillas](https://github.com/jperezdelreal/ComeRosquillas) | 🎮 Playable | HTML + JS + Canvas |
+| 🏀 **Pixel Bounce** | [pixel-bounce](https://github.com/jperezdelreal/pixel-bounce) | ✅ Deployed | HTML5 Canvas — Zero Deps |
 
 ## Studio Tools
 
