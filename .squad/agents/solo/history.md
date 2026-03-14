@@ -102,3 +102,45 @@
 2. Closeout is event-driven, not timer-driven — 7-day loops create noise
 3. Hub has no lifecycle — infrastructure doesn't sprint
 4. Archive signal = close the roadmap issue — simplest native GitHub action
+
+### 2026-03-14: Studio-Wide Sprint Planning & Roadmap
+
+**Scope:** Full studio sprint planning across all 3 active projects. Joaquin granted T1 authority: "Tu mandas, eres el jefe."
+
+**Project State Analysis:**
+- **ComeRosquillas** — Feature-complete after 4 sprints (50 closed issues). game-logic.js (1,222 LOC) is the architectural blocker. Game plays well but looks basic (procedural shapes, no animations).
+- **Flora** — Fully playable prototype (15,885 LOC, 73 files, excellent architecture). 22 plant types, full roguelite loop. Placeholder visuals (colored rectangles). Needs visual polish and deployment.
+- **FFS Squad Monitor** — Feature-rich (16 React components, 16 API routes, 97.61% test coverage). Critical architectural debt: dual architecture (React + dead vanilla JS), config in 3 places, React bypasses Express backend.
+
+**Sprint Decisions (T1):**
+
+| Project | Sprint | Theme | Issues Created |
+|---------|--------|-------|---------------|
+| ComeRosquillas | Sprint 5 | Visual Spectacle & Engagement | #83-#89 (6 issues) |
+| Flora | Sprint 1 | Wow Factor & Deploy | #195-#205 (7 issues) |
+| FFS Squad Monitor | Sprint 3 | Architecture Consolidation | #119-#124 (5 issues) |
+
+**Priority Order (studio-level):**
+1. Flora Sprint 1 — highest ROI. Best architecture, just needs visual polish to become a portfolio showpiece
+2. ComeRosquillas Sprint 5 — already deployed, visual upgrade elevates from good to great
+3. Squad Monitor Sprint 3 — internal tool, important but doesn't affect player experience
+
+**Key Patterns Discovered:**
+- Both games use procedural rendering (no external art files) — same visual quality gap
+- Web Audio API for sound across all projects — consistent approach
+- All issues written for @copilot execution (clear acceptance criteria, size estimates, file paths)
+- "Define next roadmap" issues auto-created by perpetual-motion workflow — need to close these when creating formal sprint issues
+
+**Issue counts by repo:**
+- ComeRosquillas: 50 closed, 6 new (Sprint 5)
+- Flora: 156 closed (mostly auto-generated roadmap churn), 7 new (Sprint 1)
+- FFS Squad Monitor: 57 closed, 5 new (Sprint 3)
+- Hub: #199 closed with full roadmap comment
+
+**File Paths:**
+- ComeRosquillas GDD: README.md (no separate GDD file)
+- Flora GDD: docs/GDD.md (excellent, detailed)
+- Squad Monitor PRD: docs/PRD.md
+- ComeRosquillas code: js/game-logic.js (1,222 LOC), js/engine/ (audio, renderer, high-scores, touch-input)
+- Flora code: src/ (config/, core/, entities/, scenes/, systems/, ui/, utils/)
+- Squad Monitor code: src/ (React), server/ (Express)
